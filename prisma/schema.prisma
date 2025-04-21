@@ -16,7 +16,7 @@ model User {
   email     String    @unique
   name      String?
   password  String
-  roles     Role[]    @relation("UserRoles")
+  roles     String[]  @default(["user"])
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
 
@@ -26,8 +26,8 @@ model User {
 model Role {
   id          String    @id @default(uuid())
   name        String    @unique
-  description String?
-  users       User[]    @relation("UserRoles")
+  description String    @default("")
+  permissions String[]  @default([])
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 

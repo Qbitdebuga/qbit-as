@@ -1,28 +1,31 @@
-FROM node:18-alpine As development
+# Base image
+FROM node:20-alpine AS base
+WORKDIR /app
+ENV NODE_ENV=production
 
-WORKDIR /usr/src/app
+# Development dependencies
+FROM base AS deps
+COPY package.json package-lock.json ./
+RUN npm ci
 
-COPY package*.json ./
-
-RUN npm install
-
+# Builder
+FROM deps AS builder
 COPY . .
-
 RUN npm run build
 
-FROM node:18-alpine As production
+# Production dependencies
+FROM deps AS production-deps
+RUN npm prune --production
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+# Runner
+FROM base AS runner
+COPY --from=production-deps /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./package.json
 
-WORKDIR /usr/src/app
+# Set up health check and expose port
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget -qO- http://localhost:3000/health || exit 1
 
-COPY package*.json ./
-
-RUN npm install --only=production
-
-COPY --from=development /usr/src/app/dist ./dist
-
-EXPOSE 3001
-
-CMD ["node", "dist/main"] 
+# Start the application
+CMD ["npm", "run", "start:prod"] 

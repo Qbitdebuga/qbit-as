@@ -48,6 +48,71 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  # API Gateway Service
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: qbit_api_gateway
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      AUTH_SERVICE_URL: http://auth:3002
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./services/api-gateway:/app
+      - /app/node_modules
+    depends_on:
+      - auth
+    networks:
+      - qbit_network
+    command: npm run dev
+  
+  # Auth Service
+  auth:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    container_name: qbit_auth
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/qbit_auth?schema=public
+      JWT_SECRET: dev-jwt-secret-key-change-in-production
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./services/auth:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - qbit_network
+    command: npm run dev
+  
+  # Web App
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: qbit_web
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - api-gateway
+    networks:
+      - qbit_network
+    command: npm run dev
 
 networks:
   qbit_network:

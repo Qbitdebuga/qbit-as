@@ -1,35 +1,35 @@
-# Base image
+# Base image for all services
 FROM node:20-alpine AS base
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Development dependencies
+# Development dependencies stage
 FROM base AS deps
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Builder
+# Builder stage
 FROM deps AS builder
 COPY . .
 RUN npm run build
 
-# Production dependencies
+# Production dependencies stage
 FROM deps AS production-deps
 RUN npm prune --production
 
-# Runner
+# Final stage
 FROM base AS runner
 COPY --from=production-deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./package.json
 
-# Generate Prisma Client
+# Additional files needed at runtime
 COPY prisma ./prisma
+COPY turbo.json ./turbo.json
+COPY .env.example ./.env
+
+# Generate Prisma client
 RUN npx prisma generate
 
-# Set up health check and expose port
-EXPOSE 3002
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget -qO- http://localhost:3002/health || exit 1
-
-# Start the application
-CMD ["npm", "run", "start:prod"] 
+# Set up command
+CMD ["npm", "start"] 
