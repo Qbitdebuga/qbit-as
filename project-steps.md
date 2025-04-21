@@ -1,0 +1,653 @@
+## Project Setup and Infrastructure for Qbit Full-Stack Accounting System
+
+- [x]  Step 1: Initialize monorepo project structure
+    - **Task**: Set up the monorepo structure using Turborepo with initial package configurations, including root-level configs like ESLint, TypeScript, and Git
+    - **Files**:
+        - `package.json`: Root package configuration with workspaces
+        - `turbo.json`: Turborepo configuration
+        - `.gitignore`: Git ignore configuration
+        - `.eslintrc.js`: ESLint configuration
+        - `tsconfig.json`: Base TypeScript configuration
+        - `README.md`: Project documentation
+    - **User Instructions**: Run `yarn install` or `npm install` to install dependencies
+- [ ]  Step 2: Configure shared packages and types
+    - **Task**: Create shared packages for common types, UI components, and API client
+    - **Files**:
+        - `packages/shared-types/package.json`: Package configuration
+        - `packages/shared-types/tsconfig.json`: TypeScript configuration
+        - `packages/shared-types/src/index.ts`: Entry point
+        - `packages/shared-types/src/models/index.ts`: Shared models
+        - `packages/ui-components/package.json`: Package configuration
+        - `packages/ui-components/tsconfig.json`: TypeScript configuration
+        - `packages/ui-components/src/index.ts`: Entry point
+        - `packages/api-client/package.json`: Package configuration
+        - `packages/api-client/tsconfig.json`: TypeScript configuration
+        - `packages/api-client/src/index.ts`: Entry point
+    - **Step Dependencies**: Step 1
+    - **User Instructions**: None
+- [ ]  Step 3: Set up Next.js web application
+    - **Task**: Initialize the Next.js web application with Tailwind CSS and shadcn/ui
+    - **Files**:
+        - `apps/web/package.json`: Package configuration
+        - `apps/web/tsconfig.json`: TypeScript configuration
+        - `apps/web/next.config.js`: Next.js configuration
+        - `apps/web/tailwind.config.js`: Tailwind CSS configuration
+        - `apps/web/postcss.config.js`: PostCSS configuration
+        - `apps/web/.env.example`: Environment variables example
+        - `apps/web/src/app/layout.tsx`: Root layout
+        - `apps/web/src/app/page.tsx`: Home page
+        - `apps/web/public/favicon.ico`: Favicon
+    - **Step Dependencies**: Step 1
+    - **User Instructions**: Run `cd apps/web && npm install` to install Next.js dependencies
+- [ ]  Step 4: Set up NestJS API gateway service
+    - **Task**: Create the API gateway service with NestJS
+    - **Files**:
+        - `services/api-gateway/package.json`: Package configuration
+        - `services/api-gateway/tsconfig.json`: TypeScript configuration
+        - `services/api-gateway/src/main.ts`: Entry point
+        - `services/api-gateway/src/app.module.ts`: Root module
+        - `services/api-gateway/src/middleware/logger.middleware.ts`: Logger middleware
+        - `services/api-gateway/src/config/config.module.ts`: Configuration module
+        - `services/api-gateway/Dockerfile`: Docker configuration
+        - `services/api-gateway/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 1
+    - **User Instructions**: Run `cd services/api-gateway && npm install` to install NestJS dependencies
+- [ ]  Step 5: Configure authentication service
+    - **Task**: Create the authentication service with user management and JWT authentication
+    - **Files**:
+        - `services/auth/package.json`: Package configuration
+        - `services/auth/tsconfig.json`: TypeScript configuration
+        - `services/auth/src/main.ts`: Entry point
+        - `services/auth/src/app.module.ts`: Root module
+        - `services/auth/src/user/user.module.ts`: User module
+        - `services/auth/src/user/user.entity.ts`: User entity
+        - `services/auth/src/auth/auth.module.ts`: Auth module
+        - `services/auth/src/auth/auth.service.ts`: Auth service
+        - `services/auth/src/auth/auth.controller.ts`: Auth controller
+        - `services/auth/Dockerfile`: Docker configuration
+        - `services/auth/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 1
+    - **User Instructions**: Run `cd services/auth && npm install` to install dependencies
+- [ ]  Step 6: Set up PostgreSQL database and Prisma ORM
+    - **Task**: Configure PostgreSQL database connection and Prisma ORM for data access
+    - **Files**:
+        - `prisma/schema.prisma`: Prisma schema with initial models
+        - `prisma/migrations/.gitkeep`: Placeholder for migrations
+        - `services/auth/src/prisma/prisma.module.ts`: Prisma module
+        - `services/auth/src/prisma/prisma.service.ts`: Prisma service
+        - `services/auth/src/user/user.repository.ts`: User repository
+        - `scripts/seed.ts`: Database seeding script
+        - `docker-compose.yml`: Docker Compose configuration for development
+    - **Step Dependencies**: Step 5
+    - **User Instructions**: Run `npx prisma generate` and `npx prisma migrate dev` to initialize the database
+- [ ]  Step 7: Configure CI/CD with GitHub Actions
+    - **Task**: Set up continuous integration and deployment pipelines
+    - **Files**:
+        - `.github/workflows/ci.yml`: CI workflow
+        - `.github/workflows/deploy.yml`: Deployment workflow
+        - `.github/dependabot.yml`: Dependabot configuration
+    - **Step Dependencies**: Step 1
+    - **User Instructions**: Configure GitHub repository secrets for CI/CD
+- [ ]  Step 8: Docker and Kubernetes configuration
+    - **Task**: Set up Docker containers and Kubernetes manifests for all services
+    - **Files**:
+        - `docker-compose.yml`: Full Docker Compose configuration
+        - `Dockerfile`: Root Dockerfile
+        - `k8s/api-gateway.yaml`: API gateway Kubernetes manifest
+        - `k8s/auth-service.yaml`: Auth service Kubernetes manifest
+        - `k8s/database.yaml`: Database Kubernetes manifest
+        - `k8s/ingress.yaml`: Ingress configuration
+        - `k8s/redis.yaml`: Redis Kubernetes manifest
+    - **Step Dependencies**: Steps 4, 5, 6
+    - **User Instructions**: Install Docker and Kubernetes CLI tools
+
+## Authentication and User Management
+
+- [ ]  Step 9: Implement user management
+    - **Task**: Create user CRUD operations and role management
+    - **Files**:
+        - `services/auth/src/user/dto/create-user.dto.ts`: DTO for user creation
+        - `services/auth/src/user/dto/update-user.dto.ts`: DTO for user updates
+        - `services/auth/src/user/user.service.ts`: User service
+        - `services/auth/src/user/user.controller.ts`: User controller
+        - `services/auth/src/role/role.entity.ts`: Role entity
+        - `services/auth/src/role/role.service.ts`: Role service
+        - `services/auth/src/role/role.controller.ts`: Role controller
+    - **Step Dependencies**: Step 5
+    - **User Instructions**: None
+- [ ]  Step 10: Implement JWT authentication and role-based access control
+    - **Task**: Set up JWT authentication, refresh tokens, and role-based guards
+    - **Files**:
+        - `services/auth/src/auth/dto/login.dto.ts`: Login DTO
+        - `services/auth/src/auth/dto/refresh-token.dto.ts`: Refresh token DTO
+        - `services/auth/src/auth/guards/jwt.guard.ts`: JWT guard
+        - `services/auth/src/auth/guards/roles.guard.ts`: Roles guard
+        - `services/auth/src/auth/strategies/jwt.strategy.ts`: JWT strategy
+        - `services/auth/src/auth/decorators/roles.decorator.ts`: Roles decorator
+        - `services/auth/src/auth/auth.controller.ts`: Updated auth controller
+        - `services/auth/src/auth/auth.service.ts`: Updated auth service
+    - **Step Dependencies**: Step 9
+    - **User Instructions**: None
+- [ ]  Step 11: Create authentication client for frontend
+    - **Task**: Implement authentication client in the API client package
+    - **Files**:
+        - `packages/api-client/src/auth/index.ts`: Auth client exports
+        - `packages/api-client/src/auth/auth-client.ts`: Auth client implementation
+        - `packages/api-client/src/auth/types.ts`: Auth types
+        - `packages/api-client/src/utils/token-storage.ts`: Token storage utility
+    - **Step Dependencies**: Step 10
+    - **User Instructions**: None
+- [ ]  Step 12: Implement frontend authentication UI
+    - **Task**: Create login, register, and password reset pages with form validation
+    - **Files**:
+        - `apps/web/src/app/login/page.tsx`: Login page
+        - `apps/web/src/app/register/page.tsx`: Register page
+        - `apps/web/src/app/forgot-password/page.tsx`: Forgot password page
+        - `apps/web/src/app/reset-password/[token]/page.tsx`: Reset password page
+        - `apps/web/src/components/auth/LoginForm.tsx`: Login form component
+        - `apps/web/src/components/auth/RegisterForm.tsx`: Register form component
+        - `apps/web/src/components/auth/ForgotPasswordForm.tsx`: Forgot password form
+        - `apps/web/src/hooks/useAuth.ts`: Auth hook
+    - **Step Dependencies**: Step 11, Step 3
+    - **User Instructions**: None
+- [ ]  Step 13: Set up protected routes and auth context
+    - **Task**: Implement authentication context and protected route components
+    - **Files**:
+        - `apps/web/src/contexts/auth-context.tsx`: Auth context
+        - `apps/web/src/components/auth/ProtectedRoute.tsx`: Protected route component
+        - `apps/web/src/middleware.ts`: Next.js middleware for auth
+        - `apps/web/src/utils/auth.ts`: Auth utilities
+        - `apps/web/src/app/dashboard/layout.tsx`: Dashboard layout with auth check
+    - **Step Dependencies**: Step 12
+    - **User Instructions**: None
+
+## Core Financial Module - General Ledger
+
+- [ ]  Step 14: Set up General Ledger microservice
+    - **Task**: Create the General Ledger microservice with basic structure
+    - **Files**:
+        - `services/general-ledger/package.json`: Package configuration
+        - `services/general-ledger/tsconfig.json`: TypeScript configuration
+        - `services/general-ledger/src/main.ts`: Entry point
+        - `services/general-ledger/src/app.module.ts`: Root module
+        - `services/general-ledger/src/config/config.module.ts`: Configuration module
+        - `services/general-ledger/src/prisma/prisma.module.ts`: Prisma module
+        - `services/general-ledger/src/prisma/prisma.service.ts`: Prisma service
+        - `services/general-ledger/Dockerfile`: Docker configuration
+        - `services/general-ledger/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 6
+    - **User Instructions**: Run `cd services/general-ledger && npm install` to install dependencies
+- [ ]  Step 15: Implement Chart of Accounts data model and API
+    - **Task**: Create the Chart of Accounts module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with account models
+        - `services/general-ledger/src/accounts/accounts.module.ts`: Accounts module
+        - `services/general-ledger/src/accounts/entities/account.entity.ts`: Account entity
+        - `services/general-ledger/src/accounts/dto/create-account.dto.ts`: Create account DTO
+        - `services/general-ledger/src/accounts/dto/update-account.dto.ts`: Update account DTO
+        - `services/general-ledger/src/accounts/accounts.controller.ts`: Accounts controller
+        - `services/general-ledger/src/accounts/accounts.service.ts`: Accounts service
+        - `services/general-ledger/src/accounts/accounts.repository.ts`: Accounts repository
+        - `packages/shared-types/src/models/account.ts`: Shared account types
+    - **Step Dependencies**: Step 14
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 16: Create Chart of Accounts UI components
+    - **Task**: Implement the Chart of Accounts management interface
+    - **Files**:
+        - `apps/web/src/app/dashboard/accounts/page.tsx`: Accounts page
+        - `apps/web/src/app/dashboard/accounts/[id]/page.tsx`: Account detail page
+        - `apps/web/src/app/dashboard/accounts/new/page.tsx`: New account page
+        - `apps/web/src/components/accounts/AccountForm.tsx`: Account form component
+        - `apps/web/src/components/accounts/AccountList.tsx`: Account list component
+        - `apps/web/src/components/accounts/AccountDetail.tsx`: Account detail component
+        - `packages/api-client/src/accounts/accounts-client.ts`: Accounts API client
+    - **Step Dependencies**: Step 15, Step 13
+    - **User Instructions**: None
+- [ ]  Step 17: Implement Journal Entries data model and API
+    - **Task**: Create the Journal Entries module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with journal entry models
+        - `services/general-ledger/src/journal-entries/journal-entries.module.ts`: Journal entries module
+        - `services/general-ledger/src/journal-entries/entities/journal-entry.entity.ts`: Journal entry entity
+        - `services/general-ledger/src/journal-entries/entities/journal-entry-line.entity.ts`: Journal entry line entity
+        - `services/general-ledger/src/journal-entries/dto/create-journal-entry.dto.ts`: Create journal entry DTO
+        - `services/general-ledger/src/journal-entries/dto/update-journal-entry.dto.ts`: Update journal entry DTO
+        - `services/general-ledger/src/journal-entries/journal-entries.controller.ts`: Journal entries controller
+        - `services/general-ledger/src/journal-entries/journal-entries.service.ts`: Journal entries service
+        - `services/general-ledger/src/journal-entries/journal-entries.repository.ts`: Journal entries repository
+        - `packages/shared-types/src/models/journal-entry.ts`: Shared journal entry types
+    - **Step Dependencies**: Step 15
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 18: Create Journal Entries UI components
+    - **Task**: Implement the Journal Entries management interface
+    - **Files**:
+        - `apps/web/src/app/dashboard/journal-entries/page.tsx`: Journal entries page
+        - `apps/web/src/app/dashboard/journal-entries/[id]/page.tsx`: Journal entry detail page
+        - `apps/web/src/app/dashboard/journal-entries/new/page.tsx`: New journal entry page
+        - `apps/web/src/components/journal-entries/JournalEntryForm.tsx`: Journal entry form component
+        - `apps/web/src/components/journal-entries/JournalEntryList.tsx`: Journal entry list component
+        - `apps/web/src/components/journal-entries/JournalEntryDetail.tsx`: Journal entry detail component
+        - `packages/api-client/src/journal-entries/journal-entries-client.ts`: Journal entries API client
+    - **Step Dependencies**: Step 17, Step 16
+    - **User Instructions**: None
+- [ ]  Step 19: Implement Financial Reporting API
+    - **Task**: Create financial statement generation APIs
+    - **Files**:
+        - `services/general-ledger/src/financial-statements/financial-statements.module.ts`: Financial statements module
+        - `services/general-ledger/src/financial-statements/dto/statement-request.dto.ts`: Statement request DTO
+        - `services/general-ledger/src/financial-statements/dto/statement-response.dto.ts`: Statement response DTO
+        - `services/general-ledger/src/financial-statements/financial-statements.controller.ts`: Financial statements controller
+        - `services/general-ledger/src/financial-statements/financial-statements.service.ts`: Financial statements service
+        - `services/general-ledger/src/financial-statements/generators/balance-sheet.generator.ts`: Balance sheet generator
+        - `services/general-ledger/src/financial-statements/generators/income-statement.generator.ts`: Income statement generator
+        - `services/general-ledger/src/financial-statements/generators/cash-flow.generator.ts`: Cash flow generator
+        - `packages/shared-types/src/models/financial-statement.ts`: Shared financial statement types
+    - **Step Dependencies**: Step 17
+    - **User Instructions**: None
+- [ ]  Step 20: Create Financial Reporting UI
+    - **Task**: Implement financial statement viewing and exporting
+    - **Files**:
+        - `apps/web/src/app/dashboard/reports/balance-sheet/page.tsx`: Balance sheet page
+        - `apps/web/src/app/dashboard/reports/income-statement/page.tsx`: Income statement page
+        - `apps/web/src/app/dashboard/reports/cash-flow/page.tsx`: Cash flow page
+        - `apps/web/src/components/reports/StatementFilters.tsx`: Statement filters component
+        - `apps/web/src/components/reports/BalanceSheetReport.tsx`: Balance sheet component
+        - `apps/web/src/components/reports/IncomeStatementReport.tsx`: Income statement component
+        - `apps/web/src/components/reports/CashFlowReport.tsx`: Cash flow component
+        - `apps/web/src/utils/report-export.ts`: Report export utilities
+        - `packages/api-client/src/reports/reports-client.ts`: Reports API client
+    - **Step Dependencies**: Step 19
+    - **User Instructions**: None
+
+## Core Financial Module - Accounts Receivable
+
+- [ ]  Step 21: Set up Accounts Receivable microservice
+    - **Task**: Create the Accounts Receivable microservice with basic structure
+    - **Files**:
+        - `services/accounts-receivable/package.json`: Package configuration
+        - `services/accounts-receivable/tsconfig.json`: TypeScript configuration
+        - `services/accounts-receivable/src/main.ts`: Entry point
+        - `services/accounts-receivable/src/app.module.ts`: Root module
+        - `services/accounts-receivable/src/config/config.module.ts`: Configuration module
+        - `services/accounts-receivable/src/prisma/prisma.module.ts`: Prisma module
+        - `services/accounts-receivable/src/prisma/prisma.service.ts`: Prisma service
+        - `services/accounts-receivable/Dockerfile`: Docker configuration
+        - `services/accounts-receivable/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 6
+    - **User Instructions**: Run `cd services/accounts-receivable && npm install` to install dependencies
+- [ ]  Step 22: Implement Customer data model and API
+    - **Task**: Create the Customer module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with customer models
+        - `services/accounts-receivable/src/customers/customers.module.ts`: Customers module
+        - `services/accounts-receivable/src/customers/entities/customer.entity.ts`: Customer entity
+        - `services/accounts-receivable/src/customers/dto/create-customer.dto.ts`: Create customer DTO
+        - `services/accounts-receivable/src/customers/dto/update-customer.dto.ts`: Update customer DTO
+        - `services/accounts-receivable/src/customers/customers.controller.ts`: Customers controller
+        - `services/accounts-receivable/src/customers/customers.service.ts`: Customers service
+        - `services/accounts-receivable/src/customers/customers.repository.ts`: Customers repository
+        - `packages/shared-types/src/models/customer.ts`: Shared customer types
+    - **Step Dependencies**: Step 21
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 23: Create Customer management UI
+    - **Task**: Implement the Customer management interface
+    - **Files**:
+        - `apps/web/src/app/dashboard/customers/page.tsx`: Customers page
+        - `apps/web/src/app/dashboard/customers/[id]/page.tsx`: Customer detail page
+        - `apps/web/src/app/dashboard/customers/new/page.tsx`: New customer page
+        - `apps/web/src/components/customers/CustomerForm.tsx`: Customer form component
+        - `apps/web/src/components/customers/CustomerList.tsx`: Customer list component
+        - `apps/web/src/components/customers/CustomerDetail.tsx`: Customer detail component
+        - `packages/api-client/src/customers/customers-client.ts`: Customers API client
+    - **Step Dependencies**: Step 22, Step 13
+    - **User Instructions**: None
+- [ ]  Step 24: Implement Invoice data model and API
+    - **Task**: Create the Invoice module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with invoice models
+        - `services/accounts-receivable/src/invoices/invoices.module.ts`: Invoices module
+        - `services/accounts-receivable/src/invoices/entities/invoice.entity.ts`: Invoice entity
+        - `services/accounts-receivable/src/invoices/entities/invoice-line.entity.ts`: Invoice line entity
+        - `services/accounts-receivable/src/invoices/dto/create-invoice.dto.ts`: Create invoice DTO
+        - `services/accounts-receivable/src/invoices/dto/update-invoice.dto.ts`: Update invoice DTO
+        - `services/accounts-receivable/src/invoices/invoices.controller.ts`: Invoices controller
+        - `services/accounts-receivable/src/invoices/invoices.service.ts`: Invoices service
+        - `services/accounts-receivable/src/invoices/invoices.repository.ts`: Invoices repository
+        - `packages/shared-types/src/models/invoice.ts`: Shared invoice types
+    - **Step Dependencies**: Step 22
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 25: Create Invoice management UI
+    - **Task**: Implement the Invoice management interface
+    - **Files**:
+        - `apps/web/src/app/dashboard/invoices/page.tsx`: Invoices page
+        - `apps/web/src/app/dashboard/invoices/[id]/page.tsx`: Invoice detail page
+        - `apps/web/src/app/dashboard/invoices/new/page.tsx`: New invoice page
+        - `apps/web/src/components/invoices/InvoiceForm.tsx`: Invoice form component
+        - `apps/web/src/components/invoices/InvoiceList.tsx`: Invoice list component
+        - `apps/web/src/components/invoices/InvoiceDetail.tsx`: Invoice detail component
+        - `apps/web/src/components/invoices/InvoicePrint.tsx`: Invoice print component
+        - `packages/api-client/src/invoices/invoices-client.ts`: Invoices API client
+    - **Step Dependencies**: Step 24, Step 23
+    - **User Instructions**: None
+- [ ]  Step 26: Implement Payment processing model and API
+    - **Task**: Create the Payment module with payment application logic
+    - **Files**:
+        - `prisma/schema.prisma`: Update with payment models
+        - `services/accounts-receivable/src/payments/payments.module.ts`: Payments module
+        - `services/accounts-receivable/src/payments/entities/payment.entity.ts`: Payment entity
+        - `services/accounts-receivable/src/payments/entities/payment-application.entity.ts`: Payment application entity
+        - `services/accounts-receivable/src/payments/dto/create-payment.dto.ts`: Create payment DTO
+        - `services/accounts-receivable/src/payments/dto/apply-payment.dto.ts`: Apply payment DTO
+        - `services/accounts-receivable/src/payments/payments.controller.ts`: Payments controller
+        - `services/accounts-receivable/src/payments/payments.service.ts`: Payments service
+        - `services/accounts-receivable/src/payments/payments.repository.ts`: Payments repository
+        - `packages/shared-types/src/models/payment.ts`: Shared payment types
+    - **Step Dependencies**: Step 24
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 27: Create Payment management UI
+    - **Task**: Implement the Payment management interface
+    - **Files**:
+        - `apps/web/src/app/dashboard/payments/page.tsx`: Payments page
+        - `apps/web/src/app/dashboard/payments/[id]/page.tsx`: Payment detail page
+        - `apps/web/src/app/dashboard/payments/new/page.tsx`: New payment page
+        - `apps/web/src/components/payments/PaymentForm.tsx`: Payment form component
+        - `apps/web/src/components/payments/PaymentList.tsx`: Payment list component
+        - `apps/web/src/components/payments/PaymentDetail.tsx`: Payment detail component
+        - `apps/web/src/components/payments/PaymentApplication.tsx`: Payment application component
+        - `packages/api-client/src/payments/payments-client.ts`: Payments API client
+    - **Step Dependencies**: Step 26, Step 25
+    - **User Instructions**: None
+
+## Core Financial Module - Accounts Payable
+
+- [ ]  Step 28: Set up Accounts Payable microservice
+    - **Task**: Create the Accounts Payable microservice with basic structure
+    - **Files**:
+        - `services/accounts-payable/package.json`: Package configuration
+        - `services/accounts-payable/tsconfig.json`: TypeScript configuration
+        - `services/accounts-payable/src/main.ts`: Entry point
+        - `services/accounts-payable/src/app.module.ts`: Root module
+        - `services/accounts-payable/src/config/config.module.ts`: Configuration module
+        - `services/accounts-payable/src/prisma/prisma.module.ts`: Prisma module
+        - `services/accounts-payable/src/prisma/prisma.service.ts`: Prisma service
+        - `services/accounts-payable/Dockerfile`: Docker configuration
+        - `services/accounts-payable/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 6
+    - **User Instructions**: Run `cd services/accounts-payable && npm install` to install dependencies
+- [ ]  Step 29: Implement Vendor data model and API
+    - **Task**: Create the Vendor module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with vendor models
+        - `services/accounts-payable/src/vendors/vendors.module.ts`: Vendors module
+        - `services/accounts-payable/src/vendors/entities/vendor.entity.ts`: Vendor entity
+        - `services/accounts-payable/src/vendors/dto/create-vendor.dto.ts`: Create vendor DTO
+        - `services/accounts-payable/src/vendors/dto/update-vendor.dto.ts`: Update vendor DTO
+        - `services/accounts-payable/src/vendors/vendors.controller.ts`: Vendors controller
+        - `services/accounts-payable/src/vendors/vendors.service.ts`: Vendors service
+        - `services/accounts-payable/src/vendors/vendors.repository.ts`: Vendors repository
+        - `packages/shared-types/src/models/vendor.ts`: Shared vendor types
+    - **Step Dependencies**: Step 28
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 30: Create Vendor management UI
+    - **Task**: Implement the Vendor management interface
+    - **Files**:
+        - `apps/web/src/app/dashboard/vendors/page.tsx`: Vendors page
+        - `apps/web/src/app/dashboard/vendors/[id]/page.tsx`: Vendor detail page
+        - `apps/web/src/app/dashboard/vendors/new/page.tsx`: New vendor page
+        - `apps/web/src/components/vendors/VendorForm.tsx`: Vendor form component
+        - `apps/web/src/components/vendors/VendorList.tsx`: Vendor list component
+        - `apps/web/src/components/vendors/VendorDetail.tsx`: Vendor detail component
+        - `packages/api-client/src/vendors/vendors-client.ts`: Vendors API client
+    - **Step Dependencies**: Step 29, Step 13
+    - **User Instructions**: None
+- [ ]  Step 31: Implement Bill data model and API
+    - **Task**: Create the Bill module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with bill models
+        - `services/accounts-payable/src/bills/bills.module.ts`: Bills module
+        - `services/accounts-payable/src/bills/entities/bill.entity.ts`: Bill entity
+        - `services/accounts-payable/src/bills/entities/bill-line.entity.ts`: Bill line entity
+        - `services/accounts-payable/src/bills/dto/create-bill.dto.ts`: Create bill DTO
+        - `services/accounts-payable/src/bills/dto/update-bill.dto.ts`: Update bill DTO
+        - `services/accounts-payable/src/bills/bills.controller.ts`: Bills controller
+        - `services/accounts-payable/src/bills/bills.service.ts`: Bills service
+        - `services/accounts-payable/src/bills/bills.repository.ts`: Bills repository
+        - `packages/shared-types/src/models/bill.ts`: Shared bill types
+    - **Step Dependencies**: Step 29
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 32: Create Bill management UI
+    - **Task**: Implement the Bill management interface for creating, viewing, and processing vendor bills
+    - **Files**:
+        - `apps/web/src/app/dashboard/bills/page.tsx`: Bills list page
+        - `apps/web/src/app/dashboard/bills/[id]/page.tsx`: Bill detail page
+        - `apps/web/src/app/dashboard/bills/new/page.tsx`: New bill page
+        - `apps/web/src/components/bills/BillForm.tsx`: Bill form component
+        - `apps/web/src/components/bills/BillList.tsx`: Bill list component
+        - `apps/web/src/components/bills/BillDetail.tsx`: Bill detail component
+        - `apps/web/src/components/bills/BillLineItems.tsx`: Bill line items component
+        - `packages/api-client/src/bills/bills-client.ts`: Bills API client
+    - **Step Dependencies**: Step 31, Step 13
+    - **User Instructions**: None
+- [ ]  Step 33: Implement Vendor Payment data model and API
+    - **Task**: Create the Vendor Payment module with related functionality
+    - **Files**:
+        - `prisma/schema.prisma`: Update with payment models
+        - `services/accounts-payable/src/payments/payments.module.ts`: Payments module
+        - `services/accounts-payable/src/payments/entities/payment.entity.ts`: Payment entity
+        - `services/accounts-payable/src/payments/entities/payment-application.entity.ts`: Payment application entity
+        - `services/accounts-payable/src/payments/dto/create-payment.dto.ts`: Create payment DTO
+        - `services/accounts-payable/src/payments/dto/apply-payment.dto.ts`: Apply payment DTO
+        - `services/accounts-payable/src/payments/payments.controller.ts`: Payments controller
+        - `services/accounts-payable/src/payments/payments.service.ts`: Payments service
+        - `services/accounts-payable/src/payments/payments.repository.ts`: Payments repository
+        - `packages/shared-types/src/models/payment.ts`: Shared payment types
+    - **Step Dependencies**: Step 31
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 34: Create Vendor Payment management UI
+    - **Task**: Implement the interface for managing vendor payments
+    - **Files**:
+        - `apps/web/src/app/dashboard/payments/page.tsx`: Payments list page
+        - `apps/web/src/app/dashboard/payments/[id]/page.tsx`: Payment detail page
+        - `apps/web/src/app/dashboard/payments/new/page.tsx`: New payment page
+        - `apps/web/src/components/payments/PaymentForm.tsx`: Payment form component
+        - `apps/web/src/components/payments/PaymentList.tsx`: Payment list component
+        - `apps/web/src/components/payments/PaymentDetail.tsx`: Payment detail component
+        - `apps/web/src/components/payments/BillPaymentApplication.tsx`: Component for applying payments to bills
+        - `packages/api-client/src/payments/payments-client.ts`: Payments API client
+    - **Step Dependencies**: Step 33, Step 13
+    - **User Instructions**: None
+- [ ]  Step 35: Implement Expense data model and API
+    - **Task**: Create the Expense module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with expense models
+        - `services/accounts-payable/src/expenses/expenses.module.ts`: Expenses module
+        - `services/accounts-payable/src/expenses/entities/expense.entity.ts`: Expense entity
+        - `services/accounts-payable/src/expenses/entities/expense-category.entity.ts`: Expense category entity
+        - `services/accounts-payable/src/expenses/dto/create-expense.dto.ts`: Create expense DTO
+        - `services/accounts-payable/src/expenses/dto/update-expense.dto.ts`: Update expense DTO
+        - `services/accounts-payable/src/expenses/expenses.controller.ts`: Expenses controller
+        - `services/accounts-payable/src/expenses/expenses.service.ts`: Expenses service
+        - `services/accounts-payable/src/expenses/expenses.repository.ts`: Expenses repository
+        - `packages/shared-types/src/models/expense.ts`: Shared expense types
+    - **Step Dependencies**: Step 28
+    - **User Instructions**: Run migration after schema update
+
+## Core Financial Module - Inventory Management
+
+- [ ]  Step 36: Set up Inventory Management microservice
+    - **Task**: Create the Inventory Management microservice with basic structure
+    - **Files**:
+        - `services/inventory/package.json`: Package configuration
+        - `services/inventory/tsconfig.json`: TypeScript configuration
+        - `services/inventory/src/main.ts`: Entry point
+        - `services/inventory/src/app.module.ts`: Root module
+        - `services/inventory/src/config/config.module.ts`: Configuration module
+        - `services/inventory/src/prisma/prisma.module.ts`: Prisma module
+        - `services/inventory/src/prisma/prisma.service.ts`: Prisma service
+        - `services/inventory/Dockerfile`: Docker configuration
+        - `services/inventory/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 6
+    - **User Instructions**: Run `cd services/inventory && npm install` to install dependencies
+- [ ]  Step 37: Implement Product data model and API
+    - **Task**: Create the Product module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with product models
+        - `services/inventory/src/products/products.module.ts`: Products module
+        - `services/inventory/src/products/entities/product.entity.ts`: Product entity
+        - `services/inventory/src/products/entities/product-category.entity.ts`: Product category entity
+        - `services/inventory/src/products/entities/product-variant.entity.ts`: Product variant entity
+        - `services/inventory/src/products/dto/create-product.dto.ts`: Create product DTO
+        - `services/inventory/src/products/dto/update-product.dto.ts`: Update product DTO
+        - `services/inventory/src/products/products.controller.ts`: Products controller
+        - `services/inventory/src/products/products.service.ts`: Products service
+        - `services/inventory/src/products/products.repository.ts`: Products repository
+        - `packages/shared-types/src/models/product.ts`: Shared product types
+    - **Step Dependencies**: Step 36
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 38: Create Product management UI
+    - **Task**: Implement the Product management interface
+    - **Files**:
+        - `apps/web/src/app/dashboard/products/page.tsx`: Products list page
+        - `apps/web/src/app/dashboard/products/[id]/page.tsx`: Product detail page
+        - `apps/web/src/app/dashboard/products/new/page.tsx`: New product page
+        - `apps/web/src/components/products/ProductForm.tsx`: Product form component
+        - `apps/web/src/components/products/ProductList.tsx`: Product list component
+        - `apps/web/src/components/products/ProductDetail.tsx`: Product detail component
+        - `apps/web/src/components/products/ProductVariants.tsx`: Product variants component
+        - `packages/api-client/src/products/products-client.ts`: Products API client
+    - **Step Dependencies**: Step 37, Step 13
+    - **User Instructions**: None
+- [ ]  Step 39: Implement Warehouse data model and API
+    - **Task**: Create the Warehouse module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with warehouse models
+        - `services/inventory/src/warehouses/warehouses.module.ts`: Warehouses module
+        - `services/inventory/src/warehouses/entities/warehouse.entity.ts`: Warehouse entity
+        - `services/inventory/src/warehouses/entities/warehouse-location.entity.ts`: Warehouse location entity
+        - `services/inventory/src/warehouses/dto/create-warehouse.dto.ts`: Create warehouse DTO
+        - `services/inventory/src/warehouses/dto/update-warehouse.dto.ts`: Update warehouse DTO
+        - `services/inventory/src/warehouses/warehouses.controller.ts`: Warehouses controller
+        - `services/inventory/src/warehouses/warehouses.service.ts`: Warehouses service
+        - `services/inventory/src/warehouses/warehouses.repository.ts`: Warehouses repository
+        - `packages/shared-types/src/models/warehouse.ts`: Shared warehouse types
+    - **Step Dependencies**: Step 36
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 40: Implement Inventory Transaction data model and API
+    - **Task**: Create the Inventory Transaction module for tracking stock movements
+    - **Files**:
+        - `prisma/schema.prisma`: Update with inventory transaction models
+        - `services/inventory/src/transactions/transactions.module.ts`: Transactions module
+        - `services/inventory/src/transactions/entities/inventory-transaction.entity.ts`: Transaction entity
+        - `services/inventory/src/transactions/entities/transaction-line.entity.ts`: Transaction line entity
+        - `services/inventory/src/transactions/dto/create-transaction.dto.ts`: Create transaction DTO
+        - `services/inventory/src/transactions/dto/update-transaction.dto.ts`: Update transaction DTO
+        - `services/inventory/src/transactions/transactions.controller.ts`: Transactions controller
+        - `services/inventory/src/transactions/transactions.service.ts`: Transactions service
+        - `services/inventory/src/transactions/transactions.repository.ts`: Transactions repository
+        - `packages/shared-types/src/models/inventory-transaction.ts`: Shared transaction types
+    - **Step Dependencies**: Step 37, Step 39
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 41: Create Inventory Stock management UI
+    - **Task**: Implement the interface for managing inventory stock
+    - **Files**:
+        - `apps/web/src/app/dashboard/inventory/page.tsx`: Inventory main page
+        - `apps/web/src/app/dashboard/inventory/transactions/page.tsx`: Transactions list page
+        - `apps/web/src/app/dashboard/inventory/transactions/new/page.tsx`: New transaction page
+        - `apps/web/src/components/inventory/StockLevelList.tsx`: Stock levels component
+        - `apps/web/src/components/inventory/TransactionForm.tsx`: Transaction form component
+        - `apps/web/src/components/inventory/TransactionList.tsx`: Transaction list component
+        - `apps/web/src/components/inventory/WarehouseSelector.tsx`: Warehouse selector component
+        - `packages/api-client/src/inventory/inventory-client.ts`: Inventory API client
+    - **Step Dependencies**: Step 40, Step 13
+    - **User Instructions**: None
+
+## Core Financial Module - Fixed Assets
+
+- [ ]  Step 42: Set up Fixed Assets microservice
+    - **Task**: Create the Fixed Assets microservice with basic structure
+    - **Files**:
+        - `services/fixed-assets/package.json`: Package configuration
+        - `services/fixed-assets/tsconfig.json`: TypeScript configuration
+        - `services/fixed-assets/src/main.ts`: Entry point
+        - `services/fixed-assets/src/app.module.ts`: Root module
+        - `services/fixed-assets/src/config/config.module.ts`: Configuration module
+        - `services/fixed-assets/src/prisma/prisma.module.ts`: Prisma module
+        - `services/fixed-assets/src/prisma/prisma.service.ts`: Prisma service
+        - `services/fixed-assets/Dockerfile`: Docker configuration
+        - `services/fixed-assets/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 6
+    - **User Instructions**: Run `cd services/fixed-assets && npm install` to install dependencies
+- [ ]  Step 43: Implement Asset data model and API
+    - **Task**: Create the Asset module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with asset models
+        - `services/fixed-assets/src/assets/assets.module.ts`: Assets module
+        - `services/fixed-assets/src/assets/entities/asset.entity.ts`: Asset entity
+        - `services/fixed-assets/src/assets/entities/asset-category.entity.ts`: Asset category entity
+        - `services/fixed-assets/src/assets/dto/create-asset.dto.ts`: Create asset DTO
+        - `services/fixed-assets/src/assets/dto/update-asset.dto.ts`: Update asset DTO
+        - `services/fixed-assets/src/assets/assets.controller.ts`: Assets controller
+        - `services/fixed-assets/src/assets/assets.service.ts`: Assets service
+        - `services/fixed-assets/src/assets/assets.repository.ts`: Assets repository
+        - `packages/shared-types/src/models/asset.ts`: Shared asset types
+    - **Step Dependencies**: Step 42
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 44: Implement Depreciation data model and API
+    - **Task**: Create the Depreciation module for asset depreciation calculations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with depreciation models
+        - `services/fixed-assets/src/depreciation/depreciation.module.ts`: Depreciation module
+        - `services/fixed-assets/src/depreciation/entities/depreciation-method.entity.ts`: Depreciation method entity
+        - `services/fixed-assets/src/depreciation/entities/depreciation-schedule.entity.ts`: Depreciation schedule entity
+        - `services/fixed-assets/src/depreciation/dto/calculate-depreciation.dto.ts`: Calculate depreciation DTO
+        - `services/fixed-assets/src/depreciation/depreciation.controller.ts`: Depreciation controller
+        - `services/fixed-assets/src/depreciation/depreciation.service.ts`: Depreciation service
+        - `services/fixed-assets/src/depreciation/depreciation.repository.ts`: Depreciation repository
+        - `packages/shared-types/src/models/depreciation.ts`: Shared depreciation types
+    - **Step Dependencies**: Step 43
+    - **User Instructions**: Run migration after schema update
+- [ ]  Step 45: Create Fixed Assets management UI
+    - **Task**: Implement the interface for managing fixed assets
+    - **Files**:
+        - `apps/web/src/app/dashboard/assets/page.tsx`: Assets list page
+        - `apps/web/src/app/dashboard/assets/[id]/page.tsx`: Asset detail page
+        - `apps/web/src/app/dashboard/assets/new/page.tsx`: New asset page
+        - `apps/web/src/components/assets/AssetForm.tsx`: Asset form component
+        - `apps/web/src/components/assets/AssetList.tsx`: Asset list component
+        - `apps/web/src/components/assets/AssetDetail.tsx`: Asset detail component
+        - `apps/web/src/components/assets/DepreciationSchedule.tsx`: Depreciation schedule component
+        - `packages/api-client/src/assets/assets-client.ts`: Assets API client
+    - **Step Dependencies**: Step 44, Step 13
+    - **User Instructions**: None
+
+## Core Financial Module - Banking & Reconciliation
+
+- [ ]  Step 46: Set up Banking microservice
+    - **Task**: Create the Banking microservice with basic structure
+    - **Files**:
+        - `services/banking/package.json`: Package configuration
+        - `services/banking/tsconfig.json`: TypeScript configuration
+        - `services/banking/src/main.ts`: Entry point
+        - `services/banking/src/app.module.ts`: Root module
+        - `services/banking/src/config/config.module.ts`: Configuration module
+        - `services/banking/src/prisma/prisma.module.ts`: Prisma module
+        - `services/banking/src/prisma/prisma.service.ts`: Prisma service
+        - `services/banking/Dockerfile`: Docker configuration
+        - `services/banking/.env.example`: Environment variables example
+    - **Step Dependencies**: Step 6
+    - **User Instructions**: Run `cd services/banking && npm install` to install dependencies
+- [ ]  Step 47: Implement Bank Account data model and API
+    - **Task**: Create the Bank Account module with CRUD operations
+    - **Files**:
+        - `prisma/schema.prisma`: Update with bank account models
+        - `services/banking/src/accounts/accounts.module.ts`: Bank accounts module
+        - `services/banking/src/accounts/entities/bank-account.entity.ts`: Bank account entity
+        - `services/banking/src/accounts/entities/bank.entity.ts`: Bank entity
+        - `services/banking/src/accounts/dto/create-bank-account.dto.ts`: Create bank account DTO
+        - `services/banking/src/accounts/dto/update-bank-account.dto.ts`: Update bank account DTO
+        - `services/banking/src/accounts/accounts.controller.ts`: Bank accounts controller
+        - `services/banking/src/accounts/accounts.service.ts`: Bank accounts service
+        - `services/banking/src/accounts/accounts.repository.ts`: Bank accounts repository
+        - `packages/shared-types/src/models/bank-account.ts`: Shared bank account types
+    - **Step Dependencies**: Step 46
+    - **User Instructions**: Run migration after schema update

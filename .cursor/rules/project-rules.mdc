@@ -1,0 +1,75 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Modern Full-Stack Accounting System - Project Rules
+
+## Development Guidelines
+
+### Code Standards
+
+- All code must follow established style guides:
+    - TypeScript/JavaScript: [Airbnb Style Guide](https://github.com/airbnb/javascript)
+    - CSS: BEM methodology for class naming
+    - Database: Use consistent naming conventions (snake_case for tables/columns)
+- All features must include automated tests (unit, integration, e2e as appropriate)
+- Code review required before merging to main branches
+- Minimum 80% test coverage required for core financial modules
+
+### Architecture Principles
+
+- Follow microservices architecture
+- Implement clean architecture patterns (dependency injection, interface segregation)
+- Use event-driven design for real-time updates and cross-module communication
+- Apply domain-driven design for complex business logic areas
+- Ensure all services are stateless where possible for horizontal scaling
+
+### Security Requirements
+
+- All API endpoints must implement proper authentication and authorization
+- Sensitive data must be encrypted at rest and in transit
+- Follow OWASP top 10 security practices
+- Implement rate limiting on public-facing endpoints
+- Regular security audits required
+- No sensitive data in logs or error messages
+
+### Performance Standards
+
+- API response time < 500ms for 95% of requests
+- Page load time < 2s for core pages
+- Batch operations must be designed to handle > 10,000 records
+- Financial calculations must maintain precision to 4 decimal places
+- System must support at least 1,000 concurrent users for enterprise deployments
+
+### Quality Assurance
+
+- Pre-commit hooks for linting and basic testing
+- CI pipeline must include:
+    - Automated testing
+    - Static code analysis
+    - Dependency vulnerability scanning
+    - Performance regression testing
+- Feature branches require successful QA review before merging
+
+### Documentation Requirements
+
+- API documentation using OpenAPI/Swagger
+- User documentation for each module
+- Technical documentation including:
+    - Architecture diagrams
+    - Database schemas
+    - Service interactions
+    - Deployment instructions
+- Code comments for complex business logic
+
+## Workflow & Collaboration
+
+### Git Workflow
+
+- GitHub Flow model:
+    - Feature branches from main
+    - Pull requests for review
+    - Merge to main for deployment
+- Semantic versioning for releases
+- Conventional commits format for commit messages
