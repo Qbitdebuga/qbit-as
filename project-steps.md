@@ -68,7 +68,7 @@
         - `services/auth/.env.example`: Environment variables example
     - **Step Dependencies**: Step 1
     - **User Instructions**: Run `cd services/auth && npm install` to install dependencies
-- [ ]  Step 6: Set up PostgreSQL database and Prisma ORM
+- [x]  Step 6: Set up PostgreSQL database and Prisma ORM
     - **Task**: Configure PostgreSQL database connection and Prisma ORM for data access
     - **Files**:
         - `prisma/schema.prisma`: Prisma schema with initial models
