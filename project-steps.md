@@ -137,7 +137,7 @@
         - `packages/api-client/src/utils/token-storage.ts`: Token storage utility
     - **Step Dependencies**: Step 10
     - **User Instructions**: None
-- [ ]  Step 12: Implement frontend authentication UI
+- [x]  Step 12: Implement frontend authentication UI
     - **Task**: Create login, register, and password reset pages with form validation
     - **Files**:
         - `apps/web/src/app/login/page.tsx`: Login page
@@ -150,7 +150,7 @@
         - `apps/web/src/hooks/useAuth.ts`: Auth hook
     - **Step Dependencies**: Step 11, Step 3
     - **User Instructions**: None
-- [ ]  Step 13: Set up protected routes and auth context
+- [x]  Step 13: Set up protected routes and auth context
     - **Task**: Implement authentication context and protected route components
     - **Files**:
         - `apps/web/src/contexts/auth-context.tsx`: Auth context
