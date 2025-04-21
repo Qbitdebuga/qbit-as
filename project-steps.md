@@ -10,7 +10,7 @@
         - `tsconfig.json`: Base TypeScript configuration
         - `README.md`: Project documentation
     - **User Instructions**: Run `yarn install` or `npm install` to install dependencies
-- [ ]  Step 2: Configure shared packages and types
+- [x]  Step 2: Configure shared packages and types
     - **Task**: Create shared packages for common types, UI components, and API client
     - **Files**:
         - `packages/shared-types/package.json`: Package configuration
@@ -25,7 +25,7 @@
         - `packages/api-client/src/index.ts`: Entry point
     - **Step Dependencies**: Step 1
     - **User Instructions**: None
-- [ ]  Step 3: Set up Next.js web application
+- [x]  Step 3: Set up Next.js web application
     - **Task**: Initialize the Next.js web application with Tailwind CSS and shadcn/ui
     - **Files**:
         - `apps/web/package.json`: Package configuration
@@ -39,7 +39,7 @@
         - `apps/web/public/favicon.ico`: Favicon
     - **Step Dependencies**: Step 1
     - **User Instructions**: Run `cd apps/web && npm install` to install Next.js dependencies
-- [ ]  Step 4: Set up NestJS API gateway service
+- [x]  Step 4: Set up NestJS API gateway service
     - **Task**: Create the API gateway service with NestJS
     - **Files**:
         - `services/api-gateway/package.json`: Package configuration
@@ -52,7 +52,7 @@
         - `services/api-gateway/.env.example`: Environment variables example
     - **Step Dependencies**: Step 1
     - **User Instructions**: Run `cd services/api-gateway && npm install` to install NestJS dependencies
-- [ ]  Step 5: Configure authentication service
+- [x]  Step 5: Configure authentication service
     - **Task**: Create the authentication service with user management and JWT authentication
     - **Files**:
         - `services/auth/package.json`: Package configuration
