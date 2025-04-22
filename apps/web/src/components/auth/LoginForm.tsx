@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthClient } from 'api-client';
+import { authClient } from '@/utils/auth';
 
 export function LoginForm() {
   const router = useRouter();
@@ -17,8 +17,7 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
-      // API base URL should come from environment variable in production
-      const authClient = new AuthClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001');
+      // Use shared authClient instance
       await authClient.login({ email, password });
       router.push('/dashboard');
     } catch (err) {

@@ -1,19 +1,15 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { User } from './user.entity';
-import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async findAll(skip = 0, take = 100): Promise<User[]> {
-    const users = await this.prisma.user.findMany({
-      skip,
-      take,
-    });
+    const users = await this.userRepository.findAll();
     return users.map((user: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
@@ -22,16 +18,12 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    const user = await this.userRepository.findByEmail(email);
     return user as User | null;
   }
 
   async findById(id: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
+    const user = await this.userRepository.findById(id);
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -47,15 +39,11 @@ export class UserService {
       throw new ConflictException(`User with email ${createUserDto.email} already exists`);
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-
-    const user = await this.prisma.user.create({
-      data: {
-        email: createUserDto.email,
-        name: createUserDto.name,
-        password: hashedPassword,
-        roles: createUserDto.roles || ['user'],
-      } as any,
+    const user = await this.userRepository.create({
+      email: createUserDto.email,
+      name: createUserDto.name,
+      password: createUserDto.password,
+      roles: createUserDto.roles || ['user'],
     });
 
     // Remove password from returned object
@@ -68,23 +56,11 @@ export class UserService {
     // Check if user exists
     await this.findById(id);
 
-    // Check if email is being changed and if it's already in use
-    if (updateUserDto.email) {
-      const userWithEmail = await this.findByEmail(updateUserDto.email);
-      if (userWithEmail && userWithEmail.id !== id) {
-        throw new ConflictException(`Email ${updateUserDto.email} is already in use`);
-      }
-    }
-
-    // Hash password if it's being updated
-    const data: any = { ...updateUserDto };
-    if (updateUserDto.password) {
-      data.password = await bcrypt.hash(updateUserDto.password, 10);
-    }
-
-    const user = await this.prisma.user.update({
-      where: { id },
-      data,
+    const user = await this.userRepository.update(id, {
+      email: updateUserDto.email,
+      name: updateUserDto.name,
+      password: updateUserDto.password,
+      roles: updateUserDto.roles,
     });
 
     // Remove password from returned object
@@ -96,9 +72,6 @@ export class UserService {
   async remove(id: string): Promise<void> {
     // Check if user exists
     await this.findById(id);
-
-    await this.prisma.user.delete({
-      where: { id },
-    });
+    await this.userRepository.delete(id);
   }
 } 

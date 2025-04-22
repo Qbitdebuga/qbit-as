@@ -2,18 +2,16 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthClient, TokenStorage, User } from 'api-client';
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const authClient = new AuthClient(apiUrl);
+import { User, AuthResponse } from 'api-client';
+import { authClient } from '@/utils/auth';
 
 interface UseAuthReturn {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthResponse | void>;
   logout: () => void;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<AuthResponse | void>;
 }
 
 export function useAuth(): UseAuthReturn {
@@ -41,7 +39,7 @@ export function useAuth(): UseAuthReturn {
     checkAuth();
   }, [checkAuth]);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<AuthResponse | void> => {
     setIsLoading(true);
     try {
       const response = await authClient.login({ email, password });
@@ -58,7 +56,7 @@ export function useAuth(): UseAuthReturn {
     router.push('/login');
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (name: string, email: string, password: string): Promise<AuthResponse | void> => {
     setIsLoading(true);
     try {
       await authClient.register({ name, email, password });

@@ -1,19 +1,30 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import helmet from 'helmet';
+import * as helmet from 'helmet';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  
-  // Enable CORS
-  app.enableCors();
-  
-  // Use Helmet for security headers
+  // Enable more detailed logs
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+    abortOnError: false,
+  });
+
+  // Get config service
+  const configService = app.get(ConfigService);
+
+  // Enable security headers
   app.use(helmet());
-  
-  // Use validation pipe
+
+  // Enable CORS for frontend
+  app.enableCors({
+    origin: configService.get<string>('CORS_ORIGIN') || 'http://localhost:3000',
+    credentials: true,
+  });
+
+  // Enable validation pipes
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -21,21 +32,21 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  
-  // Setup Swagger documentation
+
+  // Set up Swagger documentation
   const config = new DocumentBuilder()
-    .setTitle('Qbit Auth Service')
-    .setDescription('Authentication and user management service')
+    .setTitle('Qbit Auth API')
+    .setDescription('API documentation for Qbit authentication service')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
-  
+
   // Start the server
-  const port = process.env.PORT || 3002;
+  const port = configService.get<number>('PORT') || 3002;
   await app.listen(port);
-  console.log(`Authentication service is running on: http://localhost:${port}`);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 
 bootstrap(); 

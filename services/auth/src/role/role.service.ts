@@ -1,25 +1,20 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { Role } from './role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { RoleRepository } from './role.repository';
 
 @Injectable()
 export class RoleService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly roleRepository: RoleRepository) {}
 
   async findAll(skip = 0, take = 100): Promise<Role[]> {
-    const roles = await this.prisma.role.findMany({
-      skip,
-      take,
-    });
+    const roles = await this.roleRepository.findAll(skip, take);
     return roles.map((role: any) => new Role(role));
   }
 
   async findOne(id: string): Promise<Role> {
-    const role = await this.prisma.role.findUnique({
-      where: { id },
-    });
+    const role = await this.roleRepository.findById(id);
 
     if (!role) {
       throw new NotFoundException(`Role with ID ${id} not found`);
@@ -29,9 +24,7 @@ export class RoleService {
   }
 
   async findByName(name: string): Promise<Role | null> {
-    const role = await this.prisma.role.findUnique({
-      where: { name },
-    });
+    const role = await this.roleRepository.findByName(name);
 
     if (!role) {
       return null;
@@ -47,12 +40,10 @@ export class RoleService {
       throw new ConflictException(`Role with name ${createRoleDto.name} already exists`);
     }
 
-    const role = await this.prisma.role.create({
-      data: {
-        name: createRoleDto.name,
-        description: createRoleDto.description || '',
-        permissions: createRoleDto.permissions || [],
-      },
+    const role = await this.roleRepository.create({
+      name: createRoleDto.name,
+      description: createRoleDto.description || '',
+      permissions: createRoleDto.permissions || [],
     });
 
     return new Role(role);
@@ -62,17 +53,10 @@ export class RoleService {
     // Check if role exists
     await this.findOne(id);
 
-    // Check if name is being changed and if it's already in use
-    if (updateRoleDto.name) {
-      const roleWithName = await this.findByName(updateRoleDto.name);
-      if (roleWithName && roleWithName.id !== id) {
-        throw new ConflictException(`Role with name ${updateRoleDto.name} already exists`);
-      }
-    }
-
-    const role = await this.prisma.role.update({
-      where: { id },
-      data: updateRoleDto,
+    const role = await this.roleRepository.update(id, {
+      name: updateRoleDto.name,
+      description: updateRoleDto.description,
+      permissions: updateRoleDto.permissions,
     });
 
     return new Role(role);
@@ -82,8 +66,6 @@ export class RoleService {
     // Check if role exists
     await this.findOne(id);
 
-    await this.prisma.role.delete({
-      where: { id },
-    });
+    await this.roleRepository.delete(id);
   }
 } 

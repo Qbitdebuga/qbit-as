@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -7,53 +7,40 @@ async function main() {
   console.log('Seeding database...');
 
   // First, delete existing roles to avoid duplicates
-  await prisma.role.deleteMany({
-    where: {
-      name: {
-        in: ['admin', 'user']
-      }
-    }
-  });
+  console.log('Deleting existing roles...');
+  await prisma.$executeRaw`TRUNCATE TABLE "roles" CASCADE`;
 
   // Create basic roles
-  const adminRole = await prisma.role.create({
-    data: {
-      name: 'admin',
-      description: 'Administrator with full access',
-      permissions: ['users:read', 'users:write', 'roles:read', 'roles:write'],
-    } as Prisma.RoleCreateInput,
-  });
+  console.log('Creating roles...');
+  const adminRole = await prisma.$executeRaw`
+    INSERT INTO "roles" ("id", "name", "description", "permissions", "created_at", "updated_at")
+    VALUES (gen_random_uuid(), 'admin', 'Administrator with full access', ARRAY['users:read', 'users:write', 'roles:read', 'roles:write'], NOW(), NOW())
+    RETURNING *
+  `;
 
-  const userRole = await prisma.role.create({
-    data: {
-      name: 'user',
-      description: 'Standard user',
-      permissions: ['profile:read', 'profile:write'],
-    } as Prisma.RoleCreateInput,
-  });
+  const userRole = await prisma.$executeRaw`
+    INSERT INTO "roles" ("id", "name", "description", "permissions", "created_at", "updated_at")
+    VALUES (gen_random_uuid(), 'user', 'Standard user', ARRAY['profile:read', 'profile:write'], NOW(), NOW())
+    RETURNING *
+  `;
 
-  console.log('Created roles:', { adminRole, userRole });
+  console.log('Created roles');
 
   // Delete existing users to avoid duplicates
-  await prisma.user.deleteMany({
-    where: {
-      email: 'admin@qbit.com'
-    }
-  });
+  console.log('Deleting existing users...');
+  await prisma.$executeRaw`TRUNCATE TABLE "users" CASCADE`;
 
   // Create admin user
   const hashedPassword = await bcrypt.hash('admin123', 10);
   
-  const adminUser = await prisma.user.create({
-    data: {
-      email: 'admin@qbit.com',
-      name: 'Admin User',
-      password: hashedPassword,
-      roles: ['admin', 'user'],
-    } as Prisma.UserCreateInput,
-  });
+  console.log('Creating admin user...');
+  const adminUser = await prisma.$executeRaw`
+    INSERT INTO "users" ("id", "email", "name", "password", "roles", "created_at", "updated_at")
+    VALUES (gen_random_uuid(), 'admin@qbit.com', 'Admin User', ${hashedPassword}, ARRAY['admin', 'user'], NOW(), NOW())
+    RETURNING *
+  `;
 
-  console.log('Created admin user:', adminUser);
+  console.log('Created admin user');
 
   console.log('Seeding completed.');
 }

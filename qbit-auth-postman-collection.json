@@ -1,0 +1,189 @@
+{
+  "info": {
+    "name": "Qbit Auth Service",
+    "description": "API endpoints for Qbit Auth Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@qbit.com\",\n  \"password\": \"admin123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3002/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3002",
+          "path": ["auth", "login"]
+        },
+        "description": "Login with email and password"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3002/auth/profile",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3002",
+          "path": ["auth", "profile"]
+        },
+        "description": "Get user profile (requires authentication)"
+      },
+      "response": []
+    },
+    {
+      "name": "Refresh Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3002/auth/refresh",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3002",
+          "path": ["auth", "refresh"]
+        },
+        "description": "Refresh access token using refresh token"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3002/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3002",
+          "path": ["users"]
+        },
+        "description": "Get all users (requires admin role)"
+      },
+      "response": []
+    },
+    {
+      "name": "Register New User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"name\": \"New User\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3002/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3002",
+          "path": ["users"]
+        },
+        "description": "Register a new user"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Roles",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3002/roles",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3002",
+          "path": ["roles"]
+        },
+        "description": "Get all roles (requires admin role)"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-save tokens from login response",
+          "if (pm.response.code === 200 && pm.request.url.toString().includes('/auth/login')) {",
+          "    var jsonData = pm.response.json();",
+          "    if (jsonData.accessToken) {",
+          "        pm.environment.set('accessToken', jsonData.accessToken);",
+          "    }",
+          "    if (jsonData.refreshToken) {",
+          "        pm.environment.set('refreshToken', jsonData.refreshToken);",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+} 

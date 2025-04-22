@@ -5,6 +5,7 @@ alwaysApply: true
 ---
 - We are building Qbit Accounting system
 - Find the steps in [project-steps.md](mdc:project-steps.md)
+- conceder the [microservices-integration-plan.md](mdc:microservices-integration-plan.md) is our Approach in connecting microserices with multiple databases
 - Work on whatever step(s) I tell you to work on and only work on those steps at once
 - Once those steps are done, mark as completed
 - Then sotp, I will give you further instructions
