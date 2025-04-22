@@ -3,7 +3,8 @@ import {
   LoginRequest, 
   RefreshTokenRequest, 
   TokenResponse, 
-  User 
+  User,
+  UserRegistrationRequest
 } from './types';
 import { TokenStorage } from '../utils/token-storage';
 
@@ -27,7 +28,8 @@ export class AuthClient {
     });
 
     if (!response.ok) {
-      throw new Error('Login failed');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Login failed');
     }
 
     const data = await response.json();
@@ -122,7 +124,7 @@ export class AuthClient {
   /**
    * Register new user
    */
-  async register(userData: { email: string; name: string; password: string }): Promise<User> {
+  async register(userData: UserRegistrationRequest): Promise<User> {
     const response = await fetch(`${this.apiUrl}/users`, {
       method: 'POST',
       headers: {
@@ -132,7 +134,8 @@ export class AuthClient {
     });
 
     if (!response.ok) {
-      throw new Error('Registration failed');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Registration failed');
     }
 
     return response.json();
@@ -143,5 +146,73 @@ export class AuthClient {
    */
   isAuthenticated(): boolean {
     return TokenStorage.isAuthenticated();
+  }
+
+  /**
+   * Get all users (admin only)
+   */
+  async getUsers(): Promise<User[]> {
+    const accessToken = TokenStorage.getAccessToken();
+    
+    if (!accessToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await fetch(`${this.apiUrl}/users`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Try to refresh the token
+        try {
+          await this.refreshToken();
+          // Retry with the new token
+          return this.getUsers();
+        } catch (error) {
+          this.logout();
+          throw new Error('Authentication failed');
+        }
+      }
+      throw new Error('Failed to get users list');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Get a specific user by ID (admin only)
+   */
+  async getUserById(userId: string): Promise<User> {
+    const accessToken = TokenStorage.getAccessToken();
+    
+    if (!accessToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await fetch(`${this.apiUrl}/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        try {
+          await this.refreshToken();
+          return this.getUserById(userId);
+        } catch (error) {
+          this.logout();
+          throw new Error('Authentication failed');
+        }
+      }
+      throw new Error('Failed to get user');
+    }
+
+    return response.json();
   }
 } 

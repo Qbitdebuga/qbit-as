@@ -17,12 +17,18 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
+      console.log("Attempting login with auth client URL:", process.env.NEXT_PUBLIC_AUTH_URL);
       // Use shared authClient instance
       await authClient.login({ email, password });
       router.push('/dashboard');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Login error:', err);
-      setError('Invalid email or password');
+      // Display more detailed error message
+      if (err.message === 'Failed to fetch') {
+        setError('Connection error: Cannot reach authentication service. Please try again later or contact support.');
+      } else {
+        setError(err.message || 'Invalid email or password');
+      }
     } finally {
       setIsLoading(false);
     }

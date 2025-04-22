@@ -1,26 +1,26 @@
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  roles: string[];
-}
+import { 
+  UserDto, 
+  CreateUserDto, 
+  LoginDto as LoginDtoShared,
+  TokenResponseDto,
+  RefreshTokenDto,
+  ServiceTokenRequestDto,
+  ServiceTokenResponseDto,
+  ValidateTokenResponseDto
+} from '@qbit/shared-types';
 
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
+// Re-export types for backward compatibility
+export type User = UserDto;
+export type LoginRequest = LoginDtoShared;
+export type RefreshTokenRequest = RefreshTokenDto;
+export type UserRegistrationRequest = CreateUserDto;
 
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
+export interface AuthResponse extends TokenResponseDto {
   user: User;
 }
 
 export interface TokenResponse {
   accessToken: string;
   refreshToken: string;
+  expiresIn: number;
 } 

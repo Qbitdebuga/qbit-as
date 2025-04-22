@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
-    "shared-types": "*"
+    "@qbit/shared-types": "*"
   },
   "devDependencies": {
     "eslint": "^8.48.0",

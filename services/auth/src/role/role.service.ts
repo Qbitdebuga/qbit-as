@@ -3,10 +3,14 @@ import { Role } from './role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleRepository } from './role.repository';
+import { RolePublisher } from '../events/publishers/role-publisher';
 
 @Injectable()
 export class RoleService {
-  constructor(private readonly roleRepository: RoleRepository) {}
+  constructor(
+    private readonly roleRepository: RoleRepository,
+    private readonly rolePublisher: RolePublisher
+  ) {}
 
   async findAll(skip = 0, take = 100): Promise<Role[]> {
     const roles = await this.roleRepository.findAll(skip, take);
@@ -46,12 +50,15 @@ export class RoleService {
       permissions: createRoleDto.permissions || [],
     });
 
+    // Publish role created event
+    await this.rolePublisher.publishRoleCreated(role);
+
     return new Role(role);
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
-    // Check if role exists
-    await this.findOne(id);
+    // Check if role exists and get previous data
+    const previousRole = await this.findOne(id);
 
     const role = await this.roleRepository.update(id, {
       name: updateRoleDto.name,
@@ -59,13 +66,20 @@ export class RoleService {
       permissions: updateRoleDto.permissions,
     });
 
+    // Publish role updated event
+    await this.rolePublisher.publishRoleUpdated(role, previousRole);
+
     return new Role(role);
   }
 
   async remove(id: string): Promise<void> {
-    // Check if role exists
-    await this.findOne(id);
-
+    // Check if role exists and get role data before deletion
+    const role = await this.findOne(id);
+    
+    // Delete the role
     await this.roleRepository.delete(id);
+    
+    // Publish role deleted event
+    await this.rolePublisher.publishRoleDeleted(id, role);
   }
 } 

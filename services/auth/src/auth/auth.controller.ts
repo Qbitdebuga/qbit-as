@@ -1,15 +1,22 @@
-import { Controller, Post, Get, Body, HttpCode, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ServiceTokenRequestDto } from './dto/service-token-request.dto';
+import { ServiceTokenService } from './services/service-token.service';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly serviceTokenService: ServiceTokenService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -40,5 +47,34 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getProfile(@Request() req: { user: any }) {
     return req.user;
+  }
+
+  @Post('service-token')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Request a service-to-service authentication token' })
+  @ApiBody({ type: ServiceTokenRequestDto })
+  @ApiResponse({ status: 200, description: 'Service token generated successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid API key' })
+  async getServiceToken(@Body() serviceTokenRequestDto: ServiceTokenRequestDto) {
+    // Validate API key using the environment variables
+    // Convert service name to uppercase and replace hyphens with underscores for env var naming
+    const serviceEnvName = serviceTokenRequestDto.serviceName
+      .toUpperCase()
+      .replace(/-/g, '_');
+    
+    const validApiKey = this.configService.get<string>(`SERVICE_API_KEY_${serviceEnvName}`);
+    
+    if (!validApiKey || validApiKey !== serviceTokenRequestDto.apiKey) {
+      throw new UnauthorizedException('Invalid API key for service');
+    }
+    
+    // Generate service token
+    const token = await this.serviceTokenService.generateServiceToken(
+      serviceTokenRequestDto.serviceName,
+      serviceTokenRequestDto.scope,
+      serviceTokenRequestDto.expiresIn,
+    );
+    
+    return { token };
   }
 } 

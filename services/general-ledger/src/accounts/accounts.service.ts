@@ -1,12 +1,28 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { AccountsRepository } from './accounts.repository';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account, AccountWithHierarchy } from './entities/account.entity';
+import { PrismaService } from '../prisma/prisma.service';
+import { AuthService } from '../auth/auth.service';
+import { ConfigService } from '@nestjs/config';
+import { AccountPublisher } from '../events/publishers/account-publisher';
+import axios from 'axios';
 
 @Injectable()
 export class AccountsService {
-  constructor(private readonly accountsRepository: AccountsRepository) {}
+  private readonly logger = new Logger(AccountsService.name);
+  private readonly reportingServiceUrl: string;
+
+  constructor(
+    private readonly accountsRepository: AccountsRepository,
+    private readonly prisma: PrismaService,
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+    private readonly accountPublisher: AccountPublisher,
+  ) {
+    this.reportingServiceUrl = this.configService.get<string>('REPORTING_SERVICE_URL', 'http://localhost:3004');
+  }
 
   async create(createAccountDto: CreateAccountDto): Promise<Account> {
     // Check if account with the same code already exists
@@ -23,11 +39,20 @@ export class AccountsService {
       }
     }
 
-    return this.accountsRepository.create(createAccountDto);
+    const createdAccount = await this.accountsRepository.create(createAccountDto);
+    
+    // Publish account.created event
+    await this.accountPublisher.publishAccountCreated(createdAccount);
+    
+    return createdAccount;
   }
 
   async findAll(): Promise<Account[]> {
     return this.accountsRepository.findAll();
+  }
+
+  async findByIds(ids: string[]): Promise<Account[]> {
+    return this.accountsRepository.findByIds(ids);
   }
 
   async findAllActive(): Promise<Account[]> {
@@ -81,7 +106,12 @@ export class AccountsService {
       // TODO: Add more comprehensive circular reference check for deeper hierarchies
     }
 
-    return this.accountsRepository.update(id, updateAccountDto);
+    const updatedAccount = await this.accountsRepository.update(id, updateAccountDto);
+    
+    // Publish account.updated event
+    await this.accountPublisher.publishAccountUpdated(updatedAccount);
+    
+    return updatedAccount;
   }
 
   async remove(id: string): Promise<Account> {
@@ -97,6 +127,79 @@ export class AccountsService {
     // Check if account is used in journal entries
     // This would require a more complex query to check for references
 
-    return this.accountsRepository.remove(id);
+    const deletedAccount = await this.accountsRepository.remove(id);
+    
+    // Publish account.deleted event
+    await this.accountPublisher.publishAccountDeleted(id);
+    
+    return deletedAccount;
+  }
+
+  async getAccounts() {
+    return this.prisma.account.findMany();
+  }
+
+  async getAccountById(id: string) {
+    return this.prisma.account.findUnique({
+      where: { id },
+    });
+  }
+
+  async createAccount(data: any) {
+    const account = await this.prisma.account.create({
+      data,
+    });
+    
+    // Publish account.created event
+    await this.accountPublisher.publishAccountCreated(account);
+    
+    return account;
+  }
+
+  async updateAccount(id: string, data: any) {
+    const account = await this.prisma.account.update({
+      where: { id },
+      data,
+    });
+    
+    // Publish account.updated event
+    await this.accountPublisher.publishAccountUpdated(account);
+    
+    return account;
+  }
+
+  async deleteAccount(id: string) {
+    const account = await this.prisma.account.delete({
+      where: { id },
+    });
+    
+    // Publish account.deleted event
+    await this.accountPublisher.publishAccountDeleted(id);
+    
+    return account;
+  }
+
+  /**
+   * Example of how to call another service using service-to-service authentication
+   */
+  async generateAccountReport(accountId: string) {
+    try {
+      // Get auth headers with appropriate scopes
+      const headers = await this.authService.getAuthHeaders({
+        scopes: ['reporting:read', 'gl:read']
+      });
+
+      // Make authenticated request to the reporting service
+      const response = await axios.post(
+        `${this.reportingServiceUrl}/reports/accounts/${accountId}`,
+        { format: 'pdf' },
+        { headers }
+      );
+
+      return response.data;
+    } catch (error: any) {
+      this.logger.error(`Failed to generate account report: ${error.message}`, error.stack);
+      throw new Error(`Failed to generate account report: ${error.message}`);
+    }
   }
 } 

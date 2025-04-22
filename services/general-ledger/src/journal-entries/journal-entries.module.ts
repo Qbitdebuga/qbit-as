@@ -3,9 +3,10 @@ import { JournalEntriesService } from './journal-entries.service';
 import { JournalEntriesController } from './journal-entries.controller';
 import { JournalEntriesRepository } from './journal-entries.repository';
 import { PrismaModule } from '../prisma/prisma.module';
+import { EventsModule } from '../events/events.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, EventsModule],
   controllers: [JournalEntriesController],
   providers: [JournalEntriesService, JournalEntriesRepository],
   exports: [JournalEntriesService]

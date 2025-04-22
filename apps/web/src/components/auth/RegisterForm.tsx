@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthClient } from 'api-client';
+import { authClient } from '@/utils/auth';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -32,8 +32,8 @@ export function RegisterForm() {
     setIsLoading(true);
 
     try {
-      // API base URL should come from environment variable in production
-      const authClient = new AuthClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001');
+      console.log("Attempting registration with auth client URL:", process.env.NEXT_PUBLIC_AUTH_URL);
+      // Use the shared authClient instance
       await authClient.register({ email, name, password });
       
       // Auto-login after registration
@@ -43,7 +43,12 @@ export function RegisterForm() {
       router.push('/dashboard');
     } catch (err: any) {
       console.error('Registration error:', err);
-      setError(err.message || 'Registration failed. Please try again.');
+      // Display more detailed error message
+      if (err.message === 'Failed to fetch') {
+        setError('Connection error: Cannot reach authentication service. Please try again later or contact support.');
+      } else {
+        setError(err.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }

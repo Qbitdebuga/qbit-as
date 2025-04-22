@@ -3,10 +3,14 @@ import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
+import { UserPublisher } from '../events/publishers/user-publisher';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly userPublisher: UserPublisher,
+  ) {}
 
   async findAll(skip = 0, take = 100): Promise<User[]> {
     const users = await this.userRepository.findAll();
@@ -46,6 +50,9 @@ export class UserService {
       roles: createUserDto.roles || ['user'],
     });
 
+    // Publish user created event
+    await this.userPublisher.publishUserCreated(user);
+
     // Remove password from returned object
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
@@ -53,8 +60,8 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    // Check if user exists
-    await this.findById(id);
+    // Check if user exists and get previous data
+    const previousUser = await this.findById(id);
 
     const user = await this.userRepository.update(id, {
       email: updateUserDto.email,
@@ -63,6 +70,9 @@ export class UserService {
       roles: updateUserDto.roles,
     });
 
+    // Publish user updated event
+    await this.userPublisher.publishUserUpdated(user, previousUser);
+
     // Remove password from returned object
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
@@ -70,8 +80,13 @@ export class UserService {
   }
 
   async remove(id: string): Promise<void> {
-    // Check if user exists
-    await this.findById(id);
+    // Check if user exists and get user data before deletion
+    const user = await this.findById(id);
+    
+    // Delete the user
     await this.userRepository.delete(id);
+    
+    // Publish user deleted event
+    await this.userPublisher.publishUserDeleted(id, user);
   }
 } 

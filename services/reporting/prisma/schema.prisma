@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ReportType {
+  FINANCIAL_STATEMENT
+  OPERATIONAL
+  CUSTOM
+}
+
+// Report models
+model Report {
+  id            String       @id @default(uuid())
+  name          String
+  description   String?
+  type          ReportType
+  parameters    Json?        // Store report parameters in JSON
+  ownerId       String?      @map("owner_id") // External user ID from Auth service
+  isPublic      Boolean      @default(false) @map("is_public")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  
+  snapshots     ReportSnapshot[]
+
+  @@map("reports")
+}
+
+model ReportSnapshot {
+  id            String       @id @default(uuid())
+  reportId      String       @map("report_id")
+  report        Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  name          String
+  data          Json         // Store report data in JSON
+  parameters    Json?        // Store parameters used for this snapshot
+  generatedBy   String?      @map("generated_by") // External user ID from Auth service
+  createdAt     DateTime     @default(now()) @map("created_at")
+
+  @@map("report_snapshots")
+}
+
+// Consolidated data models for reporting
+model ConsolidatedJournalEntry {
+  id            String       @id @default(uuid())
+  sourceId      String       @map("source_id") // Original ID from the source service
+  entryNumber   String       @unique @map("entry_number")
+  date          DateTime
+  description   String?
+  status        String
+  amount        Decimal      @db.Decimal(19, 4)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  
+  lines         ConsolidatedJournalEntryLine[]
+
+  @@map("consolidated_journal_entries")
+}
+
+model ConsolidatedJournalEntryLine {
+  id            String       @id @default(uuid())
+  journalEntryId String      @map("journal_entry_id")
+  journalEntry  ConsolidatedJournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  accountId     String       @map("account_id") // Reference to the original account ID
+  accountCode   String       @map("account_code")
+  accountName   String       @map("account_name")
+  description   String?
+  debit         Decimal?     @db.Decimal(19, 4)
+  credit        Decimal?     @db.Decimal(19, 4)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  @@map("consolidated_journal_entry_lines")
+}
+
+// User reference model for storing local copies of auth service users
+model UserReference {
+  id            String       @id @default(uuid())
+  externalId    String       @unique @map("external_id") // Id from the Auth service
+  email         String       @unique
+  name          String?
+  isAdmin       Boolean      @default(false) @map("is_admin")
+  metadata      Json?        // Store roles and other user metadata
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  @@map("user_references")
+} 

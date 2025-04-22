@@ -83,6 +83,57 @@ model JournalEntry {
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
   lines         JournalEntryLine[]
+  batchItem     BatchItem?
 
   @@map("journal_entries")
+}
+
+// Batch processing models
+model Batch {
+  id              String       @id @default(uuid())
+  batchNumber     String       @unique @map("batch_number")
+  description     String?
+  status          String       @default("DRAFT") // DRAFT, PENDING, PROCESSING, COMPLETED, FAILED
+  type            String       // JOURNAL_ENTRY, ACCOUNT, etc.
+  itemCount       Int          @default(0) @map("item_count")
+  processedCount  Int          @default(0) @map("processed_count")
+  failedCount     Int          @default(0) @map("failed_count")
+  startedAt       DateTime?    @map("started_at")
+  completedAt     DateTime?    @map("completed_at")
+  createdBy       String?      @map("created_by")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  items           BatchItem[]
+
+  @@map("batches")
+}
+
+model BatchItem {
+  id              String       @id @default(uuid())
+  batchId         String       @map("batch_id")
+  batch           Batch        @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  journalEntryId  String?      @unique @map("journal_entry_id")
+  journalEntry    JournalEntry? @relation(fields: [journalEntryId], references: [id], onDelete: SetNull)
+  entryData       Json         @map("entry_data")
+  status          String       @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  errorMessage    String?      @map("error_message")
+  processedAt     DateTime?    @map("processed_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  @@map("batch_items")
+}
+
+// User reference model for storing local copies of auth service users
+model UserReference {
+  id            String       @id @default(uuid())
+  externalId    String       @unique @map("external_id") // Id from the Auth service
+  email         String       @unique
+  name          String?
+  isAdmin       Boolean      @default(false) @map("is_admin")
+  metadata      Json?        // Store roles and other user metadata
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  @@map("user_references")
 } 

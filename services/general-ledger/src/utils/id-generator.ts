@@ -1,5 +1,6 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { format } from 'date-fns';
+import { Prisma } from '@prisma/client';
 
 /**
  * Generates a sequential entry number for journal entries
@@ -7,31 +8,54 @@ import { format } from 'date-fns';
  */
 export async function generateEntryNumber(prisma: PrismaService): Promise<string> {
   const today = new Date();
-  const yearMonth = format(today, 'yyyyMM');
-  const prefix = `JE-${yearMonth}-`;
+  const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
   
-  // Get the latest entry with the same prefix
-  const latestEntry = await prisma.journalEntry.findFirst({
+  // Get the highest entry number for today
+  const highestEntry = await prisma.journalEntry.findFirst({
     where: {
       entryNumber: {
-        startsWith: prefix
-      }
+        startsWith: `JE-${dateStr}`,
+      },
     },
     orderBy: {
-      entryNumber: 'desc'
-    }
+      entryNumber: 'desc',
+    },
   });
-
-  let sequence = 1;
   
-  if (latestEntry) {
-    // Extract the sequence number from the latest entry number
-    const latestSequence = parseInt(latestEntry.entryNumber.split('-')[2]);
-    sequence = latestSequence + 1;
+  let sequence = 1;
+  if (highestEntry) {
+    const currentSequence = parseInt(highestEntry.entryNumber.split('-')[2]);
+    sequence = currentSequence + 1;
   }
   
-  // Pad the sequence number with leading zeros
-  const paddedSequence = sequence.toString().padStart(4, '0');
+  return `JE-${dateStr}-${sequence.toString().padStart(4, '0')}`;
+}
+
+/**
+ * Generate a unique batch number for batches
+ * Format: BAT-YYYYMMDD-XXXX (where XXXX is a sequential number)
+ */
+export async function generateBatchNumber(prisma: PrismaService): Promise<string> {
+  const today = new Date();
+  const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
   
-  return `${prefix}${paddedSequence}`;
+  // Get the highest batch number for today
+  const highestBatch = await prisma.batch.findFirst({
+    where: {
+      batchNumber: {
+        startsWith: `BAT-${dateStr}`,
+      },
+    },
+    orderBy: {
+      batchNumber: 'desc',
+    },
+  });
+  
+  let sequence = 1;
+  if (highestBatch) {
+    const currentSequence = parseInt(highestBatch.batchNumber.split('-')[2]);
+    sequence = currentSequence + 1;
+  }
+  
+  return `BAT-${dateStr}-${sequence.toString().padStart(4, '0')}`;
 } 

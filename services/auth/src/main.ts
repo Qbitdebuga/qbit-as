@@ -1,16 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import * as helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  // Enable more detailed logs
+  // Create the application instance
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
-    abortOnError: false,
+    // Will be replaced with Winston logger
+    bufferLogs: true,
   });
+
+  // Use Winston for application logging
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   // Get config service
   const configService = app.get(ConfigService);
@@ -46,7 +50,7 @@ async function bootstrap() {
   // Start the server
   const port = configService.get<number>('PORT') || 3002;
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
+  app.get(WINSTON_MODULE_NEST_PROVIDER).log(`Application is running on: http://localhost:${port}`);
 }
 
 bootstrap(); 

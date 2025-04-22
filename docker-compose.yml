@@ -49,6 +49,44 @@ services:
       timeout: 5s
       retries: 5
   
+  # RabbitMQ for message broker and event-driven communication
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: qbit_rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=qbit
+      - RABBITMQ_DEFAULT_PASS=qbit_password
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI port
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - qbit_network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  # Consul for service discovery and configuration
+  consul:
+    image: consul:1.15
+    container_name: qbit_consul
+    ports:
+      - "8500:8500"   # HTTP UI
+      - "8600:8600/udp" # DNS Interface
+    volumes:
+      - consul_data:/consul/data
+    command: agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
+    networks:
+      - qbit_network
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
   # API Gateway Service
   api-gateway:
     build:
@@ -59,6 +97,9 @@ services:
       NODE_ENV: development
       PORT: 3000
       AUTH_SERVICE_URL: http://auth:3002
+      RABBITMQ_URL: amqp://qbit:qbit_password@rabbitmq:5672
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
     ports:
       - "3000:3000"
     volumes:
@@ -66,6 +107,8 @@ services:
       - /app/node_modules
     depends_on:
       - auth
+      - rabbitmq
+      - consul
     networks:
       - qbit_network
     command: npm run dev
@@ -81,6 +124,10 @@ services:
       PORT: 3002
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/qbit_auth?schema=public
       JWT_SECRET: dev-jwt-secret-key-change-in-production
+      RABBITMQ_URL: amqp://qbit:qbit_password@rabbitmq:5672
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      SERVICE_NAME: auth-service
     ports:
       - "3002:3002"
     volumes:
@@ -89,9 +136,51 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
     networks:
       - qbit_network
     command: npm run dev
+  
+  # Reporting Service
+  reporting:
+    build:
+      context: ./services/reporting
+      dockerfile: Dockerfile
+    container_name: qbit_reporting
+    environment:
+      NODE_ENV: development
+      PORT: 3004
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/qbit_reporting?schema=public
+      JWT_SECRET: dev-jwt-secret-key-change-in-production
+      SERVICE_JWT_SECRET: dev-service-jwt-secret-key-change-in-production
+      RABBITMQ_URL: amqp://qbit:qbit_password@rabbitmq:5672
+      RABBITMQ_QUEUE_NAME: reporting_queue
+      RABBITMQ_EXCHANGE: reporting_exchange
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      SERVICE_NAME: reporting-service
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./services/reporting:/app
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    networks:
+      - qbit_network
+    command: sh -c "mkdir -p /app/scripts && cp -n /scripts/* /app/scripts/ 2>/dev/null || true && chmod +x /app/scripts/*.sh && npm run start:dev"
   
   # Web App
   web:
@@ -114,9 +203,70 @@ services:
       - qbit_network
     command: npm run dev
 
+  # Elasticsearch - The core search and analytics engine
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    container_name: qbit_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200" 
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - qbit_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Logstash - The data processing component of the ELK stack
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    container_name: qbit_logstash
+    environment:
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - XPACK_MONITORING_ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    volumes:
+      - ./config/logstash/pipeline:/usr/share/logstash/pipeline
+    depends_on:
+      - elasticsearch
+    networks:
+      - qbit_network
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+
+  # Kibana - The visualization tool for Elasticsearch data
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    container_name: qbit_kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - qbit_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 networks:
   qbit_network:
     driver: bridge
 
 volumes:
-  postgres_data: 
+  postgres_data:
+  rabbitmq_data:
+  consul_data:
+  elasticsearch_data: 

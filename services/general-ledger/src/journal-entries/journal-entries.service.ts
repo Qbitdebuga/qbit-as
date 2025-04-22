@@ -1,11 +1,18 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { JournalEntriesRepository } from './journal-entries.repository';
 import { CreateJournalEntryDto } from './dto/create-journal-entry.dto';
 import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto';
+import { JournalEntryPublisher } from '../events/publishers/journal-entry-publisher';
+import { JournalEntryLine } from '../events/models/journal-entry.model';
 
 @Injectable()
 export class JournalEntriesService {
-  constructor(private readonly repository: JournalEntriesRepository) {}
+  private readonly logger = new Logger(JournalEntriesService.name);
+
+  constructor(
+    private readonly repository: JournalEntriesRepository,
+    private readonly journalEntryPublisher: JournalEntryPublisher
+  ) {}
 
   async findAll() {
     return this.repository.findAll();
@@ -25,7 +32,35 @@ export class JournalEntriesService {
       throw new BadRequestException('Journal entry must be balanced (debits = credits)');
     }
     
-    return this.repository.create(createJournalEntryDto);
+    const journalEntry = await this.repository.create(createJournalEntryDto);
+
+    try {
+      // Publish journal-entry.created event
+      if (journalEntry.lines) {
+        const simplifiedLines: JournalEntryLine[] = journalEntry.lines.map(line => ({
+          id: line.id,
+          journalEntryId: line.journalEntryId,
+          accountId: line.accountId,
+          description: line.description || undefined,
+          debit: line.debit ? Number(line.debit) : 0,
+          credit: line.credit ? Number(line.credit) : 0
+        }));
+        
+        await this.journalEntryPublisher.publishJournalEntryCreated(
+          {
+            ...journalEntry,
+            totalAmount: this.calculateTotalAmount(journalEntry.lines),
+            createdBy: 'system'
+          }, 
+          simplifiedLines
+        );
+      }
+    } catch (error: any) {
+      this.logger.warn(`Failed to publish journal-entry.created event: ${error.message}`);
+      // Don't fail the operation if publishing fails
+    }
+    
+    return journalEntry;
   }
 
   async update(id: string, updateJournalEntryDto: UpdateJournalEntryDto) {
@@ -39,7 +74,35 @@ export class JournalEntriesService {
       }
     }
     
-    return this.repository.update(id, updateJournalEntryDto);
+    const updatedEntry = await this.repository.update(id, updateJournalEntryDto);
+
+    try {
+      // Publish journal-entry.updated event
+      if (updatedEntry && updatedEntry.lines) {
+        const simplifiedLines: JournalEntryLine[] = updatedEntry.lines.map(line => ({
+          id: line.id,
+          journalEntryId: line.journalEntryId,
+          accountId: line.accountId,
+          description: line.description || undefined,
+          debit: line.debit ? Number(line.debit) : 0,
+          credit: line.credit ? Number(line.credit) : 0
+        }));
+        
+        await this.journalEntryPublisher.publishJournalEntryUpdated(
+          {
+            ...updatedEntry,
+            totalAmount: this.calculateTotalAmount(updatedEntry.lines),
+            updatedBy: 'system'
+          }, 
+          simplifiedLines
+        );
+      }
+    } catch (error: any) {
+      this.logger.warn(`Failed to publish journal-entry.updated event: ${error.message}`);
+      // Don't fail the operation if publishing fails
+    }
+    
+    return updatedEntry;
   }
 
   async remove(id: string) {
@@ -51,7 +114,17 @@ export class JournalEntriesService {
       throw new BadRequestException('Only draft journal entries can be deleted');
     }
     
-    return this.repository.remove(id);
+    const deletedEntry = await this.repository.remove(id);
+
+    try {
+      // Publish journal-entry.deleted event
+      await this.journalEntryPublisher.publishJournalEntryDeleted(id);
+    } catch (error: any) {
+      this.logger.warn(`Failed to publish journal-entry.deleted event: ${error.message}`);
+      // Don't fail the operation if publishing fails
+    }
+    
+    return deletedEntry;
   }
 
   async post(id: string) {
@@ -67,7 +140,19 @@ export class JournalEntriesService {
       throw new BadRequestException('Journal entry must be balanced (debits = credits) to be posted');
     }
     
-    return this.repository.post(id);
+    const postedEntry = await this.repository.post(id);
+
+    try {
+      // Publish journal-entry.posted event
+      if (postedEntry) {
+        await this.journalEntryPublisher.publishJournalEntryPosted(postedEntry);
+      }
+    } catch (error: any) {
+      this.logger.warn(`Failed to publish journal-entry.posted event: ${error.message}`);
+      // Don't fail the operation if publishing fails
+    }
+    
+    return postedEntry;
   }
 
   async reverse(id: string, reason: string) {
@@ -103,5 +188,24 @@ export class JournalEntriesService {
     
     // Allow for small rounding errors
     return Math.abs(totalDebits - totalCredits) < 0.001;
+  }
+
+  /**
+   * Calculates the total amount of a journal entry (sum of debits or credits)
+   */
+  private calculateTotalAmount(lines: any[]): number {
+    if (!lines || lines.length === 0) {
+      return 0;
+    }
+    
+    let totalDebits = 0;
+    
+    for (const line of lines) {
+      if (line.debit) {
+        totalDebits += parseFloat(line.debit.toString());
+      }
+    }
+    
+    return totalDebits;
   }
 } 

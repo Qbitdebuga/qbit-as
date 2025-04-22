@@ -3,7 +3,7 @@
 import { TokenStorage, AuthClient } from 'api-client';
 
 // Create a single instance of AuthClient to be used throughout the app
-export const authClient = new AuthClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002');
+export const authClient = new AuthClient(process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3002');
 
 /**
  * Check if user is authenticated by examining tokens

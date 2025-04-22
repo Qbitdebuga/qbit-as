@@ -28,6 +28,16 @@ export class AccountsRepository {
     });
   }
 
+  async findByIds(ids: string[]): Promise<Account[]> {
+    return this.prisma.account.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+  }
+
   async findOneWithHierarchy(id: string): Promise<AccountWithHierarchy | null> {
     return this.prisma.account.findUnique({
       where: { id },

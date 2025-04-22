@@ -17,7 +17,13 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "shared-types": ["../../packages/shared-types/src"],
+      "shared-types/*": ["../../packages/shared-types/src/*"],
+      "@qbit/shared-types": ["../../packages/shared-types/src"],
+      "@qbit/shared-types/*": ["../../packages/shared-types/src/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

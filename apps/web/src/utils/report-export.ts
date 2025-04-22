@@ -5,6 +5,7 @@ import {
 } from '@qbit/shared-types';
 import { saveAs } from 'file-saver';
 import { format } from 'date-fns';
+import { formatCurrency, formatPercentage, formatDate, formatNumber } from './format';
 
 type ReportType = 
   BalanceSheetStatementDto | 
@@ -324,29 +325,4 @@ function processCashFlowStatement(report: CashFlowStatementDto): string[] {
   csvRows.push(`"ENDING CASH BALANCE","","${formatCurrency(report.data.endingCash)}"`);
   
   return csvRows;
-}
-
-/**
- * Format a number as a currency string
- */
-function formatCurrency(value: number | undefined): string {
-  if (value === undefined) return '';
-  
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-  }).format(value);
-}
-
-/**
- * Format a number as a percentage string
- */
-function formatPercentage(value: number | null | undefined): string {
-  if (value === undefined || value === null) return '';
-  
-  return new Intl.NumberFormat('en-US', {
-    style: 'percent',
-    minimumFractionDigits: 2
-  }).format(value / 100);
 } 
