@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AccountType, BalanceSheetAccount, BalanceSheetSection } from '@qbit/shared-types';
 import { Decimal } from '@prisma/client/runtime/library';
-import { Account } from '@prisma/client';
+import { Account, Prisma } from '@prisma/client';
 
 @Injectable()
 export class BalanceSheetGenerator {

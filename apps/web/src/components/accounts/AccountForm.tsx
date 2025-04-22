@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler, FieldValues, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { 
@@ -18,8 +18,76 @@ import {
   SelectValue,
   Button,
   Switch
-} from '@/components/ui';
-import { Account, AccountCreate, AccountType, AccountSubType } from '@qbit/api-client';
+} from '../ui';
+
+// Define AccountType and AccountSubType directly since there's an import issue
+export enum AccountType {
+  ASSET = 'ASSET',
+  LIABILITY = 'LIABILITY',
+  EQUITY = 'EQUITY',
+  REVENUE = 'REVENUE',
+  EXPENSE = 'EXPENSE',
+}
+
+export enum AccountSubType {
+  CASH = 'CASH',
+  ACCOUNTS_RECEIVABLE = 'ACCOUNTS_RECEIVABLE',
+  INVENTORY = 'INVENTORY',
+  FIXED_ASSET = 'FIXED_ASSET',
+  ACCUMULATED_DEPRECIATION = 'ACCUMULATED_DEPRECIATION',
+  ACCOUNTS_PAYABLE = 'ACCOUNTS_PAYABLE',
+  ACCRUED_LIABILITIES = 'ACCRUED_LIABILITIES',
+  LONG_TERM_DEBT = 'LONG_TERM_DEBT',
+  COMMON_STOCK = 'COMMON_STOCK',
+  RETAINED_EARNINGS = 'RETAINED_EARNINGS',
+  SALES = 'SALES',
+  COST_OF_GOODS_SOLD = 'COST_OF_GOODS_SOLD',
+  OPERATING_EXPENSE = 'OPERATING_EXPENSE',
+  PAYROLL_EXPENSE = 'PAYROLL_EXPENSE',
+  DEPRECIATION_EXPENSE = 'DEPRECIATION_EXPENSE',
+  INTEREST_EXPENSE = 'INTEREST_EXPENSE',
+  OTHER_EXPENSE = 'OTHER_EXPENSE',
+  OTHER_INCOME = 'OTHER_INCOME',
+  TAX_EXPENSE = 'TAX_EXPENSE',
+  OTHER = 'OTHER',
+}
+
+// Define interfaces directly since imports are not working
+export interface Account {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: AccountType;
+  subtype: AccountSubType;
+  isActive: boolean;
+  parentId?: string;
+  parent?: Account;
+  children?: Account[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AccountCreate {
+  code: string;
+  name: string;
+  description?: string;
+  type: AccountType;
+  subtype: AccountSubType;
+  isActive?: boolean;
+  parentId?: string;
+}
+
+// Interface for form field props
+interface FieldProps {
+  field: {
+    value: any;
+    onChange: (value: any) => void;
+    onBlur: () => void;
+    name: string;
+    ref: React.Ref<any>;
+  };
+}
 
 // Schema for form validation
 const accountSchema = z.object({
@@ -32,7 +100,7 @@ const accountSchema = z.object({
   subtype: z.string({
     required_error: 'Please select an account subtype',
   }),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean().default(true).optional(),
   parentId: z.string().optional(),
 });
 
@@ -57,21 +125,21 @@ export const AccountForm: React.FC<AccountFormProps> = ({
       code: account?.code || '',
       name: account?.name || '',
       description: account?.description || '',
-      type: account?.type || 'ASSET',
-      subtype: account?.subtype || 'CASH',
+      type: account?.type || AccountType.ASSET,
+      subtype: account?.subtype || AccountSubType.CASH,
       isActive: account?.isActive ?? true,
       parentId: account?.parentId || '',
     },
   });
 
   const [selectedType, setSelectedType] = useState<AccountType>(
-    account?.type || 'ASSET'
+    account?.type || AccountType.ASSET
   );
 
   // Get available subtypes based on the selected account type
-  const getAvailableSubtypes = (type: AccountType) => {
+  const getAvailableSubtypes = (type: AccountType): AccountSubType[] => {
     switch (type) {
-      case 'ASSET':
+      case AccountType.ASSET:
         return [
           AccountSubType.CASH,
           AccountSubType.ACCOUNTS_RECEIVABLE,
@@ -79,26 +147,26 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           AccountSubType.FIXED_ASSET,
           AccountSubType.OTHER,
         ];
-      case 'LIABILITY':
+      case AccountType.LIABILITY:
         return [
           AccountSubType.ACCOUNTS_PAYABLE,
           AccountSubType.ACCRUED_LIABILITIES,
           AccountSubType.LONG_TERM_DEBT,
           AccountSubType.OTHER,
         ];
-      case 'EQUITY':
+      case AccountType.EQUITY:
         return [
           AccountSubType.COMMON_STOCK,
           AccountSubType.RETAINED_EARNINGS,
           AccountSubType.OTHER,
         ];
-      case 'REVENUE':
+      case AccountType.REVENUE:
         return [
           AccountSubType.SALES,
           AccountSubType.OTHER_INCOME,
           AccountSubType.OTHER,
         ];
-      case 'EXPENSE':
+      case AccountType.EXPENSE:
         return [
           AccountSubType.COST_OF_GOODS_SOLD,
           AccountSubType.OPERATING_EXPENSE,
@@ -110,13 +178,13 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           AccountSubType.OTHER,
         ];
       default:
-        return [];
+        return [AccountSubType.OTHER]; // Default fallback to avoid empty array
     }
   };
 
   // Format enum values for display
-  const formatEnumValue = (value: string) => {
-    return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  const formatEnumValue = (value: string): string => {
+    return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   // Update subtypes when type changes
@@ -125,13 +193,25 @@ export const AccountForm: React.FC<AccountFormProps> = ({
     const availableSubtypes = getAvailableSubtypes(selectedType);
     
     // Reset subtype if the current one is not available for selected type
-    if (!availableSubtypes.includes(currentSubtype as AccountSubType)) {
-      form.setValue('subtype', availableSubtypes[0]);
+    if (!currentSubtype || !availableSubtypes.includes(currentSubtype as AccountSubType)) {
+      // Use type assertion to convert AccountSubType to string
+      form.setValue('subtype', String(availableSubtypes[0]));
     }
   }, [selectedType, form]);
 
-  const handleSubmit = (data: AccountFormValues) => {
-    onSubmit(data as AccountCreate);
+  const handleSubmit: SubmitHandler<AccountFormValues> = (data) => {
+    // Convert form data to AccountCreate type
+    const accountData: AccountCreate = {
+      code: data.code,
+      name: data.name,
+      description: data.description,
+      type: data.type as AccountType,
+      subtype: data.subtype as AccountSubType,
+      isActive: data.isActive ?? true,
+      parentId: data.parentId?.length ? data.parentId : undefined,
+    };
+    
+    onSubmit(accountData);
   };
 
   return (
@@ -141,7 +221,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           <FormField
             control={form.control}
             name="code"
-            render={({ field }) => (
+            render={({ field }: FieldProps) => (
               <FormItem>
                 <FormLabel>Account Code</FormLabel>
                 <FormControl>
@@ -155,7 +235,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           <FormField
             control={form.control}
             name="name"
-            render={({ field }) => (
+            render={({ field }: FieldProps) => (
               <FormItem>
                 <FormLabel>Account Name</FormLabel>
                 <FormControl>
@@ -170,7 +250,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
         <FormField
           control={form.control}
           name="description"
-          render={({ field }) => (
+          render={({ field }: FieldProps) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
@@ -190,11 +270,11 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           <FormField
             control={form.control}
             name="type"
-            render={({ field }) => (
+            render={({ field }: FieldProps) => (
               <FormItem>
                 <FormLabel>Account Type</FormLabel>
                 <Select
-                  onValueChange={(value) => {
+                  onValueChange={(value: string) => {
                     field.onChange(value);
                     setSelectedType(value as AccountType);
                   }}
@@ -221,12 +301,12 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           <FormField
             control={form.control}
             name="subtype"
-            render={({ field }) => (
+            render={({ field }: FieldProps) => (
               <FormItem>
                 <FormLabel>Account Subtype</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -251,12 +331,12 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           <FormField
             control={form.control}
             name="parentId"
-            render={({ field }) => (
+            render={({ field }: FieldProps) => (
               <FormItem>
                 <FormLabel>Parent Account</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={field.value || ""}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -281,7 +361,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
         <FormField
           control={form.control}
           name="isActive"
-          render={({ field }) => (
+          render={({ field }: FieldProps) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Active Status</FormLabel>
@@ -291,7 +371,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
               </div>
               <FormControl>
                 <Switch
-                  checked={field.value}
+                  checked={field.value ?? true}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>

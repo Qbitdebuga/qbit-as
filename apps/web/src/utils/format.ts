@@ -1,62 +1,66 @@
 /**
  * Format a number as currency
  * @param value The number to format
- * @param currency The currency code (default: USD)
  * @returns Formatted currency string
  */
-export function formatCurrency(value: number | undefined | null): string {
-  if (value === undefined || value === null) return '-';
+export function formatCurrency(value: number | undefined): string {
+  if (value === undefined) {
+    return '$0.00';
+  }
   
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value);
 }
 
 /**
  * Format a number as a percentage
- * @param value The number to format (e.g. 0.05 for 5%)
- * @param decimals Number of decimal places to show
+ * @param value The number to format
  * @returns Formatted percentage string
  */
-export function formatPercentage(value: number | undefined | null, decimals: number = 2): string {
-  if (value === undefined || value === null) return '-';
+export function formatPercentage(value: number | undefined): string {
+  if (value === undefined || value === null) {
+    return '0.00%';
+  }
   
   return new Intl.NumberFormat('en-US', {
     style: 'percent',
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value / 100);
 }
 
 /**
- * Format a date string to a human-readable format
- * @param dateString The date string to format (ISO format)
+ * Format a date as a string
+ * @param date The date to format
  * @returns Formatted date string
  */
-export function formatDate(dateString: string | undefined | null): string {
-  if (!dateString) return '-';
+export function formatDate(date: Date | string): string {
+  if (!date) {
+    return '';
+  }
   
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  return dateObj.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
-  }).format(date);
+    day: 'numeric',
+  });
 }
 
 /**
- * Format a number with commas for thousands
+ * Format a number with proper thousands separators
  * @param value The number to format
- * @param decimals Number of decimal places to show
  * @returns Formatted number string
  */
-export function formatNumber(value: number | undefined | null, decimals: number = 0): string {
-  if (value === undefined || value === null) return '-';
+export function formatNumber(value: number | undefined): string {
+  if (value === undefined) {
+    return '0';
+  }
   
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
-  }).format(value);
+  return new Intl.NumberFormat('en-US').format(value);
 } 

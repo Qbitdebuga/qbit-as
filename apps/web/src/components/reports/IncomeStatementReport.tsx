@@ -93,9 +93,10 @@ export function IncomeStatementReport({ report }: IncomeStatementReportProps) {
             </Button>
           </div>
         </div>
-        <Tabs 
+        
+        <Tabs
           value={activeView} 
-          onValueChange={(v) => setActiveView(v as 'structured' | 'detailed')}
+          onValueChange={(v: string) => setActiveView(v as 'structured' | 'detailed')}
           className="w-full"
         >
           <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -253,7 +254,7 @@ function StructuredView({ report }: { report: IncomeStatementDto }) {
               <p className="font-medium">Net Income Change:</p>
               <p className="text-lg font-semibold">
                 {formatCurrency(data.netIncomeChange)}
-                {data.netIncomeChangePercentage !== undefined && (
+                {data.netIncomeChangePercentage !== undefined && data.netIncomeChangePercentage !== null && (
                   <span className="text-sm ml-2">
                     ({data.netIncomeChangePercentage >= 0 ? '+' : ''}{data.netIncomeChangePercentage.toFixed(2)}%)
                   </span>
@@ -334,7 +335,7 @@ function DetailedView({ report }: { report: IncomeStatementDto }) {
                     {formatCurrency(item.account.change || 0)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {item.account.changePercentage !== undefined 
+                    {item.account.changePercentage !== undefined && item.account.changePercentage !== null
                       ? `${item.account.changePercentage.toFixed(2)}%` 
                       : '-'}
                   </TableCell>
@@ -372,7 +373,7 @@ function DetailedView({ report }: { report: IncomeStatementDto }) {
                 <span className="font-semibold">Net Income Change:</span>
                 <span className={data.netIncomeChange >= 0 ? 'text-green-600' : 'text-red-600'}>
                   {formatCurrency(data.netIncomeChange)}
-                  {data.netIncomeChangePercentage !== undefined && (
+                  {data.netIncomeChangePercentage !== undefined && data.netIncomeChangePercentage !== null && (
                     <span className="ml-2">
                       ({data.netIncomeChangePercentage >= 0 ? '+' : ''}{data.netIncomeChangePercentage.toFixed(2)}%)
                     </span>

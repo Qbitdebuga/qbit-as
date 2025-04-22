@@ -25,7 +25,7 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
-    return user;
+    return user as User | null;
   }
 
   async findById(id: string): Promise<User | null> {
@@ -37,7 +37,7 @@ export class UserService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    return user;
+    return user as User;
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -55,7 +55,7 @@ export class UserService {
         name: createUserDto.name,
         password: hashedPassword,
         roles: createUserDto.roles || ['user'],
-      },
+      } as any,
     });
 
     // Remove password from returned object

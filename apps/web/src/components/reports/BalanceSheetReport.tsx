@@ -93,9 +93,10 @@ export function BalanceSheetReport({ report }: BalanceSheetReportProps) {
             </Button>
           </div>
         </div>
-        <Tabs 
+        
+        <Tabs
           value={activeView} 
-          onValueChange={(v) => setActiveView(v as 'structured' | 'detailed')}
+          onValueChange={(v: string) => setActiveView(v as 'structured' | 'detailed')}
           className="w-full"
         >
           <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -373,7 +374,7 @@ function DetailedView({ report }: { report: BalanceSheetStatementDto }) {
                     {formatCurrency(item.account.change || 0)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {item.account.changePercentage !== undefined 
+                    {item.account.changePercentage !== undefined && item.account.changePercentage !== null
                       ? `${item.account.changePercentage.toFixed(2)}%` 
                       : '-'}
                   </TableCell>

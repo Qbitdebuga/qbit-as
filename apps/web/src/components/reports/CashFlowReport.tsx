@@ -93,9 +93,10 @@ export function CashFlowReport({ report }: CashFlowReportProps) {
             </Button>
           </div>
         </div>
-        <Tabs 
+        
+        <Tabs
           value={activeView} 
-          onValueChange={(v) => setActiveView(v as 'structured' | 'detailed')}
+          onValueChange={(v: string) => setActiveView(v as 'structured' | 'detailed')}
           className="w-full"
         >
           <TabsList className="grid w-full max-w-md grid-cols-2">

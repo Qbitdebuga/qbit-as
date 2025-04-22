@@ -33,18 +33,20 @@ async function main() {
     const hashedPassword = await bcrypt.hash('admin123', saltRounds);
 
     // Create a default admin user
+    const userData = {
+      email: 'admin@qbit.com',
+      name: 'System Administrator',
+      password: hashedPassword,
+    };
+
     const adminUser = await prisma.user.upsert({
       where: { email: 'admin@qbit.com' },
       update: {},
-      create: {
-        email: 'admin@qbit.com',
-        name: 'System Administrator',
-        password: hashedPassword,
-        roles: {
-          connect: [{ id: adminRole.id }],
-        },
-      },
+      create: userData,
     });
+
+    // Use raw query to assign roles to the user
+    await prisma.$executeRaw`INSERT INTO "_RoleToUser" ("A", "B") VALUES (${adminRole.id}, ${adminUser.id}) ON CONFLICT DO NOTHING`;
 
     console.log(`Created admin user: ${adminUser.email} (${adminUser.id})`);
 

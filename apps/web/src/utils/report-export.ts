@@ -342,8 +342,8 @@ function formatCurrency(value: number | undefined): string {
 /**
  * Format a number as a percentage string
  */
-function formatPercentage(value: number | undefined): string {
-  if (value === undefined) return '';
+function formatPercentage(value: number | null | undefined): string {
+  if (value === undefined || value === null) return '';
   
   return new Intl.NumberFormat('en-US', {
     style: 'percent',
