@@ -7,29 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  roles     String[] @default(["user"])
-
-  @@map("users")
-}
-
-model Role {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String   @default("")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  permissions String[] @default([])
-
-  @@map("roles")
-}
-
 // Chart of Accounts models
 enum AccountType {
   ASSET
@@ -108,4 +85,4 @@ model JournalEntry {
   lines         JournalEntryLine[]
 
   @@map("journal_entries")
-}
+} 

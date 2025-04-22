@@ -163,7 +163,7 @@
 
 ## Core Financial Module - General Ledger
 
-- [ ]  Step 14: Set up General Ledger microservice
+- [x]  Step 14: Set up General Ledger microservice
     - **Task**: Create the General Ledger microservice with basic structure
     - **Files**:
         - `services/general-ledger/package.json`: Package configuration
@@ -177,7 +177,7 @@
         - `services/general-ledger/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
     - **User Instructions**: Run `cd services/general-ledger && npm install` to install dependencies
-- [ ]  Step 15: Implement Chart of Accounts data model and API
+- [x]  Step 15: Implement Chart of Accounts data model and API
     - **Task**: Create the Chart of Accounts module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with account models
@@ -191,7 +191,7 @@
         - `packages/shared-types/src/models/account.ts`: Shared account types
     - **Step Dependencies**: Step 14
     - **User Instructions**: Run migration after schema update
-- [ ]  Step 16: Create Chart of Accounts UI components
+- [x]  Step 16: Create Chart of Accounts UI components
     - **Task**: Implement the Chart of Accounts management interface
     - **Files**:
         - `apps/web/src/app/dashboard/accounts/page.tsx`: Accounts page
@@ -203,7 +203,7 @@
         - `packages/api-client/src/accounts/accounts-client.ts`: Accounts API client
     - **Step Dependencies**: Step 15, Step 13
     - **User Instructions**: None
-- [ ]  Step 17: Implement Journal Entries data model and API
+- [x]  Step 17: Implement Journal Entries data model and API
     - **Task**: Create the Journal Entries module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with journal entry models
@@ -218,7 +218,7 @@
         - `packages/shared-types/src/models/journal-entry.ts`: Shared journal entry types
     - **Step Dependencies**: Step 15
     - **User Instructions**: Run migration after schema update
-- [ ]  Step 18: Create Journal Entries UI components
+- [x]  Step 18: Create Journal Entries UI components
     - **Task**: Implement the Journal Entries management interface
     - **Files**:
         - `apps/web/src/app/dashboard/journal-entries/page.tsx`: Journal entries page
@@ -230,7 +230,7 @@
         - `packages/api-client/src/journal-entries/journal-entries-client.ts`: Journal entries API client
     - **Step Dependencies**: Step 17, Step 16
     - **User Instructions**: None
-- [ ]  Step 19: Implement Financial Reporting API
+- [x]  Step 19: Implement Financial Reporting API
     - **Task**: Create financial statement generation APIs
     - **Files**:
         - `services/general-ledger/src/financial-statements/financial-statements.module.ts`: Financial statements module
@@ -244,7 +244,7 @@
         - `packages/shared-types/src/models/financial-statement.ts`: Shared financial statement types
     - **Step Dependencies**: Step 17
     - **User Instructions**: None
-- [ ]  Step 20: Create Financial Reporting UI
+- [x]  Step 20: Create Financial Reporting UI
     - **Task**: Implement financial statement viewing and exporting
     - **Files**:
         - `apps/web/src/app/dashboard/reports/balance-sheet/page.tsx`: Balance sheet page

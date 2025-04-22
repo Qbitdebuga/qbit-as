@@ -1,2 +1,2 @@
-// Export all models
+// Export all types
 export * from './models'; 
