@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthClient } from '@qbit/api-client';
+import { AuthClient } from 'api-client';
 
 export function RegisterForm() {
   const router = useRouter();

@@ -1,6 +1,15 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
+
+// Interface for Query Event
+interface QueryEvent {
+  timestamp: Date;
+  query: string;
+  params: string;
+  duration: number;
+  target: string;
+}
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
@@ -39,7 +48,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     });
 
     // Log slow queries
-    this.$on('query', (e) => {
+    // @ts-ignore - Ignore type checking for this event listener
+    this.$on('query', (e: QueryEvent) => {
       if (e.duration >= 200) { // Log queries taking more than 200ms
         this.logger.warn(`Slow query: ${e.query} (${e.duration}ms)`);
       }
@@ -64,7 +74,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     });
 
     return this.$transaction(
-      models.map((model) => this[model as keyof this].deleteMany())
+      models.map((model) => {
+        const modelName = model as string;
+        return (this[modelName as keyof this] as unknown as { deleteMany: () => any }).deleteMany();
+      })
     );
   }
 } 

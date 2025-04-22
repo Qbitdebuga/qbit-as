@@ -1,9 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { User } from '@qbit/api-client';
+import { User } from 'api-client';
 
 interface AuthContextType {
   user: User | null;

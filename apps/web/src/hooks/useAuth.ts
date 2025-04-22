@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthClient, TokenStorage, User } from '@qbit/api-client';
+import { AuthClient, TokenStorage, User } from 'api-client';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const authClient = new AuthClient(apiUrl);

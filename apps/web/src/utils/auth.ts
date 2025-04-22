@@ -1,6 +1,6 @@
 'use client';
 
-import { TokenStorage } from '@qbit/api-client';
+import { TokenStorage } from 'api-client';
 
 /**
  * Check if user is authenticated by examining tokens
