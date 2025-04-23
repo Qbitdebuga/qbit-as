@@ -241,7 +241,7 @@ This document outlines the implementation plan for connecting the various micros
     - `apps/web/src/contexts/api-context.tsx`: Update API context if needed
   - **Step Dependencies**: Step 15
 
-- [ ] Step 27: Implement Dashboard Overview Component
+- [x] Step 27: Implement Dashboard Overview Component
   - **Task**: Create a dashboard component that displays data from multiple services
   - **Files**:
     - `apps/web/src/components/dashboard/FinancialOverview.tsx`: Create overview component

@@ -27,4 +27,4 @@ CREATE TABLE "roles" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name"); 
+CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");

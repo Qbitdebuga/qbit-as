@@ -87,4 +87,4 @@ CREATE UNIQUE INDEX "user_references_email_key" ON "user_references"("email");
 ALTER TABLE "report_snapshots" ADD CONSTRAINT "report_snapshots_report_id_fkey" FOREIGN KEY ("report_id") REFERENCES "reports"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "consolidated_journal_entry_lines" ADD CONSTRAINT "consolidated_journal_entry_lines_journal_entry_id_fkey" FOREIGN KEY ("journal_entry_id") REFERENCES "consolidated_journal_entries"("id") ON DELETE CASCADE ON UPDATE CASCADE; 
+ALTER TABLE "consolidated_journal_entry_lines" ADD CONSTRAINT "consolidated_journal_entry_lines_journal_entry_id_fkey" FOREIGN KEY ("journal_entry_id") REFERENCES "consolidated_journal_entries"("id") ON DELETE CASCADE ON UPDATE CASCADE;

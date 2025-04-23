@@ -40,7 +40,7 @@ export class GeneralLedgerClientService {
   ): Promise<T> {
     try {
       // Get a service token from the Auth service
-      const token = await this.authClientService.getServiceToken();
+      const token = await this.authClientService.fetchServiceToken();
       
       const requestConfig: AxiosRequestConfig = {
         ...config,

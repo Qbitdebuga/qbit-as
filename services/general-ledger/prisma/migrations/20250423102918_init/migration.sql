@@ -49,11 +49,71 @@ CREATE TABLE "journal_entries" (
     CONSTRAINT "journal_entries_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "batches" (
+    "id" TEXT NOT NULL,
+    "batch_number" TEXT NOT NULL,
+    "description" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'DRAFT',
+    "type" TEXT NOT NULL,
+    "item_count" INTEGER NOT NULL DEFAULT 0,
+    "processed_count" INTEGER NOT NULL DEFAULT 0,
+    "failed_count" INTEGER NOT NULL DEFAULT 0,
+    "started_at" TIMESTAMP(3),
+    "completed_at" TIMESTAMP(3),
+    "created_by" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "batches_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "batch_items" (
+    "id" TEXT NOT NULL,
+    "batch_id" TEXT NOT NULL,
+    "journal_entry_id" TEXT,
+    "entry_data" JSONB NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'PENDING',
+    "error_message" TEXT,
+    "processed_at" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "batch_items_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "user_references" (
+    "id" TEXT NOT NULL,
+    "external_id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT,
+    "is_admin" BOOLEAN NOT NULL DEFAULT false,
+    "metadata" JSONB,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "user_references_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "accounts_code_key" ON "accounts"("code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "journal_entries_entry_number_key" ON "journal_entries"("entry_number");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "batches_batch_number_key" ON "batches"("batch_number");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "batch_items_journal_entry_id_key" ON "batch_items"("journal_entry_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_references_external_id_key" ON "user_references"("external_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_references_email_key" ON "user_references"("email");
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "accounts"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
@@ -63,3 +123,9 @@ ALTER TABLE "journal_entry_lines" ADD CONSTRAINT "journal_entry_lines_journal_en
 
 -- AddForeignKey
 ALTER TABLE "journal_entry_lines" ADD CONSTRAINT "journal_entry_lines_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "batch_items" ADD CONSTRAINT "batch_items_batch_id_fkey" FOREIGN KEY ("batch_id") REFERENCES "batches"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "batch_items" ADD CONSTRAINT "batch_items_journal_entry_id_fkey" FOREIGN KEY ("journal_entry_id") REFERENCES "journal_entries"("id") ON DELETE SET NULL ON UPDATE CASCADE;

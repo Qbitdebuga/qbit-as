@@ -160,4 +160,12 @@ export class AuthClientService {
       throw error;
     }
   }
+  
+  /**
+   * Returns a valid token for internal service-to-service communication.
+   * Only intended for trusted internal service use.
+   */
+  public async fetchServiceToken(): Promise<string> {
+    return this.getServiceToken();
+  }
 } 

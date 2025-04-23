@@ -61,9 +61,7 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row items-start justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold">Financial Dashboard</h1>
-        
+      <div className="flex flex-row justify-end gap-4 mb-6">
         <div className="flex flex-wrap gap-2">
           <button 
             onClick={() => navigateTo('/dashboard/journal-entries/new')}
