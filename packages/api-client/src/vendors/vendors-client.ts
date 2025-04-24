@@ -5,7 +5,8 @@ import {
   UpdateVendorDto, 
   CreateVendorContactDto
 } from '@qbit/shared-types';
-import { ApiClientOptions, apiFetch } from '../utils/api-fetch';
+import { ApiClient } from '../api-client';
+import { ApiClientBase } from '../utils/api-client-base';
 
 export interface VendorListParams {
   page?: number;
@@ -16,13 +17,9 @@ export interface VendorListParams {
   sortDirection?: 'asc' | 'desc';
 }
 
-export class VendorsClient {
-  private baseUrl: string;
-  private options: ApiClientOptions;
-
-  constructor(baseUrl: string, options: ApiClientOptions = {}) {
-    this.baseUrl = baseUrl;
-    this.options = options;
+export class VendorsClient extends ApiClientBase {
+  constructor(apiClient: ApiClient) {
+    super(apiClient);
   }
 
   async getVendors(params?: VendorListParams): Promise<{ 
@@ -31,76 +28,42 @@ export class VendorsClient {
     page: number; 
     limit: number 
   }> {
-    const searchParams = new URLSearchParams();
-    
-    if (params) {
-      if (params.page) searchParams.append('page', params.page.toString());
-      if (params.limit) searchParams.append('limit', params.limit.toString());
-      if (params.search) searchParams.append('search', params.search);
-      if (params.isActive !== undefined) searchParams.append('isActive', params.isActive.toString());
-      if (params.sortBy) searchParams.append('sortBy', params.sortBy);
-      if (params.sortDirection) searchParams.append('sortDirection', params.sortDirection);
-    }
-
-    const queryString = searchParams.toString() ? `?${searchParams.toString()}` : '';
-    return apiFetch<{ data: Vendor[]; total: number; page: number; limit: number }>(
-      `${this.baseUrl}/vendors${queryString}`,
-      { ...this.options }
+    return this.get<{ data: Vendor[]; total: number; page: number; limit: number }>(
+      '/vendors',
+      { params }
     );
   }
 
   async getVendorById(id: string): Promise<Vendor> {
-    return apiFetch<Vendor>(`${this.baseUrl}/vendors/${id}`, { ...this.options });
+    return this.get<Vendor>(`/vendors/${id}`);
   }
 
   async getVendorByNumber(vendorNumber: string): Promise<Vendor> {
-    return apiFetch<Vendor>(`${this.baseUrl}/vendors/number/${vendorNumber}`, { ...this.options });
+    return this.get<Vendor>(`/vendors/number/${vendorNumber}`);
   }
 
   async createVendor(vendor: CreateVendorDto): Promise<Vendor> {
-    return apiFetch<Vendor>(`${this.baseUrl}/vendors`, {
-      method: 'POST',
-      body: JSON.stringify(vendor),
-      ...this.options,
-    });
+    return this.post<Vendor>('/vendors', vendor);
   }
 
   async updateVendor(id: string, vendor: UpdateVendorDto): Promise<Vendor> {
-    return apiFetch<Vendor>(`${this.baseUrl}/vendors/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(vendor),
-      ...this.options,
-    });
+    return this.patch<Vendor>(`/vendors/${id}`, vendor);
   }
 
   async deleteVendor(id: string): Promise<void> {
-    return apiFetch<void>(`${this.baseUrl}/vendors/${id}`, {
-      method: 'DELETE',
-      ...this.options,
-    });
+    return this.delete<void>(`/vendors/${id}`);
   }
 
   // Contact methods
   async createContact(vendorId: string, contact: CreateVendorContactDto): Promise<VendorContact> {
-    return apiFetch<VendorContact>(`${this.baseUrl}/vendors/${vendorId}/contacts`, {
-      method: 'POST',
-      body: JSON.stringify(contact),
-      ...this.options,
-    });
+    return this.post<VendorContact>(`/vendors/${vendorId}/contacts`, contact);
   }
 
   async updateContact(id: string, contact: Partial<CreateVendorContactDto>): Promise<VendorContact> {
-    return apiFetch<VendorContact>(`${this.baseUrl}/vendors/contacts/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(contact),
-      ...this.options,
-    });
+    return this.put<VendorContact>(`/vendors/contacts/${id}`, contact);
   }
 
   async deleteContact(id: string): Promise<void> {
-    return apiFetch<void>(`${this.baseUrl}/vendors/contacts/${id}`, {
-      method: 'DELETE',
-      ...this.options,
-    });
+    return this.delete<void>(`/vendors/contacts/${id}`);
   }
 } 

@@ -1,50 +1,40 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAggregatedData } from '../../../../hooks/useAggregatedData';
 import ConsolidatedReport from '../../../../components/reports/ConsolidatedReport';
 
 export default function ConsolidatedReportPage() {
   const { getFinancialStatements, loading, error } = useAggregatedData();
-  const [balanceSheet, setBalanceSheet] = useState<any | null>(null);
-  const [incomeStatement, setIncomeStatement] = useState<any | null>(null);
-  const [cashFlow, setCashFlow] = useState<any | null>(null);
+  const [balanceSheet, setBalanceSheet] = useState(null);
+  const [incomeStatement, setIncomeStatement] = useState(null);
+  const [cashFlow, setCashFlow] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function loadReports() {
       setIsLoading(true);
+      
       try {
-        // Get the end of the current month for the selected date
-        const date = new Date(selectedDate);
-        const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        const endDateString = endDate.toISOString().split('T')[0];
-        
-        // Get the start of the year
-        const startOfYear = new Date(date.getFullYear(), 0, 1);
-        const startDateString = startOfYear.toISOString().split('T')[0];
-        
-        // Fetch all reports in parallel
+        // Get all financial statements in parallel
         const [balanceSheetData, incomeStatementData, cashFlowData] = await Promise.all([
-          getFinancialStatements('balance-sheet', null, null, endDateString),
-          getFinancialStatements('income-statement', startDateString, endDateString),
-          getFinancialStatements('cash-flow', startDateString, endDateString)
+          getFinancialStatements('balance-sheet', null, null, selectedDate),
+          getFinancialStatements('income-statement', null, null, selectedDate),
+          getFinancialStatements('cash-flow', null, null, selectedDate)
         ]);
         
         setBalanceSheet(balanceSheetData);
         setIncomeStatement(incomeStatementData);
         setCashFlow(cashFlowData);
       } catch (err) {
-        console.error('Failed to fetch financial data:', err);
+        console.error('Error loading financial statements:', err);
       } finally {
         setIsLoading(false);
       }
-    };
+    }
     
-    fetchData();
+    loadReports();
   }, [getFinancialStatements, selectedDate]);
   
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {

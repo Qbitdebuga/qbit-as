@@ -1,8 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException, Request } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { SERVICE_SCOPE_KEY } from '../decorators/service-scope.decorator';
+import { Request } from 'express';
 
 interface ServiceJwtPayload {
   serviceId: string;
@@ -10,6 +11,14 @@ interface ServiceJwtPayload {
   scopes: string[];
   iat: number;
   exp: number;
+}
+
+interface RequestWithService extends Request {
+  service?: {
+    id: string;
+    name: string;
+    scopes: string[];
+  };
 }
 
 /**
@@ -40,7 +49,7 @@ export class ServiceAuthGuard implements CanActivate {
       return true; // No scopes required
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<RequestWithService>();
     const token = this.extractTokenFromHeader(request);
     
     if (!token) {
@@ -71,9 +80,9 @@ export class ServiceAuthGuard implements CanActivate {
       };
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
       throw new UnauthorizedException(
-        `Invalid service token: ${error.message}`,
+        `Invalid service token: ${error?.message || 'Unknown error'}`,
       );
     }
   }
@@ -81,7 +90,7 @@ export class ServiceAuthGuard implements CanActivate {
   /**
    * Extracts the JWT token from the request's Authorization header
    */
-  private extractTokenFromHeader(request: Request): string | undefined {
+  private extractTokenFromHeader(request: RequestWithService): string | undefined {
     const authHeader = request.headers.authorization;
     if (!authHeader) return undefined;
     

@@ -647,6 +647,19 @@
         - `services/banking/src/accounts/dto/update-bank-account.dto.ts`: Update bank account DTO
     - **User Instructions**: Run migration after schema update
 
+## API Client Enhancements
+
+- [x]  Step 48: Refactor API clients to use ApiClientBase
+    - **Task**: Update the API client classes to extend ApiClientBase for better code reuse and consistency
+    - **Files**:
+        - `packages/api-client/src/utils/api-client-base.ts`: Base class for API clients
+        - `packages/api-client/src/accounts/accounts-client.ts`: Updated Accounts client
+        - `packages/api-client/src/vendors/vendors-client.ts`: Updated Vendors client
+        - `packages/api-client/src/customers/customers-client.ts`: Updated Customers client
+        - `packages/api-client/src/utils/api-fetch.ts`: Helper utility for API requests
+    - **Step Dependencies**: Step 18
+    - **User Instructions**: None
+
 ## Testing & Validation
 
 - [x]  Step 100: Add post-deployment validation

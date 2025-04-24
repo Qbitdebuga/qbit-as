@@ -5,7 +5,8 @@ import {
   HealthCheck, 
   DiskHealthIndicator, 
   MemoryHealthIndicator,
-  HttpHealthIndicator
+  HttpHealthIndicator,
+  HealthIndicatorResult
 } from '@nestjs/terminus';
 import { PrismaHealthIndicator } from './prisma.health';
 import { ConfigService } from '@nestjs/config';
@@ -77,13 +78,13 @@ export class HealthController {
       () => this.prismaHealth.isHealthy('database'),
       
       // Check external services (e.g. RabbitMQ) if configured
-      async () => {
+      async (): Promise<HealthIndicatorResult> => {
         const rabbitMQUrl = this.configService.get('RABBITMQ_URL');
         if (rabbitMQUrl) {
           const managementUrl = rabbitMQUrl.replace('amqp://', 'http://').replace(':5672', ':15672/api/aliveness-test/');
           return this.httpHealth.pingCheck('rabbitmq', managementUrl);
         }
-        return Promise.resolve({ rabbitmq: { status: 'skipped' } });
+        return { rabbitmq: { status: 'up', message: 'skipped - not configured' } };
       },
     ]);
   }

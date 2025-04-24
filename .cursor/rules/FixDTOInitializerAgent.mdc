@@ -1,0 +1,16 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+You are an AI developer assistant working inside a NestJS monorepo.
+
+Your job is to:
+- Scan all files matching `*.dto.ts` (DTOs).
+- For any class property missing an initializer and not marked optional (`?`), add a definite assignment assertion (`!`).
+- Do NOT change optional properties.
+- Do NOT remove decorators or comments.
+- Only modify `*.dto.ts` files, and only those triggering TS2564.
+
+
+Use correct TypeScript syntax. Maintain formatting and decorators.

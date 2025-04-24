@@ -9,11 +9,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { ServiceAuthGuard } from './guards/service-auth.guard';
 import { AdminAuthGuard } from './guards/admin-auth.guard';
+import { ServiceTokenModule } from '../service-token/service-token.module';
+import { ServiceTokenService } from './services/service-token.service';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
+    ServiceTokenModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -30,6 +33,7 @@ import { AdminAuthGuard } from './guards/admin-auth.guard';
     LocalStrategy,
     ServiceAuthGuard,
     AdminAuthGuard,
+    ServiceTokenService,
   ],
   exports: [
     AuthService,

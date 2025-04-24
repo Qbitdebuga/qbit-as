@@ -6,15 +6,15 @@ import {
   CreateCustomerContactDto, 
   CustomerListParams 
 } from '@qbit/shared-types';
-import { ApiClientOptions, apiFetch } from '../utils/api-fetch';
+import { ApiClient } from '../api-client';
+import { ApiClientBase } from '../utils/api-client-base';
 
-export class CustomersClient {
+export class CustomersClient extends ApiClientBase {
   private baseUrl: string;
-  private options: ApiClientOptions;
 
-  constructor(baseUrl: string, options: ApiClientOptions = {}) {
-    this.baseUrl = baseUrl;
-    this.options = options;
+  constructor(apiClient: ApiClient) {
+    super(apiClient);
+    this.baseUrl = '/customers';
   }
 
   async getCustomers(params?: CustomerListParams): Promise<{ 
@@ -23,76 +23,53 @@ export class CustomersClient {
     page: number; 
     limit: number 
   }> {
-    const searchParams = new URLSearchParams();
+    const searchParams: Record<string, string> = {};
     
     if (params) {
-      if (params.page) searchParams.append('page', params.page.toString());
-      if (params.limit) searchParams.append('limit', params.limit.toString());
-      if (params.search) searchParams.append('search', params.search);
-      if (params.isActive !== undefined) searchParams.append('isActive', params.isActive.toString());
-      if (params.sortBy) searchParams.append('sortBy', params.sortBy);
-      if (params.sortDirection) searchParams.append('sortDirection', params.sortDirection);
+      if (params.page) searchParams['page'] = params.page.toString();
+      if (params.limit) searchParams['limit'] = params.limit.toString();
+      if (params.search) searchParams['search'] = params.search;
+      if (params.isActive !== undefined) searchParams['isActive'] = params.isActive.toString();
+      if (params.sortBy) searchParams['sortBy'] = params.sortBy;
+      if (params.sortDirection) searchParams['sortDirection'] = params.sortDirection;
     }
 
-    const queryString = searchParams.toString() ? `?${searchParams.toString()}` : '';
-    return apiFetch<{ data: Customer[]; total: number; page: number; limit: number }>(
-      `${this.baseUrl}/customers${queryString}`,
-      { ...this.options }
+    return this.get<{ data: Customer[]; total: number; page: number; limit: number }>(
+      this.baseUrl,
+      { params: searchParams }
     );
   }
 
   async getCustomerById(id: string): Promise<Customer> {
-    return apiFetch<Customer>(`${this.baseUrl}/customers/${id}`, { ...this.options });
+    return this.get<Customer>(`${this.baseUrl}/${id}`);
   }
 
   async getCustomerByNumber(customerNumber: string): Promise<Customer> {
-    return apiFetch<Customer>(`${this.baseUrl}/customers/number/${customerNumber}`, { ...this.options });
+    return this.get<Customer>(`${this.baseUrl}/number/${customerNumber}`);
   }
 
   async createCustomer(customer: CreateCustomerDto): Promise<Customer> {
-    return apiFetch<Customer>(`${this.baseUrl}/customers`, {
-      method: 'POST',
-      body: JSON.stringify(customer),
-      ...this.options,
-    });
+    return this.post<Customer>(this.baseUrl, customer);
   }
 
   async updateCustomer(id: string, customer: UpdateCustomerDto): Promise<Customer> {
-    return apiFetch<Customer>(`${this.baseUrl}/customers/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(customer),
-      ...this.options,
-    });
+    return this.put<Customer>(`${this.baseUrl}/${id}`, customer);
   }
 
   async deleteCustomer(id: string): Promise<void> {
-    return apiFetch<void>(`${this.baseUrl}/customers/${id}`, {
-      method: 'DELETE',
-      ...this.options,
-    });
+    return this.delete<void>(`${this.baseUrl}/${id}`);
   }
 
   // Contact methods
   async createContact(customerId: string, contact: CreateCustomerContactDto): Promise<CustomerContact> {
-    return apiFetch<CustomerContact>(`${this.baseUrl}/customers/${customerId}/contacts`, {
-      method: 'POST',
-      body: JSON.stringify(contact),
-      ...this.options,
-    });
+    return this.post<CustomerContact>(`${this.baseUrl}/${customerId}/contacts`, contact);
   }
 
   async updateContact(id: string, contact: Partial<CreateCustomerContactDto>): Promise<CustomerContact> {
-    return apiFetch<CustomerContact>(`${this.baseUrl}/customers/contacts/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(contact),
-      ...this.options,
-    });
+    return this.put<CustomerContact>(`${this.baseUrl}/contacts/${id}`, contact);
   }
 
   async deleteContact(id: string): Promise<void> {
-    return apiFetch<void>(`${this.baseUrl}/customers/contacts/${id}`, {
-      method: 'DELETE',
-      ...this.options,
-    });
+    return this.delete<void>(`${this.baseUrl}/contacts/${id}`);
   }
 } 

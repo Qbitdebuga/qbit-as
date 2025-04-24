@@ -248,7 +248,7 @@ This document outlines the implementation plan for connecting the various micros
     - `apps/web/src/app/dashboard/page.tsx`: Update dashboard page
   - **Step Dependencies**: Step 26
 
-- [ ] Step 28: Create Consolidated Report Component
+- [x] Step 28: Create Consolidated Report Component
   - **Task**: Implement a component for displaying consolidated financial reports
   - **Files**:
     - `apps/web/src/components/reports/ConsolidatedReport.tsx`: Create the component

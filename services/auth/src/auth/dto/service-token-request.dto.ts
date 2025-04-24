@@ -8,7 +8,7 @@ export class ServiceTokenRequestDto {
   })
   @IsString()
   @IsNotEmpty()
-  serviceName: string;
+  serviceName: string = '';
 
   @ApiProperty({
     description: 'API key to authenticate the service',
@@ -16,7 +16,7 @@ export class ServiceTokenRequestDto {
   })
   @IsString()
   @IsNotEmpty()
-  apiKey: string;
+  apiKey: string = '';
 
   @ApiProperty({
     description: 'List of scopes requested for this token',
@@ -26,7 +26,7 @@ export class ServiceTokenRequestDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  scope: string[];
+  scope: string[] = [];
 
   @ApiProperty({
     description: 'Optional token expiration time (default is 1h)',

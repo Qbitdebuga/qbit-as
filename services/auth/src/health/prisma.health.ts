@@ -18,12 +18,12 @@ export class PrismaHealthIndicator extends HealthIndicator {
       // Execute a simple query to check if database is responding
       await this.prismaService.$queryRaw`SELECT 1`;
       return this.getStatus(key, true, { database: 'postgres' });
-    } catch (error) {
+    } catch (error: any) {
       throw new HealthCheckError(
         'Prisma health check failed',
         this.getStatus(key, false, {
           database: 'postgres',
-          error: error.message,
+          error: error.message || 'Unknown database error',
         }),
       );
     }

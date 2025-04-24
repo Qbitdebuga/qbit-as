@@ -2,58 +2,58 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UserInfo {
   @ApiProperty({ description: 'User ID' })
-  id: string;
+  id!: string;
 
   @ApiProperty({ description: 'User name' })
-  name: string;
+  name!: string;
 
   @ApiProperty({ description: 'User email' })
-  email: string;
+  email!: string;
 
   @ApiProperty({ description: 'User roles', type: [String] })
-  roles: string[];
+  roles!: string[];
 }
 
 export class BalanceSheetSummary {
   @ApiProperty({ description: 'Total assets' })
-  totalAssets: number;
+  totalAssets!: number;
 
   @ApiProperty({ description: 'Total liabilities' })
-  totalLiabilities: number;
+  totalLiabilities!: number;
 
   @ApiProperty({ description: 'Total equity' })
-  equity: number;
+  equity!: number;
 }
 
 export class IncomeStatementSummary {
   @ApiProperty({ description: 'Total revenue' })
-  revenue: number;
+  revenue!: number;
 
   @ApiProperty({ description: 'Total expenses' })
-  expenses: number;
+  expenses!: number;
 
   @ApiProperty({ description: 'Net income' })
-  netIncome: number;
+  netIncome!: number;
 }
 
 export class FinancialSummary {
   @ApiProperty({ description: 'Total number of accounts' })
-  totalAccounts: number;
+  totalAccounts!: number;
 
   @ApiProperty({ description: 'Recent journal entry transactions', type: 'array' })
-  recentTransactions: any[];
+  recentTransactions!: any[];
 
   @ApiProperty({ type: BalanceSheetSummary })
-  balanceSheet: BalanceSheetSummary;
+  balanceSheet!: BalanceSheetSummary;
 
   @ApiProperty({ type: IncomeStatementSummary })
-  incomeStatement: IncomeStatementSummary;
+  incomeStatement!: IncomeStatementSummary;
 }
 
 export class DashboardResponseDto {
   @ApiProperty({ type: UserInfo })
-  user: UserInfo;
+  user!: UserInfo;
 
   @ApiProperty({ type: FinancialSummary })
-  financialSummary: FinancialSummary;
+  financialSummary!: FinancialSummary;
 } 

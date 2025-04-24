@@ -51,10 +51,14 @@ export class ServiceTokenClient {
       const expiresInMs = 23 * 60 * 60 * 1000; // 23 hours
       this.tokenExpiresAt = Date.now() + expiresInMs;
       
-      return this.token;
-    } catch (error) {
+      if (this.token) {
+        return this.token;
+      } else {
+        throw new Error('Received empty token from auth service');
+      }
+    } catch (error: any) {
       console.error('Failed to obtain service token:', error);
-      throw new Error(`Failed to obtain service token: ${error.message}`);
+      throw new Error(`Failed to obtain service token: ${error?.message || 'Unknown error'}`);
     }
   }
 

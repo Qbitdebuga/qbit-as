@@ -26,15 +26,25 @@ const ConsolidatedReport: React.FC<ConsolidatedReportProps> = ({
       return;
     }
 
-    // Default export implementation if no custom handler is provided
-    const fileName = `consolidated-report-${asOfDate}`;
-    
-    if (format === 'pdf' && balanceSheet) {
-      exportToPdf(balanceSheet, `${fileName}-balance-sheet.pdf`);
-    } else if (format === 'excel' && balanceSheet) {
-      exportToExcel(balanceSheet, `${fileName}-balance-sheet.xlsx`);
-    } else if (format === 'csv' && balanceSheet) {
-      exportToCsv(balanceSheet, `${fileName}-balance-sheet.csv`);
+    // Default export handling
+    const title = `Consolidated Financial Report - ${formatDate(asOfDate)}`;
+    const data = {
+      balanceSheet: balanceSheet?.data,
+      incomeStatement: incomeStatement?.data,
+      cashFlow: cashFlow?.data,
+      asOfDate
+    };
+
+    switch (format) {
+      case 'pdf':
+        exportToPdf(data, title);
+        break;
+      case 'excel':
+        exportToExcel(data, title);
+        break;
+      case 'csv':
+        exportToCsv(data, title);
+        break;
     }
   };
 
@@ -107,8 +117,8 @@ const ConsolidatedReport: React.FC<ConsolidatedReportProps> = ({
                   <span className="font-medium">{formatCurrency(cashFlow.data.netCashFromInvestingActivities)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm">Net Change in Cash:</span>
-                  <span className="font-medium">{formatCurrency(cashFlow.data.netChangeInCash)}</span>
+                  <span className="text-sm">Financing Activities:</span>
+                  <span className="font-medium">{formatCurrency(cashFlow.data.netCashFromFinancingActivities)}</span>
                 </div>
               </div>
               <div className="mt-4">
@@ -121,97 +131,99 @@ const ConsolidatedReport: React.FC<ConsolidatedReportProps> = ({
         </div>
       </div>
       
-      {/* Financial ratios */}
-      {incomeStatement && balanceSheet && (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4">Key Financial Ratios</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Profitability */}
-            <div className="p-3 bg-indigo-50 rounded-lg">
-              <h3 className="text-xs font-medium text-indigo-800 uppercase mb-2">Profit Margin</h3>
-              <p className="text-lg font-semibold">
-                {incomeStatement.data.totalRevenue ? 
-                  ((incomeStatement.data.netIncome / incomeStatement.data.totalRevenue) * 100).toFixed(2) + '%' : 
-                  'N/A'}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">Net Income / Revenue</p>
-            </div>
-            
-            {/* Liquidity */}
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <h3 className="text-xs font-medium text-blue-800 uppercase mb-2">Debt-to-Equity Ratio</h3>
-              <p className="text-lg font-semibold">
-                {balanceSheet.data.totalEquity ? 
-                  (balanceSheet.data.totalLiabilities / balanceSheet.data.totalEquity).toFixed(2) : 
-                  'N/A'}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">Total Liabilities / Total Equity</p>
-            </div>
-            
-            {/* Return on Assets */}
-            <div className="p-3 bg-green-50 rounded-lg">
-              <h3 className="text-xs font-medium text-green-800 uppercase mb-2">Return on Assets</h3>
-              <p className="text-lg font-semibold">
-                {balanceSheet.data.totalAssets ? 
-                  ((incomeStatement.data.netIncome / balanceSheet.data.totalAssets) * 100).toFixed(2) + '%' : 
-                  'N/A'}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">Net Income / Total Assets</p>
-            </div>
-            
-            {/* Return on Equity */}
-            <div className="p-3 bg-purple-50 rounded-lg">
-              <h3 className="text-xs font-medium text-purple-800 uppercase mb-2">Return on Equity</h3>
-              <p className="text-lg font-semibold">
-                {balanceSheet.data.totalEquity ? 
-                  ((incomeStatement.data.netIncome / balanceSheet.data.totalEquity) * 100).toFixed(2) + '%' : 
-                  'N/A'}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">Net Income / Total Equity</p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Report metadata */}
+      {/* Detailed financial information */}
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-semibold mb-4">Report Information</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h2 className="text-xl font-semibold mb-4">Financial Analysis</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Report Period</h3>
-            <div className="bg-gray-50 p-3 rounded">
-              {balanceSheet && (
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">As of Date:</span>
-                    <span className="text-sm">{formatDate(balanceSheet.meta.endDate)}</span>
+            <h3 className="text-md font-medium mb-4 text-gray-700">Performance Metrics</h3>
+            <div className="space-y-4">
+              {incomeStatement && balanceSheet && (
+                <>
+                  <div className="bg-gray-50 p-4 rounded">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium">Profit Margin</span>
+                      <span className="font-medium text-sm">
+                        {incomeStatement.data.totalRevenue > 0
+                          ? ((incomeStatement.data.netIncome / incomeStatement.data.totalRevenue) * 100).toFixed(2) + '%'
+                          : 'N/A'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      The ratio of net income to total revenue, showing overall profitability.
+                    </p>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Generated At:</span>
-                    <span className="text-sm">{formatDate(balanceSheet.meta.generatedAt)}</span>
+                  
+                  <div className="bg-gray-50 p-4 rounded">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium">Return on Assets (ROA)</span>
+                      <span className="font-medium text-sm">
+                        {balanceSheet.data.totalAssets > 0
+                          ? ((incomeStatement.data.netIncome / balanceSheet.data.totalAssets) * 100).toFixed(2) + '%'
+                          : 'N/A'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Measures how efficiently assets are being used to generate profits.
+                    </p>
                   </div>
-                </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium">Debt to Equity Ratio</span>
+                      <span className="font-medium text-sm">
+                        {balanceSheet.data.totalEquity > 0
+                          ? (balanceSheet.data.totalLiabilities / balanceSheet.data.totalEquity).toFixed(2)
+                          : 'N/A'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Indicates the relative proportion of shareholders' equity and debt used to finance assets.
+                    </p>
+                  </div>
+                </>
               )}
             </div>
           </div>
           
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Data Sources</h3>
-            <div className="bg-gray-50 p-3 rounded">
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-center">
-                  <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-                  <span>General Ledger Service</span>
-                </li>
-                <li className="flex items-center">
-                  <span className="h-2 w-2 rounded-full bg-blue-500 mr-2"></span>
-                  <span>Reporting Service</span>
-                </li>
-                <li className="flex items-center">
-                  <span className="h-2 w-2 rounded-full bg-purple-500 mr-2"></span>
-                  <span>Auth Service</span>
-                </li>
-              </ul>
+            <h3 className="text-md font-medium mb-4 text-gray-700">Report Information</h3>
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Report Details</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-xs text-gray-500">Date:</span>
+                    <span className="text-xs">{formatDate(asOfDate)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs text-gray-500">Report Type:</span>
+                    <span className="text-xs">Consolidated Financial Report</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs text-gray-500">Generated:</span>
+                    <span className="text-xs">{formatDate(new Date().toISOString())}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Data Sources</h4>
+                <ul className="space-y-1 text-xs">
+                  <li className="flex items-center">
+                    <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                    <span>General Ledger Service</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-2 w-2 rounded-full bg-blue-500 mr-2"></span>
+                    <span>Reporting Service</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-2 w-2 rounded-full bg-purple-500 mr-2"></span>
+                    <span>Auth Service</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

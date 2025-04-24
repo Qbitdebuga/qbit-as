@@ -2,45 +2,45 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TransactionDto {
   @ApiProperty({ description: 'Transaction ID' })
-  id: string;
+  id!: string;
 
   @ApiProperty({ description: 'Transaction date' })
-  date: Date;
+  date!: Date;
 
   @ApiProperty({ description: 'Transaction description' })
-  description: string;
+  description!: string;
 
   @ApiProperty({ description: 'Reference number' })
-  reference: string;
+  reference!: string;
 
   @ApiProperty({ description: 'Debit amount' })
-  debit: number;
+  debit!: number;
 
   @ApiProperty({ description: 'Credit amount' })
-  credit: number;
+  credit!: number;
 
   @ApiProperty({ description: 'Transaction status' })
-  status: string;
+  status!: string;
 }
 
 export class AccountDto {
   @ApiProperty({ description: 'Account ID' })
-  id: string;
+  id!: string;
 
   @ApiProperty({ description: 'Account code' })
-  code: string;
+  code!: string;
 
   @ApiProperty({ description: 'Account name' })
-  name: string;
+  name!: string;
 
   @ApiProperty({ description: 'Account type' })
-  type: string;
+  type!: string;
 
   @ApiProperty({ description: 'Account subtype' })
-  subtype: string;
+  subtype!: string;
 
   @ApiProperty({ description: 'Whether the account is active' })
-  isActive: boolean;
+  isActive!: boolean;
 
   @ApiProperty({ description: 'Parent account ID', required: false })
   parentId?: string;
@@ -51,11 +51,11 @@ export class AccountDto {
 
 export class AccountDetailsResponseDto {
   @ApiProperty({ type: AccountDto })
-  account: AccountDto;
+  account!: AccountDto;
 
   @ApiProperty({ type: [TransactionDto] })
-  transactions: TransactionDto[];
+  transactions!: TransactionDto[];
 
   @ApiProperty({ description: 'Current balance' })
-  balance: number;
+  balance!: number;
 } 

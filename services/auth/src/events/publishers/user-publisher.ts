@@ -1,6 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { InjectClient } from '@nestjs/microservices';
 import { USER_EVENTS } from '../constants/event-patterns';
 
 // Define a User interface to avoid the @prisma/client import issue
@@ -19,9 +18,7 @@ export class UserPublisher {
   private readonly logger = new Logger(UserPublisher.name);
 
   constructor(
-    // Use a comment to avoid linting errors for now
-    // @InjectClient('RABBITMQ_SERVICE') private readonly client: ClientProxy,
-    private readonly client: any,
+    @Inject('RABBITMQ_CLIENT') private readonly client: ClientProxy,
   ) {}
 
   async publishUserCreated(user: User): Promise<void> {
@@ -40,7 +37,7 @@ export class UserPublisher {
     }
   }
 
-  async publishUserUpdated(user: User, previousData?: Partial<User>): Promise<void> {
+  async publishUserUpdated(user: User, previousData?: Partial<User> | null): Promise<void> {
     try {
       const eventPayload = this.sanitizeUser(user);
       this.logger.log(`Publishing ${USER_EVENTS.UPDATED} event for user ${user.id}`);
@@ -57,20 +54,31 @@ export class UserPublisher {
     }
   }
 
-  async publishUserDeleted(userId: string, userData: Partial<User>): Promise<void> {
+  async publishUserDeleted(userId: string, userData: Partial<User> | null): Promise<void> {
     try {
       this.logger.log(`Publishing ${USER_EVENTS.DELETED} event for user ${userId}`);
       
-      // Make a copy of userData without the id field
-      const { id, ...userDataWithoutId } = userData as User;
-      const sanitizedData = this.sanitizeUser({ id: userId, ...userDataWithoutId } as User);
-      
-      await this.client.emit(USER_EVENTS.DELETED, {
-        serviceSource: 'auth-service',
-        entityType: 'user',
-        timestamp: new Date().toISOString(),
-        data: sanitizedData
-      }).toPromise();
+      // Only process if userData exists
+      if (userData) {
+        // Make a copy of userData without the id field
+        const { id, ...userDataWithoutId } = userData as User;
+        const sanitizedData = this.sanitizeUser({ id: userId, ...userDataWithoutId } as User);
+        
+        await this.client.emit(USER_EVENTS.DELETED, {
+          serviceSource: 'auth-service',
+          entityType: 'user',
+          timestamp: new Date().toISOString(),
+          data: sanitizedData
+        }).toPromise();
+      } else {
+        // If no user data, just send the basic info
+        await this.client.emit(USER_EVENTS.DELETED, {
+          serviceSource: 'auth-service',
+          entityType: 'user',
+          timestamp: new Date().toISOString(),
+          data: { id: userId }
+        }).toPromise();
+      }
     } catch (error: any) {
       this.logger.error(`Failed to publish ${USER_EVENTS.DELETED} event: ${error.message}`, error.stack);
     }

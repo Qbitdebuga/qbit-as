@@ -4,12 +4,20 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UserPublisher } from './publishers/user-publisher';
 import { RolePublisher } from './publishers/role-publisher';
 
+// Mock client for development
+const mockClient = {
+  emit: () => ({
+    toPromise: () => Promise.resolve(),
+  }),
+};
+
 /**
  * Note: Before using this module in production, you need to install the missing dependencies:
  * npm install @nestjs/microservices amqp-connection-manager amqplib
  */
 @Module({
   imports: [
+    ConfigModule,
     // Temporarily commented out until microservices dependencies are fully set up
     /*
     ClientsModule.registerAsync([
@@ -32,7 +40,14 @@ import { RolePublisher } from './publishers/role-publisher';
     ]),
     */
   ],
-  providers: [UserPublisher, RolePublisher],
+  providers: [
+    {
+      provide: 'RABBITMQ_CLIENT',
+      useValue: mockClient,
+    },
+    UserPublisher, 
+    RolePublisher
+  ],
   exports: [UserPublisher, RolePublisher],
 })
 export class EventsModule {

@@ -1,6 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { InjectClient } from '@nestjs/microservices';
 import { ROLE_EVENTS } from '../constants/event-patterns';
 
 // Define a Role interface
@@ -18,9 +17,7 @@ export class RolePublisher {
   private readonly logger = new Logger(RolePublisher.name);
 
   constructor(
-    // Use a comment to avoid linting errors for now
-    // @InjectClient('RABBITMQ_SERVICE') private readonly client: ClientProxy,
-    private readonly client: any,
+    @Inject('RABBITMQ_CLIENT') private readonly client: ClientProxy,
   ) {}
 
   async publishRoleCreated(role: Role): Promise<void> {
