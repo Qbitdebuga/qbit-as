@@ -1,0 +1,218 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Product models
+model Product {
+  id                Int             @id @default(autoincrement())
+  sku               String          @unique
+  name              String
+  description       String?
+  categoryId        Int?
+  price             Decimal         @db.Decimal(10, 2)
+  cost              Decimal?        @db.Decimal(10, 2)
+  quantityOnHand    Decimal         @default(0) @db.Decimal(10, 2)
+  reorderPoint      Decimal?        @db.Decimal(10, 2)
+  isActive          Boolean         @default(true)
+  isSellable        Boolean         @default(true)
+  isPurchasable     Boolean         @default(true)
+  barcode           String?
+  weight            Decimal?        @db.Decimal(10, 2)
+  weightUnit        String?         // g, kg, lb, etc.
+  dimensions        String?         // JSON formatted dimensions
+  taxable           Boolean         @default(true)
+  taxRateId         Int?
+  accountId         Int?            // General Ledger account ID
+  imageUrl          String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  category          ProductCategory? @relation(fields: [categoryId], references: [id])
+  variants          ProductVariant[]
+  inventoryLevels   InventoryLevel[]
+  transactionLines  TransactionLine[]
+
+  @@map("products")
+}
+
+model ProductCategory {
+  id                Int             @id @default(autoincrement())
+  name              String
+  description       String?
+  parentId          Int?
+  isActive          Boolean         @default(true)
+  imageUrl          String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  parent            ProductCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children          ProductCategory[] @relation("CategoryHierarchy")
+  products          Product[]
+
+  @@map("product_categories")
+}
+
+model ProductVariant {
+  id                Int             @id @default(autoincrement())
+  productId         Int
+  sku               String          @unique
+  name              String
+  attributes        Json?           // JSON formatted attributes (color, size, etc.)
+  price             Decimal?        @db.Decimal(10, 2)
+  cost              Decimal?        @db.Decimal(10, 2)
+  quantityOnHand    Decimal         @default(0) @db.Decimal(10, 2)
+  reorderPoint      Decimal?        @db.Decimal(10, 2)
+  barcode           String?
+  weight            Decimal?        @db.Decimal(10, 2)
+  weightUnit        String?
+  dimensions        String?
+  imageUrl          String?
+  isActive          Boolean         @default(true)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  product           Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  inventoryLevels   InventoryLevel[]
+  transactionLines  TransactionLine[]
+
+  @@map("product_variants")
+}
+
+// Warehouse models
+model Warehouse {
+  id                String           @id @default(uuid())
+  name              String
+  code              String           @unique // Unique identifier for the warehouse
+  description       String?
+  address           String?
+  city              String?
+  state             String?
+  postalCode        String?
+  country           String?
+  isActive          Boolean          @default(true)
+  isPrimary         Boolean          @default(false)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relations
+  locations         WarehouseLocation[]
+  inventoryLevels   InventoryLevel[]
+  sourceTransactions InventoryTransaction[] @relation("SourceTransactions")
+  targetTransactions InventoryTransaction[] @relation("TargetTransactions")
+
+  @@map("warehouses")
+}
+
+model WarehouseLocation {
+  id                Int              @id @default(autoincrement())
+  warehouseId       String
+  name              String
+  code              String           // Location code (e.g., "A-01-02" for Aisle A, Rack 01, Shelf 02)
+  description       String?
+  locationType      String?          // E.g., "Aisle", "Rack", "Shelf", "Bin"
+  isActive          Boolean          @default(true)
+  parentId          Int?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relations
+  warehouse         Warehouse        @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  parent            WarehouseLocation? @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children          WarehouseLocation[] @relation("LocationHierarchy")
+  inventoryLevels   InventoryLevel[]
+  sourceTransactionLines TransactionLine[] @relation("SourceTransactionLines")
+  targetTransactionLines TransactionLine[] @relation("TargetTransactionLines")
+
+  @@unique([warehouseId, code])
+  @@map("warehouse_locations")
+}
+
+// Inventory level tracking
+model InventoryLevel {
+  id                Int             @id @default(autoincrement())
+  productId         Int?
+  variantId         Int?
+  warehouseId       String
+  locationId        Int?
+  quantity          Decimal         @default(0) @db.Decimal(10, 2)
+  reorderPoint      Decimal?        @db.Decimal(10, 2)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  product           Product?        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant           ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  warehouse         Warehouse       @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  location          WarehouseLocation? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+
+  @@map("inventory_levels")
+  @@unique([productId, variantId, warehouseId, locationId])
+}
+
+// Inventory transaction models
+model InventoryTransaction {
+  id                String              @id @default(uuid())
+  transactionType   String              // "receipt", "shipment", "transfer", "adjustment", "count"
+  referenceNumber   String?             // External reference number (e.g., PO number, SO number)
+  referenceType     String?             // What type of document this is referencing (e.g., "purchase_order", "sales_order")
+  referenceId       String?             // ID of the referenced document
+  sourceWarehouseId String?             // For transfers
+  targetWarehouseId String?             // Required for all except adjustments
+  transactionDate   DateTime            @default(now())
+  status            String              @default("draft") // "draft", "pending", "completed", "cancelled"
+  notes             String?
+  isBackordered     Boolean             @default(false)
+  createdBy         String?             // User who created the transaction
+  completedBy       String?             // User who completed the transaction
+  cancelledBy       String?             // User who cancelled the transaction
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  lines             TransactionLine[]
+  sourceWarehouse   Warehouse?          @relation("SourceTransactions", fields: [sourceWarehouseId], references: [id])
+  targetWarehouse   Warehouse?          @relation("TargetTransactions", fields: [targetWarehouseId], references: [id])
+
+  @@map("inventory_transactions")
+}
+
+model TransactionLine {
+  id                  String              @id @default(uuid())
+  transactionId       String
+  productId           Int?
+  variantId           Int?
+  sourceLocationId    Int?                // For transfers
+  targetLocationId    Int?
+  expectedQuantity    Decimal             @db.Decimal(10, 2)
+  processedQuantity   Decimal             @default(0) @db.Decimal(10, 2)
+  status              String              @default("pending") // "pending", "partial", "complete", "cancelled"
+  notes               String?
+  lotNumber           String?
+  serialNumber        String?
+  expirationDate      DateTime?
+  unitCost            Decimal?            @db.Decimal(10, 2)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  // Relations
+  transaction         InventoryTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  product             Product?            @relation(fields: [productId], references: [id])
+  variant             ProductVariant?     @relation(fields: [variantId], references: [id])
+  sourceLocation      WarehouseLocation?  @relation("SourceTransactionLines", fields: [sourceLocationId], references: [id])
+  targetLocation      WarehouseLocation?  @relation("TargetTransactionLines", fields: [targetLocationId], references: [id])
+
+  @@map("transaction_lines")
+} 

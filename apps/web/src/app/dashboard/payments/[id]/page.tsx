@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import PaymentDetail from '@/components/payments/PaymentDetail';
-import { usePayments } from '@/hooks/usePayments';
+import { useVendorPayments } from '@/hooks/useVendorPayments';
 import { Payment } from '@qbit/shared-types';
 
 export default function PaymentDetailPage() {
@@ -14,8 +14,8 @@ export default function PaymentDetailPage() {
   const [payment, setPayment] = useState<Payment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Get payments hook with autoFetch set to false since we'll fetch by ID
-  const { payments, error, refetch } = usePayments({ autoFetch: false });
+  // Get vendor payments hook with autoFetch set to false since we'll fetch by ID
+  const { payments, error, refetch } = useVendorPayments({ autoFetch: false });
 
   // Get payment ID from route params
   const paymentId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
@@ -40,7 +40,7 @@ export default function PaymentDetailPage() {
         if (!foundPayment) {
           toast({
             title: "Payment not found",
-            description: "The requested payment could not be found.",
+            description: "The requested vendor payment could not be found.",
             variant: "destructive",
           });
           router.push('/dashboard/payments');
@@ -49,10 +49,10 @@ export default function PaymentDetailPage() {
         
         setPayment(foundPayment);
       } catch (error) {
-        console.error('Error loading payment:', error);
+        console.error('Error loading vendor payment:', error);
         toast({
           title: "Error",
-          description: "There was an error loading the payment. Please try again.",
+          description: "There was an error loading the vendor payment. Please try again.",
           variant: "destructive",
         });
       } finally {
@@ -66,7 +66,7 @@ export default function PaymentDetailPage() {
   if (isLoading) {
     return (
       <div className="container mx-auto py-6 space-y-6">
-        <h1 className="text-3xl font-bold">Payment Details</h1>
+        <h1 className="text-3xl font-bold">Vendor Payment Details</h1>
         <div className="text-center py-10">Loading payment details...</div>
       </div>
     );
@@ -78,7 +78,7 @@ export default function PaymentDetailPage() {
 
   return (
     <div className="container mx-auto py-6 space-y-6">
-      <h1 className="text-3xl font-bold">Payment Details</h1>
+      <h1 className="text-3xl font-bold">Vendor Payment Details</h1>
       <PaymentDetail 
         payment={payment} 
         onDelete={() => router.push('/dashboard/payments')} 

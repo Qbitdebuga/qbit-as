@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AssetCategory {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  assets      Asset[]
+
+  @@map("asset_categories")
+}
+
+model Asset {
+  id                  String              @id @default(uuid())
+  name                String
+  description         String?
+  assetNumber         String              @unique @map("asset_number")
+  purchaseDate        DateTime            @map("purchase_date")
+  purchaseCost        Decimal             @map("purchase_cost")
+  residualValue       Decimal             @map("residual_value")
+  assetLifeYears      Int                 @map("asset_life_years")
+  status              AssetStatus         @default(ACTIVE)
+  serialNumber        String?             @map("serial_number")
+  location            String?
+  notes               String?
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  categoryId          String              @map("category_id")
+  category            AssetCategory       @relation(fields: [categoryId], references: [id])
+  depreciationMethod  DepreciationMethod  @default(STRAIGHT_LINE) @map("depreciation_method")
+  depreciationEntries DepreciationEntry[]
+
+  @@map("assets")
+}
+
+model DepreciationEntry {
+  id        String   @id @default(uuid())
+  assetId   String   @map("asset_id")
+  asset     Asset    @relation(fields: [assetId], references: [id])
+  date      DateTime
+  amount    Decimal
+  bookValue Decimal  @map("book_value")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("depreciation_entries")
+}
+
+enum AssetStatus {
+  ACTIVE
+  DISPOSED
+  FULLY_DEPRECIATED
+  INACTIVE
+  UNDER_MAINTENANCE
+}
+
+enum DepreciationMethod {
+  STRAIGHT_LINE
+  DECLINING_BALANCE
+  DOUBLE_DECLINING_BALANCE
+  UNITS_OF_PRODUCTION
+  SUM_OF_YEARS_DIGITS
+} 

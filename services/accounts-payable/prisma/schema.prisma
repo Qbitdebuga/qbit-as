@@ -10,64 +10,160 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Vendor model
+// Vendor models
 model Vendor {
-  id             String          @id @default(uuid())
-  name           String
-  contactName    String?
-  email          String
-  phone          String?
-  address        String?
-  taxId          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  bills          Bill[]
-  vendorPayments VendorPayment[]
+  id                Int       @id @default(autoincrement())
+  vendorNumber      String    @unique
+  name              String
+  email             String?
+  phone             String?
+  address           String?
+  city              String?
+  state             String?
+  zipCode           String?
+  country           String?
+  taxId             String?
+  website           String?
+  notes             String?
+  isActive          Boolean   @default(true)
+  paymentTerms      String?   // net30, net60, etc.
+  defaultAccountId  Int?
+  creditLimit       Decimal?  @default(0) @db.Decimal(12, 2)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  bills             Bill[]
+  payments          Payment[]
+  expenses          Expense[]
+
+  @@map("vendors")
 }
 
-// Bill model
+// Vendor contact models
+model VendorContact {
+  id                Int       @id @default(autoincrement())
+  vendorId          Int
+  firstName         String
+  lastName          String
+  email             String?
+  phone             String?
+  position          String?
+  isPrimary         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relation
+  vendor            Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@map("vendor_contacts")
+}
+
+// Bill models
 model Bill {
-  id             String          @id @default(uuid())
-  billNumber     String          @unique
-  vendorId       String
-  vendor         Vendor          @relation(fields: [vendorId], references: [id])
-  amount         Decimal         @db.Decimal(10, 2)
-  description    String?
-  dueDate        DateTime
-  status         BillStatus      @default(PENDING)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  vendorPayments VendorPayment[]
+  id                Int             @id @default(autoincrement())
+  billNumber        String          @unique
+  vendorId          Int
+  reference         String?         // Vendor's reference number or PO number
+  issueDate         DateTime
+  dueDate           DateTime
+  status            BillStatus      @default(DRAFT)
+  subtotal          Decimal         @db.Decimal(12, 2)
+  taxAmount         Decimal?        @db.Decimal(12, 2)
+  discountAmount    Decimal?        @db.Decimal(12, 2)
+  totalAmount       Decimal         @db.Decimal(12, 2)
+  amountPaid        Decimal         @default(0) @db.Decimal(12, 2)
+  balanceDue        Decimal         @db.Decimal(12, 2)
+  notes             String?
+  terms             String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  vendor            Vendor          @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  lineItems         BillLineItem[]
+  paymentApps       PaymentApplication[]
+
+  @@map("bills")
 }
 
-// Vendor Payment model
-model VendorPayment {
-  id          String           @id @default(uuid())
-  amount      Decimal          @db.Decimal(10, 2)
-  paymentDate DateTime
-  method      PaymentMethod
-  reference   String?
-  billId      String
-  bill        Bill             @relation(fields: [billId], references: [id])
-  vendorId    String
-  vendor      Vendor           @relation(fields: [vendorId], references: [id])
-  status      PaymentStatus    @default(PENDING)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+model BillLineItem {
+  id                Int             @id @default(autoincrement())
+  billId            Int
+  description       String
+  accountId         Int?
+  quantity          Decimal         @db.Decimal(10, 2)
+  unitPrice         Decimal         @db.Decimal(12, 2)
+  discountPercent   Decimal?        @db.Decimal(5, 2)
+  taxPercent        Decimal?        @db.Decimal(5, 2)
+  lineTotal         Decimal         @db.Decimal(12, 2)
+  notes             String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relation
+  bill              Bill            @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@map("bill_line_items")
 }
 
 enum BillStatus {
+  DRAFT
   PENDING
+  APPROVED
+  PARTIAL
   PAID
   OVERDUE
+  VOID
   CANCELLED
 }
 
+// Payment models
+model Payment {
+  id                Int                  @id @default(autoincrement())
+  paymentNumber     String               @unique
+  vendorId          Int
+  paymentDate       DateTime
+  amount            Decimal              @db.Decimal(12, 2)
+  paymentMethod     PaymentMethod
+  reference         String?              // Check number, transaction ID, etc.
+  memo             String?
+  status            PaymentStatus        @default(PENDING)
+  bankAccountId     Int?                 // Optional reference to a bank account
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  // Relations
+  vendor            Vendor               @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  applications      PaymentApplication[]
+
+  @@map("payments")
+}
+
+model PaymentApplication {
+  id                Int                  @id @default(autoincrement())
+  paymentId         Int
+  billId            Int
+  amount            Decimal              @db.Decimal(12, 2)
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  // Relations
+  payment           Payment              @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  bill              Bill                 @relation(fields: [billId], references: [id], onDelete: Restrict)
+
+  @@map("payment_applications")
+}
+
 enum PaymentMethod {
-  BANK_TRANSFER
+  CASH
   CHECK
   CREDIT_CARD
-  CASH
+  DEBIT_CARD
+  BANK_TRANSFER
+  WIRE
+  ACH
+  PAYPAL
   OTHER
 }
 
@@ -75,5 +171,86 @@ enum PaymentStatus {
   PENDING
   COMPLETED
   FAILED
-  REFUNDED
+  VOIDED
+}
+
+// Expense models
+model ExpenseCategory {
+  id                Int             @id @default(autoincrement())
+  name              String
+  description       String?
+  accountId         Int?            // Optional link to accounting system account
+  isActive          Boolean         @default(true)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  expenses          Expense[]
+
+  @@map("expense_categories")
+}
+
+model Expense {
+  id                Int             @id @default(autoincrement())
+  expenseNumber     String          @unique
+  categoryId        Int?
+  vendorId          Int?
+  employeeId        Int?
+  description       String
+  amount            Decimal         @db.Decimal(12, 2)
+  taxAmount         Decimal?        @db.Decimal(12, 2)
+  totalAmount       Decimal         @db.Decimal(12, 2)
+  receiptUrl        String?         // URL to stored receipt image/file
+  expenseDate       DateTime
+  paymentMethod     PaymentMethod
+  paymentReference  String?         // Reference to payment details
+  status            ExpenseStatus   @default(PENDING)
+  notes             String?
+  isReimbursable    Boolean         @default(false)
+  isReconciled      Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  category          ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  vendor            Vendor?         @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  attachments       ExpenseAttachment[]
+  tags              ExpenseTag[]
+
+  @@map("expenses")
+}
+
+model ExpenseAttachment {
+  id                Int             @id @default(autoincrement())
+  expenseId         Int
+  fileName          String
+  fileType          String
+  fileSize          Int
+  filePath          String          // Path to stored file
+  uploadedAt        DateTime        @default(now())
+  
+  // Relations
+  expense           Expense         @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  
+  @@map("expense_attachments")
+}
+
+model ExpenseTag {
+  id                Int             @id @default(autoincrement())
+  expenseId         Int
+  name              String
+  
+  // Relations
+  expense           Expense         @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  
+  @@map("expense_tags")
+}
+
+enum ExpenseStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
+  CANCELLED
 } 
