@@ -6,6 +6,7 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
+import { Request, Response } from 'express';
 
 // Fallback logger in case Winston is not available
 class FallbackLogger implements LoggerService {
@@ -59,7 +60,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   
   // Set global prefix
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
   
   // Enable security middleware
   app.use(helmet());
@@ -84,7 +85,12 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
+  
+  // Simple health check endpoint for Kubernetes probes
+  app.use('/health', (req: Request, res: Response) => {
+    res.status(200).send('OK');
+  });
   
   // Connect to microservices
   app.connectMicroservice<MicroserviceOptions>({

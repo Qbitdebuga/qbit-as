@@ -80,4 +80,167 @@ We have successfully implemented the inventory stock management UI with the foll
    - Transactions list page for viewing and managing inventory movements
    - New transaction page for creating inventory transactions
 
-These components provide a complete interface for managing inventory stock, tracking movements, and making inventory adjustments. The UI integrates with the previously built inventory transaction API and provides a user-friendly way to manage product stock levels across multiple warehouses. 
+These components provide a complete interface for managing inventory stock, tracking movements, and making inventory adjustments. The UI integrates with the previously built inventory transaction API and provides a user-friendly way to manage product stock levels across multiple warehouses.
+
+## Environment Variable Substitution
+
+When deploying to Kubernetes, you need to properly substitute environment variables in the manifest files. We provide scripts to handle this:
+
+### For Linux/Mac:
+```bash
+# Make the script executable
+chmod +x scripts/substitute-env.sh
+
+# Run with your Docker registry username
+./scripts/substitute-env.sh yourusername
+
+# Apply the processed manifests
+kubectl apply -f processed-k8s/
+```
+
+### For Windows:
+```powershell
+# Run with your Docker registry username
+.\scripts\substitute-env.ps1 yourusername
+
+# Apply the processed manifests
+kubectl apply -f processed-k8s/
+```
+
+This will replace `${DOCKER_REGISTRY}` with your actual Docker registry username in all Kubernetes manifests and save the processed files in the `processed-k8s` directory.
+
+## CI/CD Pipeline
+
+The GitHub Actions workflow will automatically handle environment variable substitution during deployment:
+
+1. It replaces `${DOCKER_REGISTRY}` with the Docker Hub username stored in GitHub Secrets
+2. Processes all Kubernetes manifests before applying them
+3. Applies the processed manifests to the Kubernetes cluster
+
+## Additional Information
+
+## Database Migrations
+
+The Qbit Accounting System uses Prisma ORM for database migrations across all microservices. Each service has its own database schema and migration history.
+
+### Running Migrations Locally
+
+We provide scripts to run migrations for all services:
+
+#### For Linux/Mac:
+```bash
+# Make the script executable
+chmod +x scripts/run-migrations.sh
+
+# Run migrations for development environment
+./scripts/run-migrations.sh
+
+# Or for a specific environment
+./scripts/run-migrations.sh production
+```
+
+#### For Windows:
+```powershell
+# Run migrations for development environment
+.\scripts\run-migrations.ps1
+
+# Or for a specific environment
+.\scripts\run-migrations.ps1 -Environment production
+```
+
+### CI/CD Pipeline Migration Process
+
+Our GitHub Actions workflow includes a dedicated job for database migrations:
+
+1. The workflow first builds all services
+2. Before deployment, it runs a separate job to handle database migrations
+3. Migration job checks database status and then applies pending migrations
+4. Only after successful migrations are the services deployed
+
+This ensures database schema compatibility with the new service versions before deployment.
+
+### Creating New Migrations
+
+To create a new migration for a service:
+
+```bash
+# Navigate to the service directory
+cd services/[service-name]
+
+# Create a new migration
+npx prisma migrate dev --name your_migration_name
+```
+
+The migration will be added to the service's Prisma migration history and will be applied during the next deployment.
+
+## Environment Variable Substitution
+
+## Secrets Management
+
+The Qbit Accounting System provides multiple approaches for managing secrets in Kubernetes:
+
+### 1. GitHub Actions Workflow (CI/CD)
+
+Our CI/CD pipeline creates Kubernetes secrets automatically during deployment:
+
+- Secrets are generated from GitHub repository secrets
+- All secrets are created in the dedicated `qbit` namespace
+- The workflow uses `kubectl create secret` with the `--dry-run` flag to safely apply secrets
+
+Required GitHub secrets:
+- `POSTGRES_PASSWORD`: Password for PostgreSQL database
+- `JWT_SECRET`: Secret for JWT token signing
+- `SERVICE_JWT_SECRET`: Secret for service-to-service authentication
+- `RABBITMQ_PASSWORD`: Password for RabbitMQ
+
+### 2. Local Development
+
+For local development, we provide scripts to create secrets:
+
+```powershell
+# PowerShell - Generate random secrets
+.\scripts\create-secrets.ps1 -Namespace qbit -GenerateValues
+
+# PowerShell - Use existing or prompt for secrets
+.\scripts\create-secrets.ps1 -Namespace qbit
+```
+
+### 3. External Secrets Manager Integration
+
+For production environments, we support using external secrets managers:
+
+#### AWS Secrets Manager
+
+```bash
+# Install External Secrets Operator with AWS integration
+./k8s/external-secrets/setup-external-secrets.sh aws
+```
+
+#### Azure Key Vault
+
+```bash
+# Install External Secrets Operator with Azure Key Vault integration
+./k8s/external-secrets/setup-external-secrets.sh azure
+```
+
+### Required Secrets
+
+These secrets are required for the system to function properly:
+
+1. **postgres-secrets**
+   - `POSTGRES_PASSWORD`: PostgreSQL admin password
+
+2. **api-gateway-secrets**
+   - `JWT_SECRET`: JWT token signing key
+   - `SERVICE_JWT_SECRET`: Service-to-service auth token signing key
+   - `RABBITMQ_PASSWORD`: RabbitMQ password
+
+3. **auth-service-secrets**
+   - `JWT_SECRET`: JWT token signing key
+   - `SERVICE_JWT_SECRET`: Service-to-service auth token signing key
+   - `DATABASE_PASSWORD`: Database password
+   - `RABBITMQ_PASSWORD`: RabbitMQ password
+
+4. **Service-specific secrets**
+   - Each service has its own secrets with the pattern `{service-name}-secrets`
+   - All service secrets include database passwords and auth tokens 

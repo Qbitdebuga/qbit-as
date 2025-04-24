@@ -8,12 +8,10 @@ on:
       - '.github/dependabot.yml'
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    
     environment:
       name: production
-    
     steps:
       - uses: actions/checkout@v3
       
@@ -110,6 +108,115 @@ jobs:
           context: ./apps/web
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-web:latest
+
+  migrate-databases:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install database migration dependencies
+        run: |
+          npm ci
+          npm install -g prisma
+        
+      - name: Run database status check
+        run: |
+          echo "Checking database status before migrations..."
+          
+          # Auth service
+          echo "Auth Service:"
+          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma migrate status
+
+          # General Ledger
+          echo "General Ledger:"
+          DATABASE_URL=${{ secrets.GL_DB_URL }} npx --prefix services/general-ledger prisma migrate status
+          
+          # Accounts Payable
+          echo "Accounts Payable:"
+          DATABASE_URL=${{ secrets.AP_DB_URL }} npx --prefix services/accounts-payable prisma migrate status
+          
+          # Accounts Receivable
+          echo "Accounts Receivable:"
+          DATABASE_URL=${{ secrets.AR_DB_URL }} npx --prefix services/accounts-receivable prisma migrate status
+          
+          # Banking
+          echo "Banking:"
+          DATABASE_URL=${{ secrets.BANKING_DB_URL }} npx --prefix services/banking prisma migrate status
+          
+          # Fixed Assets
+          echo "Fixed Assets:"
+          DATABASE_URL=${{ secrets.FA_DB_URL }} npx --prefix services/fixed-assets prisma migrate status
+          
+          # Inventory
+          echo "Inventory:"
+          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} npx --prefix services/inventory prisma migrate status
+          
+          # Reporting
+          echo "Reporting:"
+          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} npx --prefix services/reporting prisma migrate status
+      
+      - name: Run database migrations
+        id: run-migrations
+        run: |
+          echo "Running database migrations..."
+          
+          # Auth service migrations
+          echo "Migrating Auth Service..."
+          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma migrate deploy
+          
+          # General Ledger migrations
+          echo "Migrating General Ledger..."
+          DATABASE_URL=${{ secrets.GL_DB_URL }} npx --prefix services/general-ledger prisma migrate deploy
+          
+          # Accounts Payable migrations
+          echo "Migrating Accounts Payable..."
+          DATABASE_URL=${{ secrets.AP_DB_URL }} npx --prefix services/accounts-payable prisma migrate deploy
+          
+          # Accounts Receivable migrations
+          echo "Migrating Accounts Receivable..."
+          DATABASE_URL=${{ secrets.AR_DB_URL }} npx --prefix services/accounts-receivable prisma migrate deploy
+          
+          # Banking migrations
+          echo "Migrating Banking..."
+          DATABASE_URL=${{ secrets.BANKING_DB_URL }} npx --prefix services/banking prisma migrate deploy
+          
+          # Fixed Assets migrations
+          echo "Migrating Fixed Assets..."
+          DATABASE_URL=${{ secrets.FA_DB_URL }} npx --prefix services/fixed-assets prisma migrate deploy
+          
+          # Inventory migrations
+          echo "Migrating Inventory..."
+          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} npx --prefix services/inventory prisma migrate deploy
+          
+          # Reporting migrations
+          echo "Migrating Reporting..."
+          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} npx --prefix services/reporting prisma migrate deploy
+          
+          echo "All migrations completed successfully."
+      
+      - name: Run database seed (only on initial setup)
+        if: github.event.inputs.seed == 'true'
+        run: |
+          echo "Running database seeds..."
+          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma db seed
+          echo "Seeds completed."
+          
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    needs: migrate-databases
+    steps:
+      - uses: actions/checkout@v3
       
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
@@ -119,73 +226,167 @@ jobs:
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
       
-      # Environment variable substitution for K8s manifests
-      - name: Set up environment variables for K8s manifests
+      # Secrets Management
+      - name: Create Kubernetes secrets
         run: |
-          for file in k8s/*.yaml; do
-            sed -i "s|\${DOCKER_REGISTRY}|${{ secrets.DOCKER_HUB_USERNAME }}|g" $file
-          done
+          echo "Creating Kubernetes secrets from GitHub secrets..."
+          
+          # Create namespace if not exists
+          kubectl create namespace qbit --dry-run=client -o yaml | kubectl apply -f -
+          
+          # Create PostgreSQL password secret
+          kubectl create secret generic postgres-secrets \
+            --from-literal=POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+          
+          # Create API Gateway secrets
+          kubectl create secret generic api-gateway-secrets \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create Auth Service secrets
+          kubectl create secret generic auth-service-secrets \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create General Ledger secrets
+          kubectl create secret generic general-ledger-secrets \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create Accounts Payable secrets
+          kubectl create secret generic accounts-payable-secrets \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create Accounts Receivable secrets
+          kubectl create secret generic accounts-receivable-secrets \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create Banking secrets
+          kubectl create secret generic banking-secrets \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create Fixed Assets secrets
+          kubectl create secret generic fixed-assets-secrets \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create Inventory secrets
+          kubectl create secret generic inventory-secrets \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create Reporting secrets
+          kubectl create secret generic reporting-secrets \
+            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
+            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          # Create RabbitMQ secrets
+          kubectl create secret generic rabbitmq-secrets \
+            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
+            --namespace qbit \
+            --dry-run=client -o yaml | kubectl apply -f -
+            
+          echo "Secrets created successfully."
       
-      # Database migrations
-      - name: Set up database migrations
+      # Environment variable substitution for K8s manifests
+      - name: Create temporary directory for processed manifests
+        run: mkdir -p processed-k8s
+
+      - name: Create substitution script
         run: |
-          echo "Running database migrations..."
-          # Auth service migrations
-          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma migrate deploy
-          # General Ledger migrations
-          DATABASE_URL=${{ secrets.GL_DB_URL }} npx --prefix services/general-ledger prisma migrate deploy
-          # Accounts Payable migrations
-          DATABASE_URL=${{ secrets.AP_DB_URL }} npx --prefix services/accounts-payable prisma migrate deploy
-          # Accounts Receivable migrations
-          DATABASE_URL=${{ secrets.AR_DB_URL }} npx --prefix services/accounts-receivable prisma migrate deploy
-          # Banking migrations
-          DATABASE_URL=${{ secrets.BANKING_DB_URL }} npx --prefix services/banking prisma migrate deploy
-          # Fixed Assets migrations
-          DATABASE_URL=${{ secrets.FA_DB_URL }} npx --prefix services/fixed-assets prisma migrate deploy
-          # Inventory migrations
-          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} npx --prefix services/inventory prisma migrate deploy
-          # Reporting migrations
-          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} npx --prefix services/reporting prisma migrate deploy
+          cat > substitute-env.sh << 'EOF'
+          #!/bin/bash
+          for file in k8s/*.yaml; do
+            filename=$(basename $file)
+            echo "Processing $file..."
+            # Replace variables with actual values
+            sed -e "s|\${DOCKER_REGISTRY}|${{ secrets.DOCKER_HUB_USERNAME }}|g" \
+                $file > processed-k8s/$filename
+          done
+          EOF
+          chmod +x substitute-env.sh
+
+      - name: Run substitution on Kubernetes manifests
+        run: ./substitute-env.sh
       
       # Apply K8s manifests
       - name: Deploy to Kubernetes - Core Infrastructure
         run: |
-          kubectl apply -f k8s/database.yaml
-          kubectl apply -f k8s/redis.yaml
-          kubectl apply -f k8s/rabbitmq.yaml
-          kubectl apply -f k8s/consul.yaml
+          kubectl apply -f processed-k8s/database.yaml -n qbit
+          kubectl apply -f processed-k8s/redis.yaml -n qbit
+          kubectl apply -f processed-k8s/rabbitmq.yaml -n qbit
+          kubectl apply -f processed-k8s/consul.yaml -n qbit
       
       # Wait for infrastructure to be ready
       - name: Wait for infrastructure
         run: |
-          kubectl wait --for=condition=available deployment/redis-deployment --timeout=300s
-          kubectl wait --for=condition=ready pod -l app=postgres --timeout=300s
+          kubectl wait --for=condition=available deployment/redis --timeout=300s -n qbit
+          kubectl wait --for=condition=ready pod -l app=postgres --timeout=300s -n qbit
       
       # Apply service manifests
       - name: Deploy microservices to Kubernetes
         run: |
-          kubectl apply -f k8s/api-gateway.yaml
-          kubectl apply -f k8s/auth-service.yaml
-          kubectl apply -f k8s/general-ledger.yaml
-          kubectl apply -f k8s/accounts-payable.yaml
-          kubectl apply -f k8s/accounts-receivable.yaml
-          kubectl apply -f k8s/banking.yaml
-          kubectl apply -f k8s/fixed-assets.yaml
-          kubectl apply -f k8s/inventory.yaml
-          kubectl apply -f k8s/reporting.yaml
-          kubectl apply -f k8s/web.yaml
-          kubectl apply -f k8s/ingress.yaml
+          kubectl apply -f processed-k8s/api-gateway.yaml -n qbit
+          kubectl apply -f processed-k8s/auth-service.yaml -n qbit
+          kubectl apply -f processed-k8s/general-ledger.yaml -n qbit
+          kubectl apply -f processed-k8s/accounts-payable.yaml -n qbit
+          kubectl apply -f processed-k8s/accounts-receivable.yaml -n qbit
+          kubectl apply -f processed-k8s/banking.yaml -n qbit
+          kubectl apply -f processed-k8s/fixed-assets.yaml -n qbit
+          kubectl apply -f processed-k8s/inventory.yaml -n qbit
+          kubectl apply -f processed-k8s/reporting.yaml -n qbit
+          kubectl apply -f processed-k8s/web.yaml -n qbit
+          kubectl apply -f processed-k8s/ingress.yaml -n qbit
       
       # Restart deployments for fresh images
       - name: Restart deployments
         run: |
-          kubectl rollout restart deployment api-gateway-deployment auth-service-deployment general-ledger-deployment accounts-payable-deployment accounts-receivable-deployment banking-deployment fixed-assets-deployment inventory-deployment reporting-deployment web-deployment
+          kubectl rollout restart deployment api-gateway auth-service-deployment general-ledger-deployment accounts-payable-deployment accounts-receivable-deployment banking-deployment fixed-assets-deployment inventory-deployment reporting-deployment web-deployment -n qbit
       
       # Post-deployment validation
       - name: Validate deployments
         run: |
           echo "Validating deployments..."
-          kubectl get deployments
-          kubectl wait --for=condition=available deployment/api-gateway-deployment --timeout=300s
-          kubectl wait --for=condition=available deployment/auth-service-deployment --timeout=300s
-          echo "Core services deployed successfully!" 
+          kubectl get deployments -n qbit
+          kubectl wait --for=condition=available deployment/api-gateway --timeout=300s -n qbit
+          kubectl wait --for=condition=available deployment/auth-service-deployment --timeout=300s -n qbit
+          echo "Core services deployed successfully!"

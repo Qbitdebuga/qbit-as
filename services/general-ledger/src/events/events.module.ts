@@ -4,6 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AccountPublisher } from './publishers/account-publisher';
 import { JournalEntryPublisher } from './publishers/journal-entry-publisher';
 import { UserConsumer } from './consumers/user-consumer';
+import { RoleConsumer } from './consumers/role-consumer';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
@@ -33,7 +34,7 @@ import { PrismaModule } from '../prisma/prisma.module';
       },
     ]),
   ],
-  providers: [AccountPublisher, JournalEntryPublisher, UserConsumer],
+  providers: [AccountPublisher, JournalEntryPublisher, UserConsumer, RoleConsumer],
   exports: [AccountPublisher, JournalEntryPublisher],
 })
 export class EventsModule {} 

@@ -2,9 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
   // Create the application instance
@@ -18,6 +19,9 @@ async function bootstrap() {
 
   // Get config service
   const configService = app.get(ConfigService);
+
+  // Set global prefix
+  app.setGlobalPrefix('api/v1');
 
   // Enable security headers
   app.use(helmet());
@@ -45,7 +49,12 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
+
+  // Simple health check endpoint for Kubernetes probes
+  app.use('/health', (req: Request, res: Response) => {
+    res.status(200).send('OK');
+  });
 
   // Start the server
   const port = configService.get<number>('PORT') || 3002;

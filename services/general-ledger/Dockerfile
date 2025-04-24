@@ -1,3 +1,4 @@
+# Builder stage
 FROM node:18-alpine AS builder
 
 WORKDIR /app
@@ -10,7 +11,8 @@ COPY ./services/general-ledger/package*.json ./services/general-ledger/
 RUN npm ci
 
 # Copy source files
-COPY . .
+COPY ./services/general-ledger ./services/general-ledger
+COPY ./prisma ./prisma
 
 # Build the application
 RUN npm run build -w general-ledger

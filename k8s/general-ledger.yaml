@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: general-ledger
-        image: ${DOCKER_REGISTRY}/qbit-general-ledger:latest
+        image: qbitaccounting/general-ledger:latest
         ports:
         - containerPort: 3003
         envFrom:

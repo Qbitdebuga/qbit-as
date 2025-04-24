@@ -5,6 +5,10 @@ import * as winston from 'winston';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule as AppConfigModule } from './config/config.module';
 import { VendorsModule } from './vendors/vendors.module';
+import { ExpensesModule } from './expenses/expenses.module';
+import { BillsModule } from './bills/bills.module';
+import { PaymentsModule } from './payments/payments.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -37,6 +41,10 @@ import { VendorsModule } from './vendors/vendors.module';
     
     // Feature Modules
     VendorsModule,
+    ExpensesModule,
+    BillsModule,
+    PaymentsModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [],

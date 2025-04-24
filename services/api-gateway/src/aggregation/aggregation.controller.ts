@@ -1,14 +1,20 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AggregationService } from './aggregation.service';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AccountDetailsResponseDto, DashboardResponseDto } from './dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from '../decorators/roles.decorator';
 
 @ApiTags('Aggregation')
-@Controller('api/aggregation')
+@Controller('aggregation')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
 export class AggregationController {
   constructor(private readonly aggregationService: AggregationService) {}
 
   @Get('dashboard/:userId')
+  @Roles('user:read', 'dashboard:read')
   @ApiOperation({ summary: 'Get dashboard data for a user combining multiple services' })
   @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiResponse({ 
@@ -16,6 +22,8 @@ export class AggregationController {
     description: 'Dashboard data returned successfully',
     type: DashboardResponseDto
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getDashboard(@Param('userId') userId: string) {
@@ -23,6 +31,7 @@ export class AggregationController {
   }
 
   @Get('financial-overview/:userId')
+  @Roles('user:read', 'financial:read')
   @ApiOperation({ summary: 'Get financial overview for a user' })
   @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiResponse({ 
@@ -30,6 +39,8 @@ export class AggregationController {
     description: 'Financial overview returned successfully',
     type: DashboardResponseDto
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getFinancialOverview(@Param('userId') userId: string) {
@@ -37,6 +48,7 @@ export class AggregationController {
   }
 
   @Get('account-details/:accountId')
+  @Roles('account:read')
   @ApiOperation({ summary: 'Get account details with transaction history' })
   @ApiParam({ name: 'accountId', description: 'Account ID' })
   @ApiQuery({ 
@@ -54,6 +66,8 @@ export class AggregationController {
     description: 'Account details returned successfully',
     type: AccountDetailsResponseDto
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Account not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getAccountDetails(

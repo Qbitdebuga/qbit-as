@@ -646,3 +646,14 @@
         - `services/banking/src/accounts/dto/create-bank-account.dto.ts`: Create bank account DTO
         - `services/banking/src/accounts/dto/update-bank-account.dto.ts`: Update bank account DTO
     - **User Instructions**: Run migration after schema update
+
+## Testing & Validation
+
+- [x]  Step 100: Add post-deployment validation
+    - **Task**: Create scripts to validate service health after deployment
+    - **Files**:
+        - `scripts/validate-deployment.sh`: Shell script for local validation
+        - `k8s/validate-deployment.yaml`: Kubernetes job for cluster validation
+        - `docs/deployment-validation.md`: Documentation for validation process
+    - **Step Dependencies**: Step 8
+    - **User Instructions**: Run `./scripts/validate-deployment.sh` to validate a local deployment or `kubectl apply -f k8s/validate-deployment.yaml` for Kubernetes deployments

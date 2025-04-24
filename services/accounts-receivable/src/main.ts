@@ -6,6 +6,8 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
+import { RabbitMQService } from './config/rabbitmq/rabbitmq.service';
+import { Request, Response } from 'express';
 
 // Fallback logger in case Winston is not available
 class FallbackLogger implements LoggerService {
@@ -59,7 +61,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   
   // Set global prefix
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
   
   // Enable security middleware
   app.use(helmet());
@@ -78,13 +80,18 @@ async function bootstrap() {
   
   // Set up Swagger documentation
   const config = new DocumentBuilder()
-    .setTitle('Accounts Receivable API')
-    .setDescription('The Accounts Receivable service API')
+    .setTitle('QBit Accounts Receivable API')
+    .setDescription('Accounts Receivable microservice for QBit Accounting System')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
+  
+  // Simple health check endpoint for Kubernetes probes
+  app.use('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
   
   // Connect to microservices
   app.connectMicroservice<MicroserviceOptions>({
@@ -107,6 +114,10 @@ async function bootstrap() {
   
   // Start microservices
   await app.startAllMicroservices();
+  
+  // Initialize RabbitMQ connections and consumers
+  const rabbitMQService = app.get(RabbitMQService);
+  await rabbitMQService.initializeConsumers();
   
   // Start the server
   const port = configService.get<number>('app.port') || 3004;

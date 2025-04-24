@@ -38,7 +38,12 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
+  
+  // Simple health check endpoint for Kubernetes probes
+  app.use('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
   
   // Start the application
   await app.listen(port);

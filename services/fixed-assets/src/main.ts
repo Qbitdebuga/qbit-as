@@ -3,9 +3,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  // Set global prefix
+  app.setGlobalPrefix('api/v1');
   
   // Global validation pipe
   app.useGlobalPipes(
@@ -27,7 +31,12 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
+
+  // Simple health check endpoint for Kubernetes probes
+  app.use('/health', (req: Request, res: Response) => {
+    res.status(200).send('OK');
+  });
 
   // Get port from config service
   const configService = app.get(ConfigService);

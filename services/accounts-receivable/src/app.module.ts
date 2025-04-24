@@ -8,6 +8,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { AuthModule } from './auth/auth.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { AuthModule } from './auth/auth.module';
     CustomersModule,
     InvoicesModule,
     PaymentsModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [],

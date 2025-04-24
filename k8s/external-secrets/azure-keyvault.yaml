@@ -1,0 +1,100 @@
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: azure-keyvault
+  namespace: qbit
+spec:
+  provider:
+    azureKeyVault:
+      vaultUrl: "https://qbit-secrets.vault.azure.net"
+      tenantId: "${AZURE_TENANT_ID}"
+      authSecretRef:
+        clientId:
+          name: azure-credentials
+          key: client-id
+        clientSecret:
+          name: azure-credentials
+          key: client-secret
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: qbit-secrets-azure
+  namespace: qbit
+spec:
+  refreshInterval: "15m"
+  secretStoreRef:
+    name: azure-keyvault
+    kind: SecretStore
+  target:
+    creationPolicy: Owner
+  data:
+    # PostgreSQL secrets
+    - secretKey: POSTGRES_PASSWORD
+      remoteRef:
+        key: postgres-password
+    
+    # JWT secrets
+    - secretKey: JWT_SECRET
+      remoteRef:
+        key: jwt-secret
+    - secretKey: SERVICE_JWT_SECRET
+      remoteRef:
+        key: service-jwt-secret
+    
+    # RabbitMQ secrets
+    - secretKey: RABBITMQ_PASSWORD
+      remoteRef:
+        key: rabbitmq-password
+---
+# Template for generating individual service secrets
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: api-gateway-secrets-azure
+  namespace: qbit
+spec:
+  refreshInterval: "15m"
+  secretStoreRef:
+    name: azure-keyvault
+    kind: SecretStore
+  target:
+    name: api-gateway-secrets
+    creationPolicy: Owner
+  data:
+    - secretKey: JWT_SECRET
+      remoteRef:
+        key: jwt-secret
+    - secretKey: SERVICE_JWT_SECRET
+      remoteRef:
+        key: service-jwt-secret
+    - secretKey: RABBITMQ_PASSWORD
+      remoteRef:
+        key: rabbitmq-password
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: auth-service-secrets-azure
+  namespace: qbit
+spec:
+  refreshInterval: "15m"
+  secretStoreRef:
+    name: azure-keyvault
+    kind: SecretStore
+  target:
+    name: auth-service-secrets
+    creationPolicy: Owner
+  data:
+    - secretKey: JWT_SECRET
+      remoteRef:
+        key: jwt-secret
+    - secretKey: SERVICE_JWT_SECRET
+      remoteRef:
+        key: service-jwt-secret
+    - secretKey: DATABASE_PASSWORD
+      remoteRef:
+        key: postgres-password
+    - secretKey: RABBITMQ_PASSWORD
+      remoteRef:
+        key: rabbitmq-password 

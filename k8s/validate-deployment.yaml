@@ -1,0 +1,126 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-deployment-validation
+  labels:
+    app: qbit-accounting
+    component: validation
+spec:
+  ttlSecondsAfterFinished: 300  # Delete the job 5 minutes after it finishes
+  backoffLimit: 2  # Number of retries before considering the job failed
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: validation
+        image: curlimages/curl:7.83.1
+        command:
+          - "/bin/sh"
+          - "-c"
+          - |
+            #!/bin/sh
+            
+            # Text formatting for output
+            GREEN='\033[0;32m'
+            RED='\033[0;31m'
+            YELLOW='\033[0;33m'
+            NC='\033[0m' # No Color
+            
+            echo "===== Qbit Accounting System: Post-Deployment Validation ====="
+            echo "Checking health status of all microservices..."
+            echo ""
+            
+            # Function to check a service's health endpoint
+            check_service_health() {
+              service_name=$1
+              health_url=$2
+              
+              echo -n "Checking $service_name health... "
+              
+              # Try to connect to the health endpoint
+              response=$(curl -s -o /dev/null -w "%{http_code}" $health_url)
+              
+              if [ "$response" == "200" ]; then
+                echo -e "${GREEN}OK${NC}"
+                return 0
+              else
+                echo -e "${RED}FAILED${NC} (Status code: $response)"
+                return 1
+              fi
+            }
+            
+            # Variables for tracking overall status
+            success_count=0
+            failed_count=0
+            services_count=0
+            
+            # Configure service URLs for Kubernetes cluster
+            API_GATEWAY_URL="http://api-gateway:3000"
+            AUTH_SERVICE_URL="http://auth-service:3000"
+            GENERAL_LEDGER_URL="http://general-ledger-service:3000"
+            ACCOUNTS_PAYABLE_URL="http://accounts-payable-service:3000"
+            ACCOUNTS_RECEIVABLE_URL="http://accounts-receivable-service:3000"
+            INVENTORY_URL="http://inventory-service:3000"
+            FIXED_ASSETS_URL="http://fixed-assets-service:3000" 
+            BANKING_URL="http://banking-service:3000"
+            REPORTING_URL="http://reporting-service:3000"
+            
+            # Add a delay to allow services to initialize
+            echo "Waiting 10 seconds for services to initialize..."
+            sleep 10
+            
+            # Check each service
+            echo "Core services:"
+            check_service_health "API Gateway" "$API_GATEWAY_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            check_service_health "Auth Service" "$AUTH_SERVICE_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            check_service_health "General Ledger" "$GENERAL_LEDGER_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            echo -e "\nAccounting services:"
+            check_service_health "Accounts Payable" "$ACCOUNTS_PAYABLE_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            check_service_health "Accounts Receivable" "$ACCOUNTS_RECEIVABLE_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            check_service_health "Banking" "$BANKING_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            echo -e "\nBusiness operations services:"
+            check_service_health "Inventory" "$INVENTORY_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            check_service_health "Fixed Assets" "$FIXED_ASSETS_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            check_service_health "Reporting" "$REPORTING_URL/health"
+            if [ $? -eq 0 ]; then ((success_count++)); else ((failed_count++)); fi
+            ((services_count++))
+            
+            # Print results summary
+            echo -e "\n===== Validation Summary ====="
+            echo -e "Services checked: $services_count"
+            echo -e "${GREEN}Services healthy: $success_count${NC}"
+            echo -e "${RED}Services unhealthy: $failed_count${NC}"
+            
+            # Exit with appropriate code
+            if [ $failed_count -eq 0 ]; then
+              echo -e "\n${GREEN}Deployment validation successful: All services are healthy${NC}"
+              exit 0
+            else
+              echo -e "\n${RED}Deployment validation failed: $failed_count service(s) are not healthy${NC}"
+              echo -e "${YELLOW}Please check the logs for more details${NC}"
+              exit 1
+            fi 

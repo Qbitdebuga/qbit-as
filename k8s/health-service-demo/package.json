@@ -1,0 +1,12 @@
+{
+  "name": "health-service-demo",
+  "version": "1.0.0",
+  "description": "Simple health endpoint service for Kubernetes demo",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+} 

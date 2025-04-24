@@ -1,14 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   // Set global prefix
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
   
   // Enable CORS
   app.enableCors();
@@ -33,7 +34,12 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
+  
+  // Simple health check endpoint for Kubernetes probes
+  app.use('/health', (req: Request, res: Response) => {
+    res.status(200).send('OK');
+  });
   
   // Start the server
   const port = process.env.PORT || 3001;

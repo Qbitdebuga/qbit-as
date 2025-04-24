@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Set global prefix
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
 
   // Configure validation pipe
   app.useGlobalPipes(
@@ -36,7 +36,12 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/v1/docs', app, document);
+
+  // Simple health check endpoint for Kubernetes probes
+  app.use('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
 
   // Start the server
   const port = configService.get<number>('PORT', 3004);
