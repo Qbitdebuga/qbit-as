@@ -261,7 +261,7 @@
 
 ## Core Financial Module - Accounts Receivable
 
-- [ ]  Step 21: Set up Accounts Receivable microservice
+- [x]  Step 21: Set up Accounts Receivable microservice
     - **Task**: Create the Accounts Receivable microservice with basic structure
     - **Files**:
         - `services/accounts-receivable/package.json`: Package configuration
@@ -275,7 +275,7 @@
         - `services/accounts-receivable/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
     - **User Instructions**: Run `cd services/accounts-receivable && npm install` to install dependencies
-- [ ]  Step 22: Implement Customer data model and API
+- [x]  Step 22: Implement Customer data model and API
     - **Task**: Create the Customer module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with customer models
@@ -289,7 +289,7 @@
         - `packages/shared-types/src/models/customer.ts`: Shared customer types
     - **Step Dependencies**: Step 21
     - **User Instructions**: Run migration after schema update
-- [ ]  Step 23: Create Customer management UI
+- [x]  Step 23: Create Customer management UI
     - **Task**: Implement the Customer management interface
     - **Files**:
         - `apps/web/src/app/dashboard/customers/page.tsx`: Customers page
@@ -301,7 +301,7 @@
         - `packages/api-client/src/customers/customers-client.ts`: Customers API client
     - **Step Dependencies**: Step 22, Step 13
     - **User Instructions**: None
-- [ ]  Step 24: Implement Invoice data model and API
+- [x]  Step 24: Implement Invoice data model and API
     - **Task**: Create the Invoice module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with invoice models
@@ -316,7 +316,7 @@
         - `packages/shared-types/src/models/invoice.ts`: Shared invoice types
     - **Step Dependencies**: Step 22
     - **User Instructions**: Run migration after schema update
-- [ ]  Step 25: Create Invoice management UI
+- [x]  Step 25: Create Invoice management UI
     - **Task**: Implement the Invoice management interface
     - **Files**:
         - `apps/web/src/app/dashboard/invoices/page.tsx`: Invoices page
@@ -329,7 +329,7 @@
         - `packages/api-client/src/invoices/invoices-client.ts`: Invoices API client
     - **Step Dependencies**: Step 24, Step 23
     - **User Instructions**: None
-- [ ]  Step 26: Implement Payment processing model and API
+- [x]  Step 26: Implement Payment processing model and API
     - **Task**: Create the Payment module with payment application logic
     - **Files**:
         - `prisma/schema.prisma`: Update with payment models
@@ -344,7 +344,7 @@
         - `packages/shared-types/src/models/payment.ts`: Shared payment types
     - **Step Dependencies**: Step 24
     - **User Instructions**: Run migration after schema update
-- [ ]  Step 27: Create Payment management UI
+- [x]  Step 27: Create Payment management UI
     - **Task**: Implement the Payment management interface
     - **Files**:
         - `apps/web/src/app/dashboard/payments/page.tsx`: Payments page

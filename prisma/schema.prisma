@@ -109,3 +109,68 @@ model JournalEntry {
 
   @@map("journal_entries")
 }
+
+// Customer models
+model Customer {
+  id            String       @id @default(uuid())
+  customerNumber String      @unique @map("customer_number")
+  name          String
+  email         String?
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  zipCode       String?      @map("zip_code")
+  country       String?
+  taxId         String?      @map("tax_id")
+  website       String?
+  notes         String?
+  isActive      Boolean      @default(true) @map("is_active")
+  creditLimit   Decimal?     @db.Decimal(19, 4) @map("credit_limit")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  contacts      CustomerContact[]
+  invoices      Invoice[]
+  payments      Payment[]
+
+  @@map("customers")
+}
+
+model CustomerContact {
+  id            String       @id @default(uuid())
+  customerId    String       @map("customer_id")
+  customer      Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  firstName     String       @map("first_name")
+  lastName      String       @map("last_name")
+  email         String?
+  phone         String?
+  position      String?
+  isPrimary     Boolean      @default(false) @map("is_primary")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  @@map("customer_contacts")
+}
+
+// Placeholder for Invoice and Payment models which will be implemented in later steps
+model Invoice {
+  id            String       @id @default(uuid())
+  customerId    String       @map("customer_id")
+  customer      Customer     @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  // Other fields will be added in Step 24
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  @@map("invoices")
+}
+
+model Payment {
+  id            String       @id @default(uuid())
+  customerId    String       @map("customer_id")
+  customer      Customer     @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  // Other fields will be added in Step 26
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  
+  @@map("payments")
+}

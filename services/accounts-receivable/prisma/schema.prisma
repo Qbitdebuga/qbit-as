@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id            String            @id @default(uuid())
+  customerNumber String           @unique
+  name          String
+  email         String?
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  zipCode       String?
+  country       String?
+  taxId         String?
+  website       String?
+  notes         String?
+  isActive      Boolean           @default(true)
+  creditLimit   Float?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  contacts      CustomerContact[]
+  invoices      Invoice[]
+}
+
+model CustomerContact {
+  id         String   @id @default(uuid())
+  customerId String
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  position   String?
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
+model Invoice {
+  id                String           @id @default(uuid())
+  invoiceNumber     String           @unique
+  customerId        String
+  customerReference String?
+  invoiceDate       DateTime
+  dueDate           DateTime
+  status            InvoiceStatus    @default(DRAFT)
+  subtotal          Float
+  taxAmount         Float?
+  discountAmount    Float?
+  totalAmount       Float
+  amountPaid        Float            @default(0)
+  balanceDue        Float
+  notes             String?
+  terms             String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  customer          Customer         @relation(fields: [customerId], references: [id])
+  items             InvoiceItem[]
+  payments          InvoicePayment[]
+}
+
+model InvoiceItem {
+  id                String   @id @default(uuid())
+  invoiceId         String
+  itemCode          String?
+  description       String
+  quantity          Float
+  unitPrice         Float
+  discountPercentage Float?
+  taxPercentage     Float?
+  lineTotal         Float
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  invoice           Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model InvoicePayment {
+  id              String        @id @default(uuid())
+  invoiceId       String
+  paymentDate     DateTime
+  amount          Float
+  paymentMethod   PaymentMethod
+  status          PaymentStatus @default(PENDING)
+  referenceNumber String?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  invoice         Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  SENT
+  PARTIAL
+  PAID
+  OVERDUE
+  VOID
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  CHECK
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  WIRE_TRANSFER
+  PAYPAL
+  STRIPE
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  CANCELLED
+} 

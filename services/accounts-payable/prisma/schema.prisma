@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Vendor model
+model Vendor {
+  id             String          @id @default(uuid())
+  name           String
+  contactName    String?
+  email          String
+  phone          String?
+  address        String?
+  taxId          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  bills          Bill[]
+  vendorPayments VendorPayment[]
+}
+
+// Bill model
+model Bill {
+  id             String          @id @default(uuid())
+  billNumber     String          @unique
+  vendorId       String
+  vendor         Vendor          @relation(fields: [vendorId], references: [id])
+  amount         Decimal         @db.Decimal(10, 2)
+  description    String?
+  dueDate        DateTime
+  status         BillStatus      @default(PENDING)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  vendorPayments VendorPayment[]
+}
+
+// Vendor Payment model
+model VendorPayment {
+  id          String           @id @default(uuid())
+  amount      Decimal          @db.Decimal(10, 2)
+  paymentDate DateTime
+  method      PaymentMethod
+  reference   String?
+  billId      String
+  bill        Bill             @relation(fields: [billId], references: [id])
+  vendorId    String
+  vendor      Vendor           @relation(fields: [vendorId], references: [id])
+  status      PaymentStatus    @default(PENDING)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+enum BillStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CHECK
+  CREDIT_CARD
+  CASH
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+} 

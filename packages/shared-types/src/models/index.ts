@@ -3,4 +3,6 @@
 export * from './account';
 export * from './journal-entry';
 export * from './financial-statement';
-export * from './batch'; 
+export * from './batch';
+export * from './customer';
+export * from './invoice'; 

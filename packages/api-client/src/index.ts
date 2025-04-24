@@ -5,4 +5,6 @@ export * from './accounts';
 export * from './api-client';
 export * from './journal-entries';
 export * from './reports';
-export * from './general-ledger'; 
+export * from './general-ledger';
+export * from './customers';
+export * from './invoices'; 
