@@ -38,14 +38,14 @@ jobs:
       
       # Core services
       - name: Build and push API Gateway
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/api-gateway
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-api-gateway:latest
       
       - name: Build and push Auth Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/auth
           push: true
@@ -53,49 +53,49 @@ jobs:
       
       # Financial services
       - name: Build and push General Ledger Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/general-ledger
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-general-ledger:latest
       
       - name: Build and push Accounts Payable Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/accounts-payable
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-accounts-payable:latest
       
       - name: Build and push Accounts Receivable Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/accounts-receivable
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-accounts-receivable:latest
       
       - name: Build and push Banking Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/banking
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-banking:latest
       
       - name: Build and push Fixed Assets Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/fixed-assets
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-fixed-assets:latest
       
       - name: Build and push Inventory Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/inventory
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-inventory:latest
       
       - name: Build and push Reporting Service
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./services/reporting
           push: true
@@ -103,7 +103,7 @@ jobs:
       
       # Frontend
       - name: Build and push Web App
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./apps/web
           push: true
