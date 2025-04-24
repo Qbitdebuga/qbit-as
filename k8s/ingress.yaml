@@ -4,33 +4,38 @@ metadata:
   name: qbit-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/use-regex: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
-  tls:
-  - hosts:
-    - api.qbit.example.com
-    - app.qbit.example.com
-    secretName: qbit-tls-secret
   rules:
-  - host: api.qbit.example.com
+  - host: qbit.local  # Replace with your actual domain in production
     http:
       paths:
-      - path: /
+      - path: /api(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: api-gateway-service
             port:
-              number: 80
-  - host: app.qbit.example.com
-    http:
-      paths:
-      - path: /
+              number: 3000
+      - path: /auth(/|$)(.*)
         pathType: Prefix
         backend:
           service:
-            name: web-service
+            name: auth-service-service
             port:
-              number: 80 
+              number: 3001
+      # Uncomment if you need direct access to specific services
+      # - path: /gl(/|$)(.*)
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: general-ledger-service
+      #       port:
+      #         number: 3002
+  # Add TLS configuration when deploying to production
+  # tls:
+  # - hosts:
+  #   - qbit.local
+  #   secretName: qbit-tls-secret 

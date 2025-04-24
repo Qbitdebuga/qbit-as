@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reporting-deployment
+  labels:
+    app: reporting
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reporting
+  template:
+    metadata:
+      labels:
+        app: reporting
+    spec:
+      containers:
+      - name: reporting
+        image: ${DOCKER_REGISTRY}/qbit-reporting:latest
+        ports:
+        - containerPort: 3009
+        envFrom:
+        - configMapRef:
+            name: reporting-config
+        - secretRef:
+            name: reporting-secrets
+        resources:
+          limits:
+            cpu: "600m"
+            memory: "768Mi"
+          requests:
+            cpu: "300m"
+            memory: "384Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3009
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3009
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reporting-service
+spec:
+  selector:
+    app: reporting
+  ports:
+  - port: 3009
+    targetPort: 3009
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reporting-config
+data:
+  NODE_ENV: "production"
+  PORT: "3009"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-service:5432/qbit_reporting?schema=public"
+  RABBITMQ_URL: "amqp://qbit:qbit_password@rabbitmq-service:5672"
+  RABBITMQ_QUEUE_NAME: "reporting_queue"
+  RABBITMQ_EXCHANGE: "reporting_exchange"
+  CONSUL_HOST: "consul-service"
+  CONSUL_PORT: "8500"
+  SERVICE_NAME: "reporting-service"
+  AUTH_SERVICE_URL: "http://auth-service:3002"
+  GENERAL_LEDGER_SERVICE_URL: "http://general-ledger-service:3003"
+  ACCOUNTS_PAYABLE_SERVICE_URL: "http://accounts-payable-service:3004"
+  ACCOUNTS_RECEIVABLE_SERVICE_URL: "http://accounts-receivable-service:3005" 

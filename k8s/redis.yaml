@@ -1,9 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-deployment
-  labels:
-    app: redis
+  name: redis
 spec:
   replicas: 1
   selector:
@@ -21,21 +19,28 @@ spec:
         - containerPort: 6379
         resources:
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            memory: "256Mi"
+            cpu: "300m"
           requests:
-            cpu: "100m"
             memory: "128Mi"
-        readinessProbe:
-          exec:
-            command: ["redis-cli", "ping"]
-          initialDelaySeconds: 15
-          periodSeconds: 10
+            cpu: "100m"
         livenessProbe:
-          exec:
-            command: ["redis-cli", "ping"]
+          tcpSocket:
+            port: 6379
           initialDelaySeconds: 30
-          periodSeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -47,4 +52,16 @@ spec:
   ports:
   - port: 6379
     targetPort: 6379
-  type: ClusterIP 
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard 

@@ -36,6 +36,7 @@ model Vendor {
   bills             Bill[]
   payments          Payment[]
   expenses          Expense[]
+  contacts          VendorContact[]
 
   @@map("vendors")
 }

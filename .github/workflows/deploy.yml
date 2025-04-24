@@ -38,6 +38,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
       
+      # Core services
       - name: Build and push API Gateway
         uses: docker/build-push-action@v4
         with:
@@ -52,6 +53,57 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-auth:latest
       
+      # Financial services
+      - name: Build and push General Ledger Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/general-ledger
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-general-ledger:latest
+      
+      - name: Build and push Accounts Payable Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/accounts-payable
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-accounts-payable:latest
+      
+      - name: Build and push Accounts Receivable Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/accounts-receivable
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-accounts-receivable:latest
+      
+      - name: Build and push Banking Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/banking
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-banking:latest
+      
+      - name: Build and push Fixed Assets Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/fixed-assets
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-fixed-assets:latest
+      
+      - name: Build and push Inventory Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/inventory
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-inventory:latest
+      
+      - name: Build and push Reporting Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/reporting
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/qbit-reporting:latest
+      
+      # Frontend
       - name: Build and push Web App
         uses: docker/build-push-action@v4
         with:
@@ -67,11 +119,73 @@ jobs:
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
       
-      - name: Deploy to Kubernetes
+      # Environment variable substitution for K8s manifests
+      - name: Set up environment variables for K8s manifests
+        run: |
+          for file in k8s/*.yaml; do
+            sed -i "s|\${DOCKER_REGISTRY}|${{ secrets.DOCKER_HUB_USERNAME }}|g" $file
+          done
+      
+      # Database migrations
+      - name: Set up database migrations
+        run: |
+          echo "Running database migrations..."
+          # Auth service migrations
+          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma migrate deploy
+          # General Ledger migrations
+          DATABASE_URL=${{ secrets.GL_DB_URL }} npx --prefix services/general-ledger prisma migrate deploy
+          # Accounts Payable migrations
+          DATABASE_URL=${{ secrets.AP_DB_URL }} npx --prefix services/accounts-payable prisma migrate deploy
+          # Accounts Receivable migrations
+          DATABASE_URL=${{ secrets.AR_DB_URL }} npx --prefix services/accounts-receivable prisma migrate deploy
+          # Banking migrations
+          DATABASE_URL=${{ secrets.BANKING_DB_URL }} npx --prefix services/banking prisma migrate deploy
+          # Fixed Assets migrations
+          DATABASE_URL=${{ secrets.FA_DB_URL }} npx --prefix services/fixed-assets prisma migrate deploy
+          # Inventory migrations
+          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} npx --prefix services/inventory prisma migrate deploy
+          # Reporting migrations
+          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} npx --prefix services/reporting prisma migrate deploy
+      
+      # Apply K8s manifests
+      - name: Deploy to Kubernetes - Core Infrastructure
+        run: |
+          kubectl apply -f k8s/database.yaml
+          kubectl apply -f k8s/redis.yaml
+          kubectl apply -f k8s/rabbitmq.yaml
+          kubectl apply -f k8s/consul.yaml
+      
+      # Wait for infrastructure to be ready
+      - name: Wait for infrastructure
+        run: |
+          kubectl wait --for=condition=available deployment/redis-deployment --timeout=300s
+          kubectl wait --for=condition=ready pod -l app=postgres --timeout=300s
+      
+      # Apply service manifests
+      - name: Deploy microservices to Kubernetes
         run: |
           kubectl apply -f k8s/api-gateway.yaml
           kubectl apply -f k8s/auth-service.yaml
-          kubectl apply -f k8s/database.yaml
+          kubectl apply -f k8s/general-ledger.yaml
+          kubectl apply -f k8s/accounts-payable.yaml
+          kubectl apply -f k8s/accounts-receivable.yaml
+          kubectl apply -f k8s/banking.yaml
+          kubectl apply -f k8s/fixed-assets.yaml
+          kubectl apply -f k8s/inventory.yaml
+          kubectl apply -f k8s/reporting.yaml
+          kubectl apply -f k8s/web.yaml
           kubectl apply -f k8s/ingress.yaml
-          kubectl apply -f k8s/redis.yaml
-          kubectl rollout restart deployment api-gateway-deployment auth-service-deployment web-deployment 
+      
+      # Restart deployments for fresh images
+      - name: Restart deployments
+        run: |
+          kubectl rollout restart deployment api-gateway-deployment auth-service-deployment general-ledger-deployment accounts-payable-deployment accounts-receivable-deployment banking-deployment fixed-assets-deployment inventory-deployment reporting-deployment web-deployment
+      
+      # Post-deployment validation
+      - name: Validate deployments
+        run: |
+          echo "Validating deployments..."
+          kubectl get deployments
+          kubectl wait --for=condition=available deployment/api-gateway-deployment --timeout=300s
+          kubectl wait --for=condition=available deployment/auth-service-deployment --timeout=300s
+          echo "Core services deployed successfully!" 

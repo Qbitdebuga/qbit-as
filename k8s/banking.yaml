@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banking-deployment
+  labels:
+    app: banking
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: banking
+  template:
+    metadata:
+      labels:
+        app: banking
+    spec:
+      containers:
+      - name: banking
+        image: ${DOCKER_REGISTRY}/qbit-banking:latest
+        ports:
+        - containerPort: 3006
+        envFrom:
+        - configMapRef:
+            name: banking-config
+        - secretRef:
+            name: banking-secrets
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3006
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3006
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: banking-service
+spec:
+  selector:
+    app: banking
+  ports:
+  - port: 3006
+    targetPort: 3006
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: banking-config
+data:
+  NODE_ENV: "production"
+  PORT: "3006"
+  DATABASE_HOST: "postgres-service"
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "qbit_banking"
+  DATABASE_USER: "postgres"
+  RABBITMQ_HOST: "rabbitmq-service"
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_USER: "qbit"
+  CONSUL_HOST: "consul-service"
+  CONSUL_PORT: "8500"
+  SERVICE_NAME: "banking-service"
+  AUTH_SERVICE_URL: "http://auth-service:3002"
+  GENERAL_LEDGER_SERVICE_URL: "http://general-ledger-service:3003" 
