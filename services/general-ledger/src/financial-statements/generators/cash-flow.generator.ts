@@ -13,22 +13,12 @@ export class CashFlowGenerator {
   async generate(
     startDate: string,
     endDate: string,
-    comparativePeriod: boolean = false,
-  ): Promise<{
-    operatingActivities: CashFlowSection[];
-    investingActivities: CashFlowSection[];
-    financingActivities: CashFlowSection[];
-    netCashFromOperatingActivities: number;
-    netCashFromInvestingActivities: number;
-    netCashFromFinancingActivities: number;
-    netChangeInCash: number;
-    beginningCash: number;
-    endingCash: number;
-  }> {
-    this.logger.log(`Generating cash flow statement from ${startDate} to ${endDate}`);
+    comparativePeriod?: any
+  ): Promise<any> {
+    this.logger.log(`Generating cash flow statement for period: ${startDate} to ${endDate}`);
 
-    // Get all cash accounts
-    const cashAccounts = await this.prisma.account.findMany({
+    // Get cash accounts
+    const cashAccounts = await this.prisma.db.account.findMany({
       where: {
         type: AccountType.ASSET,
         subtype: 'CASH',
@@ -43,6 +33,9 @@ export class CashFlowGenerator {
 
     // Calculate ending cash balance
     const endingCash = await this.getCashBalance(cashAccountIds, endDate, true);
+
+    // Get all accounts for aggregations
+    const accounts = await this.prisma.db.account.findMany();
 
     // Get all account activity for the period
     const accountActivity = await this.getAccountActivity(startDate, endDate);
@@ -127,7 +120,7 @@ export class CashFlowGenerator {
     `;
 
     // Get all accounts for reference
-    const accounts = await this.prisma.account.findMany();
+    const accounts = await this.prisma.db.account.findMany();
     const accountMap = accounts.reduce((map, account) => {
       map[account.id] = account;
       return map;

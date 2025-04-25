@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
+import { formatError } from '../utils/error-handler';
+import { getRequiredConfig, getConfig } from '../utils/config-utils';
 
 @Injectable()
 export class AuthClientService {
@@ -10,13 +12,9 @@ export class AuthClientService {
   private readonly apiKey: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.serviceUrl = this.configService.get<string>('AUTH_SERVICE_URL');
-    this.apiKey = this.configService.get<string>('AUTH_SERVICE_API_KEY');
-
-    if (!this.serviceUrl) {
-      this.logger.error('AUTH_SERVICE_URL not configured');
-      throw new Error('Auth service URL not configured');
-    }
+    // These are required config values that will throw if missing
+    this.serviceUrl = getRequiredConfig<string>(configService, 'AUTH_SERVICE_URL');
+    this.apiKey = getRequiredConfig<string>(configService, 'AUTH_SERVICE_API_KEY');
 
     this.httpClient = axios.create({
       baseURL: this.serviceUrl,
@@ -34,16 +32,20 @@ export class AuthClientService {
    */
   async getServiceToken(scopes: string[]): Promise<string> {
     try {
+      const serviceId = getRequiredConfig<string>(this.configService, 'SERVICE_ID');
+      const serviceName = getRequiredConfig<string>(this.configService, 'SERVICE_NAME');
+      
       const response = await this.httpClient.post('/auth/service-token', {
-        serviceId: this.configService.get('SERVICE_ID'),
-        serviceName: this.configService.get('SERVICE_NAME'),
+        serviceId,
+        serviceName,
         scopes,
       });
       
       return response.data.accessToken;
-    } catch (error) {
-      this.logger.error(`Failed to get service token: ${error.message}`, error.stack);
-      throw new Error(`Failed to get service token: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to get service token: ${message}`, stack);
+      throw new Error(`Failed to get service token: ${message}`);
     }
   }
 
@@ -54,9 +56,10 @@ export class AuthClientService {
     try {
       const response = await this.httpClient.post('/auth/validate-token', { token });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Token validation failed: ${error.message}`, error.stack);
-      throw new Error(`Token validation failed: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Token validation failed: ${message}`, stack);
+      throw new Error(`Token validation failed: ${message}`);
     }
   }
 
@@ -71,9 +74,10 @@ export class AuthClientService {
         }
       });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Failed to get user by ID: ${error.message}`, error.stack);
-      throw new Error(`Failed to get user: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to get user by ID: ${message}`, stack);
+      throw new Error(`Failed to get user: ${message}`);
     }
   }
 
@@ -91,8 +95,9 @@ export class AuthClientService {
         }
       );
       return response.data.hasAccess;
-    } catch (error) {
-      this.logger.error(`Role check failed: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Role check failed: ${message}`, stack);
       return false;
     }
   }

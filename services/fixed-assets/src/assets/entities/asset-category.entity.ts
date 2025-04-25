@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AssetCategory as PrismaAssetCategory } from '@prisma/client';
 
-export class AssetCategoryEntity implements PrismaAssetCategory {
+export class AssetCategoryEntity {
   @ApiProperty({ description: 'Unique identifier of the asset category' })
   id: string;
 

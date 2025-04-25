@@ -6,17 +6,13 @@ import { Inject } from '@nestjs/common';
  * 
  * @param clientName The name of the client to inject
  */
-export const InjectClient = (clientName: string) => {
-  // Map client names to injection tokens
-  const clientMap = {
-    'ACCOUNT_SERVICE': 'RABBITMQ_CLIENT',
-    'JOURNAL_ENTRY_SERVICE': 'RABBITMQ_CLIENT',
-    'USER_SERVICE': 'RABBITMQ_CLIENT',
-    // Add more mappings as needed
+export function InjectClient(clientName: string): ReturnType<typeof Inject> {
+  const clientMap: Record<string, string> = {
+    ACCOUNT_SERVICE: 'ACCOUNT_SERVICE_CLIENT',
+    JOURNAL_ENTRY_SERVICE: 'JOURNAL_ENTRY_SERVICE_CLIENT',
+    USER_SERVICE: 'USER_SERVICE_CLIENT',
   };
 
-  // Get the actual injection token or use the client name if not mapped
-  const injectionToken = clientMap[clientName] || clientName;
-  
+  const injectionToken = clientMap[clientName as keyof typeof clientMap] || clientName;
   return Inject(injectionToken);
-}; 
+} 

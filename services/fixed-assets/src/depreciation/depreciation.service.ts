@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { DepreciationMethod } from '@prisma/client';
+import { DepreciationMethod } from './enums/depreciation-method.enum';
 import { CalculateDepreciationDto, CalculateDepreciationResponseDto } from './dto/calculate-depreciation.dto';
 import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity';
 import { Decimal } from '@prisma/client/runtime/library';
@@ -11,6 +11,11 @@ export class DepreciationService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+  // Helper property to access Prisma models with type casting
+  private get db() {
+    return this.prisma as any;
+  }
+
   /**
    * Calculate depreciation for a specific asset
    */
@@ -20,7 +25,7 @@ export class DepreciationService {
     const { assetId, depreciationMethod, asOfDate, includeProjections, projectionPeriods } = calculateDto;
 
     // Get the asset with its latest depreciation entry
-    const asset = await this.prisma.asset.findUnique({
+    const asset = await this.db.asset.findUnique({
       where: { id: assetId },
       include: {
         depreciationEntries: {
@@ -41,7 +46,7 @@ export class DepreciationService {
     const calculationDate = asOfDate ? new Date(asOfDate) : new Date();
 
     // Get historical depreciation entries
-    const historicalEntries = await this.prisma.depreciationEntry.findMany({
+    const historicalEntries = await this.db.depreciationEntry.findMany({
       where: { assetId },
       orderBy: { date: 'asc' },
     });
@@ -93,7 +98,7 @@ export class DepreciationService {
    * Generate a depreciation schedule for an asset
    */
   async generateDepreciationSchedule(assetId: string): Promise<DepreciationScheduleEntity> {
-    const asset = await this.prisma.asset.findUnique({
+    const asset = await this.db.asset.findUnique({
       where: { id: assetId },
       include: {
         depreciationEntries: {
@@ -142,7 +147,7 @@ export class DepreciationService {
    * Record a depreciation entry for an asset
    */
   async recordDepreciation(assetId: string, date: Date, amount: number): Promise<void> {
-    const asset = await this.prisma.asset.findUnique({
+    const asset = await this.db.asset.findUnique({
       where: { id: assetId },
     });
 
@@ -151,7 +156,7 @@ export class DepreciationService {
     }
 
     // Get the latest depreciation entry
-    const latestEntry = await this.prisma.depreciationEntry.findFirst({
+    const latestEntry = await this.db.depreciationEntry.findFirst({
       where: { assetId },
       orderBy: { date: 'desc' },
     });
@@ -170,7 +175,7 @@ export class DepreciationService {
       // Adjust the amount to not go below residual value
       const adjustedAmount = currentBookValue.sub(asset.residualValue);
       
-      await this.prisma.depreciationEntry.create({
+      await this.db.depreciationEntry.create({
         data: {
           assetId,
           date,
@@ -180,13 +185,13 @@ export class DepreciationService {
       });
 
       // Update asset status if fully depreciated
-      await this.prisma.asset.update({
+      await this.db.asset.update({
         where: { id: assetId },
         data: { status: 'FULLY_DEPRECIATED' },
       });
     } else {
       // Record the depreciation entry
-      await this.prisma.depreciationEntry.create({
+      await this.db.depreciationEntry.create({
         data: {
           assetId,
           date,
@@ -201,7 +206,7 @@ export class DepreciationService {
    * Get the current depreciation status for an asset
    */
   async getCurrentDepreciation(assetId: string): Promise<{ currentBookValue: Decimal; accumulatedDepreciation: Decimal }> {
-    const asset = await this.prisma.asset.findUnique({
+    const asset = await this.db.asset.findUnique({
       where: { id: assetId },
     });
 
@@ -210,7 +215,7 @@ export class DepreciationService {
     }
 
     // Get the latest depreciation entry
-    const latestEntry = await this.prisma.depreciationEntry.findFirst({
+    const latestEntry = await this.db.depreciationEntry.findFirst({
       where: { assetId },
       orderBy: { date: 'desc' },
     });

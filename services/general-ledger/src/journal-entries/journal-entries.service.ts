@@ -4,6 +4,7 @@ import { CreateJournalEntryDto } from './dto/create-journal-entry.dto';
 import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto';
 import { JournalEntryPublisher } from '../events/publishers/journal-entry-publisher';
 import { JournalEntryLine } from '../events/models/journal-entry.model';
+import { JournalEntry } from './entities/journal-entry.entity';
 
 @Injectable()
 export class JournalEntriesService {
@@ -127,43 +128,37 @@ export class JournalEntriesService {
     return deletedEntry;
   }
 
-  async post(id: string) {
-    // Check if the entry exists and is in draft status
-    const entry = await this.findOne(id);
+  async post(id: string): Promise<JournalEntry> {
+    const journalEntry = await this.findOne(id);
     
-    if (entry.status !== 'DRAFT') {
-      throw new BadRequestException('Only draft journal entries can be posted');
+    if (journalEntry.status !== 'DRAFT') {
+      throw new BadRequestException(`Journal entry must be in DRAFT status to post. Current status: ${journalEntry.status}`);
     }
     
-    // Ensure the entry is balanced
-    if (!this.isBalanced(entry.lines)) {
-      throw new BadRequestException('Journal entry must be balanced (debits = credits) to be posted');
-    }
+    // Check for balanced entry (debits = credits)
+    this.verifyEntryIsBalanced(journalEntry);
     
-    const postedEntry = await this.repository.post(id);
-
-    try {
-      // Publish journal-entry.posted event
-      if (postedEntry) {
-        await this.journalEntryPublisher.publishJournalEntryPosted(postedEntry);
-      }
-    } catch (error: any) {
-      this.logger.warn(`Failed to publish journal-entry.posted event: ${error.message}`);
-      // Don't fail the operation if publishing fails
-    }
+    // Update status to POSTED
+    const postedEntry = await this.repository.updateStatus(id, 'POSTED');
+    
+    // Get the journal entry with its lines to pass to the publisher
+    const postedEntryWithLines = await this.repository.findOne(id);
+    
+    // Now include the lines in the publisher call
+    this.journalEntryPublisher.publishJournalEntryUpdated(postedEntry, postedEntryWithLines.lines);
     
     return postedEntry;
   }
 
-  async reverse(id: string, reason: string) {
-    // Check if the entry exists and is posted
-    const entry = await this.findOne(id);
+  async reverse(id: string): Promise<JournalEntry> {
+    const journalEntry = await this.findOne(id);
     
-    if (entry.status !== 'POSTED') {
+    if (journalEntry.status !== 'POSTED') {
       throw new BadRequestException('Only posted journal entries can be reversed');
     }
     
-    return this.repository.reverse(id, reason);
+    // Create a reversal entry using the repository
+    return this.repository.createReversalEntry(id);
   }
 
   /**
@@ -207,5 +202,11 @@ export class JournalEntriesService {
     }
     
     return totalDebits;
+  }
+
+  private verifyEntryIsBalanced(entry: JournalEntry) {
+    if (!this.isBalanced(entry.lines)) {
+      throw new BadRequestException('Journal entry must be balanced (debits = credits) to be posted');
+    }
   }
 } 

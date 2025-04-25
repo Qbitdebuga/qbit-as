@@ -47,7 +47,7 @@ export class WarehousesController {
     @Query('take') take?: number,
     @Query('searchTerm') searchTerm?: string,
     @Query('orderBy') orderBy?: string,
-    @Query('includeInactive') includeInactive?: boolean,
+    @Query('includeInactive') includeInactive?: string | boolean,
   ) {
     return this.warehousesService.findAll({
       skip: skip ? +skip : undefined,

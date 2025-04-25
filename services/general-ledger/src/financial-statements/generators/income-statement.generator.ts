@@ -13,22 +13,13 @@ export class IncomeStatementGenerator {
   async generate(
     startDate: string,
     endDate: string,
-    comparativePeriod: boolean = false,
-    includeZeroBalances: boolean = false,
-  ): Promise<{
-    revenue: IncomeStatementSection[];
-    expenses: IncomeStatementSection[];
-    totalRevenue: number;
-    totalExpenses: number;
-    netIncome: number;
-    previousNetIncome?: number;
-    netIncomeChange?: number;
-    netIncomeChangePercentage?: number;
-  }> {
-    this.logger.log(`Generating income statement from ${startDate} to ${endDate}`);
+    comparativePeriod?: any,
+    includeZeroBalances = false
+  ): Promise<any> {
+    this.logger.log(`Generating income statement for period: ${startDate} to ${endDate}`);
 
-    // Fetch all revenue and expense accounts
-    const accounts = await this.prisma.account.findMany({
+    // Get revenue and expense accounts
+    const accounts = await this.prisma.db.account.findMany({
       where: {
         isActive: true,
         type: {

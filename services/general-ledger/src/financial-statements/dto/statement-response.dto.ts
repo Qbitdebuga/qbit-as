@@ -45,18 +45,53 @@ export class StatementMetaDto {
     required: false,
   })
   comparativePeriod?: boolean;
+
+  @ApiProperty({ description: 'Total number of accounts' })
+  totalAccounts: number = 0;
+
+  @ApiProperty({ description: 'Currency used in the statement' })
+  currency: string = 'USD';
 }
 
 export class StatementResponseDto {
-  @ApiProperty({
-    description: 'Metadata about the financial statement',
-    type: StatementMetaDto,
-  })
-  meta: StatementMetaDto;
+  @ApiProperty({ description: 'Title of the financial statement' })
+  title!: string;
+
+  @ApiProperty({ description: 'Type of the financial report' })
+  reportType!: string;
+
+  @ApiProperty({ description: 'Start date of the statement period' })
+  startDate!: string;
+
+  @ApiProperty({ description: 'End date of the statement period' })
+  endDate!: string;
+
+  @ApiProperty({ description: 'Date when the statement was generated' })
+  generatedAt!: string;
 
   @ApiProperty({
-    description: 'Financial statement data',
-    example: {},
+    description: 'Period type of the statement',
+    enum: StatementPeriod,
   })
-  data: any;
+  period!: StatementPeriod;
+
+  @ApiProperty({
+    description: 'Content of the financial statement',
+    type: 'object',
+  })
+  data: Record<string, any> = {};
+
+  @ApiProperty({
+    description: 'Comparative data from previous period (if requested)',
+    type: 'object',
+    required: false,
+  })
+  comparativeData?: Record<string, any>;
+
+  @ApiProperty({ description: 'Additional metadata about the statement' })
+  meta: StatementMetaDto = new StatementMetaDto();
+  
+  constructor(partial: Partial<StatementResponseDto>) {
+    Object.assign(this, partial);
+  }
 } 

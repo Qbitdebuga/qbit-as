@@ -1,12 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Warehouse } from './warehouse.entity';
+import { WarehouseEntity } from './warehouse.entity';
 
 export class WarehouseLocation {
   @ApiProperty({ example: 1, description: 'Unique identifier for the warehouse location' })
   id: number;
 
-  @ApiProperty({ example: 1, description: 'ID of the warehouse this location belongs to' })
-  warehouseId: number;
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'ID of the warehouse this location belongs to' })
+  warehouseId: string;
 
   @ApiProperty({ example: 'Aisle A', description: 'Name of the location' })
   name: string;
@@ -26,8 +26,8 @@ export class WarehouseLocation {
   @ApiPropertyOptional({ example: 5, description: 'ID of the parent location (for hierarchical locations)' })
   parentId?: number;
 
-  @ApiPropertyOptional({ type: () => Warehouse, description: 'Warehouse this location belongs to' })
-  warehouse?: Warehouse;
+  @ApiPropertyOptional({ type: () => WarehouseEntity, description: 'Warehouse this location belongs to' })
+  warehouse?: WarehouseEntity;
 
   @ApiPropertyOptional({ type: () => WarehouseLocation, description: 'Parent location (for hierarchical locations)' })
   parent?: WarehouseLocation;

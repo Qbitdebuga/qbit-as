@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Asset as PrismaAsset, AssetStatus, DepreciationMethod } from '@prisma/client';
 import { AssetCategoryEntity } from './asset-category.entity';
 import { Decimal } from '@prisma/client/runtime/library';
+import { AssetStatus } from '../enums/asset-status.enum';
+import { DepreciationMethod } from '../../depreciation/enums/depreciation-method.enum';
 
-export class AssetEntity implements PrismaAsset {
+export class AssetEntity {
   @ApiProperty({ description: 'Unique identifier of the asset' })
   id: string;
 

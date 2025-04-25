@@ -10,8 +10,6 @@ import { Request, Response } from 'express';
 
 // Fallback logger in case Winston is not available
 class FallbackLogger implements LoggerService {
-  private readonly logLevels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose'];
-  
   constructor(private readonly prefix: string = 'General-Ledger') {}
   
   log(message: any, context?: string) {
@@ -32,10 +30,6 @@ class FallbackLogger implements LoggerService {
   
   verbose(message: any, context?: string) {
     console.log(`[VERBOSE] [${this.prefix}] ${context ? `[${context}] ` : ''}${message}`);
-  }
-  
-  setLogLevels(levels: LogLevel[]) {
-    this.logLevels = levels;
   }
 }
 
@@ -101,13 +95,8 @@ async function bootstrap() {
       queueOptions: {
         durable: true,
       },
-      exchange: configService.get<string>('rabbitmq.exchange'),
-      exchangeOptions: {
-        durable: true,
-        type: 'topic',
-      },
-      prefetchCount: 1,
       noAck: false,
+      prefetchCount: 1,
     },
   });
   

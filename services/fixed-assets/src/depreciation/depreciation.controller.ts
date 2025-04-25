@@ -14,7 +14,7 @@ import { DepreciationService } from './depreciation.service';
 import { CalculateDepreciationDto, CalculateDepreciationResponseDto } from './dto/calculate-depreciation.dto';
 import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity';
 import { DepreciationMethodEntity } from './entities/depreciation-method.entity';
-import { DepreciationMethod } from '@prisma/client';
+import { DepreciationMethod } from './enums/depreciation-method.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('depreciation')

@@ -23,7 +23,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@qbit/shared-types": ["../../packages/shared-types/src"],
-      "@qbit/api-client": ["../../packages/api-client/src"]
+      "@qbit/api-client": ["../../packages/api-client/src"],
+      "@qbit-accounting/shared-types": ["../../packages/shared-types/src"],
+      "@qbit-accounting/api-client": ["../../packages/api-client/src"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

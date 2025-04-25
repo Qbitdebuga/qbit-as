@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
 import { AuthClientService } from './auth-client.service';
+import { formatError } from '../utils/error-handler';
+import { getRequiredConfig } from '../utils/config-utils';
 
 @Injectable()
 export class GeneralLedgerClientService {
@@ -14,13 +16,9 @@ export class GeneralLedgerClientService {
     private readonly configService: ConfigService,
     private readonly authClient: AuthClientService
   ) {
-    this.serviceUrl = this.configService.get<string>('GENERAL_LEDGER_SERVICE_URL');
-    this.apiKey = this.configService.get<string>('GENERAL_LEDGER_SERVICE_API_KEY');
-
-    if (!this.serviceUrl) {
-      this.logger.error('GENERAL_LEDGER_SERVICE_URL not configured');
-      throw new Error('General Ledger service URL not configured');
-    }
+    // These are required config values that will throw if missing
+    this.serviceUrl = getRequiredConfig<string>(configService, 'GENERAL_LEDGER_SERVICE_URL');
+    this.apiKey = getRequiredConfig<string>(configService, 'GENERAL_LEDGER_SERVICE_API_KEY');
 
     this.httpClient = axios.create({
       baseURL: this.serviceUrl,
@@ -47,9 +45,10 @@ export class GeneralLedgerClientService {
         }
       });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Failed to get accounts: ${error.message}`, error.stack);
-      throw new Error(`Failed to get accounts: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to get accounts: ${message}`, stack);
+      throw new Error(`Failed to get accounts: ${message}`);
     }
   }
 
@@ -66,9 +65,10 @@ export class GeneralLedgerClientService {
         }
       });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Failed to get account: ${error.message}`, error.stack);
-      throw new Error(`Failed to get account: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to get account: ${message}`, stack);
+      throw new Error(`Failed to get account: ${message}`);
     }
   }
 
@@ -86,9 +86,10 @@ export class GeneralLedgerClientService {
         }
       });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Failed to get journal entries: ${error.message}`, error.stack);
-      throw new Error(`Failed to get journal entries: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to get journal entries: ${message}`, stack);
+      throw new Error(`Failed to get journal entries: ${message}`);
     }
   }
 
@@ -105,9 +106,10 @@ export class GeneralLedgerClientService {
         }
       });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Failed to get journal entry: ${error.message}`, error.stack);
-      throw new Error(`Failed to get journal entry: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to get journal entry: ${message}`, stack);
+      throw new Error(`Failed to get journal entry: ${message}`);
     }
   }
 
@@ -124,9 +126,10 @@ export class GeneralLedgerClientService {
         }
       });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Failed to create journal entry: ${error.message}`, error.stack);
-      throw new Error(`Failed to create journal entry: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to create journal entry: ${message}`, stack);
+      throw new Error(`Failed to create journal entry: ${message}`);
     }
   }
 
@@ -144,9 +147,10 @@ export class GeneralLedgerClientService {
         }
       });
       return response.data;
-    } catch (error) {
-      this.logger.error(`Failed to get ${type}: ${error.message}`, error.stack);
-      throw new Error(`Failed to get ${type}: ${error.message}`);
+    } catch (error: unknown) {
+      const { message, stack } = formatError(error);
+      this.logger.error(`Failed to get ${type}: ${message}`, stack);
+      throw new Error(`Failed to get ${type}: ${message}`);
     }
   }
 } 

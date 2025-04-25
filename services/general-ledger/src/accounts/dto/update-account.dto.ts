@@ -1,7 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsEnum, IsBoolean, IsUUID } from 'class-validator';
-import { AccountType, AccountSubType } from '@prisma/client';
-import { PartialType } from '@nestjs/swagger';
+import { AccountType, AccountSubType } from '../enums/account.enums';
+import { PartialType } from '@nestjs/mapped-types';
 import { CreateAccountDto } from './create-account.dto';
 
-export class UpdateAccountDto extends PartialType(CreateAccountDto) {} 
+export class UpdateAccountDto extends PartialType(CreateAccountDto) {
+  @IsOptional()
+  @IsEnum(AccountType)
+  type?: AccountType;
+
+  @IsOptional()
+  @IsEnum(AccountSubType)
+  subtype?: AccountSubType;
+} 

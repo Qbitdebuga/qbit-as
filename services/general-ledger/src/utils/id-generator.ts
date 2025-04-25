@@ -1,20 +1,21 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { format } from 'date-fns';
-import { Prisma } from '@prisma/client';
 
 /**
  * Generates a sequential entry number for journal entries
  * Format: JE-YYYYMM-XXXX (JE-202504-0001)
  */
-export async function generateEntryNumber(prisma: PrismaService): Promise<string> {
-  const today = new Date();
-  const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
+export async function generateEntryNumber(prismaOrTx: any): Promise<string> {
+  const date = new Date();
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const prefix = `JE${year}${month}`;
   
-  // Get the highest entry number for today
-  const highestEntry = await prisma.journalEntry.findFirst({
+  // Find the highest entry number with this prefix
+  const db = prismaOrTx.db || prismaOrTx;
+  const highestEntry = await db.journalEntry.findFirst({
     where: {
       entryNumber: {
-        startsWith: `JE-${dateStr}`,
+        startsWith: prefix,
       },
     },
     orderBy: {
@@ -22,28 +23,34 @@ export async function generateEntryNumber(prisma: PrismaService): Promise<string
     },
   });
   
-  let sequence = 1;
+  let counter = 1;
   if (highestEntry) {
-    const currentSequence = parseInt(highestEntry.entryNumber.split('-')[2]);
-    sequence = currentSequence + 1;
+    const currentCounter = parseInt(highestEntry.entryNumber.slice(6), 10);
+    counter = currentCounter + 1;
   }
   
-  return `JE-${dateStr}-${sequence.toString().padStart(4, '0')}`;
+  // Format the counter with leading zeros (5 digits)
+  const formattedCounter = counter.toString().padStart(5, '0');
+  
+  return `${prefix}${formattedCounter}`;
 }
 
 /**
  * Generate a unique batch number for batches
  * Format: BAT-YYYYMMDD-XXXX (where XXXX is a sequential number)
  */
-export async function generateBatchNumber(prisma: PrismaService): Promise<string> {
-  const today = new Date();
-  const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
+export async function generateBatchNumber(prismaOrTx: any): Promise<string> {
+  const date = new Date();
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const prefix = `B${year}${month}`;
   
-  // Get the highest batch number for today
-  const highestBatch = await prisma.batch.findFirst({
+  // Find the highest batch number with this prefix
+  const db = prismaOrTx.db || prismaOrTx;
+  const highestBatch = await db.batch.findFirst({
     where: {
       batchNumber: {
-        startsWith: `BAT-${dateStr}`,
+        startsWith: prefix,
       },
     },
     orderBy: {
@@ -51,11 +58,14 @@ export async function generateBatchNumber(prisma: PrismaService): Promise<string
     },
   });
   
-  let sequence = 1;
+  let counter = 1;
   if (highestBatch) {
-    const currentSequence = parseInt(highestBatch.batchNumber.split('-')[2]);
-    sequence = currentSequence + 1;
+    const currentCounter = parseInt(highestBatch.batchNumber.slice(5), 10);
+    counter = currentCounter + 1;
   }
   
-  return `BAT-${dateStr}-${sequence.toString().padStart(4, '0')}`;
+  // Format the counter with leading zeros (4 digits)
+  const formattedCounter = counter.toString().padStart(4, '0');
+  
+  return `${prefix}${formattedCounter}`;
 } 

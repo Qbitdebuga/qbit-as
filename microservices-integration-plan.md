@@ -233,6 +233,60 @@ This document outlines the implementation plan for connecting the various micros
     - `services/reporting/src/app.module.ts`: Import Financial Reporting module
   - **Step Dependencies**: Step 24
 
+## Inventory Service Enhancement
+- [x] Step 32: Add Messaging Dependencies to Inventory Service
+  - **Task**: Add RabbitMQ client and microservices support to the Inventory Service
+  - **Files**:
+    - `services/inventory/package.json`: Add NestJS microservices and RabbitMQ dependencies
+    - `services/inventory/.env`: Add RabbitMQ connection settings
+    - `services/inventory/.env.example`: Update with new environment variables
+  - **User Instructions**: Run `cd services/inventory && yarn install` to install the new dependencies
+
+- [x] Step 33: Create Events Module for Inventory Service
+  - **Task**: Implement the Events Module for the Inventory Service
+  - **Files**:
+    - `services/inventory/src/events/events.module.ts`: Create Events Module
+    - `services/inventory/src/events/publishers/product-publisher.ts`: Implement Product events publisher
+    - `services/inventory/src/events/publishers/warehouse-publisher.ts`: Implement Warehouse events publisher
+    - `services/inventory/src/events/publishers/transaction-publisher.ts`: Implement Transaction events publisher
+    - `services/inventory/src/app.module.ts`: Import and configure Events Module
+  - **Step Dependencies**: Step 32
+
+- [x] Step 34: Add User Event Consumer
+  - **Task**: Create a consumer for user events from the Auth Service
+  - **Files**:
+    - `services/inventory/src/events/consumers/user-consumer.ts`: Create User events consumer
+    - `services/inventory/src/events/events.module.ts`: Register the consumer
+  - **Step Dependencies**: Step 33
+
+- [x] Step 35: Implement Product Entity Events
+  - **Task**: Extend the Product service to publish events when products are created, updated, or deleted
+  - **Files**:
+    - `services/inventory/src/products/products.service.ts`: Modify service to publish events
+    - `services/inventory/src/products/products.module.ts`: Import Events Module
+  - **Step Dependencies**: Step 33
+
+- [x] Step 36: Implement Warehouse Entity Events
+  - **Task**: Extend the Warehouse service to publish events when warehouses are created, updated, or deleted
+  - **Files**:
+    - `services/inventory/src/warehouses/warehouses.service.ts`: Modify service to publish events
+    - `services/inventory/src/warehouses/warehouses.module.ts`: Import Events Module
+  - **Step Dependencies**: Step 33
+
+- [x] Step 37: Implement Transaction Entity Events
+  - **Task**: Extend the Transaction service to publish events when inventory transactions are created, processed, or cancelled
+  - **Files**:
+    - `services/inventory/src/transactions/transactions.service.ts`: Modify service to publish events
+    - `services/inventory/src/transactions/transactions.module.ts`: Import Events Module
+  - **Step Dependencies**: Step 33
+
+- [x] Step 38: Implement General Ledger Event Consumer
+  - **Task**: Create a consumer for account events from the General Ledger Service
+  - **Files**:
+    - `services/inventory/src/events/consumers/account-consumer.ts`: Create Account events consumer
+    - `services/inventory/src/events/events.module.ts`: Register the consumer
+  - **Step Dependencies**: Step 33
+
 ## Frontend Integration
 - [x] Step 26: Create API Hook for Cross-Service Data
   - **Task**: Implement a React hook for fetching aggregated data from multiple services
@@ -355,3 +409,10 @@ This document outlines the implementation plan for connecting the various micros
    - Unit tests for all business logic
    - Integration tests for service boundaries
    - End-to-end tests for critical flows
+
+- [ ] Step 39: Add Inventory Service Client to API Gateway
+  - **Task**: Create client service to communicate with the Inventory Service
+  - **Files**:
+    - `services/api-gateway/src/clients/inventory-client.service.ts`: Create Inventory service client
+    - `services/api-gateway/src/clients/clients.module.ts`: Update clients module
+  - **Step Dependencies**: Step 32, Step 14

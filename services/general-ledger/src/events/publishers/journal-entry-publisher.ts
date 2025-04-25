@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { JournalEntry } from '@prisma/client';
+import { JournalEntry } from '../../journal-entries/entities/journal-entry.entity';
 import { 
   JournalEntryWithExtraFields, 
   JournalEntryLine,
@@ -47,8 +47,11 @@ export class JournalEntryPublisher {
       
       await this.client.emit('journal-entry.created', payload).toPromise();
       this.logger.log(`Published journal-entry.created event for entry ${journalEntry.id}`);
-    } catch (error: any) {
-      this.logger.error(`Failed to publish journal-entry.created event for entry ${journalEntry.id}`, error.stack);
+    } catch (error) {
+      this.logger.error(
+        `Failed to publish journal-entry.created event for entry ${journalEntry.id}`, 
+        error instanceof Error ? error.stack : error
+      );
     }
   }
 
@@ -76,8 +79,11 @@ export class JournalEntryPublisher {
       
       await this.client.emit('journal-entry.updated', payload).toPromise();
       this.logger.log(`Published journal-entry.updated event for entry ${journalEntry.id}`);
-    } catch (error: any) {
-      this.logger.error(`Failed to publish journal-entry.updated event for entry ${journalEntry.id}`, error.stack);
+    } catch (error) {
+      this.logger.error(
+        `Failed to publish journal-entry.updated event for entry ${journalEntry.id}`, 
+        error instanceof Error ? error.stack : error
+      );
     }
   }
 

@@ -5,7 +5,7 @@ import { CreateJournalEntryLineDto } from './create-journal-entry.dto';
 export class UpdateJournalEntryLineDto extends CreateJournalEntryLineDto {
   @IsOptional()
   @IsString()
-  accountId: string;
+  accountId!: string;
 }
 
 export class UpdateJournalEntryDto {

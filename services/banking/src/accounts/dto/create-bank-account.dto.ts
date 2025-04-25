@@ -11,7 +11,8 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AccountType, CurrencyCode } from '@prisma/client';
+import { AccountType } from '../enums/account-type.enum';
+import { CurrencyCode } from '../enums/currency-code.enum';
 
 export class CreateBankAccountDto {
   @ApiProperty({ description: 'Bank account number', example: '1234567890' })

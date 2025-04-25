@@ -22,9 +22,9 @@ export class ExpenseCategoriesRepository {
   async findAll(params: {
     skip?: number;
     take?: number;
-    cursor?: Prisma.ExpenseCategoryWhereUniqueInput;
-    where?: Prisma.ExpenseCategoryWhereInput;
-    orderBy?: Prisma.ExpenseCategoryOrderByWithRelationInput;
+    cursor?: Record<string, any>;
+    where?: Record<string, any>;
+    orderBy?: Record<string, any>;
   }) {
     const { skip, take, cursor, where, orderBy } = params;
     

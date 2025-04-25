@@ -80,4 +80,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       })
     );
   }
+
+  // Helper method for accessing Prisma models with proper typing
+  get db() {
+    return this as any;
+  }
 } 

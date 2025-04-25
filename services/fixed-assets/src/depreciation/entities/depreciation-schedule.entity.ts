@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DepreciationEntry as PrismaDepreciationEntry } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
-export class DepreciationEntryEntity implements PrismaDepreciationEntry {
+export class DepreciationEntryEntity {
   @ApiProperty({ description: 'Unique identifier of the depreciation entry' })
   id: string;
 

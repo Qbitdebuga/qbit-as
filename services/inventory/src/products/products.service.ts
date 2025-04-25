@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductsRepository } from './products.repository';
+import { ProductPublisher } from '../events/publishers/product-publisher';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateProductCategoryDto } from './dto/create-product-category.dto';
@@ -9,11 +10,19 @@ import { UpdateProductVariantDto } from './dto/update-product-variant.dto';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly productsRepository: ProductsRepository) {}
+  constructor(
+    private readonly productsRepository: ProductsRepository,
+    private readonly productPublisher: ProductPublisher
+  ) {}
 
   // Product methods
   async createProduct(createProductDto: CreateProductDto) {
-    return this.productsRepository.createProduct(createProductDto);
+    const product = await this.productsRepository.createProduct(createProductDto);
+    
+    // Publish product created event
+    await this.productPublisher.publishProductCreated(product.id, product);
+    
+    return product;
   }
 
   async findAllProducts(params: {
@@ -36,12 +45,22 @@ export class ProductsService {
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto) {
     await this.findOneProduct(id); // Check if product exists
-    return this.productsRepository.updateProduct(id, updateProductDto);
+    const updatedProduct = await this.productsRepository.updateProduct(id, updateProductDto);
+    
+    // Publish product updated event
+    await this.productPublisher.publishProductUpdated(updatedProduct.id, updatedProduct);
+    
+    return updatedProduct;
   }
 
   async removeProduct(id: number) {
     await this.findOneProduct(id); // Check if product exists
-    return this.productsRepository.removeProduct(id);
+    const removedProduct = await this.productsRepository.removeProduct(id);
+    
+    // Publish product deleted event
+    await this.productPublisher.publishProductDeleted(id);
+    
+    return removedProduct;
   }
 
   // Product Category methods

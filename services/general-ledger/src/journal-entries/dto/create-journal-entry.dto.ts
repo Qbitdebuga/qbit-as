@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 
 export class CreateJournalEntryLineDto {
   @IsString()
-  accountId: string;
+  accountId!: string;
 
   @IsOptional()
   @IsString()
@@ -18,7 +18,7 @@ export class CreateJournalEntryLineDto {
 
 export class CreateJournalEntryDto {
   @IsDateString()
-  date: string;
+  date!: string;
 
   @IsOptional()
   @IsString()
@@ -35,5 +35,5 @@ export class CreateJournalEntryDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateJournalEntryLineDto)
-  lines: CreateJournalEntryLineDto[];
+  lines!: CreateJournalEntryLineDto[];
 }

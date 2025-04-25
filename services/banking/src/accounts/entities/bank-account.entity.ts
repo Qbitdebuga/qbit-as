@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BankAccount as PrismaBankAccount, AccountType, CurrencyCode } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { BankEntity } from './bank.entity';
+import { AccountType } from '../enums/account-type.enum';
+import { CurrencyCode } from '../enums/currency-code.enum';
 
-export class BankAccountEntity implements PrismaBankAccount {
+export class BankAccountEntity {
   @ApiProperty({ description: 'Unique identifier of the bank account' })
   id: string;
 

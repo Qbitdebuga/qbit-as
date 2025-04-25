@@ -18,7 +18,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AssetCategoryEntity } from './entities/asset-category.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AssetStatus } from '@prisma/client';
+import { AssetStatus } from './enums/asset-status.enum';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 

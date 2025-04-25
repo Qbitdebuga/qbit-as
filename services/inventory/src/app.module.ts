@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule as AppConfigModule } from './config/config.module';
 import { ProductsModule } from './products/products.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { EventsModule } from './events/events.module';
+import { createWinstonLoggerOptions } from './config/logging.config';
 
 @Module({
   imports: [
@@ -16,26 +18,20 @@ import { TransactionsModule } from './transactions/transactions.module';
       envFilePath: ['.env'],
     }),
     
+    // Event Emitter
+    EventEmitterModule.forRoot(),
+    
     // Winston Logger
-    WinstonModule.forRoot({
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.ms(),
-            winston.format.colorize(),
-            winston.format.printf(
-              (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-            ),
-          ),
-        }),
-        // Add additional transports like file or Elasticsearch here if needed
-      ],
+    WinstonModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => 
+        createWinstonLoggerOptions(configService),
     }),
     
     // Core Modules
     AppConfigModule,
     PrismaModule,
+    EventsModule,
     
     // Feature Modules
     ProductsModule,

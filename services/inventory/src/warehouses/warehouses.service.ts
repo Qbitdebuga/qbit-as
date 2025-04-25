@@ -1,8 +1,14 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { WarehousePublisher } from '../events/publishers/warehouse-publisher';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
-import { Prisma } from '@prisma/client';
+import { 
+  WarehouseWhereInput,
+  WarehouseOrderByWithRelationInput,
+  SortOrder,
+  QueryMode
+} from '../prisma/prisma.types';
 
 interface FindAllOptions {
   skip?: number;
@@ -14,15 +20,28 @@ interface FindAllOptions {
 
 @Injectable()
 export class WarehousesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly warehousePublisher: WarehousePublisher
+  ) {}
+  
+  // Helper to safely access Prisma models
+  private get db() {
+    return this.prisma as any;
+  }
 
   async create(createWarehouseDto: CreateWarehouseDto) {
     try {
-      return await this.prisma.warehouse.create({
+      const warehouse = await this.db.warehouse.create({
         data: createWarehouseDto,
       });
+      
+      // Publish warehouse created event
+      await this.warehousePublisher.publishWarehouseCreated(warehouse.id, warehouse);
+      
+      return warehouse;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      if (error.code === 'P2002') {
         throw new ConflictException(`Warehouse with code ${createWarehouseDto.code} already exists`);
       }
       throw error;
@@ -32,7 +51,7 @@ export class WarehousesService {
   async findAll(options: FindAllOptions = {}) {
     const { skip = 0, take = 10, searchTerm, orderBy, includeInactive = false } = options;
     
-    const where: Prisma.WarehouseWhereInput = {};
+    const where: WarehouseWhereInput = {};
     
     if (!includeInactive) {
       where.isActive = true;
@@ -40,29 +59,29 @@ export class WarehousesService {
     
     if (searchTerm) {
       where.OR = [
-        { name: { contains: searchTerm, mode: 'insensitive' } },
-        { code: { contains: searchTerm, mode: 'insensitive' } },
-        { description: { contains: searchTerm, mode: 'insensitive' } },
+        { name: { contains: searchTerm, mode: QueryMode.insensitive } },
+        { code: { contains: searchTerm, mode: QueryMode.insensitive } },
+        { description: { contains: searchTerm, mode: QueryMode.insensitive } },
       ];
     }
     
-    let orderByClause: Prisma.WarehouseOrderByWithRelationInput = { createdAt: 'desc' };
+    let orderByClause: WarehouseOrderByWithRelationInput = { createdAt: SortOrder.desc };
     
     if (orderBy) {
       const [field, direction] = orderBy.split(':');
       orderByClause = {
-        [field]: direction === 'desc' ? 'desc' : 'asc',
+        [field]: direction === 'desc' ? SortOrder.desc : SortOrder.asc,
       };
     }
 
     const [warehouses, total] = await Promise.all([
-      this.prisma.warehouse.findMany({
+      this.db.warehouse.findMany({
         where,
         skip,
         take,
         orderBy: orderByClause,
       }),
-      this.prisma.warehouse.count({ where }),
+      this.db.warehouse.count({ where }),
     ]);
 
     return {
@@ -76,7 +95,7 @@ export class WarehousesService {
   }
 
   async findOne(id: string) {
-    const warehouse = await this.prisma.warehouse.findUnique({
+    const warehouse = await this.db.warehouse.findUnique({
       where: { id },
     });
 
@@ -92,15 +111,20 @@ export class WarehousesService {
       // Check if warehouse exists
       await this.findOne(id);
       
-      return await this.prisma.warehouse.update({
+      const updatedWarehouse = await this.db.warehouse.update({
         where: { id },
         data: updateWarehouseDto,
       });
+      
+      // Publish warehouse updated event
+      await this.warehousePublisher.publishWarehouseUpdated(updatedWarehouse.id, updatedWarehouse);
+      
+      return updatedWarehouse;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      if (error.code === 'P2002') {
         throw new ConflictException(`Warehouse with code ${updateWarehouseDto.code} already exists`);
       }
       throw error;
@@ -111,8 +135,13 @@ export class WarehousesService {
     // Check if warehouse exists
     await this.findOne(id);
     
-    return await this.prisma.warehouse.delete({
+    const removedWarehouse = await this.db.warehouse.delete({
       where: { id },
     });
+    
+    // Publish warehouse deleted event
+    await this.warehousePublisher.publishWarehouseDeleted(id);
+    
+    return removedWarehouse;
   }
 }

@@ -32,7 +32,7 @@ export class BatchProcessingSaga {
     
     try {
       // Get the batch
-      const batch = await this.prisma.batch.findUnique({
+      const batch = await this.prisma.db.batch.findUnique({
         where: { id: batchId },
         include: { items: true }
       });
@@ -46,7 +46,7 @@ export class BatchProcessingSaga {
       }
       
       // Update batch status to PROCESSING
-      await this.prisma.batch.update({
+      await this.prisma.db.batch.update({
         where: { id: batchId },
         data: {
           status: BatchStatus.PROCESSING,
@@ -68,7 +68,7 @@ export class BatchProcessingSaga {
         
         try {
           // Update item status to PROCESSING
-          await this.prisma.batchItem.update({
+          await this.prisma.db.batchItem.update({
             where: { id: item.id },
             data: { status: BatchStatus.PROCESSING }
           });
@@ -77,13 +77,13 @@ export class BatchProcessingSaga {
           const entryData = item.entryData as Record<string, any>;
           
           // Use the journal entry creation saga to create the journal entry
-          const result = await this.journalEntryCreationSaga.execute(entryData);
+          const result = await this.journalEntryCreationSaga.execute(entryData as any);
           
           // Update the batch item with the result
-          await this.prisma.batchItem.update({
+          await this.prisma.db.batchItem.update({
             where: { id: item.id },
             data: {
-              journalEntryId: result.id,
+              journalEntryId: result.journalEntry?.id,
               status: BatchStatus.COMPLETED,
               processedAt: new Date()
             }
@@ -94,7 +94,7 @@ export class BatchProcessingSaga {
           this.logger.error(`Error processing batch item ${item.id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
           
           // Update the batch item with the error
-          await this.prisma.batchItem.update({
+          await this.prisma.db.batchItem.update({
             where: { id: item.id },
             data: {
               status: BatchStatus.FAILED,
@@ -107,7 +107,7 @@ export class BatchProcessingSaga {
         }
         
         // Update the batch progress
-        await this.prisma.batch.update({
+        await this.prisma.db.batch.update({
           where: { id: batchId },
           data: {
             processedCount,
@@ -121,7 +121,7 @@ export class BatchProcessingSaga {
                           processedCount > 0 ? BatchStatus.COMPLETED : BatchStatus.FAILED;
       
       // Update the batch with the final status
-      await this.prisma.batch.update({
+      await this.prisma.db.batch.update({
         where: { id: batchId },
         data: {
           status: finalStatus,
@@ -149,7 +149,7 @@ export class BatchProcessingSaga {
       this.logger.error(`Error in batch processing saga: ${error instanceof Error ? error.message : 'Unknown error'}`);
       
       // Update the batch status to FAILED
-      await this.prisma.batch.update({
+      await this.prisma.db.batch.update({
         where: { id: batchId },
         data: {
           status: BatchStatus.FAILED,
@@ -171,8 +171,9 @@ export class BatchProcessingSaga {
     
     // Create the batch in a transaction
     return this.prisma.$transaction(async (prisma) => {
+      const db = (prisma as any);
       // Create the batch
-      const batch = await prisma.batch.create({
+      const batch = await db.batch.create({
         data: {
           batchNumber,
           description: data.description,
@@ -187,7 +188,7 @@ export class BatchProcessingSaga {
       // Create batch items for each entry
       const batchItems = await Promise.all(
         data.entries.map(entry => 
-          prisma.batchItem.create({
+          db.batchItem.create({
             data: {
               batchId: batch.id,
               entryData: entry as Prisma.InputJsonValue,

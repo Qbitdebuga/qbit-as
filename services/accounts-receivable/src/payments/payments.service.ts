@@ -6,6 +6,8 @@ import { ApplyPaymentDto } from './dto/apply-payment.dto';
 import { InvoiceStatus } from '../invoices/entities/invoice-status.enum';
 import { PrismaService } from '../prisma/prisma.service';
 import { Invoice } from '../invoices/entities/invoice.entity';
+import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { PaymentStatus } from '../invoices/entities/payment-status.enum';
 
 @Injectable()
 export class PaymentsService {
@@ -17,76 +19,145 @@ export class PaymentsService {
   ) {}
 
   async createPayment(createPaymentDto: CreatePaymentDto): Promise<Payment> {
-    return this.paymentsRepository.createPayment(createPaymentDto);
+    try {
+      return await this.paymentsRepository.createPayment(createPaymentDto);
+    } catch (error: any) {
+      this.logger.error(`Failed to create payment: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async findAll(): Promise<Payment[]> {
-    return this.paymentsRepository.findAll();
+    try {
+      return await this.paymentsRepository.findAll();
+    } catch (error: any) {
+      this.logger.error(`Failed to find all payments: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
-  async getPaymentById(id: number): Promise<Payment> {
-    const payment = await this.paymentsRepository.findOne(id.toString());
-    if (!payment) {
-      throw new NotFoundException(`Payment with ID ${id} not found`);
+  async findOne(id: string): Promise<Payment> {
+    try {
+      const payment = await this.paymentsRepository.findOne(id);
+      if (!payment) {
+        throw new NotFoundException(`Payment with ID "${id}" not found`);
+      }
+      return payment;
+    } catch (error: any) {
+      this.logger.error(`Failed to find payment by id ${id}: ${error.message}`, error.stack);
+      throw error;
     }
-    return payment;
+  }
+
+  async getPaymentById(id: string): Promise<Payment> {
+    return this.findOne(id);
   }
 
   async findByInvoiceId(invoiceId: string): Promise<Payment[]> {
-    return this.paymentsRepository.findByInvoiceId(invoiceId);
+    try {
+      return await this.paymentsRepository.findByInvoiceId(invoiceId);
+    } catch (error: any) {
+      this.logger.error(`Failed to find payments for invoice ${invoiceId}: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  async update(id: string, updatePaymentDto: UpdatePaymentDto): Promise<Payment> {
+    try {
+      if (!updatePaymentDto.status) {
+        throw new BadRequestException('Payment status is required');
+      }
+      return await this.paymentsRepository.updatePaymentStatus(id, updatePaymentDto.status);
+    } catch (error: any) {
+      this.logger.error(`Failed to update payment: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  async applyPayment(id: string, applyPaymentDto: ApplyPaymentDto): Promise<Payment> {
+    try {
+      const payment = await this.findOne(id);
+      
+      if (!payment) {
+        throw new NotFoundException(`Payment with ID "${id}" not found`);
+      }
+      
+      // Set the payment ID in the DTO
+      const dto: ApplyPaymentDto = {
+        ...applyPaymentDto,
+        paymentId: id
+      };
+      
+      // Apply the payment to the invoice using the repository
+      const updatedPayment = await this.paymentsRepository.applyPayment(dto);
+      
+      // Update the invoice status based on the payment application
+      await this.updateInvoiceStatus(applyPaymentDto.invoiceId);
+      
+      return updatedPayment;
+    } catch (error: any) {
+      this.logger.error(`Failed to apply payment: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async deletePayment(id: string): Promise<void> {
-    const payment = await this.paymentsRepository.findOne(id);
-    if (!payment) {
-      throw new NotFoundException(`Payment with ID ${id} not found`);
+    try {
+      await this.paymentsRepository.deletePayment(id);
+    } catch (error: any) {
+      this.logger.error(`Failed to delete payment ${id}: ${error.message}`, error.stack);
+      throw error;
     }
-    await this.paymentsRepository.deletePayment(id);
-  }
-
-  async applyPayment(paymentId: number, applyPaymentDto: ApplyPaymentDto): Promise<Payment> {
-    const payment = await this.getPaymentById(paymentId);
-    
-    // Get the invoice
-    const invoice = await this.paymentsRepository.getInvoiceWithPayments(applyPaymentDto.invoiceId) as Invoice;
-    if (!invoice) {
-      throw new NotFoundException(`Invoice with ID ${applyPaymentDto.invoiceId} not found`);
-    }
-    
-    // Update the invoice balances
-    const newAmountPaid = invoice.amountPaid + applyPaymentDto.amountApplied;
-    const newBalanceDue = invoice.totalAmount - newAmountPaid;
-    
-    if (newBalanceDue < 0) {
-      throw new BadRequestException(`Cannot apply more than the invoice amount`);
-    }
-    
-    // Update the invoice balances
-    await this.paymentsRepository.updateInvoiceBalances(
-      applyPaymentDto.invoiceId, 
-      newAmountPaid, 
-      newBalanceDue
-    );
-    
-    // Update invoice status if fully paid
-    if (newBalanceDue === 0) {
-      await this.updateInvoiceStatus(applyPaymentDto.invoiceId, InvoiceStatus.PAID);
-    } else if (newBalanceDue < invoice.totalAmount) {
-      await this.updateInvoiceStatus(applyPaymentDto.invoiceId, InvoiceStatus.PARTIAL);
-    }
-    
-    return payment;
   }
 
   async getPaymentsByVendorId(vendorId: number): Promise<Payment[]> {
-    // For now, we'll just return all payments as we may not have vendor ID in our model
-    // This should be implemented properly based on the actual data model
-    this.logger.log(`Getting payments for vendor ID: ${vendorId}`);
-    return this.findAll();
+    try {
+      return await this.paymentsRepository.getPaymentsByVendorId(vendorId);
+    } catch (error: any) {
+      this.logger.error(`Failed to get payments for vendor ${vendorId}: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
-  async updateInvoiceStatus(invoiceId: string, status: InvoiceStatus): Promise<void> {
-    // Add any validation or business logic here
-    await this.paymentsRepository.updateInvoiceStatus(invoiceId, status);
+  async getInvoiceWithPayments(invoiceId: string): Promise<any> {
+    try {
+      return await this.paymentsRepository.getInvoiceWithPayments(invoiceId);
+    } catch (error: any) {
+      this.logger.error(`Failed to get invoice with payments: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  private async updateInvoiceStatus(invoiceId: string): Promise<void> {
+    try {
+      const invoiceWithPayments = await this.paymentsRepository.getInvoiceWithPayments(invoiceId);
+      
+      if (!invoiceWithPayments) {
+        throw new NotFoundException(`Invoice with ID "${invoiceId}" not found`);
+      }
+      
+      // Calculate total payments made to this invoice
+      const totalPayments = invoiceWithPayments.payments ? 
+        invoiceWithPayments.payments.reduce(
+          (sum: number, payment: Payment) => sum + payment.amount, 
+          0
+        ) : 0;
+      
+      // Determine the new status based on payment totals
+      let newStatus: InvoiceStatus;
+      if (totalPayments >= invoiceWithPayments.totalAmount) {
+        newStatus = InvoiceStatus.PAID;
+      } else if (totalPayments > 0) {
+        newStatus = InvoiceStatus.PARTIAL;
+      } else {
+        newStatus = InvoiceStatus.PENDING;
+      }
+      
+      // Update the invoice status
+      await this.paymentsRepository.updateInvoiceStatus(invoiceId, newStatus);
+    } catch (error: any) {
+      this.logger.error(`Failed to update invoice status: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 } 

@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Bank as PrismaBank } from '@prisma/client';
 
-export class BankEntity implements PrismaBank {
+export class BankEntity {
   @ApiProperty({ description: 'Unique identifier of the bank' })
   id: string;
 

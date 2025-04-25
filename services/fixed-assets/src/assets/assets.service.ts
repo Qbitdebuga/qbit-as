@@ -6,7 +6,9 @@ import { AssetEntity } from './entities/asset.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AssetCategoryEntity } from './entities/asset-category.entity';
-import { AssetStatus, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { AssetStatus } from './enums/asset-status.enum';
+import { DepreciationMethod } from '../depreciation/enums/depreciation-method.enum';
 
 @Injectable()
 export class AssetsService {
@@ -14,11 +16,16 @@ export class AssetsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+  // Helper property to access Prisma models with type casting
+  private get db() {
+    return this.prisma as any;
+  }
+
   // Asset methods
   async create(createAssetDto: CreateAssetDto): Promise<AssetEntity> {
     try {
       // Check if category exists
-      const category = await this.prisma.assetCategory.findUnique({
+      const category = await this.db.assetCategory.findUnique({
         where: { id: createAssetDto.categoryId },
       });
 
@@ -27,7 +34,7 @@ export class AssetsService {
       }
 
       // Check if asset number already exists
-      const existingAsset = await this.prisma.asset.findUnique({
+      const existingAsset = await this.db.asset.findUnique({
         where: { assetNumber: createAssetDto.assetNumber },
       });
 
@@ -35,19 +42,41 @@ export class AssetsService {
         throw new ConflictException(`Asset with asset number ${createAssetDto.assetNumber} already exists`);
       }
 
-      const asset = await this.prisma.asset.create({
+      // Get the status value or default to ACTIVE
+      const statusValue = createAssetDto.status || AssetStatus.ACTIVE;
+      
+      // Get the depreciation method value or default to STRAIGHT_LINE
+      const depreciationMethodValue = createAssetDto.depreciationMethod || DepreciationMethod.STRAIGHT_LINE;
+      
+      const asset = await this.db.asset.create({
         data: {
-          ...createAssetDto,
+          name: createAssetDto.name,
+          description: createAssetDto.description,
+          assetNumber: createAssetDto.assetNumber,
           purchaseDate: new Date(createAssetDto.purchaseDate),
           purchaseCost: new Prisma.Decimal(createAssetDto.purchaseCost.toString()),
           residualValue: new Prisma.Decimal(createAssetDto.residualValue.toString()),
+          assetLifeYears: createAssetDto.assetLifeYears,
+          // Use type assertion to tell TypeScript this is the correct enum value
+          status: statusValue as any,
+          serialNumber: createAssetDto.serialNumber,
+          location: createAssetDto.location,
+          notes: createAssetDto.notes,
+          categoryId: createAssetDto.categoryId,
+          // Use type assertion to tell TypeScript this is the correct enum value
+          depreciationMethod: depreciationMethodValue as any,
         },
         include: {
           category: true,
         },
       });
 
-      return new AssetEntity(asset);
+      // Map back to our entity
+      return new AssetEntity({
+        ...asset,
+        status: statusValue,
+        depreciationMethod: depreciationMethodValue,
+      });
     } catch (error) {
       this.logger.error(`Error creating asset: ${error.message}`, error.stack);
       throw error;
@@ -62,10 +91,18 @@ export class AssetsService {
     searchTerm?: string,
   ): Promise<{ assets: AssetEntity[]; total: number }> {
     try {
-      const where: Prisma.AssetWhereInput = {};
+      const where: any = {};
       
       if (status) {
-        where.status = status;
+        // Map our enum status to Prisma's enum string
+        const statusMap = {
+          [AssetStatus.ACTIVE]: 'ACTIVE',
+          [AssetStatus.INACTIVE]: 'INACTIVE',
+          [AssetStatus.DISPOSED]: 'DISPOSED',
+          [AssetStatus.FULLY_DEPRECIATED]: 'FULLY_DEPRECIATED',
+          [AssetStatus.UNDER_MAINTENANCE]: 'UNDER_MAINTENANCE',
+        };
+        where.status = statusMap[status];
       }
       
       if (categoryId) {
@@ -83,7 +120,7 @@ export class AssetsService {
       }
 
       const [assets, total] = await Promise.all([
-        this.prisma.asset.findMany({
+        this.db.asset.findMany({
           where,
           skip,
           take,
@@ -94,7 +131,7 @@ export class AssetsService {
             updatedAt: 'desc',
           },
         }),
-        this.prisma.asset.count({ where }),
+        this.db.asset.count({ where }),
       ]);
 
       // Calculate current book value for each asset
@@ -103,6 +140,8 @@ export class AssetsService {
           const depreciation = await this.calculateDepreciation(asset.id);
           return {
             ...asset,
+            status: AssetStatus[asset.status],
+            depreciationMethod: DepreciationMethod[asset.depreciationMethod],
             currentBookValue: depreciation.currentBookValue,
             accumulatedDepreciation: depreciation.accumulatedDepreciation,
           };
@@ -121,7 +160,7 @@ export class AssetsService {
 
   async findOne(id: string): Promise<AssetEntity> {
     try {
-      const asset = await this.prisma.asset.findUnique({
+      const asset = await this.db.asset.findUnique({
         where: { id },
         include: {
           category: true,
@@ -139,11 +178,16 @@ export class AssetsService {
 
       const depreciation = await this.calculateDepreciation(id);
 
-      return new AssetEntity({
+      // Map Prisma status back to our enum for the entity
+      const mappedAsset = {
         ...asset,
+        status: AssetStatus[asset.status],
+        depreciationMethod: DepreciationMethod[asset.depreciationMethod],
         currentBookValue: depreciation.currentBookValue,
         accumulatedDepreciation: depreciation.accumulatedDepreciation,
-      });
+      };
+
+      return new AssetEntity(mappedAsset);
     } catch (error) {
       this.logger.error(`Error finding asset: ${error.message}`, error.stack);
       throw error;
@@ -153,7 +197,7 @@ export class AssetsService {
   async update(id: string, updateAssetDto: UpdateAssetDto): Promise<AssetEntity> {
     try {
       // Check if asset exists
-      const existingAsset = await this.prisma.asset.findUnique({
+      const existingAsset = await this.db.asset.findUnique({
         where: { id },
       });
 
@@ -163,7 +207,7 @@ export class AssetsService {
 
       // Check if category exists if categoryId is provided
       if (updateAssetDto.categoryId) {
-        const category = await this.prisma.assetCategory.findUnique({
+        const category = await this.db.assetCategory.findUnique({
           where: { id: updateAssetDto.categoryId },
         });
 
@@ -174,7 +218,7 @@ export class AssetsService {
 
       // Check if asset number is unique if updating
       if (updateAssetDto.assetNumber && updateAssetDto.assetNumber !== existingAsset.assetNumber) {
-        const assetWithSameNumber = await this.prisma.asset.findUnique({
+        const assetWithSameNumber = await this.db.asset.findUnique({
           where: { assetNumber: updateAssetDto.assetNumber },
         });
 
@@ -183,7 +227,29 @@ export class AssetsService {
         }
       }
 
-      const data: Prisma.AssetUpdateInput = { ...updateAssetDto };
+      const data: any = { ...updateAssetDto };
+
+      // Map status enum if provided
+      if (updateAssetDto.status) {
+        const statusMap = {
+          [AssetStatus.ACTIVE]: 'ACTIVE',
+          [AssetStatus.INACTIVE]: 'INACTIVE',
+          [AssetStatus.DISPOSED]: 'DISPOSED',
+          [AssetStatus.FULLY_DEPRECIATED]: 'FULLY_DEPRECIATED',
+          [AssetStatus.UNDER_MAINTENANCE]: 'UNDER_MAINTENANCE',
+        };
+        data.status = statusMap[updateAssetDto.status];
+      }
+
+      // Map depreciation method enum if provided
+      if (updateAssetDto.depreciationMethod) {
+        const depreciationMethodMap = {
+          [DepreciationMethod.STRAIGHT_LINE]: 'STRAIGHT_LINE',
+          [DepreciationMethod.DECLINING_BALANCE]: 'DECLINING_BALANCE',
+          [DepreciationMethod.UNITS_OF_PRODUCTION]: 'UNITS_OF_PRODUCTION',
+        };
+        data.depreciationMethod = depreciationMethodMap[updateAssetDto.depreciationMethod];
+      }
 
       // Convert string dates to Date objects if provided
       if (updateAssetDto.purchaseDate) {
@@ -199,7 +265,7 @@ export class AssetsService {
         data.residualValue = new Prisma.Decimal(updateAssetDto.residualValue.toString());
       }
 
-      const asset = await this.prisma.asset.update({
+      const asset = await this.db.asset.update({
         where: { id },
         data,
         include: {
@@ -207,7 +273,14 @@ export class AssetsService {
         },
       });
 
-      return new AssetEntity(asset);
+      // Map Prisma status back to our enum for the entity
+      const mappedAsset = {
+        ...asset,
+        status: AssetStatus[asset.status],
+        depreciationMethod: DepreciationMethod[asset.depreciationMethod],
+      };
+
+      return new AssetEntity(mappedAsset);
     } catch (error) {
       this.logger.error(`Error updating asset: ${error.message}`, error.stack);
       throw error;
@@ -217,7 +290,7 @@ export class AssetsService {
   async remove(id: string): Promise<void> {
     try {
       // Check if asset exists
-      const asset = await this.prisma.asset.findUnique({
+      const asset = await this.db.asset.findUnique({
         where: { id },
       });
 
@@ -226,11 +299,11 @@ export class AssetsService {
       }
 
       // Delete asset and its depreciation entries in a transaction
-      await this.prisma.$transaction([
-        this.prisma.depreciationEntry.deleteMany({
+      await this.db.$transaction([
+        this.db.depreciationEntry.deleteMany({
           where: { assetId: id },
         }),
-        this.prisma.asset.delete({
+        this.db.asset.delete({
           where: { id },
         }),
       ]);
@@ -242,7 +315,7 @@ export class AssetsService {
 
   // Calculate current depreciation for an asset
   private async calculateDepreciation(assetId: string): Promise<{ currentBookValue: Prisma.Decimal; accumulatedDepreciation: Prisma.Decimal }> {
-    const asset = await this.prisma.asset.findUnique({
+    const asset = await this.db.asset.findUnique({
       where: { id: assetId },
     });
 
@@ -251,7 +324,7 @@ export class AssetsService {
     }
 
     // Get the latest depreciation entry for the asset
-    const latestEntry = await this.prisma.depreciationEntry.findFirst({
+    const latestEntry = await this.db.depreciationEntry.findFirst({
       where: { assetId },
       orderBy: { date: 'desc' },
     });
@@ -293,7 +366,7 @@ export class AssetsService {
   // Asset Category methods
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<AssetCategoryEntity> {
     try {
-      const category = await this.prisma.assetCategory.create({
+      const category = await this.db.assetCategory.create({
         data: createCategoryDto,
       });
 
@@ -306,7 +379,7 @@ export class AssetsService {
 
   async findAllCategories(skip = 0, take = 10, searchTerm?: string): Promise<{ categories: AssetCategoryEntity[]; total: number }> {
     try {
-      const where: Prisma.AssetCategoryWhereInput = {};
+      const where: any = {};
       
       if (searchTerm) {
         where.OR = [
@@ -316,7 +389,7 @@ export class AssetsService {
       }
 
       const [categories, total] = await Promise.all([
-        this.prisma.assetCategory.findMany({
+        this.db.assetCategory.findMany({
           where,
           skip,
           take,
@@ -324,7 +397,7 @@ export class AssetsService {
             name: 'asc',
           },
         }),
-        this.prisma.assetCategory.count({ where }),
+        this.db.assetCategory.count({ where }),
       ]);
 
       return {
@@ -339,7 +412,7 @@ export class AssetsService {
 
   async findOneCategory(id: string): Promise<AssetCategoryEntity> {
     try {
-      const category = await this.prisma.assetCategory.findUnique({
+      const category = await this.db.assetCategory.findUnique({
         where: { id },
         include: {
           assets: {
@@ -368,7 +441,7 @@ export class AssetsService {
   async updateCategory(id: string, updateCategoryDto: UpdateCategoryDto): Promise<AssetCategoryEntity> {
     try {
       // Check if category exists
-      const category = await this.prisma.assetCategory.findUnique({
+      const category = await this.db.assetCategory.findUnique({
         where: { id },
       });
 
@@ -376,7 +449,7 @@ export class AssetsService {
         throw new NotFoundException(`Asset category with ID ${id} not found`);
       }
 
-      const updatedCategory = await this.prisma.assetCategory.update({
+      const updatedCategory = await this.db.assetCategory.update({
         where: { id },
         data: updateCategoryDto,
       });
@@ -391,7 +464,7 @@ export class AssetsService {
   async removeCategory(id: string): Promise<void> {
     try {
       // Check if category exists
-      const category = await this.prisma.assetCategory.findUnique({
+      const category = await this.db.assetCategory.findUnique({
         where: { id },
         include: {
           _count: {
@@ -409,7 +482,7 @@ export class AssetsService {
         throw new ConflictException(`Cannot delete category with ${category._count.assets} assets. Please reassign or delete the assets first.`);
       }
 
-      await this.prisma.assetCategory.delete({
+      await this.db.assetCategory.delete({
         where: { id },
       });
     } catch (error) {

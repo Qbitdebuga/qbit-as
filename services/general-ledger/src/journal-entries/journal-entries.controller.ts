@@ -39,7 +39,7 @@ export class JournalEntriesController {
   }
 
   @Post(':id/reverse')
-  reverse(@Param('id') id: string, @Body('reason') reason: string) {
-    return this.journalEntriesService.reverse(id, reason);
+  reverse(@Param('id') id: string) {
+    return this.journalEntriesService.reverse(id);
   }
 } 

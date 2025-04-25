@@ -3,7 +3,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import { Account, AccountWithHierarchy, AccountType } from './entities/account.entity';
+import { Account, AccountWithHierarchy } from './entities/account.entity';
+import { AccountType } from './enums/account.enums';
 
 @ApiTags('accounts')
 @Controller('accounts')

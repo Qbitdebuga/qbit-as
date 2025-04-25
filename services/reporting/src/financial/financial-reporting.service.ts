@@ -16,6 +16,11 @@ export class FinancialReportingService {
     private readonly authClient: AuthClientService,
   ) {}
 
+  // Helper property to access Prisma models with type casting
+  private get db() {
+    return this.prisma as any;
+  }
+
   /**
    * Generate a financial report based on the request parameters
    */
@@ -73,7 +78,7 @@ export class FinancialReportingService {
   ): Promise<{ id: string }> {
     try {
       // Create the report record
-      const savedReport = await this.prisma.report.create({
+      const savedReport = await this.db.report.create({
         data: {
           name: report.name,
           type: this.getReportTypeEnum(report.type),
@@ -112,7 +117,7 @@ export class FinancialReportingService {
       const skip = (page - 1) * limit;
       
       // Build the where condition
-      const where: Prisma.ReportWhereInput = {};
+      const where: any = {};
       
       if (type) {
         where.type = this.getReportTypeEnum(type);
@@ -129,7 +134,7 @@ export class FinancialReportingService {
       
       // Get reports with pagination
       const [reports, total] = await Promise.all([
-        this.prisma.report.findMany({
+        this.db.report.findMany({
           where,
           orderBy: { createdAt: 'desc' },
           skip,
@@ -146,7 +151,7 @@ export class FinancialReportingService {
             },
           },
         }),
-        this.prisma.report.count({ where }),
+        this.db.report.count({ where }),
       ]);
       
       return {
@@ -173,7 +178,7 @@ export class FinancialReportingService {
     userId?: string
   ): Promise<any> {
     try {
-      const report = await this.prisma.report.findUnique({
+      const report = await this.db.report.findUnique({
         where: { id },
         include: {
           snapshots: includeLatestSnapshot ? {
@@ -204,7 +209,7 @@ export class FinancialReportingService {
    */
   async getSnapshotById(id: string, userId?: string): Promise<any> {
     try {
-      const snapshot = await this.prisma.reportSnapshot.findUnique({
+      const snapshot = await this.db.reportSnapshot.findUnique({
         where: { id },
         include: {
           report: true,
@@ -253,7 +258,7 @@ export class FinancialReportingService {
       });
       
       // Create a new snapshot
-      const snapshot = await this.prisma.reportSnapshot.create({
+      const snapshot = await this.db.reportSnapshot.create({
         data: {
           reportId,
           name: name || `Snapshot ${new Date().toISOString().split('T')[0]}`,

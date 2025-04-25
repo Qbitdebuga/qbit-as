@@ -26,13 +26,12 @@ export class AuthService {
    * Get a valid service token, either from cache or by requesting a new one
    */
   async getServiceToken(options: ServiceTokenOptions = { scopes: ['gl:read', 'gl:write'] }): Promise<string> {
-    // Check if we have a valid token already
-    if (this.token && this.tokenExpiresAt && this.tokenExpiresAt > Date.now()) {
-      return this.token;
-    }
-
-    // Request a new token
     try {
+      if (this.token && this.tokenExpiresAt && this.tokenExpiresAt > Date.now()) {
+        return this.token;
+      }
+
+      // Request a new token
       const response = await axios.post(`${this.authServiceUrl}/service-tokens`, {
         serviceId: this.serviceId,
         serviceName: this.serviceName,
@@ -52,7 +51,7 @@ export class AuthService {
       this.tokenExpiresAt = Date.now() + expiresInMs;
       
       return this.token;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to obtain service token:', error);
       throw new Error(`Failed to obtain service token: ${error.message}`);
     }

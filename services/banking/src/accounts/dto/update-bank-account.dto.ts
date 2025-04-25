@@ -10,7 +10,8 @@ import {
   IsDate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AccountType, CurrencyCode } from '@prisma/client';
+import { AccountType } from '../enums/account-type.enum';
+import { CurrencyCode } from '../enums/currency-code.enum';
 
 export class UpdateBankAccountDto {
   @ApiProperty({

@@ -6,16 +6,15 @@ import {
   IsBoolean, 
   IsNumber, 
   IsPositive, 
+  IsUUID,
   MaxLength 
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateWarehouseLocationDto {
-  @ApiProperty({ example: 1, description: 'ID of the warehouse this location belongs to' })
-  @IsNumber()
-  @IsPositive()
-  @Type(() => Number)
-  warehouseId: number;
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'ID of the warehouse this location belongs to' })
+  @IsUUID()
+  warehouseId: string;
 
   @ApiProperty({ example: 'Aisle A', description: 'Name of the location' })
   @IsString()

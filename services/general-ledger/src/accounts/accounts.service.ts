@@ -25,26 +25,24 @@ export class AccountsService {
   }
 
   async create(createAccountDto: CreateAccountDto): Promise<Account> {
-    // Check if account with the same code already exists
-    const existingAccount = await this.accountsRepository.findByCode(createAccountDto.code);
-    if (existingAccount) {
-      throw new ConflictException(`Account with code ${createAccountDto.code} already exists`);
-    }
-
-    // If parent ID is provided, check if parent exists
+    this.logger.log(`Creating account: ${createAccountDto.name}`);
+    
+    // Validate parent account if one is provided
     if (createAccountDto.parentId) {
-      const parent = await this.accountsRepository.findOne(createAccountDto.parentId);
-      if (!parent) {
+      const parentExists = await this.accountsRepository.findOne(createAccountDto.parentId);
+      if (!parentExists) {
         throw new NotFoundException(`Parent account with ID ${createAccountDto.parentId} not found`);
       }
     }
-
-    const createdAccount = await this.accountsRepository.create(createAccountDto);
     
-    // Publish account.created event
-    await this.accountPublisher.publishAccountCreated(createdAccount);
+    // Check for duplicate code
+    const existingAccountCode = await this.accountsRepository.findByCode(createAccountDto.code);
+    if (existingAccountCode) {
+      throw new ConflictException(`Account with code ${createAccountDto.code} already exists`);
+    }
     
-    return createdAccount;
+    // Create the account
+    return this.accountsRepository.createAccount(createAccountDto);
   }
 
   async findAll(): Promise<Account[]> {
@@ -136,46 +134,43 @@ export class AccountsService {
   }
 
   async getAccounts() {
-    return this.prisma.account.findMany();
+    return this.prisma.db.account.findMany();
   }
 
   async getAccountById(id: string) {
-    return this.prisma.account.findUnique({
+    return this.prisma.db.account.findUnique({
       where: { id },
     });
   }
 
-  async createAccount(data: any) {
-    const account = await this.prisma.account.create({
-      data,
+  async createAccount(createAccountDto: CreateAccountDto): Promise<Account> {
+    this.logger.log(`Creating account with name: ${createAccountDto.name}`);
+    const account = await this.prisma.db.account.create({
+      data: createAccountDto,
     });
-    
-    // Publish account.created event
+    // Publish account created event
     await this.accountPublisher.publishAccountCreated(account);
-    
     return account;
   }
 
-  async updateAccount(id: string, data: any) {
-    const account = await this.prisma.account.update({
+  async updateAccount(id: string, updateAccountDto: UpdateAccountDto): Promise<Account> {
+    this.logger.log(`Updating account with id: ${id}`);
+    const account = await this.prisma.db.account.update({
       where: { id },
-      data,
+      data: updateAccountDto,
     });
-    
-    // Publish account.updated event
+    // Publish account updated event
     await this.accountPublisher.publishAccountUpdated(account);
-    
     return account;
   }
 
-  async deleteAccount(id: string) {
-    const account = await this.prisma.account.delete({
+  async deleteAccount(id: string): Promise<Account> {
+    this.logger.log(`Deleting account with id: ${id}`);
+    const account = await this.prisma.db.account.delete({
       where: { id },
     });
-    
-    // Publish account.deleted event
+    // Publish account deleted event
     await this.accountPublisher.publishAccountDeleted(id);
-    
     return account;
   }
 
@@ -201,5 +196,16 @@ export class AccountsService {
       this.logger.error(`Failed to generate account report: ${error.message}`, error.stack);
       throw new Error(`Failed to generate account report: ${error.message}`);
     }
+  }
+
+  // Helper method for chart of accounts
+  async getChartOfAccounts(): Promise<Account[]> {
+    this.logger.log('Getting chart of accounts');
+    return this.accountsRepository.findAll();
+  }
+
+  async getAccountDetails(id: string): Promise<Account | null> {
+    this.logger.log(`Getting account details for id: ${id}`);
+    return this.accountsRepository.findOne(id);
   }
 } 

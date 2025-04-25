@@ -2,7 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AccountType, BalanceSheetAccount, BalanceSheetSection } from '@qbit/shared-types';
 import { Decimal } from '@prisma/client/runtime/library';
-import { Account, Prisma } from '@prisma/client';
+import { Account } from '../../accounts/entities/account.entity';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BalanceSheetGenerator {
@@ -11,23 +12,15 @@ export class BalanceSheetGenerator {
   constructor(private readonly prisma: PrismaService) {}
 
   async generate(
-    asOfDate: string,
+    startDate: string,
     endDate: string,
-    comparativePeriod: boolean = false,
-    includeZeroBalances: boolean = false,
-  ): Promise<{
-    assets: BalanceSheetSection[];
-    liabilities: BalanceSheetSection[];
-    equity: BalanceSheetSection[];
-    totalAssets: number;
-    totalLiabilities: number;
-    totalEquity: number;
-    totalLiabilitiesAndEquity: number;
-  }> {
-    this.logger.log(`Generating balance sheet as of ${asOfDate}`);
+    comparativePeriod?: any,
+    includeZeroBalances = false
+  ): Promise<any> {
+    this.logger.log(`Generating balance sheet for period: ${startDate} to ${endDate}`);
 
-    // Fetch all accounts
-    const accounts = await this.prisma.account.findMany({
+    // Find all accounts that are of type ASSET, LIABILITY, or EQUITY
+    const accounts = await this.prisma.db.account.findMany({
       where: {
         isActive: true,
         type: {

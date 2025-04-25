@@ -486,10 +486,10 @@
         - `services/inventory/src/prisma/prisma.service.ts`: Prisma service
         - `services/inventory/Dockerfile`: Docker configuration
         - `services/inventory/.env.example`: Environment variables example
-    - **Step Dependencies**: Step 6
+    - **Step Dependencies**: Step 1
     - **User Instructions**: Run `cd services/inventory && yarn install` to install dependencies
 - [x]  Step 37: Implement Product data model and API
-    - **Task**: Create the Product module with CRUD operations
+    - **Task**: Create the Products module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with product models
         - `services/inventory/src/products/products.module.ts`: Products module
@@ -504,21 +504,20 @@
         - `packages/shared-types/src/models/product.ts`: Shared product types
     - **Step Dependencies**: Step 36
     - **User Instructions**: Run migration after schema update
-- [x]  Step 38: Create Product management UI
+- [x]  Step 38: Create Product Management UI
     - **Task**: Implement the Product management interface
     - **Files**:
-        - `apps/web/src/app/dashboard/products/page.tsx`: Products list page
+        - `apps/web/src/app/dashboard/products/page.tsx`: Products page
         - `apps/web/src/app/dashboard/products/[id]/page.tsx`: Product detail page
         - `apps/web/src/app/dashboard/products/new/page.tsx`: New product page
         - `apps/web/src/components/products/ProductForm.tsx`: Product form component
         - `apps/web/src/components/products/ProductList.tsx`: Product list component
         - `apps/web/src/components/products/ProductDetail.tsx`: Product detail component
-        - `apps/web/src/components/products/ProductVariants.tsx`: Product variants component
         - `packages/api-client/src/products/products-client.ts`: Products API client
     - **Step Dependencies**: Step 37, Step 13
     - **User Instructions**: None
 - [x]  Step 39: Implement Warehouse data model and API
-    - **Task**: Create the Warehouse module with CRUD operations
+    - **Task**: Create the Warehouses module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with warehouse models
         - `services/inventory/src/warehouses/warehouses.module.ts`: Warehouses module
@@ -545,7 +544,7 @@
         - `services/inventory/src/transactions/transactions.service.ts`: Transactions service
         - `services/inventory/src/transactions/transactions.repository.ts`: Transactions repository
         - `packages/shared-types/src/models/inventory-transaction.ts`: Shared transaction types
-    - **Step Dependencies**: Step 37, Step 39
+    - **Step Dependencies**: Steps 37, 39
     - **User Instructions**: Run migration after schema update
 - [x]  Step 41: Create Inventory Stock management UI
     - **Task**: Implement the interface for managing inventory stock
@@ -558,7 +557,69 @@
         - `apps/web/src/components/inventory/TransactionList.tsx`: Transaction list component
         - `apps/web/src/components/inventory/WarehouseSelector.tsx`: Warehouse selector component
         - `packages/api-client/src/inventory/inventory-client.ts`: Inventory API client
-    - **Step Dependencies**: Step 40, Step 13
+    - **Step Dependencies**: Step 40
+    - **User Instructions**: None
+
+## Inventory Service Integration
+- [x]  Step 42: Add Messaging Dependencies to Inventory Service
+    - **Task**: Add RabbitMQ client and microservices support to the Inventory Service
+    - **Files**:
+        - `services/inventory/package.json`: Add NestJS microservices and RabbitMQ dependencies
+        - `services/inventory/.env`: Add RabbitMQ connection settings
+        - `services/inventory/.env.example`: Update with new environment variables
+    - **Step Dependencies**: Step 36, Step 1
+    - **User Instructions**: Run `cd services/inventory && yarn install` to install the new dependencies
+- [x]  Step 43: Create Events Module for Inventory Service
+    - **Task**: Implement the Events Module for the Inventory Service
+    - **Files**:
+        - `services/inventory/src/events/events.module.ts`: Create Events Module
+        - `services/inventory/src/events/publishers/product-publisher.ts`: Implement Product events publisher
+        - `services/inventory/src/events/publishers/warehouse-publisher.ts`: Implement Warehouse events publisher
+        - `services/inventory/src/events/publishers/transaction-publisher.ts`: Implement Transaction events publisher
+        - `services/inventory/src/app.module.ts`: Import and configure Events Module
+    - **Step Dependencies**: Step 42
+    - **User Instructions**: None
+- [x]  Step 44: Add User Event Consumer
+    - **Task**: Create a consumer for user events from the Auth Service
+    - **Files**:
+        - `services/inventory/src/events/consumers/user-consumer.ts`: Create User events consumer
+        - `services/inventory/src/events/events.module.ts`: Register the consumer
+    - **Step Dependencies**: Step 43
+    - **User Instructions**: None
+- [x]  Step 45: Implement Product Entity Events
+    - **Task**: Extend the Product service to publish events when products are created, updated, or deleted
+    - **Files**:
+        - `services/inventory/src/products/products.service.ts`: Modify service to publish events
+        - `services/inventory/src/products/products.module.ts`: Import Events Module
+    - **Step Dependencies**: Step 43
+    - **User Instructions**: None
+- [x]  Step 46: Implement Warehouse Entity Events
+    - **Task**: Extend the Warehouse service to publish events when warehouses are created, updated, or deleted
+    - **Files**:
+        - `services/inventory/src/warehouses/warehouses.service.ts`: Modify service to publish events
+        - `services/inventory/src/warehouses/warehouses.module.ts`: Import Events Module
+    - **Step Dependencies**: Step 43
+    - **User Instructions**: None
+- [x]  Step 47: Implement Transaction Entity Events
+    - **Task**: Extend the Transaction service to publish events when inventory transactions are created, processed, or cancelled
+    - **Files**:
+        - `services/inventory/src/transactions/transactions.service.ts`: Modify service to publish events
+        - `services/inventory/src/transactions/transactions.module.ts`: Import Events Module
+    - **Step Dependencies**: Step 43
+    - **User Instructions**: None
+- [x]  Step 48: Implement General Ledger Event Consumer
+    - **Task**: Create a consumer for account events from the General Ledger Service
+    - **Files**:
+        - `services/inventory/src/events/consumers/account-consumer.ts`: Create Account events consumer
+        - `services/inventory/src/events/events.module.ts`: Register the consumer
+    - **Step Dependencies**: Step 43
+    - **User Instructions**: None
+- [ ]  Step 49: Add Inventory Service Client to API Gateway
+    - **Task**: Create client service to communicate with the Inventory Service
+    - **Files**:
+        - `services/api-gateway/src/clients/inventory-client.service.ts`: Create Inventory service client
+        - `services/api-gateway/src/clients/clients.module.ts`: Update clients module
+    - **Step Dependencies**: Step 42, Step 14
     - **User Instructions**: None
 
 ## Core Financial Module - Fixed Assets
@@ -592,7 +653,7 @@
         - `packages/shared-types/src/models/asset.ts`: Shared asset types
     - **Step Dependencies**: Step 42
     - **User Instructions**: Run migration after schema update
-- [ ]  Step 44: Implement Depreciation data model and API
+- [x]  Step 44: Implement Depreciation data model and API
     - **Task**: Create the Depreciation module for asset depreciation calculations
     - **Files**:
         - `prisma/schema.prisma`: Update with depreciation models
@@ -606,16 +667,17 @@
         - `packages/shared-types/src/models/depreciation.ts`: Shared depreciation types
     - **Step Dependencies**: Step 43
     - **User Instructions**: Run migration after schema update
-- [ ]  Step 45: Create Fixed Assets management UI
+- [x]  Step 45: Create Fixed Assets management UI
     - **Task**: Implement the interface for managing fixed assets
     - **Files**:
         - `apps/web/src/app/dashboard/assets/page.tsx`: Assets list page
         - `apps/web/src/app/dashboard/assets/[id]/page.tsx`: Asset detail page
         - `apps/web/src/app/dashboard/assets/new/page.tsx`: New asset page
         - `apps/web/src/components/assets/AssetForm.tsx`: Asset form component
-        - `apps/web/src/components/assets/AssetList.tsx`: Asset list component
+        - `        - `apps/web/src/components/assets/AssetList.tsx`: Asset list component
         - `apps/web/src/components/assets/AssetDetail.tsx`: Asset detail component
-        - `apps/web/src/components/assets/DepreciationSchedule.tsx`: Depreciation schedule component
+        - `apps/web/src/components/assets/DepreciationSchedule.tsx`: Depreciation 
+        schedule component
         - `packages/api-client/src/assets/assets-client.ts`: Assets API client
     - **Step Dependencies**: Step 44, Step 13
     - **User Instructions**: None
@@ -635,28 +697,37 @@
         - `services/banking/Dockerfile`: Docker configuration
         - `services/banking/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/banking && yarn install` to install dependencies
+    - **User Instructions**: Run `cd services/banking && yarn install` to install 
+    dependencies
 - [ ]  Step 47: Implement Bank Account data model and API
     - **Task**: Create the Bank Account module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with bank account models
         - `services/banking/src/accounts/accounts.module.ts`: Bank accounts module
-        - `services/banking/src/accounts/entities/bank-account.entity.ts`: Bank account entity
+        - `services/banking/src/accounts/entities/bank-account.entity.ts`: Bank 
+        account entity
         - `services/banking/src/accounts/entities/bank.entity.ts`: Bank entity
-        - `services/banking/src/accounts/dto/create-bank-account.dto.ts`: Create bank account DTO
-        - `services/banking/src/accounts/dto/update-bank-account.dto.ts`: Update bank account DTO
+        - `services/banking/src/accounts/dto/create-bank-account.dto.ts`: Create 
+        bank account DTO
+        - `services/banking/src/accounts/dto/update-bank-account.dto.ts`: Update 
+        bank account DTO
     - **User Instructions**: Run migration after schema update
 
 ## API Client Enhancements
 
 - [x]  Step 48: Refactor API clients to use ApiClientBase
-    - **Task**: Update the API client classes to extend ApiClientBase for better code reuse and consistency
+    - **Task**: Update the API client classes to extend ApiClientBase for better 
+    code reuse and consistency
     - **Files**:
-        - `packages/api-client/src/utils/api-client-base.ts`: Base class for API clients
-        - `packages/api-client/src/accounts/accounts-client.ts`: Updated Accounts client
+        - `packages/api-client/src/utils/api-client-base.ts`: Base class for API 
+        clients
+        - `packages/api-client/src/accounts/accounts-client.ts`: Updated Accounts 
+        client
         - `packages/api-client/src/vendors/vendors-client.ts`: Updated Vendors client
-        - `packages/api-client/src/customers/customers-client.ts`: Updated Customers client
-        - `packages/api-client/src/utils/api-fetch.ts`: Helper utility for API requests
+        - `packages/api-client/src/customers/customers-client.ts`: Updated Customers 
+        client
+        - `packages/api-client/src/utils/api-fetch.ts`: Helper utility for API 
+        requests
     - **Step Dependencies**: Step 18
     - **User Instructions**: None
 
@@ -669,4 +740,6 @@
         - `k8s/validate-deployment.yaml`: Kubernetes job for cluster validation
         - `docs/deployment-validation.md`: Documentation for validation process
     - **Step Dependencies**: Step 8
-    - **User Instructions**: Run `./scripts/validate-deployment.sh` to validate a local deployment or `kubectl apply -f k8s/validate-deployment.yaml` for Kubernetes deployments
+    - **User Instructions**: Run `./scripts/validate-deployment.sh` to validate a 
+    local deployment or `kubectl apply -f k8s/validate-deployment.yaml` for 
+    Kubernetes deployments

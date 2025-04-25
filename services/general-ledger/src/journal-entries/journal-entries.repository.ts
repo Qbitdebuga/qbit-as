@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateJournalEntryDto } from './dto/create-journal-entry.dto';
 import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto';
@@ -6,40 +6,35 @@ import { generateEntryNumber } from '../utils/id-generator';
 
 @Injectable()
 export class JournalEntriesRepository {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(JournalEntriesRepository.name);
 
-  async findAll() {
-    return this.prisma.journalEntry.findMany({
-      include: {
-        lines: {
-          include: {
-            account: true,
-          },
-        },
-      },
-      orderBy: {
-        date: 'desc',
-      },
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAll(params: any = {}) {
+    return this.prisma.db.journalEntry.findMany({
+      where: params.where,
+      include: { lines: true },
+      orderBy: { date: 'desc' },
+      skip: params.skip,
+      take: params.take
     });
   }
 
   async findOne(id: string) {
-    return this.prisma.journalEntry.findUnique({
+    return this.prisma.db.journalEntry.findUnique({
       where: { id },
       include: {
         lines: {
-          include: {
-            account: true,
-          },
-        },
-      },
+          include: { account: true }
+        }
+      }
     });
   }
 
   async create(data: CreateJournalEntryDto) {
     const entryNumber = await generateEntryNumber(this.prisma);
 
-    return this.prisma.journalEntry.create({
+    return this.prisma.db.journalEntry.create({
       data: {
         entryNumber,
         date: new Date(data.date),
@@ -67,8 +62,7 @@ export class JournalEntriesRepository {
   }
 
   async update(id: string, data: UpdateJournalEntryDto) {
-    // First, update the journal entry
-    const updatedEntry = await this.prisma.journalEntry.update({
+    const updatedEntry = await this.prisma.db.journalEntry.update({
       where: { id },
       data: {
         date: data.date ? new Date(data.date) : undefined,
@@ -77,82 +71,74 @@ export class JournalEntriesRepository {
         status: data.status,
         isAdjustment: data.isAdjustment,
       },
+      include: {
+        lines: true
+      }
     });
 
-    // If lines are updated, handle them separately
-    if (data.lines && data.lines.length > 0) {
+    if (data.lines) {
       // Delete existing lines
-      await this.prisma.journalEntryLine.deleteMany({
-        where: { journalEntryId: id },
+      await this.prisma.db.journalEntryLine.deleteMany({
+        where: { journalEntryId: id }
       });
 
       // Create new lines
-      await this.prisma.journalEntryLine.createMany({
-        data: data.lines.map((line) => ({
+      await this.prisma.db.journalEntryLine.createMany({
+        data: data.lines.map((line: any) => ({
           journalEntryId: id,
           accountId: line.accountId,
-          description: line.description,
+          description: line.description || '',
           debit: line.debit ? parseFloat(line.debit.toString()) : null,
           credit: line.credit ? parseFloat(line.credit.toString()) : null,
-        })),
+        }))
       });
     }
 
-    // Return the updated entry with its lines
     return this.findOne(id);
   }
 
   async remove(id: string) {
-    // Delete the journal entry (cascades to lines due to the relation)
-    return this.prisma.journalEntry.delete({
-      where: { id },
+    return this.prisma.db.journalEntry.delete({
+      where: { id }
     });
   }
 
-  async post(id: string) {
-    return this.prisma.journalEntry.update({
+  async updateStatus(id: string, status: string) {
+    return this.prisma.db.journalEntry.update({
       where: { id },
-      data: {
-        status: 'POSTED',
-      },
+      data: { status }
     });
   }
 
-  async reverse(id: string, reason: string) {
-    const originalEntry = await this.findOne(id);
+  async createReversalEntry(originalEntryId: string) {
+    const originalEntry = await this.findOne(originalEntryId);
     
-    if (!originalEntry || originalEntry.status !== 'POSTED') {
-      throw new Error('Only posted journal entries can be reversed');
+    if (!originalEntry) {
+      throw new Error(`Journal entry with id ${originalEntryId} not found`);
     }
 
-    // Create a new reversing entry
-    const entryNumber = await generateEntryNumber(this.prisma);
-    
-    return this.prisma.journalEntry.create({
+    return this.prisma.db.journalEntry.create({
       data: {
-        entryNumber,
         date: new Date(),
-        description: `Reversal of ${originalEntry.entryNumber}: ${reason}`,
-        reference: originalEntry.reference,
+        reference: `REV-${originalEntry.reference || originalEntry.id}`,
+        description: `Reversal of: ${originalEntry.description || 'journal entry'}`,
         status: 'POSTED',
-        isAdjustment: true,
+        isAdjustment: originalEntry.isAdjustment,
         lines: {
-          create: originalEntry.lines.map((line) => ({
+          create: originalEntry.lines.map((line: any) => ({
             accountId: line.accountId,
-            description: line.description,
-            // Swap debit and credit
-            debit: line.credit,
-            credit: line.debit,
-          })),
-        },
+            description: `Reversal: ${line.description || ''}`,
+            // Swap debits and credits
+            debit: line.credit || 0,
+            credit: line.debit || 0
+          }))
+        }
       },
       include: {
         lines: {
-          include: {
-            account: true,
-          },
-        },
-      },
+          include: { account: true }
+        }
+      }
     });
   }
 } 

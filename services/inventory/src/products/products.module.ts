@@ -3,9 +3,10 @@ import { ProductsController, ProductCategoriesController } from './products.cont
 import { ProductsService } from './products.service';
 import { ProductsRepository } from './products.repository';
 import { PrismaModule } from '../prisma/prisma.module';
+import { EventsModule } from '../events/events.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, EventsModule],
   controllers: [ProductsController, ProductCategoriesController],
   providers: [ProductsService, ProductsRepository],
   exports: [ProductsService]

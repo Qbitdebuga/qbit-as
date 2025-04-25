@@ -12,7 +12,8 @@ import {
   IsPositive,
   ValidateIf
 } from 'class-validator';
-import { AssetStatus, DepreciationMethod } from '@prisma/client';
+import { AssetStatus } from '../enums/asset-status.enum';
+import { DepreciationMethod } from '../../depreciation/enums/depreciation-method.enum';
 
 export class CreateAssetDto {
   @ApiProperty({ description: 'Name of the asset' })

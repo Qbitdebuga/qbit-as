@@ -10,7 +10,7 @@ import {
   IsUUID, 
   IsBoolean 
 } from 'class-validator';
-import { DepreciationMethod } from '@prisma/client';
+import { DepreciationMethod } from '../enums/depreciation-method.enum';
 
 export class CalculateDepreciationDto {
   @ApiProperty({ description: 'ID of the asset to calculate depreciation for' })

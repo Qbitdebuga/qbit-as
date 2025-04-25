@@ -9,6 +9,7 @@ import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { EventsModule } from './events/events.module';
     InvoicesModule,
     PaymentsModule,
     EventsModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],

@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus, Put } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { ApplyPaymentDto } from './dto/apply-payment.dto';
 import { Payment } from './entities/payment.entity';
+import { UpdatePaymentDto } from './dto/update-payment.dto';
 
 @Controller('payments')
 export class PaymentsController {
@@ -21,7 +22,7 @@ export class PaymentsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Payment> {
-    return this.paymentsService.getPaymentById(Number(id));
+    return this.paymentsService.getPaymentById(id);
   }
 
   @Get('invoice/:invoiceId')
@@ -31,15 +32,24 @@ export class PaymentsController {
 
   @Post(':id/apply')
   async applyPayment(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() applyPaymentDto: ApplyPaymentDto
   ): Promise<Payment> {
     return this.paymentsService.applyPayment(id, applyPaymentDto);
   }
 
+  @Put(':id')
+  async update(
+    @Param('id') id: string, 
+    @Body() updatePaymentDto: UpdatePaymentDto
+  ): Promise<Payment> {
+    return this.paymentsService.update(id, updatePaymentDto);
+  }
+
   @Get('vendor/:vendorId')
-  async getPaymentsByVendor(@Param('vendorId', ParseIntPipe) vendorId: number): Promise<Payment[]> {
-    return this.paymentsService.getPaymentsByVendorId(vendorId);
+  async getPaymentsByVendor(@Param('vendorId') vendorId: string): Promise<Payment[]> {
+    // Convert to number for compatibility with existing method
+    return this.paymentsService.getPaymentsByVendorId(parseInt(vendorId, 10));
   }
 
   @Delete(':id')

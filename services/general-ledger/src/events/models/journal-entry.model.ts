@@ -1,6 +1,6 @@
-import { JournalEntry as PrismaJournalEntry } from '@prisma/client';
+import { JournalEntry as EntityJournalEntry } from '../../journal-entries/entities/journal-entry.entity';
 
-export interface JournalEntryWithExtraFields extends PrismaJournalEntry {
+export interface JournalEntryWithExtraFields extends EntityJournalEntry {
   totalAmount?: number;
   createdBy?: string;
   updatedBy?: string;

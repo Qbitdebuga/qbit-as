@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Account } from '@prisma/client';
+import { Account } from '../../accounts/entities/account.entity';
 import { AccountCreatedPayload, AccountUpdatedPayload, AccountDeletedPayload } from '../models/account.model';
 
 /**
@@ -33,7 +33,10 @@ export class AccountPublisher {
       await this.client.emit('account.created', payload).toPromise();
       this.logger.log(`Published account.created event for account ${account.id}`);
     } catch (error) {
-      this.logger.error(`Failed to publish account.created event for account ${account.id}`, error.stack);
+      this.logger.error(
+        `Failed to publish account.created event for account ${account.id}`, 
+        error instanceof Error ? error.stack : error
+      );
     }
   }
 
@@ -57,7 +60,10 @@ export class AccountPublisher {
       await this.client.emit('account.updated', payload).toPromise();
       this.logger.log(`Published account.updated event for account ${account.id}`);
     } catch (error) {
-      this.logger.error(`Failed to publish account.updated event for account ${account.id}`, error.stack);
+      this.logger.error(
+        `Failed to publish account.updated event for account ${account.id}`, 
+        error instanceof Error ? error.stack : error
+      );
     }
   }
 
@@ -76,7 +82,10 @@ export class AccountPublisher {
       await this.client.emit('account.deleted', payload).toPromise();
       this.logger.log(`Published account.deleted event for account ${accountId}`);
     } catch (error) {
-      this.logger.error(`Failed to publish account.deleted event for account ${accountId}`, error.stack);
+      this.logger.error(
+        `Failed to publish account.deleted event for account ${accountId}`, 
+        error instanceof Error ? error.stack : error
+      );
     }
   }
 } 
