@@ -2,56 +2,56 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CustomerContact } from './customer-contact.entity';
 
 export class Customer {
-  @ApiProperty({ description: 'Unique identifier', example: 'c7fb7b8a-b35d-4d5f-a766-78364b5ac1ff' })
-  id: string;
+  @ApiProperty({ description: 'Unique identifier', example: 'e5f6-g7h8-i9j0-k1l2' })
+  id!: string;
 
   @ApiProperty({ description: 'Customer number', example: 'CUST-00001' })
-  customerNumber: string;
+  customerNumber!: string;
 
-  @ApiProperty({ description: 'Customer name', example: 'Acme Corporation' })
-  name: string;
+  @ApiProperty({ description: 'Customer name', example: 'Acme Inc.' })
+  name!: string;
 
-  @ApiPropertyOptional({ description: 'Customer email', example: 'info@acme.com' })
+  @ApiPropertyOptional({ description: 'Email address', example: 'contact@acme.com' })
   email?: string;
 
-  @ApiPropertyOptional({ description: 'Customer phone', example: '555-123-4567' })
+  @ApiPropertyOptional({ description: 'Phone number', example: '555-123-4567' })
   phone?: string;
 
-  @ApiPropertyOptional({ description: 'Customer address', example: '123 Main St' })
+  @ApiPropertyOptional({ description: 'Street address', example: '123 Main St' })
   address?: string;
 
-  @ApiPropertyOptional({ description: 'Customer city', example: 'San Francisco' })
+  @ApiPropertyOptional({ description: 'City', example: 'New York' })
   city?: string;
 
-  @ApiPropertyOptional({ description: 'Customer state/province', example: 'CA' })
+  @ApiPropertyOptional({ description: 'State/Province', example: 'NY' })
   state?: string;
 
-  @ApiPropertyOptional({ description: 'Customer zip/postal code', example: '94105' })
+  @ApiPropertyOptional({ description: 'Zip/Postal code', example: '10001' })
   zipCode?: string;
 
-  @ApiPropertyOptional({ description: 'Customer country', example: 'USA' })
+  @ApiPropertyOptional({ description: 'Country', example: 'USA' })
   country?: string;
 
-  @ApiPropertyOptional({ description: 'Customer tax ID/EIN', example: '12-3456789' })
+  @ApiPropertyOptional({ description: 'Tax identification number', example: '12-3456789' })
   taxId?: string;
 
-  @ApiPropertyOptional({ description: 'Customer website', example: 'https://www.acme.com' })
+  @ApiPropertyOptional({ description: 'Website', example: 'https://www.acme.com' })
   website?: string;
 
   @ApiPropertyOptional({ description: 'Notes about the customer' })
   notes?: string;
 
   @ApiProperty({ description: 'Is customer active', default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
-  @ApiPropertyOptional({ description: 'Customer credit limit', example: 10000 })
+  @ApiPropertyOptional({ description: 'Credit limit', example: 5000 })
   creditLimit?: number;
 
   @ApiProperty({ description: 'Created date' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @ApiProperty({ description: 'Last updated date' })
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ApiPropertyOptional({ description: 'Customer contacts', type: [CustomerContact] })
   contacts?: CustomerContact[];

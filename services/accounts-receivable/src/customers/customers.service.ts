@@ -22,8 +22,9 @@ export class CustomersService {
     
     try {
       return await this.customersRepository.create(createCustomerDto);
-    } catch (error) {
-      this.logger.error(`Failed to create customer: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = error as Error;
+      this.logger.error(`Failed to create customer: ${err.message}`, err.stack);
       throw error;
     }
   }
@@ -58,8 +59,9 @@ export class CustomersService {
         page,
         limit,
       };
-    } catch (error) {
-      this.logger.error(`Failed to retrieve customers: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = error as Error;
+      this.logger.error(`Failed to retrieve customers: ${err.message}`, err.stack);
       throw error;
     }
   }
@@ -90,8 +92,9 @@ export class CustomersService {
     
     try {
       return await this.customersRepository.update(id, updateCustomerDto);
-    } catch (error) {
-      this.logger.error(`Failed to update customer: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = error as Error;
+      this.logger.error(`Failed to update customer: ${err.message}`, err.stack);
       throw error;
     }
   }
@@ -102,8 +105,9 @@ export class CustomersService {
     
     try {
       return await this.customersRepository.remove(id);
-    } catch (error) {
-      this.logger.error(`Failed to delete customer: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = error as Error;
+      this.logger.error(`Failed to delete customer: ${err.message}`, err.stack);
       throw error;
     }
   }
@@ -114,8 +118,9 @@ export class CustomersService {
     
     try {
       return await this.customersRepository.createContact(customerId, createContactDto);
-    } catch (error) {
-      this.logger.error(`Failed to create customer contact: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = error as Error;
+      this.logger.error(`Failed to create customer contact: ${err.message}`, err.stack);
       throw error;
     }
   }
@@ -123,8 +128,9 @@ export class CustomersService {
   async updateContact(id: string, updateContactDto: Partial<CreateCustomerContactDto>): Promise<CustomerContact> {
     try {
       return await this.customersRepository.updateContact(id, updateContactDto);
-    } catch (error) {
-      this.logger.error(`Failed to update customer contact: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = error as Error;
+      this.logger.error(`Failed to update customer contact: ${err.message}`, err.stack);
       throw error;
     }
   }
@@ -132,8 +138,9 @@ export class CustomersService {
   async removeContact(id: string): Promise<CustomerContact> {
     try {
       return await this.customersRepository.removeContact(id);
-    } catch (error) {
-      this.logger.error(`Failed to delete customer contact: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = error as Error;
+      this.logger.error(`Failed to delete customer contact: ${err.message}`, err.stack);
       throw error;
     }
   }

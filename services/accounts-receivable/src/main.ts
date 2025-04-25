@@ -1,129 +1,74 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ValidationPipe, LoggerService, LogLevel } from '@nestjs/common';
+import { ValidationPipe, Logger as NestLogger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
-import { RabbitMQService } from './config/rabbitmq/rabbitmq.service';
-import { Request, Response } from 'express';
-
-// Fallback logger in case Winston is not available
-class FallbackLogger implements LoggerService {
-  private readonly logLevels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose'];
-  
-  constructor(private readonly prefix: string = 'Accounts-Receivable') {}
-  
-  log(message: any, context?: string) {
-    console.log(`[${this.prefix}] ${context ? `[${context}] ` : ''}${message}`);
-  }
-  
-  error(message: any, trace?: string, context?: string) {
-    console.error(`[${this.prefix}] ${context ? `[${context}] ` : ''}${message}${trace ? `\n${trace}` : ''}`);
-  }
-  
-  warn(message: any, context?: string) {
-    console.warn(`[${this.prefix}] ${context ? `[${context}] ` : ''}${message}`);
-  }
-  
-  debug(message: any, context?: string) {
-    console.debug(`[${this.prefix}] ${context ? `[${context}] ` : ''}${message}`);
-  }
-  
-  verbose(message: any, context?: string) {
-    console.log(`[VERBOSE] [${this.prefix}] ${context ? `[${context}] ` : ''}${message}`);
-  }
-  
-  setLogLevels(levels: LogLevel[]) {
-    this.logLevels = levels;
-  }
-}
+import { AppModule } from './app.module';
+import helmet from 'helmet';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
+  // Create the NestJS application
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
-  
-  let logger;
-  
-  try {
-    // Try to use Winston logger if available
-    logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
-    app.useLogger(logger);
-  } catch (error) {
-    // Fallback to basic logger if Winston is not available
-    logger = new FallbackLogger();
-    app.useLogger(logger);
-    logger.warn('Winston logger not available, using fallback logger');
-  }
-  
+
+  // Get the config service
   const configService = app.get(ConfigService);
-  
-  // Set global prefix
-  app.setGlobalPrefix('api/v1');
-  
-  // Enable security middleware
-  app.use(helmet());
-  
+
+  // Use the Winston logger for Nest
+  try {
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.warn(`Error setting up Winston logger: ${err.message}`);
+    console.warn('Falling back to default Nest logger...');
+  }
+
+  // Set the global prefix
+  app.setGlobalPrefix('api');
+
   // Enable CORS
   app.enableCors();
-  
-  // Set up global validation
+
+  // Set security headers with Helmet
+  app.use(helmet());
+
+  // Set up global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      forbidNonWhitelisted: true,
+      transformOptions: { enableImplicitConversion: true },
     }),
   );
-  
+
   // Set up Swagger documentation
-  const config = new DocumentBuilder()
-    .setTitle('QBit Accounts Receivable API')
-    .setDescription('Accounts Receivable microservice for QBit Accounting System')
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Accounts Receivable API')
+    .setDescription('API for managing customers, invoices, and payments')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/v1/docs', app, document);
   
-  // Simple health check endpoint for Kubernetes probes
-  app.use('/health', (req, res) => {
-    res.status(200).send('OK');
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('docs', app, document);
+
+  // Add a health check endpoint
+  app.use('/health', (req: any, res: any) => {
+    res.json({
+      status: 'ok',
+      service: 'accounts-receivable',
+      timestamp: new Date().toISOString(),
+    });
   });
-  
-  // Connect to microservices
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [configService.get<string>('rabbitmq.url')],
-      queue: configService.get<string>('rabbitmq.queue'),
-      queueOptions: {
-        durable: true,
-      },
-      exchange: configService.get<string>('rabbitmq.exchange'),
-      exchangeOptions: {
-        durable: true,
-        type: 'topic',
-      },
-      prefetchCount: 1,
-      noAck: false,
-    },
-  });
-  
-  // Start microservices
-  await app.startAllMicroservices();
-  
-  // Initialize RabbitMQ connections and consumers
-  const rabbitMQService = app.get(RabbitMQService);
-  await rabbitMQService.initializeConsumers();
-  
+
   // Start the server
-  const port = configService.get<number>('app.port') || 3004;
+  const port = configService.get<number>('app.port', 3002);
   await app.listen(port);
-  logger.log(`Accounts Receivable service running on port ${port}`);
-  logger.log(`Microservice listening for events on ${configService.get<string>('rabbitmq.queue')} queue`);
+  
+  const logger = new NestLogger('Bootstrap');
+  logger.log(`Accounts Receivable API is running on: http://localhost:${port}`);
+  logger.log(`Swagger documentation available at: http://localhost:${port}/docs`);
 }
 
 bootstrap(); 

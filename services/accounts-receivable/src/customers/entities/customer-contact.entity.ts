@@ -1,33 +1,33 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CustomerContact {
-  @ApiProperty({ description: 'Unique identifier', example: 'f8d7e6c5-b4a3-c2b1-d0e9-f8d7e6c5b4a3' })
-  id: string;
+  @ApiProperty({ description: 'Unique identifier', example: 'f6g7-h8i9-j0k1-l2m3' })
+  id!: string;
 
-  @ApiProperty({ description: 'Customer ID this contact belongs to', example: 'c7fb7b8a-b35d-4d5f-a766-78364b5ac1ff' })
-  customerId: string;
+  @ApiProperty({ description: 'Customer ID', example: 'e5f6-g7h8-i9j0-k1l2' })
+  customerId!: string;
 
-  @ApiProperty({ description: 'Contact first name', example: 'John' })
-  firstName: string;
+  @ApiProperty({ description: 'First name', example: 'John' })
+  firstName!: string;
 
-  @ApiProperty({ description: 'Contact last name', example: 'Doe' })
-  lastName: string;
+  @ApiProperty({ description: 'Last name', example: 'Doe' })
+  lastName!: string;
 
-  @ApiPropertyOptional({ description: 'Contact email', example: 'john.doe@acme.com' })
+  @ApiPropertyOptional({ description: 'Email address', example: 'john.doe@acme.com' })
   email?: string;
 
-  @ApiPropertyOptional({ description: 'Contact phone', example: '555-987-6543' })
+  @ApiPropertyOptional({ description: 'Phone number', example: '555-987-6543' })
   phone?: string;
 
-  @ApiPropertyOptional({ description: 'Contact position/title', example: 'Purchasing Manager' })
+  @ApiPropertyOptional({ description: 'Position/title', example: 'Purchasing Manager' })
   position?: string;
 
   @ApiProperty({ description: 'Is primary contact', default: false })
-  isPrimary: boolean;
+  isPrimary!: boolean;
 
   @ApiProperty({ description: 'Created date' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @ApiProperty({ description: 'Last updated date' })
-  updatedAt: Date;
+  updatedAt!: Date;
 } 

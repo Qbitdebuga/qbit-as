@@ -23,19 +23,19 @@ export class CreateInvoiceItemDto {
   @ApiProperty({ description: 'Item description', example: 'Web Development Services' })
   @IsNotEmpty()
   @IsString()
-  description: string;
+  description!: string;
 
   @ApiProperty({ description: 'Quantity', example: 5 })
   @IsNotEmpty()
   @IsNumber()
   @Min(0.01)
-  quantity: number;
+  quantity!: number;
 
   @ApiProperty({ description: 'Unit price', example: 120.00 })
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  unitPrice: number;
+  unitPrice!: number;
 
   @ApiPropertyOptional({ description: 'Discount percentage', example: 10 })
   @IsOptional()
@@ -59,7 +59,7 @@ export class CreateInvoiceDto {
   @ApiProperty({ description: 'Customer ID', example: 'c7fb7b8a-b35d-4d5f-a766-78364b5ac1ff' })
   @IsNotEmpty()
   @IsUUID()
-  customerId: string;
+  customerId!: string;
 
   @ApiPropertyOptional({ description: 'Customer reference number', example: 'PO-12345' })
   @IsOptional()
@@ -70,13 +70,13 @@ export class CreateInvoiceDto {
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
-  invoiceDate: Date;
+  invoiceDate!: Date;
 
   @ApiProperty({ description: 'Due date', example: '2023-02-15' })
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
-  dueDate: Date;
+  dueDate!: Date;
 
   @ApiPropertyOptional({ 
     description: 'Invoice status', 
@@ -102,5 +102,5 @@ export class CreateInvoiceDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateInvoiceItemDto)
-  items: CreateInvoiceItemDto[];
+  items!: CreateInvoiceItemDto[];
 } 

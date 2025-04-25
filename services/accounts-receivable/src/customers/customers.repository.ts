@@ -37,7 +37,11 @@ export class CustomersRepository {
         );
       }
 
-      return this.findOne(customer.id, tx);
+      const result = await this.findOne(customer.id, tx);
+      if (!result) {
+        throw new Error(`Could not find created customer with ID ${customer.id}`);
+      }
+      return result;
     });
   }
 

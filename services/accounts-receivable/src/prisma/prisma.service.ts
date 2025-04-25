@@ -29,14 +29,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
     // Set up logging (if in development)
     if (this.configService.get<string>('app.env') === 'development') {
-      this.$on('query', (event: any) => {
+      (this as any).$on('query', (event: any) => {
         this.logger.debug(`Query: ${event.query}`);
         this.logger.debug(`Duration: ${event.duration}ms`);
       });
     }
 
     // Always log errors
-    this.$on('error', (event: any) => {
+    (this as any).$on('error', (event: any) => {
       this.logger.error(`Database error: ${event.message}`);
     });
   }

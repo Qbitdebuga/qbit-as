@@ -9,23 +9,23 @@ import {
   IsArray, 
   ValidateNested,
   Min,
-  MaxLength
+  MaxLength,
+  IsNotEmpty
 } from 'class-validator';
 import { CreateCustomerContactDto } from './create-customer-contact.dto';
 
 export class CreateCustomerDto {
-  @ApiPropertyOptional({ description: 'Customer number (generated if not provided)', example: 'CUST-00001' })
+  @ApiPropertyOptional({ description: 'Customer number (auto-generated if not provided)', example: 'CUST-00001' })
   @IsOptional()
   @IsString()
-  @MaxLength(50)
   customerNumber?: string;
 
-  @ApiProperty({ description: 'Customer name', example: 'Acme Corporation' })
+  @ApiProperty({ description: 'Customer name', example: 'Acme Inc.' })
+  @IsNotEmpty()
   @IsString()
-  @MaxLength(100)
-  name: string;
+  name!: string;
 
-  @ApiPropertyOptional({ description: 'Customer email', example: 'info@acme.com' })
+  @ApiPropertyOptional({ description: 'Customer email', example: 'contact@acme.com' })
   @IsOptional()
   @IsEmail()
   @MaxLength(100)
@@ -43,19 +43,19 @@ export class CreateCustomerDto {
   @MaxLength(200)
   address?: string;
 
-  @ApiPropertyOptional({ description: 'Customer city', example: 'San Francisco' })
+  @ApiPropertyOptional({ description: 'Customer city', example: 'New York' })
   @IsOptional()
   @IsString()
   @MaxLength(100)
   city?: string;
 
-  @ApiPropertyOptional({ description: 'Customer state/province', example: 'CA' })
+  @ApiPropertyOptional({ description: 'Customer state/province', example: 'NY' })
   @IsOptional()
   @IsString()
   @MaxLength(50)
   state?: string;
 
-  @ApiPropertyOptional({ description: 'Customer zip/postal code', example: '94105' })
+  @ApiPropertyOptional({ description: 'Customer zip/postal code', example: '10001' })
   @IsOptional()
   @IsString()
   @MaxLength(20)
@@ -88,9 +88,9 @@ export class CreateCustomerDto {
   @ApiPropertyOptional({ description: 'Is customer active', default: true })
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean = true;
+  isActive?: boolean;
 
-  @ApiPropertyOptional({ description: 'Customer credit limit', example: 10000 })
+  @ApiPropertyOptional({ description: 'Customer credit limit', example: 5000 })
   @IsOptional()
   @IsNumber()
   @Min(0)

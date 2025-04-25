@@ -37,7 +37,7 @@ import { EventsModule } from './events/events.module';
             ],
           };
         } catch (e) {
-          console.warn(`Winston logger could not be initialized: ${e.message}`);
+          console.warn(`Winston logger could not be initialized: ${(e as Error).message}`);
           return {}; // Return empty config to allow the app to start
         }
       },

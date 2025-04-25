@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus, ParseIntPipe } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { ApplyPaymentDto } from './dto/apply-payment.dto';
@@ -21,12 +21,25 @@ export class PaymentsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Payment> {
-    return this.paymentsService.findOne(id);
+    return this.paymentsService.getPaymentById(Number(id));
   }
 
   @Get('invoice/:invoiceId')
   async findByInvoiceId(@Param('invoiceId') invoiceId: string): Promise<Payment[]> {
     return this.paymentsService.findByInvoiceId(invoiceId);
+  }
+
+  @Post(':id/apply')
+  async applyPayment(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() applyPaymentDto: ApplyPaymentDto
+  ): Promise<Payment> {
+    return this.paymentsService.applyPayment(id, applyPaymentDto);
+  }
+
+  @Get('vendor/:vendorId')
+  async getPaymentsByVendor(@Param('vendorId', ParseIntPipe) vendorId: number): Promise<Payment[]> {
+    return this.paymentsService.getPaymentsByVendorId(vendorId);
   }
 
   @Delete(':id')

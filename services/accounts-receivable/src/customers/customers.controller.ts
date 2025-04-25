@@ -48,7 +48,7 @@ export class CustomersController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('search') search?: string,
-    @Query('isActive') isActive?: boolean,
+    @Query('isActive') isActive?: boolean | string,
     @Query('sortBy') sortBy?: string,
     @Query('sortDirection') sortDirection?: 'asc' | 'desc',
   ) {
