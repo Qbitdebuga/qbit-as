@@ -348,7 +348,7 @@ This document outlines the implementation plan for connecting the various micros
        - Verify that `services/general-ledger/src/main.ts` includes the fallback logger
        - Confirm that the environment variables are set in `.env` file
 
-- [ ] Step 32: Add Health Check to Auth Service
+- [x] Step 32: Add Health Check to Auth Service
   - **Task**: Implement health checks in the Auth Service
   - **Files**:
     - `services/auth/package.json`: Add Terminus health check dependency
@@ -359,7 +359,7 @@ This document outlines the implementation plan for connecting the various micros
   - **Step Dependencies**: Step 30
   - **User Instructions**: Run `cd services/auth && yarn run install-health-check` to install the health check dependencies
 
-- [ ] Step 33: Add Health Check to General Ledger Service
+- [x] Step 33: Add Health Check to General Ledger Service
   - **Task**: Implement health checks in the General Ledger Service
   - **Files**:
     - `services/general-ledger/package.json`: Add Terminus health check dependency

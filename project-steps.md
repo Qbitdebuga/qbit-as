@@ -614,7 +614,7 @@
         - `services/inventory/src/events/events.module.ts`: Register the consumer
     - **Step Dependencies**: Step 43
     - **User Instructions**: None
-- [ ]  Step 49: Add Inventory Service Client to API Gateway
+- [x]  Step 49: Add Inventory Service Client to API Gateway
     - **Task**: Create client service to communicate with the Inventory Service
     - **Files**:
         - `services/api-gateway/src/clients/inventory-client.service.ts`: Create Inventory service client
@@ -674,10 +674,9 @@
         - `apps/web/src/app/dashboard/assets/[id]/page.tsx`: Asset detail page
         - `apps/web/src/app/dashboard/assets/new/page.tsx`: New asset page
         - `apps/web/src/components/assets/AssetForm.tsx`: Asset form component
-        - `        - `apps/web/src/components/assets/AssetList.tsx`: Asset list component
+        - `apps/web/src/components/assets/AssetList.tsx`: Asset list component
         - `apps/web/src/components/assets/AssetDetail.tsx`: Asset detail component
-        - `apps/web/src/components/assets/DepreciationSchedule.tsx`: Depreciation 
-        schedule component
+        - `apps/web/src/components/assets/DepreciationSchedule.tsx`: Depreciation schedule component
         - `packages/api-client/src/assets/assets-client.ts`: Assets API client
     - **Step Dependencies**: Step 44, Step 13
     - **User Instructions**: None
@@ -697,37 +696,28 @@
         - `services/banking/Dockerfile`: Docker configuration
         - `services/banking/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/banking && yarn install` to install 
-    dependencies
-- [ ]  Step 47: Implement Bank Account data model and API
+    - **User Instructions**: Run `cd services/banking && yarn install` to install dependencies
+- [x]  Step 47: Implement Bank Account data model and API
     - **Task**: Create the Bank Account module with CRUD operations
     - **Files**:
         - `prisma/schema.prisma`: Update with bank account models
         - `services/banking/src/accounts/accounts.module.ts`: Bank accounts module
-        - `services/banking/src/accounts/entities/bank-account.entity.ts`: Bank 
-        account entity
+        - `services/banking/src/accounts/entities/bank-account.entity.ts`: Bank account entity
         - `services/banking/src/accounts/entities/bank.entity.ts`: Bank entity
-        - `services/banking/src/accounts/dto/create-bank-account.dto.ts`: Create 
-        bank account DTO
-        - `services/banking/src/accounts/dto/update-bank-account.dto.ts`: Update 
-        bank account DTO
+        - `services/banking/src/accounts/dto/create-bank-account.dto.ts`: Create bank account DTO
+        - `services/banking/src/accounts/dto/update-bank-account.dto.ts`: Update bank account DTO
     - **User Instructions**: Run migration after schema update
 
 ## API Client Enhancements
 
 - [x]  Step 48: Refactor API clients to use ApiClientBase
-    - **Task**: Update the API client classes to extend ApiClientBase for better 
-    code reuse and consistency
+    - **Task**: Update the API client classes to extend ApiClientBase for better code reuse and consistency
     - **Files**:
-        - `packages/api-client/src/utils/api-client-base.ts`: Base class for API 
-        clients
-        - `packages/api-client/src/accounts/accounts-client.ts`: Updated Accounts 
-        client
+        - `packages/api-client/src/utils/api-client-base.ts`: Base class for API clients
+        - `packages/api-client/src/accounts/accounts-client.ts`: Updated Accounts client
         - `packages/api-client/src/vendors/vendors-client.ts`: Updated Vendors client
-        - `packages/api-client/src/customers/customers-client.ts`: Updated Customers 
-        client
-        - `packages/api-client/src/utils/api-fetch.ts`: Helper utility for API 
-        requests
+        - `packages/api-client/src/customers/customers-client.ts`: Updated Customers client
+        - `packages/api-client/src/utils/api-fetch.ts`: Helper utility for API requests
     - **Step Dependencies**: Step 18
     - **User Instructions**: None
 
@@ -740,6 +730,4 @@
         - `k8s/validate-deployment.yaml`: Kubernetes job for cluster validation
         - `docs/deployment-validation.md`: Documentation for validation process
     - **Step Dependencies**: Step 8
-    - **User Instructions**: Run `./scripts/validate-deployment.sh` to validate a 
-    local deployment or `kubectl apply -f k8s/validate-deployment.yaml` for 
-    Kubernetes deployments
+    - **User Instructions**: Run `./scripts/validate-deployment.sh` to validate a local deployment or `kubectl apply -f k8s/validate-deployment.yaml` for Kubernetes deployments

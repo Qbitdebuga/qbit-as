@@ -1,85 +1,33 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { cn } from "./lib/utils";
+import * as React from "react"
+import * as PopoverPrimitive from "@radix-ui/react-popover"
 
-interface PopoverProps {
-  children: React.ReactNode;
-  content: React.ReactNode;
-  align?: "start" | "center" | "end";
-  side?: "top" | "right" | "bottom" | "left";
-  className?: string;
-}
+import { cn } from "@/lib/utils"
 
-export function Popover({
-  children,
-  content,
-  align = "center",
-  side = "bottom",
-  className,
-}: PopoverProps) {
-  const [open, setOpen] = useState(false);
+const Popover = PopoverPrimitive.Root
 
-  const alignClass = {
-    start: "origin-top-left left-0",
-    center: "origin-top",
-    end: "origin-top-right right-0",
-  };
+const PopoverTrigger = PopoverPrimitive.Trigger
 
-  const sideClass = {
-    top: "bottom-full mb-2",
-    right: "left-full ml-2",
-    bottom: "top-full mt-2",
-    left: "right-full mr-2",
-  };
+const PopoverAnchor = PopoverPrimitive.Anchor
 
-  return (
-    <div className="relative inline-block">
-      <div
-        onClick={() => setOpen(!open)}
-        className="cursor-pointer"
-      >
-        {children}
-      </div>
-      
-      {open && (
-        <div
-          className={cn(
-            "absolute z-50 w-64 rounded-md bg-white p-4 shadow-lg ring-1 ring-black ring-opacity-5",
-            sideClass[side],
-            alignClass[align],
-            className
-          )}
-        >
-          {content}
-        </div>
+const PopoverContent = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+>(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
+  <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Content
+      ref={ref}
+      align={align}
+      sideOffset={sideOffset}
+      className={cn(
+        "z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-popover-content-transform-origin]",
+        className
       )}
-    </div>
-  );
-}
+      {...props}
+    />
+  </PopoverPrimitive.Portal>
+))
+PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
-export const PopoverTrigger = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("cursor-pointer", className)}
-    {...props}
-  />
-));
-PopoverTrigger.displayName = "PopoverTrigger";
-
-export const PopoverContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "z-50 w-64 rounded-md bg-white p-4 shadow-lg ring-1 ring-black ring-opacity-5",
-      className
-    )}
-    {...props}
-  />
-)); 
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }

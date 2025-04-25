@@ -19,7 +19,7 @@ export class AuthClient {
    * Login with email and password
    */
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    const response = await fetch(`${this.apiUrl}/auth/login`, {
+    const response = await fetch(`${this.apiUrl}/api/v1/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export class AuthClient {
 
     const refreshRequest: RefreshTokenRequest = { refreshToken };
     
-    const response = await fetch(`${this.apiUrl}/auth/refresh`, {
+    const response = await fetch(`${this.apiUrl}/api/v1/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ export class AuthClient {
       throw new Error('Not authenticated');
     }
 
-    const response = await fetch(`${this.apiUrl}/auth/profile`, {
+    const response = await fetch(`${this.apiUrl}/api/v1/auth/profile`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -125,7 +125,7 @@ export class AuthClient {
    * Register new user
    */
   async register(userData: UserRegistrationRequest): Promise<User> {
-    const response = await fetch(`${this.apiUrl}/users`, {
+    const response = await fetch(`${this.apiUrl}/api/v1/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ export class AuthClient {
       throw new Error('Not authenticated');
     }
 
-    const response = await fetch(`${this.apiUrl}/users`, {
+    const response = await fetch(`${this.apiUrl}/api/v1/users`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -193,7 +193,7 @@ export class AuthClient {
       throw new Error('Not authenticated');
     }
 
-    const response = await fetch(`${this.apiUrl}/users/${userId}`, {
+    const response = await fetch(`${this.apiUrl}/api/v1/users/${userId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
