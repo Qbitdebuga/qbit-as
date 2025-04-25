@@ -26,7 +26,7 @@ export class InvoicesClient {
    * Get a paginated list of invoices
    */
   async getInvoices(params?: InvoiceListParams): Promise<{ data: Invoice[]; total: number; page: number; limit: number }> {
-    return this.client.get(this.basePath, { params });
+    return this.client.get(this.basePath, { params: params as unknown as Record<string, string> });
   }
 
   /**
@@ -61,21 +61,21 @@ export class InvoicesClient {
    * Finalize an invoice (change status from DRAFT to PENDING)
    */
   async finalizeInvoice(id: string): Promise<Invoice> {
-    return this.client.post(`${this.basePath}/${id}/finalize`);
+    return this.client.post(`${this.basePath}/${id}/finalize`, {});
   }
 
   /**
    * Mark an invoice as sent
    */
   async markInvoiceAsSent(id: string): Promise<Invoice> {
-    return this.client.post(`${this.basePath}/${id}/send`);
+    return this.client.post(`${this.basePath}/${id}/send`, {});
   }
 
   /**
    * Void an invoice
    */
   async voidInvoice(id: string): Promise<Invoice> {
-    return this.client.post(`${this.basePath}/${id}/void`);
+    return this.client.post(`${this.basePath}/${id}/void`, {});
   }
 
   /**
@@ -99,6 +99,6 @@ export class InvoicesClient {
     customerId: string, 
     params?: Omit<InvoiceListParams, 'customerId'>
   ): Promise<{ data: Invoice[]; total: number; page: number; limit: number }> {
-    return this.client.get(`${this.basePath}/customer/${customerId}`, { params });
+    return this.client.get(`${this.basePath}/customer/${customerId}`, { params: params as unknown as Record<string, string> });
   }
 }

@@ -30,13 +30,13 @@ export class ApiClient {
     }
 
     const token = this.tokenStorage.getAccessToken();
-    const headers = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...options.headers,
     };
 
     if (token) {
-      (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
     const response = await fetch(url.toString(), {
@@ -64,7 +64,7 @@ export class ApiClient {
     return this.request<T>('GET', path, undefined, options);
   }
 
-  public async post<T>(path: string, data: any, options: RequestOptions = {}): Promise<T> {
+  public async post<T>(path: string, data: any = {}, options: RequestOptions = {}): Promise<T> {
     return this.request<T>('POST', path, data, options);
   }
 
@@ -78,5 +78,16 @@ export class ApiClient {
 
   public async delete<T>(path: string, options: RequestOptions = {}): Promise<T> {
     return this.request<T>('DELETE', path, undefined, options);
+  }
+  public setToken(token: string) {
+    this.tokenStorage.updateAccessToken(token);
+  }
+
+  public clearToken() {
+    this.tokenStorage.clearTokens();
+  }
+
+  public get token(): string | null {
+    return this.tokenStorage.getAccessToken();
   }
 }

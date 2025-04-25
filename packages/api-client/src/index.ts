@@ -5,12 +5,7 @@ export * from './accounts';
 export * from './api-client';
 export * from './journal-entries';
 export * from './reports';
-// Export general-ledger components individually to avoid naming conflicts
-export { GeneralLedgerClient } from './general-ledger';
-export { BatchClient } from './general-ledger';
-// Re-export these with different names to avoid conflicts
-export { AccountsClient as GLAccountsClient } from './general-ledger';
-export { JournalEntriesClient as GLJournalEntriesClient } from './general-ledger';
+
 export * from './customers';
 export * from './invoices';
 export * from './vendors';
@@ -18,9 +13,20 @@ export * from './bills';
 export * from './products';
 export * from './inventory';
 
+// Special exports from general-ledger
+
+export { GeneralLedgerClient } from './general-ledger';
+
+export { BatchClient } from './general-ledger';
+
+export { AccountsClient as GLAccountsClient } from './general-ledger';
+
+export { JournalEntriesClient as GLJournalEntriesClient } from './general-ledger';
+
 // Generic API Client
 import { ApiClient } from './api-client';
 import { TokenStorage } from './utils/token-storage';
+import { ApiClient as LibApiClient } from './lib/api-client';
 
 // Clients
 import { AuthClient } from './auth/auth-client';
@@ -38,34 +44,43 @@ import { InventoryClient } from './inventory/inventory-client';
 // Account types
 export * from './auth/types';
 
-// Initialize API client
-export const apiClient = new ApiClient();
+// Default Base URL (can adjust later)
+const DEFAULT_API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
 
-// Initialize and expose service clients
-export const authClient = new AuthClient(apiClient);
+// Initialize API client instances
+const apiClient = new ApiClient(DEFAULT_API_BASE_URL, TokenStorage);
+const libApiClient = new LibApiClient(DEFAULT_API_BASE_URL);
+
+// Service Clients
+export const authClient = new AuthClient(DEFAULT_API_BASE_URL);
 export const accountsClient = new AccountsClient(apiClient);
 export const journalEntriesClient = new JournalEntriesClient(apiClient);
 export const reportsClient = new ReportsClient(apiClient);
 export const customersClient = new CustomersClient(apiClient);
-export const invoicesClient = new InvoicesClient(apiClient);
+export const invoicesClient = new InvoicesClient(libApiClient);
 export const paymentsClient = new PaymentsClient(apiClient);
 export const vendorsClient = new VendorsClient(apiClient);
 export const billsClient = new BillsClient(apiClient);
-export const productsClient = new ProductsClient(apiClient);
-export const inventoryClient = new InventoryClient(apiClient);
+
+// These clients require an AxiosInstance instead of our custom ApiClient
+// To initialize them, use:
+// import axios from 'axios';
+// const axiosInstance = axios.create({ baseURL: DEFAULT_API_BASE_URL });
+// export const productsClient = new ProductsClient(axiosInstance);
+// export const inventoryClient = new InventoryClient(axiosInstance);
 
 // Export utility for lib initialization
 export const createApiClient = (baseUrl: string, token?: string) => {
-  const client = new ApiClient(baseUrl);
+  const client = new ApiClient(baseUrl, TokenStorage);
   if (token) {
     client.setToken(token);
   }
   return client;
 };
 
-// Initialize Accounts Payable API client
+// Accounts Payable APIs
 export const accountsPayableClient = {
-  vendors: new VendorsClient(apiClient),
-  bills: new BillsClient(apiClient),
-  payments: new PaymentsClient(apiClient)
+  vendors: vendorsClient,
+  bills: billsClient,
+  payments: paymentsClient
 };

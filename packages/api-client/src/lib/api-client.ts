@@ -40,9 +40,9 @@ export class ApiClient {
   /**
    * Make a POST request
    */
-  async post<T>(path: string, data: any, options: RequestOptions = {}): Promise<T> {
+  public async post<T>(path: string, data: any = {}, options: RequestOptions = {}): Promise<T> {
     return this.request<T>('POST', path, data, options);
-  }
+  }  
 
   /**
    * Make a PUT request

@@ -26,7 +26,7 @@ export class ApiClientBase {
   /**
    * Performs a POST request
    */
-  protected async post<T>(path: string, data: any, options: RequestOptions = {}): Promise<T> {
+  protected async post<T>(path: string, data: any = {}, options: RequestOptions = {}): Promise<T> {
     return this.apiClient.post<T>(path, data, options);
   }
 
