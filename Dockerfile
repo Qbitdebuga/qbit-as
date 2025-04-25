@@ -5,17 +5,17 @@ ENV NODE_ENV=production
 
 # Development dependencies stage
 FROM base AS deps
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 # Builder stage
 FROM deps AS builder
 COPY . .
-RUN npm run build
+RUN yarn build
 
 # Production dependencies stage
 FROM deps AS production-deps
-RUN npm prune --production
+RUN yarn install --production --frozen-lockfile
 
 # Final stage
 FROM base AS runner
@@ -29,7 +29,7 @@ COPY turbo.json ./turbo.json
 COPY .env.example ./.env
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN yarn prisma generate
 
 # Set up command
-CMD ["npm", "start"] 
+CMD ["yarn", "start"] 

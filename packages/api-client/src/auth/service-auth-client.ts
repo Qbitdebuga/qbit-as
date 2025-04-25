@@ -64,7 +64,7 @@ export class ServiceAuthClient {
       return tokenData.accessToken;
     } catch (error) {
       console.error('Service token acquisition failed:', error);
-      throw new Error(`Service authentication failed: ${error.message}`);
+      throw new Error(`Service authentication failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -121,4 +121,4 @@ export class ServiceAuthClient {
 
     return response.json();
   }
-} 
+}

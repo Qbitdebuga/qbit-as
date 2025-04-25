@@ -9,7 +9,7 @@
         - `.eslintrc.js`: ESLint configuration
         - `tsconfig.json`: Base TypeScript configuration
         - `README.md`: Project documentation
-    - **User Instructions**: Run `yarn install` or `npm install` to install dependencies
+    - **User Instructions**: Run `yarn install` to install dependencies
 - [x]  Step 2: Configure shared packages and types
     - **Task**: Create shared packages for common types, UI components, and API client
     - **Files**:
@@ -38,7 +38,7 @@
         - `apps/web/src/app/page.tsx`: Home page
         - `apps/web/public/favicon.ico`: Favicon
     - **Step Dependencies**: Step 1
-    - **User Instructions**: Run `cd apps/web && npm install` to install Next.js dependencies
+    - **User Instructions**: Run `cd apps/web && yarn install` to install Next.js dependencies
 - [x]  Step 4: Set up NestJS API gateway service
     - **Task**: Create the API gateway service with NestJS
     - **Files**:
@@ -51,7 +51,7 @@
         - `services/api-gateway/Dockerfile`: Docker configuration
         - `services/api-gateway/.env.example`: Environment variables example
     - **Step Dependencies**: Step 1
-    - **User Instructions**: Run `cd services/api-gateway && npm install` to install NestJS dependencies
+    - **User Instructions**: Run `cd services/api-gateway && yarn install` to install NestJS dependencies
 - [x]  Step 5: Configure authentication service
     - **Task**: Create the authentication service with user management and JWT authentication
     - **Files**:
@@ -67,7 +67,7 @@
         - `services/auth/Dockerfile`: Docker configuration
         - `services/auth/.env.example`: Environment variables example
     - **Step Dependencies**: Step 1
-    - **User Instructions**: Run `cd services/auth && npm install` to install dependencies
+    - **User Instructions**: Run `cd services/auth && yarn install` to install dependencies
 - [x]  Step 6: Set up PostgreSQL database and Prisma ORM
     - **Task**: Configure PostgreSQL database connection and Prisma ORM for data access
     - **Files**:
@@ -176,7 +176,7 @@
         - `services/general-ledger/Dockerfile`: Docker configuration
         - `services/general-ledger/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/general-ledger && npm install` to install dependencies
+    - **User Instructions**: Run `cd services/general-ledger && yarn install` to install dependencies
 - [x]  Step 15: Implement Chart of Accounts data model and API
     - **Task**: Create the Chart of Accounts module with CRUD operations
     - **Files**:
@@ -274,7 +274,7 @@
         - `services/accounts-receivable/Dockerfile`: Docker configuration
         - `services/accounts-receivable/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/accounts-receivable && npm install` to install dependencies
+    - **User Instructions**: Run `cd services/accounts-receivable && yarn install` to install dependencies
 - [x]  Step 22: Implement Customer data model and API
     - **Task**: Create the Customer module with CRUD operations
     - **Files**:
@@ -373,7 +373,7 @@
         - `services/accounts-payable/Dockerfile`: Docker configuration
         - `services/accounts-payable/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/accounts-payable && npm install` to install dependencies
+    - **User Instructions**: Run `cd services/accounts-payable && yarn install` to install dependencies
 - [x]  Step 29: Implement Vendor data model and API
     - **Task**: Create the Vendor module with CRUD operations
     - **Files**:
@@ -487,7 +487,7 @@
         - `services/inventory/Dockerfile`: Docker configuration
         - `services/inventory/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/inventory && npm install` to install dependencies
+    - **User Instructions**: Run `cd services/inventory && yarn install` to install dependencies
 - [x]  Step 37: Implement Product data model and API
     - **Task**: Create the Product module with CRUD operations
     - **Files**:
@@ -576,7 +576,7 @@
         - `services/fixed-assets/Dockerfile`: Docker configuration
         - `services/fixed-assets/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/fixed-assets && npm install` to install dependencies
+    - **User Instructions**: Run `cd services/fixed-assets && yarn install` to install dependencies
 - [x]  Step 43: Implement Asset data model and API
     - **Task**: Create the Asset module with CRUD operations
     - **Files**:
@@ -635,7 +635,7 @@
         - `services/banking/Dockerfile`: Docker configuration
         - `services/banking/.env.example`: Environment variables example
     - **Step Dependencies**: Step 6
-    - **User Instructions**: Run `cd services/banking && npm install` to install dependencies
+    - **User Instructions**: Run `cd services/banking && yarn install` to install dependencies
 - [ ]  Step 47: Implement Bank Account data model and API
     - **Task**: Create the Bank Account module with CRUD operations
     - **Files**:

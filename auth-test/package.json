@@ -4,6 +4,9 @@
   "description": "Auth service test",
   "main": "test-auth.js",
   "type": "module",
+  "scripts": {
+    "test": "node test-auth.js"
+  },
   "dependencies": {
     "node-fetch": "^3.3.2"
   }

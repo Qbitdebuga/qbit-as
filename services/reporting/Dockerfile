@@ -3,20 +3,20 @@ FROM node:18-slim AS builder
 WORKDIR /app
 
 # Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install
+COPY package.json yarn.lock ./
+RUN yarn install
 
 # Copy prisma schema
 COPY prisma ./prisma/
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN yarn prisma generate
 
 # Copy the rest of the application
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN yarn build
 
 # Production stage
 FROM node:18-slim
@@ -27,8 +27,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y postgresql-client netcat-openbsd && rm -rf /var/lib/apt/lists/*
 
 # Copy package files and install production dependencies
-COPY package*.json ./
-RUN npm install --omit=dev
+COPY package.json yarn.lock ./
+RUN yarn install --production
 
 # Copy prisma schema
 COPY prisma ./prisma/

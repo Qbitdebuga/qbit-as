@@ -5,17 +5,17 @@ ENV NODE_ENV=production
 
 # Development dependencies
 FROM base AS deps
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 # Builder
 FROM deps AS builder
 COPY . .
-RUN npm run build
+RUN yarn build
 
 # Production dependencies
 FROM deps AS production-deps
-RUN npm prune --production
+RUN yarn install --production --frozen-lockfile
 
 # Runner
 FROM base AS runner
@@ -25,11 +25,11 @@ COPY --from=builder /app/package.json ./package.json
 
 # Generate Prisma Client
 COPY prisma ./prisma
-RUN npx prisma generate
+RUN yarn prisma generate
 
 # Set up health check and expose port
 EXPOSE 3002
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget -qO- http://localhost:3002/health || exit 1
 
 # Start the application
-CMD ["npm", "run", "start:prod"] 
+CMD ["yarn", "start:prod"] 

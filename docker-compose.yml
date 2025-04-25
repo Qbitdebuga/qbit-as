@@ -111,7 +111,7 @@ services:
       - consul
     networks:
       - qbit_network
-    command: npm run dev
+    command: yarn dev
   
   # Auth Service
   auth:
@@ -142,7 +142,7 @@ services:
         condition: service_healthy
     networks:
       - qbit_network
-    command: npm run dev
+    command: yarn dev
   
   # Reporting Service
   reporting:
@@ -180,7 +180,7 @@ services:
         condition: service_healthy
     networks:
       - qbit_network
-    command: sh -c "mkdir -p /app/scripts && cp -n /scripts/* /app/scripts/ 2>/dev/null || true && chmod +x /app/scripts/*.sh && npm run start:dev"
+    command: sh -c "mkdir -p /app/scripts && cp -n /scripts/* /app/scripts/ 2>/dev/null || true && chmod +x /app/scripts/*.sh && yarn start:dev"
   
   # Web App
   web:
@@ -201,7 +201,7 @@ services:
       - api-gateway
     networks:
       - qbit_network
-    command: npm run dev
+    command: yarn dev
 
   # Elasticsearch - The core search and analytics engine
   elasticsearch:

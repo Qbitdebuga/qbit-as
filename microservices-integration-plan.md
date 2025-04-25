@@ -40,7 +40,7 @@ This document outlines the implementation plan for connecting the various micros
     - `services/auth/package.json`: Add NestJS microservices and RabbitMQ dependencies
     - `services/auth/.env`: Add RabbitMQ connection settings
     - `services/auth/.env.example`: Update with new environment variables
-  - **User Instructions**: Run `cd services/auth && npm install` to install the new dependencies
+  - **User Instructions**: Run `cd services/auth && yarn install` to install the new dependencies
 
 - [x] Step 5: Create Events Module for Auth Service
   - **Task**: Implement the Events Module for the Auth Service to publish and consume events
@@ -74,7 +74,7 @@ This document outlines the implementation plan for connecting the various micros
     - `services/general-ledger/package.json`: Add NestJS microservices and RabbitMQ dependencies
     - `services/general-ledger/.env`: Add RabbitMQ connection settings
     - `services/general-ledger/.env.example`: Update with new environment variables
-  - **User Instructions**: Run `cd services/general-ledger && npm install` to install the new dependencies
+  - **User Instructions**: Run `cd services/general-ledger && yarn install` to install the new dependencies
 
 - [x] Step 9: Create Events Module for General Ledger Service
   - **Task**: Implement the Events Module for the General Ledger Service
@@ -113,7 +113,7 @@ This document outlines the implementation plan for connecting the various micros
     - `services/api-gateway/package.json`: Add NestJS microservices and HTTP client dependencies
     - `services/api-gateway/.env`: Add service URLs and connection settings
     - `services/api-gateway/.env.example`: Update with new environment variables
-  - **User Instructions**: Run `cd services/api-gateway && npm install` to install the new dependencies
+  - **User Instructions**: Run `cd services/api-gateway && yarn install` to install the new dependencies
 
 - [x] Step 14: Implement Service Clients in API Gateway
   - **Task**: Create client services to communicate with the Auth and General Ledger services
@@ -192,7 +192,7 @@ This document outlines the implementation plan for connecting the various micros
     - `services/reporting/Dockerfile`: Docker configuration
     - `services/reporting/prisma/schema.prisma`: Prisma schema definition
     - `services/reporting/.env.example`: Environment variables example
-  - **User Instructions**: Run `cd services/reporting && npm install` to install dependencies
+  - **User Instructions**: Run `cd services/reporting && yarn install` to install dependencies
 
 - [x] Step 22: Add Reporting Service to Docker Compose
   - **Task**: Add reporting service configuration to Docker Compose
@@ -270,7 +270,7 @@ This document outlines the implementation plan for connecting the various micros
     - `services/auth/src/config/logging.config.ts`: Create logging configuration
     - `services/auth/tsconfig.json`: Update TypeScript configuration for proper module resolution
   - **Step Dependencies**: Step 29
-  - **User Instructions**: Run `cd services/auth && npm run install-logging` to install the logging dependencies
+  - **User Instructions**: Run `cd services/auth && yarn run install-logging` to install the logging dependencies
 
 - [x] Step 31: Implement Logging in General Ledger Service
   - **Task**: Configure the General Ledger Service to send logs to the centralized logging system
@@ -303,7 +303,7 @@ This document outlines the implementation plan for connecting the various micros
     - `services/auth/src/health/health.module.ts`: Configure Health module
     - `services/auth/src/app.module.ts`: Import Health module
   - **Step Dependencies**: Step 30
-  - **User Instructions**: Run `cd services/auth && npm run install-health-check` to install the health check dependencies
+  - **User Instructions**: Run `cd services/auth && yarn run install-health-check` to install the health check dependencies
 
 - [ ] Step 33: Add Health Check to General Ledger Service
   - **Task**: Implement health checks in the General Ledger Service
@@ -314,7 +314,7 @@ This document outlines the implementation plan for connecting the various micros
     - `services/general-ledger/src/health/health.module.ts`: Configure Health module
     - `services/general-ledger/src/app.module.ts`: Import Health module
   - **Step Dependencies**: Step 31
-  - **User Instructions**: Run `cd services/general-ledger && npm install @nestjs/terminus` to install the health check dependency
+  - **User Instructions**: Run `cd services/general-ledger && yarn add @nestjs/terminus` to install the health check dependency
 
 - [ ] Step 34: Create System Status Dashboard
   - **Task**: Implement a dashboard for monitoring the system status

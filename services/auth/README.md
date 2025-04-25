@@ -74,16 +74,16 @@ The Auth Service provides the following guards:
 
 To run the service locally:
 
-```
-npm install
-npm run start:dev
+```bash
+yarn install
+yarn dev
 ```
 
 To build the service for production:
 
-```
-npm run build
-npm run start:prod
+```bash
+yarn build
+yarn start:prod
 ```
 
 ## Features
@@ -115,27 +115,57 @@ cp .env.example .env
 ### Installation
 
 ```bash
-# Install dependencies
-npm install
-
-# Generate Prisma client
-npm run prisma:generate
-
-# Run migrations
-npm run prisma:migrate:dev
-
-# Seed the database
-npm run db:seed
+yarn install
 ```
 
-### Running the Service
+### Running the app
 
 ```bash
-# Development mode
-npm run dev
+# development
+yarn dev
 
-# Production mode
-npm run start:prod
+# production
+yarn build
+yarn start:prod
+```
+
+## Database Setup
+
+### Prerequisites
+
+- PostgreSQL server running
+- Database created for the Auth service
+
+### Setup Steps
+
+1. Install Prisma CLI: Already included in the project dependencies
+2. Generate Prisma client:
+   ```bash
+   yarn prisma:generate
+   ```
+3. Run database migrations:
+   ```bash
+   yarn prisma:migrate:dev
+   ```
+4. Seed the database with initial data:
+   ```bash
+   yarn db:seed
+   ```
+
+## Development
+
+```bash
+# Start the service in development mode
+yarn dev
+
+# Start the service in production mode
+yarn start:prod
+```
+
+## Adding RabbitMQ Support
+
+```bash
+yarn add @nestjs/microservices amqp-connection-manager amqplib
 ```
 
 ## Event Publishing
@@ -143,7 +173,7 @@ npm run start:prod
 This service publishes events to RabbitMQ when users and roles are created, updated, or deleted. To enable event publishing, install the required dependencies:
 
 ```bash
-npm install @nestjs/microservices amqp-connection-manager amqplib
+yarn add @nestjs/microservices amqp-connection-manager amqplib
 ```
 
 The following events are published:

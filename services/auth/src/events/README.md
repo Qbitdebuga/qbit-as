@@ -1,43 +1,44 @@
-# Auth Service Events Module
+# Auth Service - Events Module
 
-This module handles event publishing and consumption for the Auth microservice in the Qbit Accounting System.
+This module enables the Auth Service to publish events to other services via RabbitMQ.
 
-## Purpose
+## Overview
 
-The Events module allows the Auth service to communicate with other microservices using an event-driven approach. It publishes events when users and roles are created, updated, or deleted, allowing other services to react accordingly.
+The Events module is responsible for:
 
-## Setup
+1. Publishing user-related events (creation, updates, deletion)
+2. Handling authentication events (login, logout, password changes)
+3. Broadcasting role and permission changes
 
-### Dependencies
+## Installation
 
-To use this module, you need to install the following dependencies:
+To add event support to the Auth Service, install the required dependencies:
 
 ```bash
-npm install @nestjs/microservices amqp-connection-manager amqplib
+yarn add @nestjs/microservices amqp-connection-manager amqplib
 ```
 
-For convenience, you can use the setup scripts provided:
+## Configuration
 
-- Linux/Mac: `chmod +x scripts/setup-events.sh && ./scripts/setup-events.sh`
-- Windows: `.\scripts\setup-events.ps1`
-
-### Enabling the Module
-
-After installing dependencies, you need to:
-
-1. Uncomment the ClientsModule in `events.module.ts`
-2. Uncomment the `@InjectClient('RABBITMQ_SERVICE')` in both `user-publisher.ts` and `role-publisher.ts`
-3. Remove the `private readonly client: any` line in the publishers
-
-### Configuration
-
-Make sure your .env file contains the following RabbitMQ related settings:
+Events configuration is handled through environment variables:
 
 ```
-# RabbitMQ
-RABBITMQ_URL=amqp://qbit:qbit_password@localhost:5672
+# RabbitMQ Connection
+RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+RABBITMQ_EXCHANGE=auth_events
 RABBITMQ_QUEUE=auth_queue
-RABBITMQ_EXCHANGE=qbit_events
+```
+
+## Usage
+
+To publish an event from a service:
+
+```typescript
+// Inject the EventsService
+constructor(private readonly eventsService: EventsService) {}
+
+// Publish an event
+this.eventsService.publishUserCreated(user);
 ```
 
 ## Event Types
@@ -73,34 +74,8 @@ All events follow this standard format:
 }
 ```
 
-## Usage
-
-The module exports publishers that can be injected into services:
-
-```typescript
-constructor(private readonly userPublisher: UserPublisher) {}
-
-async createUser(dto: CreateUserDto) {
-  const user = await this.userRepository.create(dto);
-  await this.userPublisher.publishUserCreated(user);
-  return user;
-}
-```
-
 ## Troubleshooting
 
 If you encounter issues with event publishing:
 
-1. Ensure RabbitMQ is running: `docker-compose ps | grep rabbitmq`
-2. Check RabbitMQ logs: `docker-compose logs rabbitmq`
-3. Verify your .env configuration is correct
-4. Make sure all required dependencies are installed
-
-## Extending This Module
-
-To add new event types:
-
-1. Define the event pattern in `constants/event-patterns.ts`
-2. Create a publisher in the `publishers` directory
-3. Register the publisher in the EventsModule and export it
-4. Import the EventsModule in the module where you want to use the publisher 
+1. Ensure RabbitMQ is running: `

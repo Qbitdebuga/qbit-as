@@ -18,8 +18,8 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "db:seed": "ts-node prisma/seed.ts",
-    "install-logging": "npm install --no-package-lock --no-save winston winston-transport nest-winston",
-    "install-health-check": "npm install --no-package-lock --no-save @nestjs/terminus"
+    "install-logging": "yarn add --no-lockfile winston winston-transport nest-winston",
+    "install-health-check": "yarn add --no-lockfile @nestjs/terminus"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.0",

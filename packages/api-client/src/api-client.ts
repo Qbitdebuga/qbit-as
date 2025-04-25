@@ -7,9 +7,9 @@ interface RequestOptions {
 
 export class ApiClient {
   private baseUrl: string;
-  private tokenStorage: TokenStorage;
+  private tokenStorage: typeof TokenStorage;
 
-  constructor(baseUrl: string, tokenStorage: TokenStorage) {
+  constructor(baseUrl: string, tokenStorage: typeof TokenStorage) {
     this.baseUrl = baseUrl;
     this.tokenStorage = tokenStorage;
   }
@@ -36,7 +36,7 @@ export class ApiClient {
     };
 
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
     }
 
     const response = await fetch(url.toString(), {
@@ -79,4 +79,4 @@ export class ApiClient {
   public async delete<T>(path: string, options: RequestOptions = {}): Promise<T> {
     return this.request<T>('DELETE', path, undefined, options);
   }
-} 
+}

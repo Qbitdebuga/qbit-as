@@ -13,16 +13,16 @@ This microservice is responsible for managing inventory, products, warehouses, a
 
 ```bash
 # Install dependencies
-npm install
+yarn install
 
 # Generate Prisma client
-npx prisma generate
+yarn prisma generate
 
 # Run database migrations
-npx prisma migrate dev
+yarn prisma migrate dev
 
 # Start the service
-npm run start:dev
+yarn dev
 ```
 
 ## Environment Variables

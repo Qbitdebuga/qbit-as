@@ -3,17 +3,17 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
-COPY ./services/accounts-receivable/package*.json ./services/accounts-receivable/
+COPY package.json yarn.lock ./
+COPY ./services/accounts-receivable/package.json ./services/accounts-receivable/
 
 # Install dependencies
-RUN npm ci
+RUN yarn install
 
 # Copy source files
 COPY . .
 
 # Build the application
-RUN npm run build -w accounts-receivable
+RUN yarn build -w accounts-receivable
 
 # Production stage
 FROM node:18-alpine
@@ -21,18 +21,18 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
-COPY ./services/accounts-receivable/package*.json ./services/accounts-receivable/
+COPY package.json yarn.lock ./
+COPY ./services/accounts-receivable/package.json ./services/accounts-receivable/
 
 # Install production dependencies only
-RUN npm ci --production
+RUN yarn install --production
 
 # Copy built files from builder stage
 COPY --from=builder /app/services/accounts-receivable/dist ./services/accounts-receivable/dist
 COPY --from=builder /app/prisma ./prisma
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN yarn prisma generate
 
 # Set environment variables
 ENV NODE_ENV=production

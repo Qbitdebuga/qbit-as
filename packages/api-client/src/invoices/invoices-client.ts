@@ -6,7 +6,7 @@ import {
   InvoicePayment, 
   UpdateInvoiceDto 
 } from '@qbit/shared-types';
-import { ApiClient } from '../utils/api-client';
+import { ApiClient } from '../lib/api-client';
 
 /**
  * Client for interacting with the invoices API
@@ -101,4 +101,4 @@ export class InvoicesClient {
   ): Promise<{ data: Invoice[]; total: number; page: number; limit: number }> {
     return this.client.get(`${this.basePath}/customer/${customerId}`, { params });
   }
-} 
+}

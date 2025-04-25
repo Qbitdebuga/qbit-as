@@ -7,9 +7,20 @@ $Red = "Red"
 
 Write-Host "Setting up Event Publishing for Auth Service..." -ForegroundColor $Yellow
 
+# Check if events directory exists
+if (Test-Path -Path "src\events") {
+    Write-Host "Events directory already exists." -ForegroundColor $Green
+} else {
+    Write-Host "Creating events directory structure..." -ForegroundColor $Yellow
+    New-Item -Path "src\events" -ItemType Directory -Force | Out-Null
+    New-Item -Path "src\events\events.module.ts" -ItemType File -Force | Out-Null
+    New-Item -Path "src\events\events.service.ts" -ItemType File -Force | Out-Null
+    Write-Host "Event directories and files created." -ForegroundColor $Green
+}
+
 # Install microservices dependencies
 Write-Host "Installing required dependencies..." -ForegroundColor $Yellow
-npm install @nestjs/microservices amqp-connection-manager amqplib --save
+yarn add @nestjs/microservices amqp-connection-manager amqplib
 
 # Check if installation was successful
 if ($LASTEXITCODE -eq 0) {

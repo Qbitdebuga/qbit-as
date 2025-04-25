@@ -4,18 +4,18 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
-COPY ./services/general-ledger/package*.json ./services/general-ledger/
+COPY package.json yarn.lock ./
+COPY ./services/general-ledger/package.json ./services/general-ledger/
 
 # Install dependencies
-RUN npm ci
+RUN yarn install
 
 # Copy source files
 COPY ./services/general-ledger ./services/general-ledger
 COPY ./prisma ./prisma
 
 # Build the application
-RUN npm run build -w general-ledger
+RUN yarn build -w general-ledger
 
 # Production stage
 FROM node:18-alpine
@@ -23,18 +23,18 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
-COPY ./services/general-ledger/package*.json ./services/general-ledger/
+COPY package.json yarn.lock ./
+COPY ./services/general-ledger/package.json ./services/general-ledger/
 
 # Install production dependencies only
-RUN npm ci --production
+RUN yarn install --production
 
 # Copy built files from builder stage
 COPY --from=builder /app/services/general-ledger/dist ./services/general-ledger/dist
 COPY --from=builder /app/prisma ./prisma
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN yarn prisma generate
 
 # Set environment variables
 ENV NODE_ENV=production

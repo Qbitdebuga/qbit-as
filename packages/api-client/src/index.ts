@@ -5,7 +5,12 @@ export * from './accounts';
 export * from './api-client';
 export * from './journal-entries';
 export * from './reports';
-export * from './general-ledger';
+// Export general-ledger components individually to avoid naming conflicts
+export { GeneralLedgerClient } from './general-ledger';
+export { BatchClient } from './general-ledger';
+// Re-export these with different names to avoid conflicts
+export { AccountsClient as GLAccountsClient } from './general-ledger';
+export { JournalEntriesClient as GLJournalEntriesClient } from './general-ledger';
 export * from './customers';
 export * from './invoices';
 export * from './vendors';
@@ -14,7 +19,8 @@ export * from './products';
 export * from './inventory';
 
 // Generic API Client
-import { ApiClient } from './lib/api-client';
+import { ApiClient } from './api-client';
+import { TokenStorage } from './utils/token-storage';
 
 // Clients
 import { AuthClient } from './auth/auth-client';
@@ -59,7 +65,7 @@ export const createApiClient = (baseUrl: string, token?: string) => {
 
 // Initialize Accounts Payable API client
 export const accountsPayableClient = {
-  vendors: new VendorsClient(apiClient, '/api/accounts-payable'),
-  bills: new BillsClient(apiClient, '/api/accounts-payable'),
-  payments: new PaymentsClient(apiClient, '/api/accounts-payable')
-}; 
+  vendors: new VendorsClient(apiClient),
+  bills: new BillsClient(apiClient),
+  payments: new PaymentsClient(apiClient)
+};

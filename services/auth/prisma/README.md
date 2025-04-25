@@ -1,34 +1,66 @@
-# Auth Service Prisma Setup
+# Auth Service - Prisma Database Layer
 
-This directory contains the Prisma setup for the Auth microservice within the Qbit Accounting System.
+## Overview
 
-## Files
+This directory contains the Prisma schema and database migration files for the Auth service.
 
-- `schema.prisma`: Defines the database models and relationships for the auth service
-- `seed.ts`: Seeds the database with initial roles and admin user
-- `migrations/`: Contains database migration files
+## Schema
 
-## Models
+The Prisma schema (`schema.prisma`) defines:
 
-The Auth service has two main models:
+- User entities with authentication information
+- Roles and permissions for access control
+- Audit logs for tracking authentication events
 
-1. **User** - Stores user account information
-   - Fields: id, email, name, password, roles, createdAt, updatedAt
-   - Users can have multiple roles (stored as string array)
+## Scripts
 
-2. **Role** - Defines user roles and their permissions
-   - Fields: id, name, description, permissions, createdAt, updatedAt
-   - Permissions are stored as string array of permission codes
+The following scripts are available for database management:
 
-## Setup
+```bash
+# Generate Prisma Client
+yarn prisma:generate
 
-1. Create a `.env` file based on `.env.example`
-2. Generate Prisma client: `npm run prisma:generate`
-3. Run migrations: `npm run prisma:migrate:dev`
-4. Seed the database: `npm run db:seed`
+# Run Database Migrations
+yarn prisma:migrate:dev
+
+# Seed the Database
+yarn db:seed
+```
 
 ## Development
 
-- Use `npm run prisma:studio` to open Prisma Studio for database visualization
-- Create new migrations: `npm run prisma:migrate:dev -- --name migration_name`
-- Reset the database: `npx prisma migrate reset` 
+- Use `yarn prisma:studio` to open Prisma Studio for database visualization
+- Create new migrations: `yarn prisma:migrate:dev --name migration_name`
+
+## Models
+
+### User
+
+```prisma
+model User {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  roleId      String?
+  role        Role?     @relation(fields: [roleId], references: [id])
+}
+```
+
+### Role
+
+```prisma
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  permissions String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
+}
+``` 

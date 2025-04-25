@@ -1,12 +1,17 @@
 version: 2
 updates:
-  # Update npm dependencies
+  # Update yarn dependencies
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
     versioning-strategy: increase
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
     groups:
       nestjs:
         patterns:

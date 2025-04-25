@@ -7,7 +7,7 @@ import {
   IInventoryTransactionListResponse,
   IInventoryLevelListResponse,
   IInventoryFilterParams
-} from '@qbit-accounting/shared-types';
+} from '@qbit/shared-types';
 
 export class InventoryClient {
   private transactionsPath = '/transactions';
@@ -77,4 +77,4 @@ export class InventoryClient {
     const response = await this.http.get(`${this.warehousesPath}/${id}`);
     return response.data;
   }
-} 
+}

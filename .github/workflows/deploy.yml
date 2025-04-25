@@ -19,13 +19,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'yarn'
       
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
       
       - name: Build packages
-        run: npm run build
+        run: yarn build
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -121,48 +121,46 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'yarn'
       
       - name: Install database migration dependencies
-        run: |
-          npm ci
-          npm install -g prisma
-        
+        run: yarn install --frozen-lockfile
+      
       - name: Run database status check
         run: |
           echo "Checking database status before migrations..."
           
           # Auth service
           echo "Auth Service:"
-          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma migrate status
+          DATABASE_URL=${{ secrets.AUTH_DB_URL }} yarn workspace auth prisma migrate status
 
           # General Ledger
           echo "General Ledger:"
-          DATABASE_URL=${{ secrets.GL_DB_URL }} npx --prefix services/general-ledger prisma migrate status
+          DATABASE_URL=${{ secrets.GL_DB_URL }} yarn workspace general-ledger prisma migrate status
           
           # Accounts Payable
           echo "Accounts Payable:"
-          DATABASE_URL=${{ secrets.AP_DB_URL }} npx --prefix services/accounts-payable prisma migrate status
+          DATABASE_URL=${{ secrets.AP_DB_URL }} yarn workspace accounts-payable prisma migrate status
           
           # Accounts Receivable
           echo "Accounts Receivable:"
-          DATABASE_URL=${{ secrets.AR_DB_URL }} npx --prefix services/accounts-receivable prisma migrate status
+          DATABASE_URL=${{ secrets.AR_DB_URL }} yarn workspace accounts-receivable prisma migrate status
           
           # Banking
           echo "Banking:"
-          DATABASE_URL=${{ secrets.BANKING_DB_URL }} npx --prefix services/banking prisma migrate status
+          DATABASE_URL=${{ secrets.BANKING_DB_URL }} yarn workspace banking prisma migrate status
           
           # Fixed Assets
           echo "Fixed Assets:"
-          DATABASE_URL=${{ secrets.FA_DB_URL }} npx --prefix services/fixed-assets prisma migrate status
+          DATABASE_URL=${{ secrets.FA_DB_URL }} yarn workspace fixed-assets prisma migrate status
           
           # Inventory
           echo "Inventory:"
-          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} npx --prefix services/inventory prisma migrate status
+          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} yarn workspace inventory prisma migrate status
           
           # Reporting
           echo "Reporting:"
-          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} npx --prefix services/reporting prisma migrate status
+          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} yarn workspace reporting prisma migrate status
       
       - name: Run database migrations
         id: run-migrations
@@ -171,43 +169,41 @@ jobs:
           
           # Auth service migrations
           echo "Migrating Auth Service..."
-          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma migrate deploy
+          DATABASE_URL=${{ secrets.AUTH_DB_URL }} yarn workspace auth prisma migrate deploy
           
           # General Ledger migrations
           echo "Migrating General Ledger..."
-          DATABASE_URL=${{ secrets.GL_DB_URL }} npx --prefix services/general-ledger prisma migrate deploy
+          DATABASE_URL=${{ secrets.GL_DB_URL }} yarn workspace general-ledger prisma migrate deploy
           
           # Accounts Payable migrations
           echo "Migrating Accounts Payable..."
-          DATABASE_URL=${{ secrets.AP_DB_URL }} npx --prefix services/accounts-payable prisma migrate deploy
+          DATABASE_URL=${{ secrets.AP_DB_URL }} yarn workspace accounts-payable prisma migrate deploy
           
           # Accounts Receivable migrations
           echo "Migrating Accounts Receivable..."
-          DATABASE_URL=${{ secrets.AR_DB_URL }} npx --prefix services/accounts-receivable prisma migrate deploy
+          DATABASE_URL=${{ secrets.AR_DB_URL }} yarn workspace accounts-receivable prisma migrate deploy
           
           # Banking migrations
           echo "Migrating Banking..."
-          DATABASE_URL=${{ secrets.BANKING_DB_URL }} npx --prefix services/banking prisma migrate deploy
+          DATABASE_URL=${{ secrets.BANKING_DB_URL }} yarn workspace banking prisma migrate deploy
           
           # Fixed Assets migrations
           echo "Migrating Fixed Assets..."
-          DATABASE_URL=${{ secrets.FA_DB_URL }} npx --prefix services/fixed-assets prisma migrate deploy
+          DATABASE_URL=${{ secrets.FA_DB_URL }} yarn workspace fixed-assets prisma migrate deploy
           
           # Inventory migrations
           echo "Migrating Inventory..."
-          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} npx --prefix services/inventory prisma migrate deploy
+          DATABASE_URL=${{ secrets.INVENTORY_DB_URL }} yarn workspace inventory prisma migrate deploy
           
           # Reporting migrations
           echo "Migrating Reporting..."
-          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} npx --prefix services/reporting prisma migrate deploy
-          
-          echo "All migrations completed successfully."
+          DATABASE_URL=${{ secrets.REPORTING_DB_URL }} yarn workspace reporting prisma migrate deploy
       
       - name: Run database seed (only on initial setup)
         if: github.event.inputs.seed == 'true'
         run: |
           echo "Running database seeds..."
-          DATABASE_URL=${{ secrets.AUTH_DB_URL }} npx --prefix services/auth prisma db seed
+          DATABASE_URL=${{ secrets.AUTH_DB_URL }} yarn workspace auth prisma db seed
           echo "Seeds completed."
           
   deploy:
@@ -331,22 +327,37 @@ jobs:
       - name: Create temporary directory for processed manifests
         run: mkdir -p processed-k8s
 
-      - name: Create substitution script
+      - name: Create Node.js substitution script
         run: |
-          cat > substitute-env.sh << 'EOF'
-          #!/bin/bash
-          for file in k8s/*.yaml; do
-            filename=$(basename $file)
-            echo "Processing $file..."
-            # Replace variables with actual values
-            sed -e "s|\${DOCKER_REGISTRY}|${{ secrets.DOCKER_HUB_USERNAME }}|g" \
-                $file > processed-k8s/$filename
-          done
+          cat > substitute-env.js << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          
+          const k8sDir = path.join(process.cwd(), 'k8s');
+          const outputDir = path.join(process.cwd(), 'processed-k8s');
+          const dockerRegistry = process.env.DOCKER_REGISTRY || '';
+          
+          // Read all yaml files in k8s directory
+          fs.readdirSync(k8sDir)
+            .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'))
+            .forEach(file => {
+              console.log(`Processing ${file}...`);
+              const filePath = path.join(k8sDir, file);
+              const outputPath = path.join(outputDir, file);
+              
+              let content = fs.readFileSync(filePath, 'utf8');
+              content = content.replace(/\${DOCKER_REGISTRY}/g, dockerRegistry);
+              
+              fs.writeFileSync(outputPath, content);
+            });
+            
+          console.log('All Kubernetes manifests processed successfully!');
           EOF
-          chmod +x substitute-env.sh
 
       - name: Run substitution on Kubernetes manifests
-        run: ./substitute-env.sh
+        env:
+          DOCKER_REGISTRY: ${{ secrets.DOCKER_HUB_USERNAME }}
+        run: node substitute-env.js
       
       # Apply K8s manifests
       - name: Deploy to Kubernetes - Core Infrastructure

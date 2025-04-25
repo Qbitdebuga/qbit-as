@@ -12,8 +12,16 @@ const mockClient = {
 };
 
 /**
- * Note: Before using this module in production, you need to install the missing dependencies:
- * npm install @nestjs/microservices amqp-connection-manager amqplib
+ * Events Module for Auth Service
+ * 
+ * This module is responsible for handling event communication with other services.
+ * It provides the infrastructure for publishing user and role-related events
+ * to the RabbitMQ message broker.
+ * 
+ * To enable RabbitMQ client, install dependencies:
+ * yarn add @nestjs/microservices amqp-connection-manager amqplib
+ * 
+ * Then uncomment the ClientsModule section below.
  */
 @Module({
   imports: [

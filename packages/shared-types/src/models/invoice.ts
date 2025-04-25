@@ -9,7 +9,7 @@ export enum InvoiceStatus {
   CANCELLED = 'CANCELLED'
 }
 
-export enum PaymentMethod {
+export enum InvoicePaymentMethod {
   CASH = 'CASH',
   CHECK = 'CHECK',
   CREDIT_CARD = 'CREDIT_CARD',
@@ -21,7 +21,7 @@ export enum PaymentMethod {
   OTHER = 'OTHER'
 }
 
-export enum PaymentStatus {
+export enum InvoicePaymentStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
@@ -72,8 +72,8 @@ export interface InvoicePayment {
   invoiceId: string;
   paymentDate: Date;
   amount: number;
-  paymentMethod: PaymentMethod;
-  status: PaymentStatus;
+  paymentMethod: InvoicePaymentMethod;
+  status: InvoicePaymentStatus;
   referenceNumber?: string | null;
   notes?: string | null;
   createdAt: Date;
@@ -114,7 +114,7 @@ export interface CreateInvoicePaymentDto {
   invoiceId: string;
   paymentDate: Date;
   amount: number;
-  paymentMethod: PaymentMethod;
+  paymentMethod: InvoicePaymentMethod;
   referenceNumber?: string;
   notes?: string;
 }

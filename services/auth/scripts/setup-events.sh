@@ -9,9 +9,19 @@ NC='\033[0m' # No Color
 
 echo -e "${YELLOW}Setting up Event Publishing for Auth Service...${NC}"
 
-# Install microservices dependencies
-echo -e "${YELLOW}Installing required dependencies...${NC}"
-npm install @nestjs/microservices amqp-connection-manager amqplib --save
+# Check if src/events directory exists
+if [ -d "src/events" ]; then
+    echo "Events directory already exists."
+else
+    echo "Creating events directory structure..."
+    mkdir -p src/events
+    touch src/events/events.module.ts
+    touch src/events/events.service.ts
+    echo "Event directories and files created."
+fi
+
+# Install RabbitMQ dependencies
+yarn add @nestjs/microservices amqp-connection-manager amqplib
 
 # Check if installation was successful
 if [ $? -eq 0 ]; then

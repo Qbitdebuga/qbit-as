@@ -7,7 +7,7 @@ import {
   IProductCategoryListResponse,
   IProductFilterParams,
   IProductVariantFilterParams
-} from '@qbit-accounting/shared-types';
+} from '@qbit/shared-types';
 
 export class ProductsClient {
   private basePath = '/products';
@@ -89,4 +89,4 @@ export class ProductsClient {
   async deleteVariant(id: number): Promise<void> {
     await this.http.delete(`${this.basePath}/variants/${id}`);
   }
-} 
+}

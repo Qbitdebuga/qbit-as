@@ -13,8 +13,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "install-logging": "npm install --no-package-lock --no-save winston winston-transport nest-winston",
-    "install-health-check": "npm install --no-package-lock --no-save @nestjs/terminus @nestjs/axios"
+    "install-logging": "yarn add --no-lockfile winston winston-transport nest-winston",
+    "install-health-check": "yarn add --no-lockfile @nestjs/terminus @nestjs/axios"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.1",

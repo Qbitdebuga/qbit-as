@@ -5,17 +5,17 @@ ENV NODE_ENV=production
 
 # Development dependencies
 FROM base AS deps
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 # Builder
 FROM deps AS builder
 COPY . .
-RUN npm run build
+RUN yarn build
 
 # Production dependencies
 FROM deps AS production-deps
-RUN npm prune --production
+RUN yarn install --production --frozen-lockfile
 
 # Runner
 FROM base AS runner
@@ -28,4 +28,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget -qO- http://localhost:3000/health || exit 1
 
 # Start the application
-CMD ["npm", "run", "start:prod"] 
+CMD ["yarn", "start:prod"] 

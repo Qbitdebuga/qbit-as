@@ -25,7 +25,7 @@ A full-stack accounting system built as a monorepo using Turborepo, Next.js, Nes
 ### Prerequisites
 
 - Node.js 18+
-- Yarn or npm
+- Yarn
 - Docker (for development and deployment)
 - PostgreSQL (for development and production)
 

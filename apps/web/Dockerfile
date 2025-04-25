@@ -4,8 +4,8 @@ WORKDIR /app
 
 # Install dependencies only when needed
 FROM base AS deps
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -17,7 +17,7 @@ ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 # Build application
-RUN npm run build
+RUN yarn build
 
 # Production image, copy all the files and run next
 FROM base AS runner
