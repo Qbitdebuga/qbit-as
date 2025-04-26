@@ -4,6 +4,7 @@ import { EventsModule } from '../events/events.module';
 import { AccountsModule } from '../accounts/accounts.module';
 import { JournalEntryCreationSaga } from './journal-entry-creation.saga';
 import { BatchProcessingSaga } from './batch-processing.saga';
+import { HttpModule } from '@nestjs/axios';
 
 /**
  * Sagas Module
@@ -16,7 +17,8 @@ import { BatchProcessingSaga } from './batch-processing.saga';
   imports: [
     PrismaModule,
     EventsModule,
-    AccountsModule
+    AccountsModule,
+    HttpModule
   ],
   providers: [
     JournalEntryCreationSaga,

@@ -1,6 +1,6 @@
 'use client';
 
-import { TokenStorage, AuthClient } from 'api-client';
+import { TokenStorage, AuthClient } from '@qbit/api-client';
 
 // Create a single instance of AuthClient to be used throughout the app
 export const authClient = new AuthClient(process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3002');

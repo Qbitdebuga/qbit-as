@@ -1,5 +1,6 @@
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
 import { JournalEntryForm } from '@/components/journal-entries/JournalEntryForm';
 import { 
   PageHeader, 
@@ -9,11 +10,6 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { ArrowLeft } from 'lucide-react';
-
-export const metadata: Metadata = {
-  title: 'New Journal Entry | Qbit Accounting',
-  description: 'Create a new journal entry',
-};
 
 // In a real app, we would fetch this from the API
 const accounts = [
@@ -94,16 +90,12 @@ export default function NewJournalEntryPage() {
         </Link>
       </div>
       
-      <PageHeader>
-        <PageHeaderHeading>New Journal Entry</PageHeaderHeading>
-        <PageHeaderDescription>
-          Create a new journal entry transaction
-        </PageHeaderDescription>
-      </PageHeader>
+      <PageHeader title="New Journal Entry" description="Create a new journal entry transaction" />
 
       <JournalEntryForm 
         accounts={accounts} 
-        onSubmit={handleSubmit} 
+        onSubmit={handleSubmit}
+        isSubmitting={false}
       />
     </div>
   );

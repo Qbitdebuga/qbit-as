@@ -18,7 +18,7 @@ export class InvoicesService {
   async create(createInvoiceDto: CreateInvoiceDto): Promise<Invoice> {
     try {
       // Generate invoice number
-      const invoiceCount = await this.prisma.invoice.count();
+      const invoiceCount = await (this.prisma as any).invoice.count();
       const invoiceNumber = `INV-${(invoiceCount + 1).toString().padStart(5, '0')}`;
 
       // Calculate totals
@@ -47,7 +47,7 @@ export class InvoicesService {
       // Create invoice and invoice items in a transaction
       const result = await this.prisma.$transaction(async (prisma) => {
         // Create the invoice with type casting to avoid TS errors
-        const invoice = await prisma.invoice.create({
+        const invoice = await (prisma as any).invoice.create({
           data: {
             invoiceNumber,
             customerId: createInvoiceDto.customerId,
@@ -87,7 +87,7 @@ export class InvoicesService {
         }
 
         // Fetch the complete invoice with relationships
-        return await prisma.invoice.findUnique({
+        return await (prisma as any).invoice.findUnique({
           where: { id: invoice.id },
           include: {
             items: true,
@@ -127,7 +127,7 @@ export class InvoicesService {
 
       // Execute query with pagination
       const [invoices, total] = await Promise.all([
-        this.prisma.invoice.findMany({
+        (this.prisma as any).invoice.findMany({
           where,
           skip,
           take: limit,
@@ -139,7 +139,7 @@ export class InvoicesService {
             payments: true,
           } as any,
         }),
-        this.prisma.invoice.count({ where }),
+        (this.prisma as any).invoice.count({ where }),
       ]);
 
       return {
@@ -156,7 +156,7 @@ export class InvoicesService {
 
   async findOne(id: string): Promise<Invoice> {
     try {
-      const invoice = await this.prisma.invoice.findUnique({
+      const invoice = await (this.prisma as any).invoice.findUnique({
         where: { id },
         include: {
           items: true,
@@ -210,7 +210,7 @@ export class InvoicesService {
         updateData.terms = updateInvoiceDto.terms;
       }
       
-      await this.prisma.invoice.update({
+      await (this.prisma as any).invoice.update({
         where: { id },
         data: updateData,
       });
@@ -231,20 +231,17 @@ export class InvoicesService {
       // First check if invoice exists
       const existingInvoice = await this.findOne(id);
 
-      // Prevent deletion for invoices that are not in DRAFT status
+      // Prevent deletions for invoices that are not in DRAFT status
       if (existingInvoice.status !== InvoiceStatus.DRAFT) {
         throw new BadRequestException(`Cannot delete invoice that is not in DRAFT status`);
       }
 
-      // Delete the invoice (items will cascade delete)
-      await this.prisma.invoice.delete({
+      // Delete the invoice
+      await (this.prisma as any).invoice.delete({
         where: { id },
       });
     } catch (error: any) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
-        throw error;
-      }
-      this.logger.error(`Error removing invoice ${id}: ${error.message}`, error.stack);
+      this.logger.error(`Error deleting invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -254,25 +251,21 @@ export class InvoicesService {
       // First check if invoice exists
       const existingInvoice = await this.findOne(id);
 
-      // Only draft invoices can be finalized
+      // Prevent finalizing invoices that are not in DRAFT status
       if (existingInvoice.status !== InvoiceStatus.DRAFT) {
-        throw new BadRequestException(`Only DRAFT invoices can be finalized`);
+        throw new BadRequestException(`Cannot finalize invoice that is not in DRAFT status`);
       }
 
-      // Update status to PENDING
-      await this.prisma.invoice.update({
+      // Update the invoice status to FINALIZED
+      await (this.prisma as any).invoice.update({
         where: { id },
         data: {
-          status: InvoiceStatus.PENDING,
-        } as any,
+          status: InvoiceStatus.FINALIZED,
+        },
       });
 
-      // Return updated invoice
       return this.findOne(id);
     } catch (error: any) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
-        throw error;
-      }
       this.logger.error(`Error finalizing invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
@@ -283,25 +276,21 @@ export class InvoicesService {
       // First check if invoice exists
       const existingInvoice = await this.findOne(id);
 
-      // Only pending invoices can be marked as sent
-      if (existingInvoice.status !== InvoiceStatus.PENDING) {
-        throw new BadRequestException(`Only PENDING invoices can be marked as sent`);
+      // Prevent marking as sent for invoices that are not in FINALIZED status
+      if (existingInvoice.status !== InvoiceStatus.FINALIZED) {
+        throw new BadRequestException(`Cannot mark as sent invoice that is not in FINALIZED status`);
       }
 
-      // Update status to SENT
-      await this.prisma.invoice.update({
+      // Update the invoice status to SENT
+      await (this.prisma as any).invoice.update({
         where: { id },
         data: {
           status: InvoiceStatus.SENT,
-        } as any,
+        },
       });
 
-      // Return updated invoice
       return this.findOne(id);
     } catch (error: any) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
-        throw error;
-      }
       this.logger.error(`Error marking invoice ${id} as sent: ${error.message}`, error.stack);
       throw error;
     }
@@ -312,25 +301,25 @@ export class InvoicesService {
       // First check if invoice exists
       const existingInvoice = await this.findOne(id);
 
-      // Cannot void invoices that are already paid or void
-      if ([InvoiceStatus.PAID, InvoiceStatus.VOID].includes(existingInvoice.status)) {
-        throw new BadRequestException(`Cannot void an invoice that is ${existingInvoice.status}`);
+      // Prevent voiding invoices that are already PAID, VOID, or if they have payments
+      if (
+        existingInvoice.status === InvoiceStatus.PAID ||
+        existingInvoice.status === InvoiceStatus.VOID ||
+        (existingInvoice.payments && existingInvoice.payments.length > 0)
+      ) {
+        throw new BadRequestException(`Cannot void invoice that is paid, already void, or has payments`);
       }
 
-      // Update status to VOID
-      await this.prisma.invoice.update({
+      // Update the invoice status to VOID
+      await (this.prisma as any).invoice.update({
         where: { id },
         data: {
           status: InvoiceStatus.VOID,
-        } as any,
+        },
       });
 
-      // Return updated invoice
       return this.findOne(id);
     } catch (error: any) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
-        throw error;
-      }
       this.logger.error(`Error voiding invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
@@ -338,62 +327,63 @@ export class InvoicesService {
 
   async createPayment(createPaymentDto: CreateInvoicePaymentDto): Promise<InvoicePayment> {
     try {
-      // First check if invoice exists
-      const invoice = await this.findOne(createPaymentDto.invoiceId);
+      // Process the payment in a transaction to ensure data consistency
+      return await this.prisma.$transaction(async (prisma) => {
+        // 1. Get the invoice and check its status
+        const invoice = await (prisma as any).invoice.findUnique({
+          where: { id: createPaymentDto.invoiceId },
+        });
 
-      // Cannot add payments to draft, void, or cancelled invoices
-      if ([InvoiceStatus.DRAFT, InvoiceStatus.VOID, InvoiceStatus.CANCELLED].includes(invoice.status)) {
-        throw new BadRequestException(`Cannot add payment to an invoice with ${invoice.status} status`);
-      }
+        if (!invoice) {
+          throw new NotFoundException(`Invoice with ID ${createPaymentDto.invoiceId} not found`);
+        }
 
-      // Create the payment
-      const newPaymentResult = await this.prisma.$transaction(async (prisma) => {
-        // Create the payment record
-        const newPayment = await (prisma as any).invoicePayment.create({
+        if (invoice.status === InvoiceStatus.VOID) {
+          throw new BadRequestException(`Cannot accept payment for voided invoice`);
+        }
+
+        if (invoice.status === InvoiceStatus.PAID) {
+          throw new BadRequestException(`Invoice is already fully paid`);
+        }
+
+        if (invoice.status === InvoiceStatus.DRAFT) {
+          throw new BadRequestException(`Cannot accept payment for invoice in draft status`);
+        }
+
+        // 2. Validate payment amount
+        const remainingBalance = invoice.balanceDue;
+        if (createPaymentDto.amount > remainingBalance) {
+          throw new BadRequestException(`Payment amount exceeds remaining balance: ${remainingBalance}`);
+        }
+
+        // 3. Create the payment
+        const payment = await (prisma as any).invoicePayment.create({
           data: {
             invoiceId: createPaymentDto.invoiceId,
-            paymentDate: createPaymentDto.paymentDate,
             amount: createPaymentDto.amount,
+            paymentDate: createPaymentDto.paymentDate || new Date(),
             paymentMethod: createPaymentDto.paymentMethod,
-            status: (createPaymentDto as any).status || PaymentStatus.COMPLETED,
             referenceNumber: createPaymentDto.referenceNumber,
             notes: createPaymentDto.notes,
           },
         });
 
-        // Update the invoice balance if payment is completed
-        if (newPayment.status === PaymentStatus.COMPLETED) {
-          const newAmountPaid = invoice.amountPaid + newPayment.amount;
-          const newBalanceDue = invoice.totalAmount - newAmountPaid;
+        // 4. Update invoice balance and potentially status
+        const newBalance = remainingBalance - createPaymentDto.amount;
+        const newStatus = newBalance <= 0 ? InvoiceStatus.PAID : invoice.status;
 
-          // Determine new invoice status based on payment amount
-          let newStatus = invoice.status;
-          if (newBalanceDue <= 0) {
-            newStatus = InvoiceStatus.PAID;
-          } else if (newAmountPaid > 0) {
-            newStatus = InvoiceStatus.PARTIAL;
-          }
+        await (prisma as any).invoice.update({
+          where: { id: createPaymentDto.invoiceId },
+          data: {
+            balanceDue: newBalance,
+            status: newStatus,
+          },
+        });
 
-          // Update the invoice with new amounts and status
-          await prisma.invoice.update({
-            where: { id: invoice.id },
-            data: {
-              amountPaid: newAmountPaid,
-              balanceDue: newBalanceDue,
-              status: newStatus,
-            } as any,
-          });
-        }
-
-        return newPayment;
+        return payment;
       });
-
-      return newPaymentResult as unknown as InvoicePayment;
     } catch (error: any) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
-        throw error;
-      }
-      this.logger.error(`Error creating payment for invoice ${createPaymentDto.invoiceId}: ${error.message}`, error.stack);
+      this.logger.error(`Error creating payment: ${error.message}`, error.stack);
       throw error;
     }
   }

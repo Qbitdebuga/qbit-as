@@ -3,6 +3,37 @@
  */
 
 /**
+ * Format a date according to the specified format
+ * @param date The date to format (Date object, ISO string, or timestamp)
+ * @param format The format to use (default: 'medium')
+ * @param locale The locale to use for formatting (default: 'en-US')
+ * @returns Formatted date string
+ */
+export const formatDate = (
+  date: Date | string | number | null | undefined,
+  format: 'short' | 'medium' | 'long' | 'full' = 'medium',
+  locale = 'en-US'
+): string => {
+  if (date === null || date === undefined) return '';
+  
+  let dateObj: Date;
+  
+  if (typeof date === 'string') {
+    dateObj = new Date(date);
+  } else if (typeof date === 'number') {
+    dateObj = new Date(date);
+  } else {
+    dateObj = date;
+  }
+  
+  if (isNaN(dateObj.getTime())) return '';
+  
+  const options: Intl.DateTimeFormatOptions = { dateStyle: format };
+  
+  return new Intl.DateTimeFormat(locale, options).format(dateObj);
+};
+
+/**
  * Format a number as currency
  * @param value The number to format
  * @param currency The currency code (default: USD)

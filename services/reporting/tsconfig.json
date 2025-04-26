@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["src/*"],
-      "@qbit/shared-types": ["../../packages/shared-types/src"]
+      "@qbit/shared-types/*": ["../../packages/shared-types/src/*"]
     }
   }
 } 

@@ -37,8 +37,8 @@ export function ProtectedRoute({ children, requiredRoles = [] }: ProtectedRouteP
   // Show nothing while loading or redirecting
   if (isLoading || (!isAuthenticated && !isLoading)) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-screen" suppressHydrationWarning>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600" suppressHydrationWarning></div>
       </div>
     );
   }
@@ -51,7 +51,7 @@ export function ProtectedRoute({ children, requiredRoles = [] }: ProtectedRouteP
     
     if (!hasRequiredRole) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center justify-center min-h-screen" suppressHydrationWarning>
           <h1 className="text-2xl font-bold text-red-600">Unauthorized</h1>
           <p className="mt-2">You don't have permission to access this page.</p>
         </div>

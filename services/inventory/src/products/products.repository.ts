@@ -16,7 +16,7 @@ export class ProductsRepository {
   async createProduct(data: CreateProductDto) {
     // Generate SKU if not provided
     if (!data.sku) {
-      const lastProduct = await this.prisma.product.findFirst({
+      const lastProduct = await (this.prisma as any).product.findFirst({
         orderBy: { id: 'desc' },
       });
       
@@ -24,7 +24,7 @@ export class ProductsRepository {
       data.sku = `PROD-${nextId.toString().padStart(5, '0')}`;
     }
 
-    return this.prisma.product.create({
+    return (this.prisma as any).product.create({
       data: {
         sku: data.sku,
         name: data.name,
@@ -56,14 +56,14 @@ export class ProductsRepository {
   async findAllProducts(params: {
     skip?: number;
     take?: number;
-    cursor?: Prisma.ProductWhereUniqueInput;
-    where?: Prisma.ProductWhereInput;
-    orderBy?: Prisma.ProductOrderByWithRelationInput;
+    cursor?: any;
+    where?: any;
+    orderBy?: any;
   }) {
     const { skip, take, cursor, where, orderBy } = params;
     
     const [data, total] = await Promise.all([
-      this.prisma.product.findMany({
+      (this.prisma as any).product.findMany({
         skip,
         take,
         cursor,
@@ -73,7 +73,7 @@ export class ProductsRepository {
           category: true,
         },
       }),
-      this.prisma.product.count({ where }),
+      (this.prisma as any).product.count({ where }),
     ]);
     
     return {
@@ -85,7 +85,7 @@ export class ProductsRepository {
   }
 
   async findOneProduct(id: number) {
-    return this.prisma.product.findUnique({
+    return (this.prisma as any).product.findUnique({
       where: { id },
       include: {
         category: true,
@@ -96,7 +96,7 @@ export class ProductsRepository {
   }
 
   async findProductBySku(sku: string) {
-    return this.prisma.product.findUnique({
+    return (this.prisma as any).product.findUnique({
       where: { sku },
       include: {
         category: true,
@@ -107,7 +107,7 @@ export class ProductsRepository {
   }
 
   async updateProduct(id: number, data: UpdateProductDto) {
-    return this.prisma.product.update({
+    return (this.prisma as any).product.update({
       where: { id },
       data,
       include: {
@@ -118,14 +118,14 @@ export class ProductsRepository {
   }
 
   async removeProduct(id: number) {
-    return this.prisma.product.delete({
+    return (this.prisma as any).product.delete({
       where: { id },
     });
   }
 
   // Product Category methods
   async createCategory(data: CreateProductCategoryDto) {
-    return this.prisma.productCategory.create({
+    return (this.prisma as any).productCategory.create({
       data: {
         name: data.name,
         description: data.description,
@@ -143,14 +143,14 @@ export class ProductsRepository {
   async findAllCategories(params: {
     skip?: number;
     take?: number;
-    cursor?: Prisma.ProductCategoryWhereUniqueInput;
-    where?: Prisma.ProductCategoryWhereInput;
-    orderBy?: Prisma.ProductCategoryOrderByWithRelationInput;
+    cursor?: any;
+    where?: any;
+    orderBy?: any;
   }) {
     const { skip, take, cursor, where, orderBy } = params;
     
     const [data, total] = await Promise.all([
-      this.prisma.productCategory.findMany({
+      (this.prisma as any).productCategory.findMany({
         skip,
         take,
         cursor,
@@ -166,7 +166,7 @@ export class ProductsRepository {
           },
         },
       }),
-      this.prisma.productCategory.count({ where }),
+      (this.prisma as any).productCategory.count({ where }),
     ]);
     
     return {
@@ -178,7 +178,7 @@ export class ProductsRepository {
   }
 
   async findOneCategory(id: number) {
-    return this.prisma.productCategory.findUnique({
+    return (this.prisma as any).productCategory.findUnique({
       where: { id },
       include: {
         parent: true,
@@ -199,7 +199,7 @@ export class ProductsRepository {
   }
 
   async updateCategory(id: number, data: UpdateProductCategoryDto) {
-    return this.prisma.productCategory.update({
+    return (this.prisma as any).productCategory.update({
       where: { id },
       data,
       include: {
@@ -211,19 +211,19 @@ export class ProductsRepository {
 
   async removeCategory(id: number) {
     // Check if there are products in this category
-    const productCount = await this.prisma.product.count({
+    const productCount = await (this.prisma as any).product.count({
       where: { categoryId: id },
     });
 
     if (productCount > 0) {
       // If products exist, just mark as inactive instead of deleting
-      return this.prisma.productCategory.update({
+      return (this.prisma as any).productCategory.update({
         where: { id },
         data: { isActive: false },
       });
     }
 
-    return this.prisma.productCategory.delete({
+    return (this.prisma as any).productCategory.delete({
       where: { id },
     });
   }
@@ -231,7 +231,7 @@ export class ProductsRepository {
   // Product Variant methods
   async createVariant(productId: number, data: CreateProductVariantDto) {
     // Get the parent product
-    const product = await this.prisma.product.findUnique({
+    const product = await (this.prisma as any).product.findUnique({
       where: { id: productId },
     });
 
@@ -242,13 +242,13 @@ export class ProductsRepository {
     // Generate SKU if not provided
     let sku = data.sku;
     if (!sku) {
-      const variantCount = await this.prisma.productVariant.count({
+      const variantCount = await (this.prisma as any).productVariant.count({
         where: { productId },
       });
       sku = `${product.sku}-V${(variantCount + 1).toString().padStart(2, '0')}`;
     }
 
-    return this.prisma.productVariant.create({
+    return (this.prisma as any).productVariant.create({
       data: {
         productId,
         sku,
@@ -272,14 +272,14 @@ export class ProductsRepository {
   }
 
   async findAllVariants(productId: number) {
-    return this.prisma.productVariant.findMany({
+    return (this.prisma as any).productVariant.findMany({
       where: { productId },
       orderBy: { name: 'asc' },
     });
   }
 
   async findOneVariant(id: number) {
-    return this.prisma.productVariant.findUnique({
+    return (this.prisma as any).productVariant.findUnique({
       where: { id },
       include: {
         product: true,
@@ -289,7 +289,7 @@ export class ProductsRepository {
   }
 
   async findVariantBySku(sku: string) {
-    return this.prisma.productVariant.findUnique({
+    return (this.prisma as any).productVariant.findUnique({
       where: { sku },
       include: {
         product: true,
@@ -299,7 +299,7 @@ export class ProductsRepository {
   }
 
   async updateVariant(id: number, data: UpdateProductVariantDto) {
-    return this.prisma.productVariant.update({
+    return (this.prisma as any).productVariant.update({
       where: { id },
       data,
       include: {
@@ -309,7 +309,7 @@ export class ProductsRepository {
   }
 
   async removeVariant(id: number) {
-    return this.prisma.productVariant.delete({
+    return (this.prisma as any).productVariant.delete({
       where: { id },
     });
   }

@@ -8,19 +8,27 @@ import { InvoiceStatus } from '../invoices/entities/invoice-status.enum';
 import { PaymentMethod } from '../invoices/entities/payment-method.enum';
 import { PaymentStatus } from '../invoices/entities/payment-status.enum';
 import { Invoice } from '../invoices/entities/invoice.entity';
+import { Prisma } from '@prisma/client';
 
-// Define the InvoicePayment type based on the Prisma schema
-type InvoicePayment = {
+interface PrismaPayment {
   id: string;
   invoiceId: string;
-  paymentDate: Date;
   amount: number;
+  paymentDate: Date;
   paymentMethod: string;
-  status: PaymentStatus;
-  referenceNumber?: string;
+  reference?: string;
   notes?: string;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
+  invoice?: {
+    id: string;
+    invoiceNumber: string;
+    customerId: string;
+    totalAmount: number;
+    amountPaid?: number;
+    status?: string;
+  };
 }
 
 @Injectable()
@@ -36,7 +44,7 @@ export class PaymentsRepository {
       // Start a transaction to create the payment and update the invoice
       const payment = await this.prisma.$transaction(async (tx) => {
         // Create the payment
-        const newPayment = await tx.invoicePayment.create({
+        const newPayment = await (tx as any).invoicePayment.create({
           data: {
             invoiceId,
             ...paymentData,
@@ -45,7 +53,7 @@ export class PaymentsRepository {
         });
 
         // Get the invoice to check its current balance
-        const invoice = await tx.invoice.findUnique({
+        const invoice = await (tx as any).invoice.findUnique({
           where: { id: invoiceId },
           select: { 
             id: true, 
@@ -71,7 +79,7 @@ export class PaymentsRepository {
         }
 
         // Update the invoice
-        await tx.invoice.update({
+        await (tx as any).invoice.update({
           where: { id: invoiceId },
           data: {
             amountPaid: updatedAmountPaid,
@@ -91,7 +99,7 @@ export class PaymentsRepository {
 
   async findAll(): Promise<Payment[]> {
     try {
-      const payments = await this.prisma.invoicePayment.findMany({
+      const payments = await (this.prisma as any).invoicePayment.findMany({
         include: {
           invoice: {
             select: {
@@ -104,7 +112,7 @@ export class PaymentsRepository {
         },
       });
       
-      return payments.map(payment => this.mapToEntity(payment));
+      return payments.map((payment: PrismaPayment) => this.mapToEntity(payment));
     } catch (error: any) {
       this.logger.error(`Failed to fetch payments: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to fetch payments', error.message);
@@ -113,7 +121,7 @@ export class PaymentsRepository {
 
   async findOne(id: string): Promise<Payment> {
     try {
-      const payment = await this.prisma.invoicePayment.findUnique({
+      const payment = await (this.prisma as any).invoicePayment.findUnique({
         where: { id },
         include: {
           invoice: {
@@ -143,7 +151,7 @@ export class PaymentsRepository {
 
   async findByInvoiceId(invoiceId: string): Promise<Payment[]> {
     try {
-      const payments = await this.prisma.invoicePayment.findMany({
+      const payments = await (this.prisma as any).invoicePayment.findMany({
         where: { invoiceId },
         include: {
           invoice: {
@@ -157,7 +165,7 @@ export class PaymentsRepository {
         },
       });
       
-      return payments.map(payment => this.mapToEntity(payment));
+      return payments.map((payment: PrismaPayment) => this.mapToEntity(payment));
     } catch (error: any) {
       this.logger.error(`Failed to fetch payments for invoice ${invoiceId}: ${error.message}`, error.stack);
       throw new InternalServerErrorException(`Failed to fetch payments for invoice ${invoiceId}`, error.message);
@@ -166,7 +174,7 @@ export class PaymentsRepository {
 
   async updatePaymentStatus(id: string, status: PaymentStatus): Promise<Payment> {
     try {
-      const payment = await this.prisma.invoicePayment.update({
+      const payment = await (this.prisma as any).invoicePayment.update({
         where: { id },
         data: { status },
         include: {
@@ -193,13 +201,13 @@ export class PaymentsRepository {
       // Start a transaction to delete the payment and update the invoice
       await this.prisma.$transaction(async (tx) => {
         // Get the payment first to get the invoice ID and amount
-        const payment = await tx.invoicePayment.findUnique({
+        const payment = await (tx as any).invoicePayment.findUnique({
           where: { id },
           select: { 
             id: true, 
             invoiceId: true, 
-            amount: true,
-            status: true
+            amount: true, 
+            status: true 
           },
         });
 
@@ -213,14 +221,14 @@ export class PaymentsRepository {
         }
 
         // Delete the payment
-        await tx.invoicePayment.delete({
+        await (tx as any).invoicePayment.delete({
           where: { id },
         });
 
         // If the payment was associated with an invoice, update the invoice
         if (payment.invoiceId) {
           // Get the invoice to check its current balance
-          const invoice = await tx.invoice.findUnique({
+          const invoice = await (tx as any).invoice.findUnique({
             where: { id: payment.invoiceId },
             select: { 
               id: true, 
@@ -243,7 +251,7 @@ export class PaymentsRepository {
             }
 
             // Update the invoice
-            await tx.invoice.update({
+            await (tx as any).invoice.update({
               where: { id: payment.invoiceId },
               data: {
                 amountPaid: updatedAmountPaid,
@@ -265,7 +273,7 @@ export class PaymentsRepository {
   async getInvoiceWithPayments(invoiceId: string): Promise<Invoice | null> {
     try {
       this.logger.log(`Getting invoice ${invoiceId} with its payments`);
-      const invoice = await this.prisma.invoice.findUnique({
+      const invoice = await (this.prisma as any).invoice.findUnique({
         where: { id: invoiceId },
         include: {
           customer: true,
@@ -332,7 +340,7 @@ export class PaymentsRepository {
   async updateInvoiceStatus(invoiceId: string, status: InvoiceStatus): Promise<Invoice> {
     try {
       this.logger.log(`Updating invoice ${invoiceId} status to ${status}`);
-      const updatedInvoice = await this.prisma.invoice.update({
+      const updatedInvoice = await (this.prisma as any).invoice.update({
         where: { id: invoiceId },
         data: { status },
         include: {
@@ -354,7 +362,7 @@ export class PaymentsRepository {
       // Start a transaction to apply the payment to the invoice
       const result = await this.prisma.$transaction(async (tx) => {
         // Get the payment
-        const payment = await tx.invoicePayment.findUnique({
+        const payment = await (tx as any).invoicePayment.findUnique({
           where: { id: dto.paymentId },
         });
 
@@ -363,7 +371,7 @@ export class PaymentsRepository {
         }
 
         // Get the invoice
-        const invoice = await tx.invoice.findUnique({
+        const invoice = await (tx as any).invoice.findUnique({
           where: { id: dto.invoiceId },
           select: { 
             id: true, 
@@ -378,7 +386,7 @@ export class PaymentsRepository {
         }
 
         // Update the payment status
-        const updatedPayment = await tx.invoicePayment.update({
+        const updatedPayment = await (tx as any).invoicePayment.update({
           where: { id: dto.paymentId },
           data: { 
             status: PaymentStatus.COMPLETED,
@@ -408,7 +416,7 @@ export class PaymentsRepository {
         }
 
         // Update the invoice
-        await tx.invoice.update({
+        await (tx as any).invoice.update({
           where: { id: dto.invoiceId },
           data: {
             amountPaid: updatedAmountPaid,
@@ -437,32 +445,30 @@ export class PaymentsRepository {
     return this.findAll();
   }
 
-  private mapToEntity(prismaPayment: any): Payment {
-    const payment = new Payment({
-      id: prismaPayment.id,
-      invoiceId: prismaPayment.invoiceId,
-      paymentDate: prismaPayment.paymentDate,
-      amount: prismaPayment.amount,
-      paymentMethod: prismaPayment.paymentMethod as PaymentMethod,
-      status: prismaPayment.status as PaymentStatus,
-      referenceNumber: prismaPayment.referenceNumber,
-      notes: prismaPayment.notes,
-      createdAt: prismaPayment.createdAt,
-      updatedAt: prismaPayment.updatedAt,
+  /**
+   * Maps a Prisma payment record to a Payment entity
+   */
+  private mapToEntity(payment: PrismaPayment): Payment {
+    return new Payment({
+      id: payment.id,
+      invoiceId: payment.invoiceId,
+      amount: payment.amount,
+      paymentDate: payment.paymentDate,
+      paymentMethod: payment.paymentMethod as PaymentMethod,
+      referenceNumber: payment.reference,
+      notes: payment.notes,
+      status: payment.status as PaymentStatus,
+      createdAt: payment.createdAt,
+      updatedAt: payment.updatedAt,
+      invoice: payment.invoice ? {
+        id: payment.invoice.id,
+        invoiceNumber: payment.invoice.invoiceNumber,
+        customerId: payment.invoice.customerId,
+        totalAmount: payment.invoice.totalAmount,
+        amountPaid: payment.invoice.amountPaid,
+        status: payment.invoice.status,
+      } : undefined,
     });
-
-    if (prismaPayment.invoice) {
-      payment.invoice = {
-        id: prismaPayment.invoice.id,
-        invoiceNumber: prismaPayment.invoice.invoiceNumber,
-        customerName: prismaPayment.invoice.customer ? prismaPayment.invoice.customer.name : '',
-        totalAmount: prismaPayment.invoice.totalAmount,
-        balanceDue: prismaPayment.invoice.balanceDue,
-        status: prismaPayment.invoice.status
-      };
-    }
-
-    return payment;
   }
 
   private mapPrismaInvoiceToEntity(prismaInvoice: any): Invoice {

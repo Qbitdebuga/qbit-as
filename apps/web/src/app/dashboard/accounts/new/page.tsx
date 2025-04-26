@@ -1,20 +1,12 @@
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
 import { AccountForm } from '@/components/accounts/AccountForm';
-import { 
-  PageHeader, 
-  PageHeaderDescription, 
-  PageHeaderHeading 
-} from '@/components/page-header';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-
-export const metadata: Metadata = {
-  title: 'Create Account | Qbit Accounting',
-  description: 'Create a new account in your chart of accounts',
-};
 
 export default function NewAccountPage() {
   // In a real app, this would be a server action or API call
@@ -32,12 +24,7 @@ export default function NewAccountPage() {
             Back to Accounts
           </Button>
         </Link>
-        <PageHeader>
-          <PageHeaderHeading>Create New Account</PageHeaderHeading>
-          <PageHeaderDescription>
-            Add a new account to your chart of accounts
-          </PageHeaderDescription>
-        </PageHeader>
+        <PageHeader title="Create New Account" description="Add a new account to your chart of accounts" />
       </div>
 
       <Card>

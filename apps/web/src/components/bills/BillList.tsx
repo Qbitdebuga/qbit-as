@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bill, BillStatus } from '@qbit-accounting/shared-types';
-import { BillsApiClient } from '@qbit-accounting/api-client';
+import { billsClient } from '@qbit-accounting/api-client';
 import { useAuth } from '@/hooks/useAuth';
+import { setupAuthForClient } from '@/utils/auth-helpers';
 import { 
   Table, 
   TableBody, 
@@ -45,10 +46,8 @@ interface BillListProps {
   vendorId?: string;
 }
 
-const billsApiClient = new BillsApiClient();
-
 export default function BillList({ status, vendorId }: BillListProps) {
-  const { user, token } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,11 +60,11 @@ export default function BillList({ status, vendorId }: BillListProps) {
   const [toDate, setToDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
-    if (token) {
-      billsApiClient.setAuthToken(token);
+    if (isAuthenticated) {
+      setupAuthForClient(billsClient);
       fetchBills();
     }
-  }, [token, status, vendorId, page, limit, search, fromDate, toDate]);
+  }, [isAuthenticated, status, vendorId, page, limit, search, fromDate, toDate]);
 
   const fetchBills = async () => {
     try {
@@ -93,7 +92,7 @@ export default function BillList({ status, vendorId }: BillListProps) {
         params.toDate = format(toDate, 'yyyy-MM-dd');
       }
 
-      const response = await billsApiClient.getBills(params);
+      const response = await billsClient.getBills(params);
       setBills(response.data);
       setTotal(response.total);
     } catch (err) {
@@ -118,8 +117,9 @@ export default function BillList({ status, vendorId }: BillListProps) {
       [BillStatus.PENDING]: { variant: 'secondary', label: 'Pending' },
       [BillStatus.APPROVED]: { variant: 'default', label: 'Approved' },
       [BillStatus.PAID]: { variant: 'success', label: 'Paid' },
-      [BillStatus.PARTIALLY_PAID]: { variant: 'secondary', label: 'Partially Paid' },
+      [BillStatus.PARTIAL]: { variant: 'secondary', label: 'Partially Paid' },
       [BillStatus.OVERDUE]: { variant: 'destructive', label: 'Overdue' },
+      [BillStatus.VOID]: { variant: 'outline', label: 'Void' },
       [BillStatus.CANCELLED]: { variant: 'outline', label: 'Cancelled' },
     };
 
@@ -157,14 +157,14 @@ export default function BillList({ status, vendorId }: BillListProps) {
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <DatePicker
             placeholder="From date"
-            date={fromDate}
-            onDateChange={setFromDate}
+            value={fromDate}
+            onChange={(date) => setFromDate(date)}
             className="w-full sm:w-auto"
           />
           <DatePicker
             placeholder="To date"
-            date={toDate}
-            onDateChange={setToDate}
+            value={toDate}
+            onChange={(date) => setToDate(date)}
             className="w-full sm:w-auto"
           />
           <Select value={limit.toString()} onValueChange={(val) => setLimit(parseInt(val))}>

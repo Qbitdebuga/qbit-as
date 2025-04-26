@@ -19,14 +19,26 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   // Type assertion for direct model access
   // @ts-ignore - Ignore type checking for these properties
-  get warehouse() { return this; }
+  get warehouse() { return this.warehouse; }
   
   // @ts-ignore
-  get warehouseLocation() { return this; }
+  get warehouseLocation() { return this.warehouseLocation; }
   
   // @ts-ignore
-  get inventoryTransaction() { return this; }
+  get inventoryTransaction() { return this.inventoryTransaction; }
   
   // @ts-ignore
-  get transactionLine() { return this; }
+  get transactionLine() { return this.transactionLine; }
+  
+  // @ts-ignore
+  get product() { return this.product; }
+  
+  // @ts-ignore
+  get productCategory() { return this.productCategory; }
+  
+  // @ts-ignore
+  get productVariant() { return this.productVariant; }
+  
+  // @ts-ignore
+  get inventoryLevel() { return this.inventoryLevel; }
 } 

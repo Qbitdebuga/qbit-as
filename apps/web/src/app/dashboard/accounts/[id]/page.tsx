@@ -3,10 +3,8 @@ import { Metadata } from 'next';
 import { AccountDetail } from '@/components/accounts/AccountDetail';
 import { notFound } from 'next/navigation';
 
-interface AccountDetailPageProps {
-  params: {
-    id: string;
-  };
+type Props = {
+  params: { id: string }
 }
 
 export const metadata: Metadata = {
@@ -51,7 +49,7 @@ const accounts = [
   },
 ];
 
-export default function AccountDetailPage({ params }: AccountDetailPageProps) {
+export default function AccountDetailPage({ params }: Props) {
   // Find the account by ID (in a real app, this would be an API call)
   const account = accounts.find((acc) => acc.id === params.id);
 

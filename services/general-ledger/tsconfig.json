@@ -20,8 +20,6 @@
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": false,
     "paths": {
-      "shared-types": ["../../packages/shared-types/src"],
-      "shared-types/*": ["../../packages/shared-types/src/*"],
       "@qbit/shared-types": ["../../packages/shared-types/src"],
       "@qbit/shared-types/*": ["../../packages/shared-types/src/*"]
     }

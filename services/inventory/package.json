@@ -1,5 +1,5 @@
 {
-  "name": "inventory",
+  "name": "@qbit/inventory",
   "version": "0.0.1",
   "description": "Inventory Management microservice for Qbit Accounting System",
   "author": "Qbit Team",

@@ -1,5 +1,5 @@
 {
-  "name": "banking-service",
+  "name": "@qbit/banking",
   "version": "0.1.0",
   "description": "Banking & Reconciliation Microservice for QBit Accounting System",
   "author": "QBit Dev Team",

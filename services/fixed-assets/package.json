@@ -1,5 +1,5 @@
 {
-  "name": "fixed-assets",
+  "name": "@qbit/fixed-assets",
   "version": "0.0.1",
   "description": "Fixed Assets service for Qbit Accounting System",
   "author": "",

@@ -1,9 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
-import { User } from 'api-client';
+import React, { createContext, useContext, ReactNode } from 'react';
+import { useAuth as useAuthHook } from '@/hooks/useAuth';
+import { UserDto as User } from '@qbit/shared-types';
 
 interface AuthContextType {
   user: User | null;
@@ -17,7 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const auth = useAuth();
+  const auth = useAuthHook();
 
   return (
     <AuthContext.Provider value={auth}>
@@ -32,4 +31,7 @@ export function useAuthContext() {
     throw new Error('useAuthContext must be used within an AuthProvider');
   }
   return context;
-} 
+}
+
+// Re-export useAuth hook for backward compatibility
+export { useAuthHook as useAuth }; 

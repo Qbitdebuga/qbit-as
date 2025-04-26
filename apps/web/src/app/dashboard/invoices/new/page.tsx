@@ -1,14 +1,23 @@
-import InvoiceForm from '@/components/invoices/InvoiceForm';
+'use client';
 
-export const metadata = {
-  title: 'Create Invoice | Qbit Accounting',
-  description: 'Create a new invoice',
-};
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import InvoiceForm from '@/components/invoices/InvoiceForm';
+import { isUserAuthenticated } from '@/utils/auth-helpers';
 
 export default function NewInvoicePage() {
+  const router = useRouter();
+
+  // Check if user is authenticated
+  useEffect(() => {
+    if (!isUserAuthenticated()) {
+      router.push('/login');
+    }
+  }, [router]);
+
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <h1 className="text-3xl font-bold">Create New Invoice</h1>
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Create New Invoice</h1>
       <InvoiceForm />
     </div>
   );

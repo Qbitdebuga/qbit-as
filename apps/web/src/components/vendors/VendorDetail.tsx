@@ -17,7 +17,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { formatDate, formatCurrency } from '@/utils/date';
+import { formatDate } from '@/utils/formatters';
+import { formatCurrency } from '@/utils/formatters';
 import { FileEdit, Trash2 } from 'lucide-react';
 
 interface VendorDetailProps {

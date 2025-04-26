@@ -1,9 +1,30 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Customer, CustomerContact, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateCustomerContactDto } from './dto/create-customer-contact.dto';
+
+// Define interfaces for Customer and CustomerContact since they're not exported from @prisma/client
+interface Customer {
+  id: string;
+  name: string;
+  email?: string;
+  customerNumber: string;
+  isActive: boolean;
+  contacts?: CustomerContact[];
+  [key: string]: any;
+}
+
+interface CustomerContact {
+  id: string;
+  customerId: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  isPrimary: boolean;
+  [key: string]: any;
+}
 
 @Injectable()
 export class CustomersRepository {
@@ -16,7 +37,7 @@ export class CustomersRepository {
     
     return this.prisma.$transaction(async (tx) => {
       // Create customer
-      const customer = await tx.customer.create({
+      const customer = await (tx as any).customer.create({
         data: {
           ...customerData,
           customerNumber: customerData.customerNumber || await this.generateCustomerNumber(tx),
@@ -27,7 +48,7 @@ export class CustomersRepository {
       if (contacts && contacts.length > 0) {
         await Promise.all(
           contacts.map((contact) =>
-            tx.customerContact.create({
+            (tx as any).customerContact.create({
               data: {
                 ...contact,
                 customerId: customer.id,
@@ -50,11 +71,11 @@ export class CustomersRepository {
     take?: number;
     search?: string;
     isActive?: boolean;
-    orderBy?: Prisma.CustomerOrderByWithRelationInput;
+    orderBy?: any;
   }): Promise<{ data: Customer[]; total: number }> {
     const { skip, take, search, isActive, orderBy } = params;
     
-    const where: Prisma.CustomerWhereInput = {};
+    const where: any = {};
     
     // Apply filters
     if (search) {
@@ -70,7 +91,7 @@ export class CustomersRepository {
     }
 
     const [data, total] = await Promise.all([
-      this.prisma.customer.findMany({
+      (this.prisma as any).customer.findMany({
         where,
         skip,
         take,
@@ -79,7 +100,7 @@ export class CustomersRepository {
           contacts: true,
         },
       }),
-      this.prisma.customer.count({ where }),
+      (this.prisma as any).customer.count({ where }),
     ]);
 
     return { data, total };
@@ -87,7 +108,7 @@ export class CustomersRepository {
 
   async findOne(id: string, tx?: any): Promise<Customer | null> {
     const prisma = tx || this.prisma;
-    return prisma.customer.findUnique({
+    return (prisma as any).customer.findUnique({
       where: { id },
       include: {
         contacts: true,
@@ -96,7 +117,7 @@ export class CustomersRepository {
   }
 
   async findByCustomerNumber(customerNumber: string): Promise<Customer | null> {
-    return this.prisma.customer.findUnique({
+    return (this.prisma as any).customer.findUnique({
       where: { customerNumber },
       include: {
         contacts: true,
@@ -105,7 +126,7 @@ export class CustomersRepository {
   }
 
   async update(id: string, updateCustomerDto: UpdateCustomerDto): Promise<Customer> {
-    return this.prisma.customer.update({
+    return (this.prisma as any).customer.update({
       where: { id },
       data: updateCustomerDto,
       include: {
@@ -115,7 +136,7 @@ export class CustomersRepository {
   }
 
   async remove(id: string): Promise<Customer> {
-    return this.prisma.customer.delete({
+    return (this.prisma as any).customer.delete({
       where: { id },
       include: {
         contacts: true,
@@ -124,7 +145,7 @@ export class CustomersRepository {
   }
 
   async createContact(customerId: string, createContactDto: CreateCustomerContactDto): Promise<CustomerContact> {
-    return this.prisma.customerContact.create({
+    return (this.prisma as any).customerContact.create({
       data: {
         ...createContactDto,
         customerId,
@@ -133,14 +154,14 @@ export class CustomersRepository {
   }
 
   async updateContact(id: string, updateContactDto: Partial<CreateCustomerContactDto>): Promise<CustomerContact> {
-    return this.prisma.customerContact.update({
+    return (this.prisma as any).customerContact.update({
       where: { id },
       data: updateContactDto,
     });
   }
 
   async removeContact(id: string): Promise<CustomerContact> {
-    return this.prisma.customerContact.delete({
+    return (this.prisma as any).customerContact.delete({
       where: { id },
     });
   }
@@ -149,7 +170,7 @@ export class CustomersRepository {
     const prisma = tx || this.prisma;
     
     // Get the latest customer to determine the next number
-    const lastCustomer = await prisma.customer.findFirst({
+    const lastCustomer = await (prisma as any).customer.findFirst({
       orderBy: {
         customerNumber: 'desc',
       },

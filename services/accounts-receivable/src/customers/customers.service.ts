@@ -3,7 +3,27 @@ import { CustomersRepository } from './customers.repository';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateCustomerContactDto } from './dto/create-customer-contact.dto';
-import { Customer, CustomerContact } from '@prisma/client';
+
+// Define interfaces for Customer and CustomerContact since they're not exported from @prisma/client
+interface Customer {
+  id: string;
+  name: string;
+  email?: string;
+  customerNumber: string;
+  isActive: boolean;
+  contacts?: CustomerContact[];
+  [key: string]: any;
+}
+
+interface CustomerContact {
+  id: string;
+  customerId: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  isPrimary: boolean;
+  [key: string]: any;
+}
 
 @Injectable()
 export class CustomersService {

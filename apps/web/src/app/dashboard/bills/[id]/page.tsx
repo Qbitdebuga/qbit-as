@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Bill, BillStatus } from '@qbit-accounting/shared-types';
-import { BillsApiClient } from '@qbit-accounting/api-client';
+import { billsClient } from '@qbit-accounting/api-client';
 import { useAuth } from '@/hooks/useAuth';
+import { setupAuthForClient } from '@/utils/auth-helpers';
 import BillDetail from '@/components/bills/BillDetail';
 import { 
   ArrowLeft, 
@@ -38,29 +39,27 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-const billsApiClient = new BillsApiClient();
-
 export default function BillDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [bill, setBill] = useState<Bill | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const id = params.id as string;
+  const id = params ? params.id as string : '';
 
   useEffect(() => {
-    if (token && id) {
-      billsApiClient.setAuthToken(token);
+    if (isAuthenticated && id) {
+      setupAuthForClient(billsClient);
       fetchBill();
     }
-  }, [token, id]);
+  }, [isAuthenticated, id]);
 
   const fetchBill = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await billsApiClient.getBillById(id);
+      const data = await billsClient.getBillById(id);
       setBill(data);
     } catch (err) {
       console.error('Error fetching bill:', err);
@@ -73,7 +72,7 @@ export default function BillDetailPage() {
   const handleApprove = async () => {
     try {
       setLoading(true);
-      await billsApiClient.approveBill(id);
+      await billsClient.approveBill(id);
       await fetchBill();
       toast({
         title: 'Bill Approved',
@@ -94,7 +93,7 @@ export default function BillDetailPage() {
   const handleCancel = async () => {
     try {
       setLoading(true);
-      await billsApiClient.cancelBill(id);
+      await billsClient.cancelBill(id);
       await fetchBill();
       toast({
         title: 'Bill Cancelled',
@@ -115,7 +114,7 @@ export default function BillDetailPage() {
   const canApprove = bill && [BillStatus.DRAFT, BillStatus.PENDING].includes(bill.status as BillStatus);
   const canCancel = bill && bill.status !== BillStatus.CANCELLED;
   const canEdit = bill && [BillStatus.DRAFT, BillStatus.PENDING].includes(bill.status as BillStatus);
-  const canPay = bill && [BillStatus.APPROVED, BillStatus.PARTIALLY_PAID].includes(bill.status as BillStatus);
+  const canPay = bill && [BillStatus.APPROVED, BillStatus.PARTIAL].includes(bill.status as BillStatus);
 
   if (loading) {
     return (

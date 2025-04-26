@@ -1,11 +1,8 @@
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
 import { JournalEntryList } from '@/components/journal-entries/JournalEntryList';
-import { 
-  PageHeader, 
-  PageHeaderDescription, 
-  PageHeaderHeading 
-} from '@/components/page-header';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -161,11 +158,6 @@ const journalEntries = [
   }
 ];
 
-export const metadata: Metadata = {
-  title: 'Journal Entries | Qbit Accounting',
-  description: 'Manage your journal entries',
-};
-
 export default function JournalEntriesPage() {
   // In a real app, these would call the API
   const handleDelete = (id: string) => {
@@ -183,12 +175,10 @@ export default function JournalEntriesPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex justify-between items-center">
-        <PageHeader>
-          <PageHeaderHeading>Journal Entries</PageHeaderHeading>
-          <PageHeaderDescription>
-            Record and manage your financial transactions
-          </PageHeaderDescription>
-        </PageHeader>
+        <PageHeader 
+          title="Journal Entries" 
+          description="Record and manage your financial transactions" 
+        />
         <Link href="/dashboard/journal-entries/new" passHref>
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />

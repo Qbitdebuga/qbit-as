@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, AuthResponse } from 'api-client';
+import { User, AuthResponse } from '@qbit/api-client';
 import { authClient } from '@/utils/auth';
 
 interface UseAuthReturn {

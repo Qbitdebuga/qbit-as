@@ -21,7 +21,7 @@
       "@app/*": ["src/*"],
       "@config/*": ["src/config/*"],
       "@prisma/*": ["src/prisma/*"],
-      "@shared/*": ["../../packages/shared-types/src/*"]
+      "@qbit/shared-types/*": ["../../packages/shared-types/src/*"]
     }
   }
 } 

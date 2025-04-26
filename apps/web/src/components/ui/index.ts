@@ -5,6 +5,7 @@ export { Textarea } from "@/components/ui/textarea";
 export { Switch } from "@/components/ui/switch";
 export { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+export { Separator } from "@/components/ui/separator";
 
 // Export new components
 export { 
