@@ -4,7 +4,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { useAuthContext } from '@/contexts/auth-context';
+import { useAuth } from '@/contexts/auth-context';
 
 interface SidebarLinkProps {
   href: string;
@@ -25,7 +25,7 @@ const SidebarLink = ({ href, label, active }: SidebarLinkProps) => (
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const { user, logout } = useAuthContext();
+  const { user, logout } = useAuth();
   // Use client-side only state for the date to avoid hydration mismatch
   const [currentDate, setCurrentDate] = useState<string>('');
 

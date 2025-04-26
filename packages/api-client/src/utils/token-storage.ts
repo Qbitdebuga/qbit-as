@@ -14,7 +14,7 @@ const setCookie = (name: string, value: string, days = 7) => {
 const getCookie = (name: string): string | null => {
   if (typeof document === 'undefined') return null;
   const match = document.cookie.match(new RegExp(`(^|;\\s*)(${name})=([^;]*)`));
-  return match ? match[3] : null;
+  return match ? (match[3] || null) : null;
 };
 
 // Helper to delete cookie

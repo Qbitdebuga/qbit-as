@@ -1,0 +1,41 @@
+{
+  "name": "qbit-accounting-system",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prisma:seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts"
+  },
+  "devDependencies": {
+    "eslint": "8.57.1",
+    "prettier": "3.5.3",
+    "ts-node": "10.9.2",
+    "tsconfig": "7.0.0",
+    "turbo": "2.5.2",
+    "typescript": "5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "yarn@1.22.19",
+  "dependencies": {
+    "@types/bcrypt": "5.0.2",
+    "bcrypt": "5.1.1",
+    "class-variance-authority": "0.7.1",
+    "next": "15.3.1",
+    "node-fetch": "3.3.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  }
+}
