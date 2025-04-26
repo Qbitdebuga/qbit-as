@@ -385,7 +385,7 @@
   - **Step Dependencies**: None
   - **User Instructions**: Enable GitHub Actions in repository settings
 
-- [ ] Step 20: Set up CD workflow for Kubernetes deployment
+- [x] Step 20: Set up CD workflow for Kubernetes deployment
   - **Task**: Implement continuous deployment to Kubernetes
   - **Files**:
     - `.github/workflows/deploy.yaml`: Deployment workflow
@@ -396,13 +396,14 @@
   - **Step Dependencies**: Step 19
   - **User Instructions**: Set up necessary GitHub secrets for Kubernetes deployment
 
-- [ ] Step 21: Implement semantic versioning and Changesets
+- [x] Step 21: Implement semantic versioning and Changesets
   - **Task**: Set up semantic versioning with Changesets
   - **Files**:
-    - `.changeset/config.json`: Changesets configuration
-    - `.github/workflows/release.yaml`: Release workflow
-    - `package.json`: Update version scripts
-    - `.github/PULL_REQUEST_TEMPLATE.md`: PR template with changeset reminder
+    - `.changeset/config.json`: Changesets configuration ✅
+    - `.github/workflows/release.yaml`: Release workflow ✅
+    - `package.json`: Update version scripts ✅
+    - `.github/PULL_REQUEST_TEMPLATE.md`: PR template with changeset reminder ✅
+    - `docs/versioning.md`: Documentation for using Changesets ✅
   - **Step Dependencies**: None
   - **User Instructions**: Install Changesets CLI: `yarn global add @changesets/cli`
 
