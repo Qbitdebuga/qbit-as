@@ -1,15 +1,106 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "tasks": {
+  "globalEnv": [
+    "NODE_ENV", 
+    "CI", 
+    "VERCEL", 
+    "DATABASE_URL", 
+    "API_URL", 
+    "AUTH_SECRET", 
+    "NEXT_PUBLIC_API_URL"
+  ],
+  "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": [
+        "dist/**", 
+        ".next/**", 
+        "!.next/cache/**", 
+        "build/**", 
+        "public/build/**", 
+        "lib/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "API_URL"
+      ],
+      "cache": true
     },
-    "lint": {},
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": [
+        "src/**/*.tsx", 
+        "src/**/*.ts", 
+        "test/**/*.ts", 
+        "test/**/*.tsx",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "jest.config.*"
+      ],
+      "env": ["NODE_ENV", "TEST_DATABASE_URL"],
+      "cache": true
+    },
+    "lint": {
+      "outputs": [".eslintcache"],
+      "inputs": [
+        "src/**/*.tsx", 
+        "src/**/*.ts",
+        "**/*.js",
+        "**/*.jsx",
+        ".eslintrc.*"
+      ],
+      "cache": true
+    },
+    "format": {
+      "outputs": [],
+      "inputs": [
+        "src/**/*.tsx", 
+        "src/**/*.ts",
+        "**/*.js",
+        "**/*.jsx"
+      ],
+      "cache": true
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**/*.tsx", 
+        "src/**/*.ts", 
+        "**/*.d.ts", 
+        "tsconfig.json"
+      ],
+      "cache": true
+    },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "clean": {
+      "cache": false
+    },
+    "db:generate": {
+      "cache": false,
+      "inputs": ["prisma/schema.prisma"],
+      "outputs": ["node_modules/.prisma/**"]
+    },
+    "db:migrate": {
+      "cache": false,
+      "inputs": ["prisma/schema.prisma", "prisma/migrations/**"]
+    },
+    "db:push": {
+      "cache": false,
+      "inputs": ["prisma/schema.prisma"]
+    },
+    "deploy": {
+      "dependsOn": ["build", "test", "lint", "type-check"],
+      "outputs": [],
+      "cache": false
     }
+  },
+  "remoteCache": {
+    "signature": true
   }
 } 
