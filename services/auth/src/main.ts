@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+import { GlobalExceptionFilter } from '@qbit/errors';
 
 async function bootstrap() {
   // Create the application instance
@@ -40,6 +41,9 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  // Add global exception filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   // Set up Swagger documentation
   const config = new DocumentBuilder()

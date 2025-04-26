@@ -1,9 +1,134 @@
+/**
+ * Account-related models for the QBit system
+ */
+
+/**
+ * Account types in the general ledger
+ */
 export enum AccountType {
   ASSET = 'ASSET',
   LIABILITY = 'LIABILITY',
   EQUITY = 'EQUITY',
   REVENUE = 'REVENUE',
-  EXPENSE = 'EXPENSE',
+  EXPENSE = 'EXPENSE'
+}
+
+/**
+ * Account entity representing a GL account
+ */
+export interface Account {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: AccountType;
+  isActive: boolean;
+  parentAccountId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  balance?: number;
+}
+
+/**
+ * Account DTO for API responses
+ */
+export interface AccountDto {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: AccountType;
+  isActive: boolean;
+  parentAccountId?: string;
+  balance?: number;
+  children?: AccountDto[];
+}
+
+/**
+ * DTO for creating a new account
+ */
+export interface CreateAccountDto {
+  code: string;
+  name: string;
+  description?: string;
+  type: AccountType;
+  isActive?: boolean;
+  parentAccountId?: string;
+}
+
+/**
+ * DTO for updating an existing account
+ */
+export interface UpdateAccountDto {
+  code?: string;
+  name?: string;
+  description?: string;
+  type?: AccountType;
+  isActive?: boolean;
+  parentAccountId?: string;
+}
+
+/**
+ * Transaction entity representing a financial transaction
+ */
+export interface Transaction {
+  id: string;
+  date: Date;
+  description: string;
+  reference?: string;
+  entries: TransactionEntry[];
+  createdAt: Date;
+  updatedAt: Date;
+  createdById: string;
+  status: TransactionStatus;
+}
+
+/**
+ * Transaction entry for a line in a transaction
+ */
+export interface TransactionEntry {
+  id: string;
+  transactionId: string;
+  accountId: string;
+  description?: string;
+  debit: number;
+  credit: number;
+}
+
+/**
+ * Transaction statuses
+ */
+export enum TransactionStatus {
+  DRAFT = 'DRAFT',
+  POSTED = 'POSTED',
+  VOIDED = 'VOIDED'
+}
+
+/**
+ * Transaction DTO for API responses
+ */
+export interface TransactionDto {
+  id: string;
+  date: Date;
+  description: string;
+  reference?: string;
+  entries: TransactionEntryDto[];
+  createdAt: Date;
+  createdBy?: string;
+  status: TransactionStatus;
+}
+
+/**
+ * Transaction entry DTO
+ */
+export interface TransactionEntryDto {
+  id: string;
+  accountId: string;
+  accountCode?: string;
+  accountName?: string;
+  description?: string;
+  debit: number;
+  credit: number;
 }
 
 export enum AccountSubType {
@@ -27,39 +152,6 @@ export enum AccountSubType {
   OTHER_INCOME = 'OTHER_INCOME',
   TAX_EXPENSE = 'TAX_EXPENSE',
   OTHER = 'OTHER',
-}
-
-export interface Account {
-  id: string;
-  code: string;
-  name: string;
-  description?: string;
-  type: AccountType;
-  subtype: AccountSubType;
-  isActive: boolean;
-  parentId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface CreateAccountDto {
-  code: string;
-  name: string;
-  description?: string;
-  type: AccountType;
-  subtype: AccountSubType;
-  isActive?: boolean;
-  parentId?: string;
-}
-
-export interface UpdateAccountDto {
-  code?: string;
-  name?: string;
-  description?: string;
-  type?: AccountType;
-  subtype?: AccountSubType;
-  isActive?: boolean;
-  parentId?: string;
 }
 
 export interface AccountWithHierarchy extends Account {

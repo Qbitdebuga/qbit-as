@@ -2,51 +2,25 @@
  * Auth Service Interfaces
  * Define the contracts for Auth Service communication
  */
-
-export interface UserDto {
-  id: string;
-  email: string;
-  name: string;
-  roles: string[];
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateUserDto {
-  email: string;
-  password: string;
-  name: string;
-  roles?: string[];
-}
-
-export interface UpdateUserDto {
-  email?: string;
-  name?: string;
-  roles?: string[];
-  isActive?: boolean;
-}
-
-export interface LoginDto {
-  email: string;
-  password: string;
-}
+import { 
+  UserDto, 
+  CreateUserDto, 
+  UpdateUserDto, 
+  RoleDto, 
+  CreateRoleDto, 
+  UpdateRoleDto 
+} from '../models/user';
+import { 
+  LoginDto, 
+  RefreshTokenDto, 
+  ServiceTokenRequestDto 
+} from '../dto/auth.dto';
 
 export interface TokenResponseDto {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
   userId: string;
-}
-
-export interface RefreshTokenDto {
-  refreshToken: string;
-}
-
-export interface ServiceTokenRequestDto {
-  serviceId: string;
-  serviceName: string;
-  scopes: string[];
 }
 
 export interface ServiceTokenResponseDto {
@@ -58,27 +32,6 @@ export interface ValidateTokenResponseDto {
   valid: boolean;
   userId?: string;
   roles?: string[];
-}
-
-export interface RoleDto {
-  id: string;
-  name: string;
-  description?: string;
-  permissions: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateRoleDto {
-  name: string;
-  description?: string;
-  permissions: string[];
-}
-
-export interface UpdateRoleDto {
-  name?: string;
-  description?: string;
-  permissions?: string[];
 }
 
 /**

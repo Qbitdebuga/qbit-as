@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { GlobalExceptionFilter } from '@qbit/errors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,9 @@ async function bootstrap() {
       },
     }),
   );
+
+  // Add global exception filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   // Enable CORS
   app.enableCors();

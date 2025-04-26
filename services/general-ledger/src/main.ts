@@ -7,6 +7,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+import { GlobalExceptionFilter } from '@qbit/errors';
 
 // Fallback logger in case Winston is not available
 class FallbackLogger implements LoggerService {
@@ -70,6 +71,9 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+  
+  // Add global exception filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
   
   // Set up Swagger documentation
   const config = new DocumentBuilder()

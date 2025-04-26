@@ -166,7 +166,7 @@
     - `packages/auth-common/src/interfaces/jwt-payload.interface.ts`: JWT payload
     - `packages/auth-common/src/strategies/jwt.strategy.ts`: Reusable JWT strategy
   - **Step Dependencies**: Step 1
-  - **User Instructions**: After generation, run `cd packages/auth-common && npm install && npm run build`
+  - **User Instructions**: After generation, run `cd packages/auth-common && yarn && yarn build`
 
 - [x] Step 3: Update frontend for cookie-based authentication (Partially implemented)
   - **Task**: Migrate the Next.js frontend from localStorage token storage to cookie-based authentication
@@ -205,98 +205,98 @@
 
 ## Stage 2: Structural Improvements
 
-- [ ] Step 6: Refactor shared types package
+- [x] Step 6: Refactor shared types package (Completed)
   - **Task**: Create a dedicated package for shared types and interfaces
   - **Files**:
-    - `packages/types/package.json`: Package definition
-    - `packages/types/tsconfig.json`: TypeScript configuration
-    - `packages/types/src/index.ts`: Entry point
-    - `packages/types/src/models/user.ts`: User model
-    - `packages/types/src/models/account.ts`: Account model
-    - `packages/types/src/models/transaction.ts`: Transaction model
-    - `packages/types/src/dto/auth.dto.ts`: Auth DTOs
-    - `packages/types/src/dto/api-responses.dto.ts`: API response DTOs
+    - `packages/shared-types/package.json`: Package definition ✅
+    - `packages/shared-types/tsconfig.json`: TypeScript configuration ✅
+    - `packages/shared-types/src/index.ts`: Entry point ✅
+    - `packages/shared-types/src/models/user.ts`: User model ✅
+    - `packages/shared-types/src/models/account.ts`: Account model ✅
+    - `packages/shared-types/src/models/transaction.ts`: Already implemented in account model
+    - `packages/shared-types/src/dto/auth.dto.ts`: Auth DTOs ✅
+    - `packages/shared-types/src/dto/api-responses.dto.ts`: API response DTOs ✅
   - **Step Dependencies**: Step 2
-  - **User Instructions**: Run `cd packages/types && npm install && npm run build`
+  - **Status**: Enhanced the existing shared-types package with new models and DTOs. Fixed conflict issues and ensured proper imports.
 
-- [ ] Step 7: Create standardized error package
+- [x] Step 7: Create standardized error package (Completed)
   - **Task**: Implement a shared error handling package
   - **Files**:
-    - `packages/errors/package.json`: Package definition
-    - `packages/errors/tsconfig.json`: TypeScript configuration
-    - `packages/errors/src/index.ts`: Entry point
-    - `packages/errors/src/exceptions/api.exception.ts`: API exceptions
-    - `packages/errors/src/exceptions/business.exception.ts`: Business logic exceptions
-    - `packages/errors/src/filters/global-exception.filter.ts`: NestJS exception filter
-    - `packages/errors/src/interceptors/error-handling.interceptor.ts`: Error interceptor
+    - `packages/errors/package.json`: Package definition ✅
+    - `packages/errors/tsconfig.json`: TypeScript configuration ✅
+    - `packages/errors/src/index.ts`: Entry point ✅
+    - `packages/errors/src/exceptions/api.exception.ts`: API exceptions ✅
+    - `packages/errors/src/exceptions/business.exception.ts`: Business logic exceptions ✅
+    - `packages/errors/src/filters/global-exception.filter.ts`: NestJS exception filter ✅
+    - `packages/errors/src/interceptors/error-handling.interceptor.ts`: Error interceptor ✅
+    - `packages/errors/src/types.ts`: Common error types and interfaces ✅
   - **Step Dependencies**: Step 6
-  - **User Instructions**: Run `cd packages/errors && npm install && npm run build`
+  - **Status**: Created a comprehensive error package with standardized exceptions, global error handling, and utilities. The package provides a centralized way to handle errors across all microservices.
 
-- [ ] Step 8: Create API client package
+- [x] Step 8: Create API client package
   - **Task**: Develop a centralized API client package for frontend and service-to-service communication
   - **Files**:
-    - `packages/api-clients/package.json`: Package definition
-    - `packages/api-clients/tsconfig.json`: TypeScript configuration
-    - `packages/api-clients/src/index.ts`: Entry point
-    - `packages/api-clients/src/base-client.ts`: Base API client
-    - `packages/api-clients/src/auth-client.ts`: Auth service client
-    - `packages/api-clients/src/accounts-client.ts`: Accounts service client
-    - `packages/api-clients/src/invoices-client.ts`: Invoices service client
+    - `packages/api-client/src/base-client.ts`: Base API client ✅
+    - `packages/api-client/src/service-client.ts`: Service-to-service client ✅
+    - `packages/api-client/src/accounts/accounts-client.ts`: Enhanced accounts client ✅
+    - `packages/api-client/src/index.ts`: Updated exports ✅
+    - `packages/api-client/README.md`: Updated documentation ✅
   - **Step Dependencies**: Step 7
-  - **User Instructions**: Run `cd packages/api-clients && npm install && npm run build`
+  - **Status**: Enhanced the existing API client package with a new BaseApiClient, ServiceApiClient, and improved TypeScript interfaces. Added support for interceptors, CSRF protection, and service-to-service authentication.
 
-- [ ] Step 9: Create utilities package
+- [x] Step 9: Create utilities package
   - **Task**: Create a shared utilities package
   - **Files**:
-    - `packages/utils/package.json`: Package definition
-    - `packages/utils/tsconfig.json`: TypeScript configuration
-    - `packages/utils/src/index.ts`: Entry point
-    - `packages/utils/src/formatters/date.ts`: Date formatting utilities
-    - `packages/utils/src/formatters/currency.ts`: Currency formatting
-    - `packages/utils/src/validators/common.ts`: Common validators
-    - `packages/utils/src/crypto/hash.ts`: Hashing utilities
+    - `packages/utils/package.json`: Package definition ✅
+    - `packages/utils/tsconfig.json`: TypeScript configuration ✅
+    - `packages/utils/src/index.ts`: Entry point ✅
+    - `packages/utils/src/formatters/date.ts`: Date formatting utilities ✅
+    - `packages/utils/src/formatters/currency.ts`: Currency formatting ✅
+    - `packages/utils/src/validators/common.ts`: Common validators ✅
+    - `packages/utils/src/crypto/hash.ts`: Hashing utilities ✅
+    - `packages/utils/README.md`: Documentation ✅
   - **Step Dependencies**: None
-  - **User Instructions**: Run `cd packages/utils && npm install && npm run build`
+  - **Status**: Created a comprehensive utilities package with formatters, validators, and cryptography utilities. The package provides a centralized way to handle common tasks across the application.
 
-- [ ] Step 10: Set up NATS messaging infrastructure
+- [x] Step 10: Set up NATS messaging infrastructure
   - **Task**: Configure NATS for event-driven communication between microservices
   - **Files**:
-    - `docker-compose.yml`: Add NATS service
-    - `k8s/nats/nats-deployment.yaml`: NATS Kubernetes deployment
-    - `k8s/nats/nats-service.yaml`: NATS Kubernetes service
-    - `packages/events/package.json`: Events package
-    - `packages/events/src/index.ts`: Entry point
-    - `packages/events/src/clients/nats-client.ts`: NATS client
-    - `packages/events/src/publishers/base-publisher.ts`: Base publisher
-    - `packages/events/src/listeners/base-listener.ts`: Base listener
-  - **Step Dependencies**: None
-  - **User Instructions**: Run `docker-compose up -d nats` to start NATS locally
+    - `docker-compose.yml`: Add NATS service ✅
+    - `k8s/nats/nats-deployment.yaml`: NATS Kubernetes deployment ✅
+    - `k8s/nats/nats-service.yaml`: NATS Kubernetes service ✅
+    - `packages/events/package.json`: Events package ✅
+    - `packages/events/src/index.ts`: Entry point ✅
+    - `packages/events/src/clients/nats-client.ts`: NATS client ✅
+    - `packages/events/src/publishers/base-publisher.ts`: Base publisher ✅
+    - `packages/events/src/listeners/base-listener.ts`: Base listener ✅
+  - **Status**: Completed. NATS service configured in both Docker Compose and Kubernetes. Created events package with NATS client, base publisher, and base listener implementations.
 
-- [ ] Step 11: Implement event publishers and listeners
+- [x] Step 11: Implement event publishers and listeners
   - **Task**: Create event publishers and listeners for key business events
   - **Files**:
-    - `packages/events/src/events/user-events.ts`: User-related events
-    - `packages/events/src/events/account-events.ts`: Account-related events
-    - `packages/events/src/events/transaction-events.ts`: Transaction events
-    - `packages/events/src/publishers/user-publishers.ts`: User publishers
-    - `packages/events/src/publishers/account-publishers.ts`: Account publishers
-    - `packages/events/src/listeners/user-listeners.ts`: User listeners
-    - `packages/events/src/listeners/account-listeners.ts`: Account listeners
-  - **Step Dependencies**: Step 10
-  - **User Instructions**: None
+    - `packages/events/src/events/user-events.ts`: User-related events ✅
+    - `packages/events/src/events/account-events.ts`: Account-related events ✅
+    - `packages/events/src/events/transaction-events.ts`: Transaction events ✅
+    - `packages/events/src/publishers/user-publishers.ts`: User publishers ✅
+    - `packages/events/src/publishers/account-publishers.ts`: Account publishers ✅
+    - `packages/events/src/publishers/transaction-publishers.ts`: Transaction publishers ✅
+    - `packages/events/src/listeners/user-listeners.ts`: User listeners ✅
+    - `packages/events/src/listeners/account-listeners.ts`: Account listeners ✅
+    - `packages/events/src/listeners/transaction-listeners.ts`: Transaction listeners ✅
+  - **Status**: Completed. Created event types, publishers, and listeners for user, account, and transaction events. The events package now provides a complete foundation for implementing event-driven communication between microservices.
 
-- [ ] Step 12: Integrate NestJS global exception filters
+- [x] Step 12: Integrate NestJS global exception filters
   - **Task**: Implement global exception filters in all microservices
   - **Files**:
-    - `services/auth-gateway/src/main.ts`: Add global filters
-    - `services/api-gateway/src/main.ts`: Add global filters
-    - `services/accounts-payable/src/main.ts`: Add global filters
-    - `services/accounts-receivable/src/main.ts`: Add global filters
-    - `services/general-ledger/src/main.ts`: Add global filters
-    - `services/banking/src/main.ts`: Add global filters
-    - `services/reporting/src/main.ts`: Add global filters
+    - `services/auth/src/main.ts`: Add global filters ✅
+    - `services/api-gateway/src/main.ts`: Add global filters ✅
+    - `services/accounts-payable/src/main.ts`: Add global filters ✅
+    - `services/accounts-receivable/src/main.ts`: Add global filters ✅
+    - `services/general-ledger/src/main.ts`: Add global filters ✅
+    - `services/banking/src/main.ts`: Add global filters ✅
+    - `services/reporting/src/main.ts`: Add global filters ✅
   - **Step Dependencies**: Step 7
-  - **User Instructions**: None
+  - **Status**: Completed. Added the GlobalExceptionFilter from the @qbit/errors package to all microservices. This ensures that all errors are consistently formatted across the entire platform, with proper HTTP status codes, standardized error codes, and appropriate error messages. The global exception filter also includes security features to prevent sensitive information leakage in production environments, while providing detailed error information during development.
 
 ## Stage 3: Developer Experience and Observability
 
@@ -304,23 +304,23 @@
   - **Task**: Refactor all Dockerfiles to use multi-stage builds for smaller images
   - **Files**:
     - `Dockerfile`: Root Dockerfile
-    - `services/auth-gateway/Dockerfile`: Auth gateway Dockerfile
+    - `services/auth/Dockerfile`: Auth service Dockerfile
     - `services/api-gateway/Dockerfile`: API gateway Dockerfile
     - `services/accounts-payable/Dockerfile`: Accounts payable Dockerfile
     - `services/accounts-receivable/Dockerfile`: Accounts receivable Dockerfile
     - `services/general-ledger/Dockerfile`: General ledger Dockerfile
   - **Step Dependencies**: None
-  - **User Instructions**: Run `docker build -t qbit-auth-gateway -f services/auth-gateway/Dockerfile .` to test
+  - **User Instructions**: Run `docker build -t qbit-auth -f services/auth/Dockerfile .` to test
 
 - [ ] Step 14: Add Kubernetes health checks
   - **Task**: Implement readiness and liveness probes for all services
   - **Files**:
-    - `k8s/auth-gateway/deployment.yaml`: Update with probes
+    - `k8s/auth/deployment.yaml`: Update with probes
     - `k8s/api-gateway/deployment.yaml`: Update with probes
     - `k8s/accounts-payable/deployment.yaml`: Update with probes
     - `k8s/accounts-receivable/deployment.yaml`: Update with probes
     - `k8s/general-ledger/deployment.yaml`: Update with probes
-    - `services/auth-gateway/src/health/health.controller.ts`: Health endpoint
+    - `services/auth/src/health/health.controller.ts`: Health endpoint
     - `services/api-gateway/src/health/health.controller.ts`: Health endpoint
   - **Step Dependencies**: Step 13
   - **User Instructions**: None
@@ -331,11 +331,11 @@
     - `packages/logging/package.json`: Logging package
     - `packages/logging/src/index.ts`: Entry point
     - `packages/logging/src/logger.service.ts`: Logger service
-    - `services/auth-gateway/src/main.ts`: Integrate logger
+    - `services/auth/src/main.ts`: Integrate logger
     - `services/api-gateway/src/main.ts`: Integrate logger
     - `services/accounts-payable/src/main.ts`: Integrate logger
   - **Step Dependencies**: None
-  - **User Instructions**: Run `cd packages/logging && npm install && npm run build`
+  - **User Instructions**: Run `cd packages/logging && yarn && yarn build`
 
 - [ ] Step 16: Implement OpenTelemetry for distributed tracing
   - **Task**: Add distributed tracing with OpenTelemetry
@@ -343,7 +343,7 @@
     - `packages/tracing/package.json`: Tracing package
     - `packages/tracing/src/index.ts`: Entry point
     - `packages/tracing/src/tracer.ts`: Tracer setup
-    - `services/auth-gateway/src/main.ts`: Integrate tracing
+    - `services/auth/src/main.ts`: Integrate tracing
     - `services/api-gateway/src/main.ts`: Integrate tracing
     - `docker-compose.yml`: Add Jaeger service
   - **Step Dependencies**: Step 15
@@ -363,9 +363,9 @@
 - [ ] Step 18: Enhance backend validation with class-validator
   - **Task**: Enforce DTO validation using class-validator across all services
   - **Files**:
-    - `services/auth-gateway/src/auth/dto/login.dto.ts`: Login DTO
-    - `services/auth-gateway/src/auth/dto/register.dto.ts`: Register DTO
-    - `services/auth-gateway/src/main.ts`: Add validation pipe
+    - `services/auth/src/auth/dto/login.dto.ts`: Login DTO
+    - `services/auth/src/auth/dto/register.dto.ts`: Register DTO
+    - `services/auth/src/main.ts`: Add validation pipe
     - `services/api-gateway/src/main.ts`: Add validation pipe
     - `services/accounts-payable/src/main.ts`: Add validation pipe
   - **Step Dependencies**: None
@@ -403,7 +403,7 @@
     - `package.json`: Update version scripts
     - `.github/PULL_REQUEST_TEMPLATE.md`: PR template with changeset reminder
   - **Step Dependencies**: None
-  - **User Instructions**: Install Changesets CLI: `npm install -g @changesets/cli`
+  - **User Instructions**: Install Changesets CLI: `yarn global add @changesets/cli`
 
 - [ ] Step 22: Optimize Turborepo caching
   - **Task**: Configure Turborepo for optimal build caching
@@ -428,8 +428,8 @@
 
 ## Final Integration
 
-- [ ] Step 24: Integrate all services with the new auth-gateway
-  - **Task**: Update all services to use the centralized auth-gateway
+- [ ] Step 24: Integrate all services with the new auth service
+  - **Task**: Update all services to use the centralized auth service
   - **Files**:
     - `services/api-gateway/src/app.module.ts`: Update auth integration
     - `services/accounts-payable/src/app.module.ts`: Update auth integration
@@ -442,8 +442,8 @@
 - [ ] Step 25: Transition all services to event-driven architecture
   - **Task**: Migrate key services to use NATS for communication
   - **Files**:
-    - `services/auth-gateway/src/events/publishers/user-created-publisher.ts`: Implement publisher
-    - `services/auth-gateway/src/auth/auth.service.ts`: Integrate events
+    - `services/auth/src/events/publishers/user-created-publisher.ts`: Implement publisher
+    - `services/auth/src/auth/auth.service.ts`: Integrate events
     - `services/accounts-payable/src/events/listeners/user-created-listener.ts`: Implement listener
     - `services/accounts-receivable/src/events/listeners/user-created-listener.ts`: Implement listener
     - `services/general-ledger/src/events/listeners/user-created-listener.ts`: Implement listener
