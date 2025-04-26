@@ -20,15 +20,26 @@ export default function BalanceSheetPage() {
     setError(null);
     
     try {
-      const reportsClient = new ReportsClient(client);
-      const result = await reportsClient.generateBalanceSheet({
-        startDate: filters.startDate,
-        endDate: filters.endDate,
-        period: filters.period,
-        comparativePeriod: filters.comparativePeriod,
-        includeZeroBalances: filters.includeZeroBalances
+      // Use the local API route instead of the reportsClient
+      const response = await fetch('/api/general-ledger/financial-statements/balance-sheet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          startDate: filters.startDate,
+          endDate: filters.endDate,
+          period: filters.period,
+          comparativePeriod: filters.comparativePeriod,
+          includeZeroBalances: filters.includeZeroBalances
+        }),
       });
       
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+      
+      const result = await response.json();
       setReport(result);
     } catch (err: any) {
       console.error('Error fetching balance sheet:', err);

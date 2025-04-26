@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 
-export default function LoginPage() {
+// Component to handle search params logic
+function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -54,68 +55,88 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="container flex items-center justify-center min-h-screen py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold text-center">QBit Accounting</CardTitle>
-          <div className="text-center text-sm text-gray-500">Enter your credentials to access your account</div>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  placeholder="name@example.com"
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  required
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <Button
-                className="w-full"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? 'Signing in...' : 'Sign In'}
-              </Button>
+    <Card className="w-full max-w-md">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-3xl font-bold text-center">QBit Accounting</CardTitle>
+        <div className="text-center text-sm text-gray-500">Enter your credentials to access your account</div>
+      </CardHeader>
+      <CardContent>
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="name@example.com"
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <div className="text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-primary hover:underline">
-              Sign up
-            </Link>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+              <Input
+                id="password"
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </Button>
           </div>
-        </CardFooter>
-      </Card>
+        </form>
+      </CardContent>
+      <CardFooter className="flex flex-col space-y-4">
+        <div className="text-center text-sm">
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="text-primary hover:underline">
+            Sign up
+          </Link>
+        </div>
+      </CardFooter>
+    </Card>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function LoginPage() {
+  return (
+    <div className="container flex items-center justify-center min-h-screen py-12">
+      <Suspense fallback={
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold text-center">QBit Accounting</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center">
+              <div className="animate-pulse">Loading...</div>
+            </div>
+          </CardContent>
+        </Card>
+      }>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 } 
