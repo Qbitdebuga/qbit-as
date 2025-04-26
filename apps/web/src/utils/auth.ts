@@ -1,22 +1,25 @@
 'use client';
 
+// Import the authClient directly from the configured module
 import { TokenStorage, AuthClient } from '@qbit/api-client';
 
 // Create a single instance of AuthClient to be used throughout the app
 export const authClient = new AuthClient(process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3002');
 
 /**
- * Check if user is authenticated by examining tokens
+ * Check if user is authenticated
+ * @deprecated Use the useAuth() hook from auth-context.tsx instead
  */
 export function isAuthenticated(): boolean {
-  return TokenStorage.isAuthenticated();
+  return authClient.isAuthenticated();
 }
 
 /**
  * Get user data from storage
+ * @deprecated Use the useAuth() hook from auth-context.tsx instead
  */
 export function getUser() {
-  return TokenStorage.getUser();
+  return authClient.getProfile();
 }
 
 /**
@@ -68,4 +71,9 @@ export function isTokenExpired(token: string): boolean {
   
   const expirationTime = payload.exp * 1000; // Convert to milliseconds
   return Date.now() >= expirationTime;
-} 
+}
+
+/**
+ * These methods are deprecated in favor of using the useAuth() hook
+ * and the utility functions in auth-utils.ts
+ */ 

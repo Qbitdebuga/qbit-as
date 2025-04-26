@@ -25,6 +25,7 @@ export class AuthClient {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(credentials),
+      credentials: 'include', // Include cookies in the request
     });
 
     if (!response.ok) {
@@ -34,8 +35,14 @@ export class AuthClient {
 
     const data = await response.json();
     
-    // Store tokens and user data
-    TokenStorage.setTokens(data.accessToken, data.refreshToken, data.user);
+    // For cookie-based auth we only need to store the user data
+    // The auth tokens are handled by HttpOnly cookies
+    TokenStorage.setUser(data.user);
+    
+    // Store CSRF token if provided
+    if (data.csrfToken) {
+      TokenStorage.setCsrfToken(data.csrfToken);
+    }
     
     return data;
   }
@@ -43,7 +50,25 @@ export class AuthClient {
   /**
    * Logout user
    */
-  logout(): void {
+  async logout(): Promise<void> {
+    // Call the logout endpoint to clear server-side cookies
+    try {
+      const response = await fetch(`${this.apiUrl}/api/v1/auth/logout`, {
+        method: 'POST',
+        credentials: 'include', // Include cookies in the request
+        headers: {
+          'X-XSRF-TOKEN': TokenStorage.getCsrfToken() || '',
+        },
+      });
+
+      if (!response.ok) {
+        console.error('Logout failed on server');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+
+    // Clear client-side storage regardless of server response
     TokenStorage.clearTokens();
   }
 
@@ -51,33 +76,24 @@ export class AuthClient {
    * Refresh the access token
    */
   async refreshToken(): Promise<TokenResponse> {
-    const refreshToken = TokenStorage.getRefreshToken();
-    
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
-    }
-
-    const refreshRequest: RefreshTokenRequest = { refreshToken };
-    
     const response = await fetch(`${this.apiUrl}/api/v1/auth/refresh`, {
       method: 'POST',
+      credentials: 'include', // Include cookies in the request
       headers: {
         'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': TokenStorage.getCsrfToken() || '',
       },
-      body: JSON.stringify(refreshRequest),
     });
 
     if (!response.ok) {
       // If refresh fails, log out the user
-      this.logout();
+      await this.logout();
       throw new Error('Token refresh failed');
     }
 
     const data = await response.json();
     
-    // Update the tokens
-    TokenStorage.updateAccessToken(data.accessToken);
-    
+    // No need to store tokens as they're handled by cookies
     return data;
   }
 
@@ -89,18 +105,10 @@ export class AuthClient {
     const user = TokenStorage.getUser();
     if (user) return user;
     
-    // Otherwise fetch from API
-    const accessToken = TokenStorage.getAccessToken();
-    
-    if (!accessToken) {
-      throw new Error('Not authenticated');
-    }
-
+    // Otherwise fetch from API (using HttpOnly cookies for authentication)
     const response = await fetch(`${this.apiUrl}/api/v1/auth/profile`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
+      credentials: 'include', // Include cookies in the request
     });
 
     if (!response.ok) {
@@ -111,14 +119,18 @@ export class AuthClient {
           // Retry with the new token
           return this.getProfile();
         } catch (error) {
-          this.logout();
+          await this.logout();
           throw new Error('Authentication failed');
         }
       }
       throw new Error('Failed to get user profile');
     }
 
-    return response.json();
+    const userData = await response.json();
+    // Store the user data
+    TokenStorage.setUser(userData);
+    
+    return userData;
   }
 
   /**
@@ -131,6 +143,7 @@ export class AuthClient {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData),
+      credentials: 'include', // Include cookies in the request
     });
 
     if (!response.ok) {
@@ -145,24 +158,18 @@ export class AuthClient {
    * Check if user is authenticated
    */
   isAuthenticated(): boolean {
-    return TokenStorage.isAuthenticated();
+    // For cookie-based auth, we check if the user data exists
+    // The actual token validation happens on the server with the cookies
+    return !!TokenStorage.getUser();
   }
 
   /**
    * Get all users (admin only)
    */
   async getUsers(): Promise<User[]> {
-    const accessToken = TokenStorage.getAccessToken();
-    
-    if (!accessToken) {
-      throw new Error('Not authenticated');
-    }
-
     const response = await fetch(`${this.apiUrl}/api/v1/users`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
+      credentials: 'include', // Include cookies in the request
     });
 
     if (!response.ok) {
@@ -173,7 +180,7 @@ export class AuthClient {
           // Retry with the new token
           return this.getUsers();
         } catch (error) {
-          this.logout();
+          await this.logout();
           throw new Error('Authentication failed');
         }
       }
@@ -187,17 +194,9 @@ export class AuthClient {
    * Get a specific user by ID (admin only)
    */
   async getUserById(userId: string): Promise<User> {
-    const accessToken = TokenStorage.getAccessToken();
-    
-    if (!accessToken) {
-      throw new Error('Not authenticated');
-    }
-
     const response = await fetch(`${this.apiUrl}/api/v1/users/${userId}`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
+      credentials: 'include', // Include cookies in the request
     });
 
     if (!response.ok) {
@@ -206,7 +205,7 @@ export class AuthClient {
           await this.refreshToken();
           return this.getUserById(userId);
         } catch (error) {
-          this.logout();
+          await this.logout();
           throw new Error('Authentication failed');
         }
       }

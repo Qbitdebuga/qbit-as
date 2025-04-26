@@ -1,6 +1,7 @@
 const ACCESS_TOKEN_KEY = 'qbit_access_token';
 const REFRESH_TOKEN_KEY = 'qbit_refresh_token';
 const USER_KEY = 'qbit_user';
+const CSRF_TOKEN_KEY = 'qbit_csrf_token';
 
 // Helper to set cookies with expiration
 const setCookie = (name: string, value: string, days = 7) => {
@@ -40,6 +41,24 @@ export const TokenStorage = {
   },
 
   /**
+   * Store only user data (for cookie-based auth)
+   */
+  setUser(user: any): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    }
+  },
+
+  /**
+   * Store CSRF token
+   */
+  setCsrfToken(token: string): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(CSRF_TOKEN_KEY, token);
+    }
+  },
+
+  /**
    * Remove all authentication data
    */
   clearTokens(): void {
@@ -48,6 +67,7 @@ export const TokenStorage = {
       localStorage.removeItem(ACCESS_TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(CSRF_TOKEN_KEY);
       
       // Clear cookies
       deleteCookie(ACCESS_TOKEN_KEY);
@@ -86,6 +106,16 @@ export const TokenStorage = {
   },
 
   /**
+   * Get the stored CSRF token
+   */
+  getCsrfToken(): string | null {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(CSRF_TOKEN_KEY);
+    }
+    return null;
+  },
+
+  /**
    * Get the stored user data
    */
   getUser(): any | null {
@@ -107,9 +137,9 @@ export const TokenStorage = {
   },
 
   /**
-   * Check if user is authenticated (has tokens)
+   * Check if user is authenticated
    */
   isAuthenticated(): boolean {
-    return !!this.getAccessToken();
+    return !!this.getAccessToken() || !!this.getUser();
   }
 }; 
