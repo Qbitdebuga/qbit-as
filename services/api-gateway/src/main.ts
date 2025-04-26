@@ -5,9 +5,22 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { Request, Response } from 'express';
 import { GlobalExceptionFilter } from '@qbit/errors';
+import { PinoLoggerService } from '@qbit/logging';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // Create custom logger
+  const logger = new PinoLoggerService({
+    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    logDir: 'logs',
+    fileName: 'api-gateway',
+  });
+  logger.setContext('API-Gateway');
+
+  // Create the application with custom logger
+  const app = await NestFactory.create(AppModule, {
+    logger,
+    bufferLogs: true,
+  });
   
   // Set global prefix
   app.setGlobalPrefix('api/v1');
@@ -42,13 +55,13 @@ async function bootstrap() {
   
   // Simple health check endpoint for Kubernetes probes
   app.use('/health', (req: Request, res: Response) => {
-    res.status(200).send('OK');
+    (res as any).status(200).send('OK');
   });
   
   // Start the server
   const port = process.env.PORT || 3001;
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}/api`);
+  logger.log(`Application is running on: http://localhost:${port}/api`);
 }
 
 bootstrap(); 

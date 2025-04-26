@@ -100,6 +100,8 @@ services:
       RABBITMQ_URL: amqp://qbit:qbit_password@rabbitmq:5672
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      SERVICE_NAME: api-gateway
     ports:
       - "3000:3000"
     volumes:
@@ -109,6 +111,7 @@ services:
       - auth
       - rabbitmq
       - consul
+      - jaeger
     networks:
       - qbit_network
     command: yarn dev
@@ -128,6 +131,7 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
       SERVICE_NAME: auth-service
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
     ports:
       - "3002:3002"
     volumes:
@@ -140,6 +144,8 @@ services:
         condition: service_healthy
       consul:
         condition: service_healthy
+      jaeger:
+        condition: service_started
     networks:
       - qbit_network
     command: yarn dev
@@ -165,6 +171,7 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
       SERVICE_NAME: reporting-service
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
     ports:
       - "3004:3004"
     volumes:
@@ -178,6 +185,8 @@ services:
         condition: service_healthy
       consul:
         condition: service_healthy
+      jaeger:
+        condition: service_started
     networks:
       - qbit_network
     command: sh -c "mkdir -p /app/scripts && cp -n /scripts/* /app/scripts/ 2>/dev/null || true && chmod +x /app/scripts/*.sh && yarn start:dev"
@@ -278,6 +287,32 @@ services:
       - "--store_dir=/data"
       - "--http_port=8222"
       - "--debug=true"
+      
+  # Jaeger - Distributed tracing system
+  jaeger:
+    image: jaegertracing/all-in-one:1.46
+    container_name: qbit_jaeger
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "5775:5775/udp"   # Agent accept compact thrift protocol
+      - "6831:6831/udp"   # Agent accept compact thrift protocol
+      - "6832:6832/udp"   # Agent accept binary thrift protocol
+      - "5778:5778"       # Agent serve configs
+      - "16686:16686"     # Query UI
+      - "14268:14268"     # Collector HTTP accept spans
+      - "14250:14250"     # Collector gRPC accept spans
+      - "9411:9411"       # Collector Zipkin compatible endpoint
+      - "4317:4317"       # OTLP gRPC
+      - "4318:4318"       # OTLP HTTP
+    networks:
+      - qbit_network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:16686"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 networks:
   qbit_network:

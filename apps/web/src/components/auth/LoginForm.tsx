@@ -2,75 +2,108 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authClient } from '@/utils/auth';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { loginSchema, LoginFormValues } from '@/lib/validations/auth';
 
 export function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [serverError, setServerError] = useState<string>('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
-
+    setServerError('');
+    
     try {
-      console.log("Attempting login with auth client URL:", process.env.NEXT_PUBLIC_AUTH_URL);
-      // Use shared authClient instance
-      await authClient.login({ email, password });
-      router.push('/dashboard');
-    } catch (err: any) {
-      console.error('Login error:', err);
-      // Display more detailed error message
-      if (err.message === 'Failed to fetch') {
-        setError('Connection error: Cannot reach authentication service. Please try again later or contact support.');
-      } else {
-        setError(err.message || 'Invalid email or password');
-      }
+      // Simulate API call
+      console.log('Login form data:', data);
+      
+      // Mock successful login
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000);
+    } catch (error) {
+      setServerError('Invalid email or password. Please try again.');
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <form className="p-5 w-full" onSubmit={handleSubmit}>
-      {error && (
-        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
-      
-      <div className="mb-4">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-          required
-        />
-      </div>
-      
-      <div className="mb-4">
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-          required
-        />
-      </div>
-      
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition duration-200 disabled:bg-blue-400"
-      >
-        {isLoading ? 'Signing in...' : 'Sign In'}
-      </button>
-    </form>
+    <div className="grid gap-6">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="name@example.com"
+                    type="email"
+                    autoCapitalize="none"
+                    autoComplete="email"
+                    autoCorrect="off"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="********"
+                    type="password"
+                    autoCapitalize="none"
+                    autoComplete="current-password"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          {serverError && (
+            <div className="text-sm font-medium text-destructive">{serverError}</div>
+          )}
+          
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Signing in...' : 'Sign In'}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 } 

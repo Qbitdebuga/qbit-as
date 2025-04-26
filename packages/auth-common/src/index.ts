@@ -12,4 +12,7 @@ export * from './guards';
 export * from './types';
 
 // Export services
-export * from './services'; 
+export * from './services';
+
+// Export strategies
+export * from './strategies/jwt.strategy'; 

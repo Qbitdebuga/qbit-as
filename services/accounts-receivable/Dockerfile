@@ -1,45 +1,54 @@
-FROM node:18-alpine AS builder
-
+# Base image with minimal dependencies
+FROM node:20-alpine AS base
 WORKDIR /app
+# Use non-root user for better security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nestjs -u 1001 && \
+    chown -R nestjs:nodejs /app
+USER nestjs
+ENV NODE_ENV=production
 
-# Copy package files
-COPY package.json yarn.lock ./
-COPY ./services/accounts-receivable/package.json ./services/accounts-receivable/
+# Development dependencies stage
+FROM base AS deps
+# Copy package files from monorepo
+COPY --chown=nestjs:nodejs package.json yarn.lock ./
+COPY --chown=nestjs:nodejs services/accounts-receivable/package.json ./services/accounts-receivable/
+COPY --chown=nestjs:nodejs prisma ./prisma/
+# Use build cache for faster builds
+RUN --mount=type=cache,target=/home/nestjs/.yarn/cache \
+    yarn install --frozen-lockfile
 
-# Install dependencies
-RUN yarn install
-
+# Builder stage
+FROM deps AS builder
 # Copy source files
-COPY . .
-
+COPY --chown=nestjs:nodejs . .
 # Build the application
 RUN yarn build -w accounts-receivable
 
-# Production stage
-FROM node:18-alpine
+# Production dependencies stage
+FROM base AS production-deps
+COPY --chown=nestjs:nodejs package.json yarn.lock ./
+COPY --chown=nestjs:nodejs services/accounts-receivable/package.json ./services/accounts-receivable/
+COPY --chown=nestjs:nodejs prisma ./prisma/
+# Install only production dependencies and generate Prisma client
+RUN --mount=type=cache,target=/home/nestjs/.yarn/cache \
+    yarn install --production --frozen-lockfile && \
+    yarn prisma generate
 
-WORKDIR /app
+# Runner stage - minimal final image
+FROM base AS runner
+# Copy only necessary files from previous stages
+COPY --chown=nestjs:nodejs --from=production-deps /app/node_modules ./node_modules
+COPY --chown=nestjs:nodejs --from=production-deps /app/node_modules/.prisma ./node_modules/.prisma
+COPY --chown=nestjs:nodejs --from=builder /app/services/accounts-receivable/dist ./services/accounts-receivable/dist
+COPY --chown=nestjs:nodejs --from=builder /app/package.json ./package.json
 
-# Copy package files
-COPY package.json yarn.lock ./
-COPY ./services/accounts-receivable/package.json ./services/accounts-receivable/
+# Set up health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget -qO- http://localhost:3004/health || exit 1
 
-# Install production dependencies only
-RUN yarn install --production
-
-# Copy built files from builder stage
-COPY --from=builder /app/services/accounts-receivable/dist ./services/accounts-receivable/dist
-COPY --from=builder /app/prisma ./prisma
-
-# Generate Prisma client
-RUN yarn prisma generate
-
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3004
-
-# Expose port
+# Expose service port
 EXPOSE 3004
 
-# Command to run the application
+# Start the application
 CMD ["node", "services/accounts-receivable/dist/main.js"] 

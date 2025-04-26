@@ -1,13 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from '@qbit/errors';
+import { PinoLoggerService as LoggerService } from '@qbit/logging';
+import { ConfigService } from '@nestjs/config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // Create custom logger
+  const logger = new LoggerService({
+    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    logDir: 'logs',
+    fileName: 'accounts-payable',
+  });
+  logger.setContext('AccountsPayable');
+
+  // Create the application with custom logger
+  const app = await NestFactory.create(AppModule, {
+    logger,
+    bufferLogs: true,
+  });
   
   // Get the config service
   const configService = app.get(ConfigService);
@@ -31,9 +43,6 @@ async function bootstrap() {
   // Enable CORS
   app.enableCors();
   
-  // Set up global logger
-  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
-  
   // Set up Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Accounts Payable Service API')
@@ -51,6 +60,6 @@ async function bootstrap() {
   
   // Start the application
   await app.listen(port);
-  console.log(`Accounts Payable service running on port ${port}`);
+  logger.log(`Accounts Payable service running on port ${port}`);
 }
 bootstrap(); 

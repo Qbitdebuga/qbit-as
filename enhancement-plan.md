@@ -300,7 +300,7 @@
 
 ## Stage 3: Developer Experience and Observability
 
-- [ ] Step 13: Optimize Dockerfiles with multi-stage builds
+- [x] Step 13: Optimize Dockerfiles with multi-stage builds
   - **Task**: Refactor all Dockerfiles to use multi-stage builds for smaller images
   - **Files**:
     - `Dockerfile`: Root Dockerfile
@@ -312,7 +312,7 @@
   - **Step Dependencies**: None
   - **User Instructions**: Run `docker build -t qbit-auth -f services/auth/Dockerfile .` to test
 
-- [ ] Step 14: Add Kubernetes health checks
+- [x] Step 14: Add Kubernetes health checks
   - **Task**: Implement readiness and liveness probes for all services
   - **Files**:
     - `k8s/auth/deployment.yaml`: Update with probes
@@ -325,7 +325,7 @@
   - **Step Dependencies**: Step 13
   - **User Instructions**: None
 
-- [ ] Step 15: Set up centralized logging with Winston
+- [x] Step 15: Set up centralized logging with Winston
   - **Task**: Implement centralized logging using Winston in all services
   - **Files**:
     - `packages/logging/package.json`: Logging package
@@ -337,19 +337,20 @@
   - **Step Dependencies**: None
   - **User Instructions**: Run `cd packages/logging && yarn && yarn build`
 
-- [ ] Step 16: Implement OpenTelemetry for distributed tracing
+- [x] Step 16: Implement OpenTelemetry for distributed tracing
   - **Task**: Add distributed tracing with OpenTelemetry
   - **Files**:
     - `packages/tracing/package.json`: Tracing package
     - `packages/tracing/src/index.ts`: Entry point
     - `packages/tracing/src/tracer.ts`: Tracer setup
-    - `services/auth/src/main.ts`: Integrate tracing
-    - `services/api-gateway/src/main.ts`: Integrate tracing
-    - `docker-compose.yml`: Add Jaeger service
+    - `packages/tracing/src/middleware/nestjs-tracing.middleware.ts`: HTTP request tracing
+    - `packages/tracing/src/nestjs/tracing.module.ts`: NestJS module
+    - `packages/tracing/src/nestjs/tracing.service.ts`: Tracing service
+    - `docker-compose.yml`: Added Jaeger service
   - **Step Dependencies**: Step 15
-  - **User Instructions**: Run `docker-compose up -d jaeger` to start Jaeger locally
+  - **User Instructions**: Run `docker-compose up -d jaeger` to start Jaeger locally and view traces at http://localhost:16686
 
-- [ ] Step 17: Implement Zod validation for frontend
+- [x] Step 17: Implement Zod validation for frontend
   - **Task**: Add Zod validation to all frontend forms
   - **Files**:
     - `apps/web/src/lib/validations/auth.ts`: Auth validations

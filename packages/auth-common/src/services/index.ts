@@ -1,9 +1,11 @@
 /**
  * Service exports
  * 
- * This file will export all services once they are implemented
- * in subsequent steps.
+ * This file exports all services for token validation and service-to-service authentication.
  */
 
-// Token Validation Service
-export * from './token-validation.service'; 
+// Token validation service
+export * from './token-validation.service';
+
+// Service token service
+export * from './service-token.service'; 

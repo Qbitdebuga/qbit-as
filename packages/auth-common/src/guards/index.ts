@@ -1,11 +1,14 @@
 /**
  * Guard exports
  * 
- * This file exports all guards for authentication and authorization.
+ * This file exports all authentication and authorization guards.
  */
 
-// JWT Authentication Guard
+// JWT authentication guard
 export * from './jwt-auth.guard';
 
-// Role-based Authorization Guard
-export * from './roles.guard'; 
+// Roles guard for role-based access control
+export * from './roles.guard';
+
+// Service authentication guard for service-to-service communication
+export * from './service-auth.guard'; 

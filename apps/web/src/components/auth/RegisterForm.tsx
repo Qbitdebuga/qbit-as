@@ -2,42 +2,49 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema, RegisterFormValues } from '@/lib/validations/auth';
 import { authClient } from '@/utils/auth';
 
 export function RegisterForm() {
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  // Initialize react-hook-form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    // Validate password length
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
-
+  const onSubmit = async (data: RegisterFormValues) => {
+    setServerError('');
     setIsLoading(true);
 
     try {
       console.log("Attempting registration with auth client URL:", process.env.NEXT_PUBLIC_AUTH_URL);
       // Use the shared authClient instance
-      await authClient.register({ email, name, password });
+      await authClient.register({ 
+        email: data.email, 
+        name: data.name, 
+        password: data.password 
+      });
       
       // Auto-login after registration
-      await authClient.login({ email, password });
+      await authClient.login({ 
+        email: data.email, 
+        password: data.password 
+      });
       
       // Redirect to dashboard
       router.push('/dashboard');
@@ -45,9 +52,9 @@ export function RegisterForm() {
       console.error('Registration error:', err);
       // Display more detailed error message
       if (err.message === 'Failed to fetch') {
-        setError('Connection error: Cannot reach authentication service. Please try again later or contact support.');
+        setServerError('Connection error: Cannot reach authentication service. Please try again later or contact support.');
       } else {
-        setError(err.message || 'Registration failed. Please try again.');
+        setServerError(err.message || 'Registration failed. Please try again.');
       }
     } finally {
       setIsLoading(false);
@@ -55,10 +62,10 @@ export function RegisterForm() {
   };
 
   return (
-    <form className="p-5 w-full" onSubmit={handleSubmit}>
-      {error && (
+    <form className="p-5 w-full" onSubmit={handleSubmit(onSubmit)}>
+      {serverError && (
         <div className="mb-4 p-2 bg-red-100 text-red-700 rounded-md">
-          {error}
+          {serverError}
         </div>
       )}
       
@@ -66,44 +73,48 @@ export function RegisterForm() {
         <input
           type="text"
           placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          {...register('name')}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-          required
         />
+        {errors.name && (
+          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+        )}
       </div>
       
       <div className="mb-4">
         <input
           type="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register('email')}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-          required
         />
+        {errors.email && (
+          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+        )}
       </div>
       
       <div className="mb-4">
         <input
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register('password')}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-          required
         />
+        {errors.password && (
+          <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+        )}
       </div>
       
       <div className="mb-4">
         <input
           type="password"
           placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          {...register('confirmPassword')}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-          required
         />
+        {errors.confirmPassword && (
+          <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+        )}
       </div>
       
       <button

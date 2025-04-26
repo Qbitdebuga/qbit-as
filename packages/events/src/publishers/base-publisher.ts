@@ -49,10 +49,10 @@ export abstract class Publisher<T extends Event> {
         await this.natsClient.jsm.streams.add({
           name: streamName,
           subjects: [`${streamName}.*`],
-          retention: 'limits',
+          retention: 'limits' as any,
           max_age: 24 * 60 * 60 * 1000 * 7, // 1 week in ms
-          storage: 'file',
-          discard: 'old',
+          storage: 'file' as any,
+          discard: 'old' as any,
           max_msgs: 1000000,
         });
       }
@@ -72,6 +72,6 @@ export abstract class Publisher<T extends Event> {
    */
   private getStreamName(): string {
     const parts = this.subject.split('.');
-    return parts[0].toUpperCase();
+    return parts[0]?.toUpperCase() || 'EVENTS';
   }
 } 

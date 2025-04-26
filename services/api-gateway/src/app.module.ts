@@ -6,6 +6,7 @@ import { AggregationModule } from './aggregation/aggregation.module';
 import { GuardsModule } from './guards/guards.module';
 import { MiddlewareModule } from './middleware/middleware.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -29,6 +30,9 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     
     // Import aggregation module for cross-service endpoints
     AggregationModule,
+    
+    // Import health module for health checks
+    HealthModule,
   ],
   controllers: [],
   providers: [],
