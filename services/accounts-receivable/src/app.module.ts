@@ -10,6 +10,8 @@ import * as winston from 'winston';
 import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { HealthModule } from './health/health.module';
+import { JwtAuthGuard, TokenValidationService, TOKEN_VALIDATION_OPTIONS } from '@qbit/auth-common';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -52,6 +54,23 @@ import { HealthModule } from './health/health.module';
     HealthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    // Configure the TokenValidationService with JWT settings
+    {
+      provide: TOKEN_VALIDATION_OPTIONS,
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        issuer: configService.get<string>('JWT_ISSUER', 'qbit-auth'),
+        audience: configService.get<string>('JWT_AUDIENCE', 'qbit-api'),
+      }),
+      inject: [ConfigService],
+    },
+    TokenValidationService,
+    // Apply the JWT guard globally
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {} 

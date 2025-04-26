@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { UserCreatedListener } from './consumers/user-created-listener';
 import { AccountConsumer } from './consumers/account-consumer';
 import { PrismaModule } from '../prisma/prisma.module';
 
@@ -11,24 +12,26 @@ import { PrismaModule } from '../prisma/prisma.module';
     ClientsModule.registerAsync([
       {
         name: 'RABBITMQ_CLIENT',
-        imports: [ConfigModule],
-        useFactory: async (configService: ConfigService) => ({
+        useFactory: async () => ({
           transport: Transport.RMQ,
           options: {
-            urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://localhost:5672'],
-            queue: configService.get<string>('RABBITMQ_QUEUE') || 'accounts_payable_queue',
+            urls: [process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672'],
+            queue: process.env.RABBITMQ_QUEUE || 'accounts_payable_queue',
             queueOptions: {
               durable: true,
             },
-            noAck: false,
-            prefetchCount: 1,
           },
         }),
-        inject: [ConfigService],
       },
     ]),
   ],
-  providers: [AccountConsumer],
-  exports: [],
+  providers: [
+    AccountConsumer,
+    UserCreatedListener
+  ],
+  exports: [
+    AccountConsumer,
+    UserCreatedListener
+  ],
 })
 export class EventsModule {} 

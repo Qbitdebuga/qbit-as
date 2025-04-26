@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RegisterDto } from './dto/register.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { UserCreatedPublisher } from '../events/publishers/user-created-publisher';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly userCreatedPublisher: UserCreatedPublisher,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -43,6 +45,10 @@ export class AuthService {
       
       // Generate tokens
       const tokens = await this.getTokens(user.id, user.email, user.roles);
+      
+      // Publish user created event
+      await this.userCreatedPublisher.ensureConnection();
+      await this.userCreatedPublisher.publish(user);
       
       return {
         ...tokens,

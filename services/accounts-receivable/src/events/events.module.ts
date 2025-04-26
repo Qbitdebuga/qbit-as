@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { PrismaModule } from '../prisma/prisma.module';
-import { CustomerPublisher } from './publishers/customer-publisher';
+import { AccountConsumer } from './consumers/account-consumer';
+import { JournalEntryConsumer } from './consumers/journal-entry-consumer';
 import { AccountEventConsumer } from './consumers/account-event.consumer';
+import { UserCreatedListener } from './consumers/user-created-listener';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
   imports: [
@@ -12,29 +14,30 @@ import { AccountEventConsumer } from './consumers/account-event.consumer';
     ClientsModule.registerAsync([
       {
         name: 'RABBITMQ_CLIENT',
-        imports: [ConfigModule],
-        useFactory: async (configService: ConfigService) => ({
+        useFactory: () => ({
           transport: Transport.RMQ,
           options: {
-            urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://localhost:5672'],
-            queue: configService.get<string>('RABBITMQ_QUEUE') || 'accounts_receivable_queue',
+            urls: [process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672'],
+            queue: process.env.RABBITMQ_QUEUE || 'accounts_receivable_queue',
             queueOptions: {
               durable: true,
             },
-            noAck: false,
-            prefetchCount: 1,
           },
         }),
-        inject: [ConfigService],
       },
     ]),
   ],
   providers: [
-    CustomerPublisher,
+    AccountConsumer,
+    JournalEntryConsumer, 
     AccountEventConsumer,
+    UserCreatedListener
   ],
   exports: [
-    CustomerPublisher,
+    AccountConsumer,
+    JournalEntryConsumer,
+    AccountEventConsumer,
+    UserCreatedListener
   ],
 })
 export class EventsModule {} 

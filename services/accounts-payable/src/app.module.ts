@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { PrismaModule } from './prisma/prisma.module';
@@ -9,6 +9,8 @@ import { ExpensesModule } from './expenses/expenses.module';
 import { BillsModule } from './bills/bills.module';
 import { PaymentsModule } from './payments/payments.module';
 import { EventsModule } from './events/events.module';
+import { JwtAuthGuard, TokenValidationService, TOKEN_VALIDATION_OPTIONS } from '@qbit/auth-common';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -47,6 +49,23 @@ import { EventsModule } from './events/events.module';
     EventsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    // Configure the TokenValidationService with JWT settings
+    {
+      provide: TOKEN_VALIDATION_OPTIONS,
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        issuer: configService.get<string>('JWT_ISSUER', 'qbit-auth'),
+        audience: configService.get<string>('JWT_AUDIENCE', 'qbit-api'),
+      }),
+      inject: [ConfigService],
+    },
+    TokenValidationService,
+    // Apply the JWT guard globally
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {} 

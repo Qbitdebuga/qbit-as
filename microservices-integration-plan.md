@@ -370,7 +370,7 @@ This document outlines the implementation plan for connecting the various micros
   - **Step Dependencies**: Step 31
   - **User Instructions**: Run `cd services/general-ledger && yarn add @nestjs/terminus` to install the health check dependency
 
-- [ ] Step 34: Create System Status Dashboard
+- [x] Step 34: Create System Status Dashboard
   - **Task**: Implement a dashboard for monitoring the system status
   - **Files**:
     - `apps/web/src/components/admin/SystemStatus.tsx`: Create status dashboard component
@@ -410,7 +410,7 @@ This document outlines the implementation plan for connecting the various micros
    - Integration tests for service boundaries
    - End-to-end tests for critical flows
 
-- [ ] Step 39: Add Inventory Service Client to API Gateway
+- [x] Step 39: Add Inventory Service Client to API Gateway
   - **Task**: Create client service to communicate with the Inventory Service
   - **Files**:
     - `services/api-gateway/src/clients/inventory-client.service.ts`: Create Inventory service client

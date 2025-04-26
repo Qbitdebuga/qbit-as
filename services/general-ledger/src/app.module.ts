@@ -14,6 +14,8 @@ import { BatchModule } from './batch/batch.module';
 import { HealthModule } from './health/health.module';
 import { createWinstonLoggerOptions } from './config/logging.config';
 import { databaseConfig, appConfig, authConfig, rabbitMQConfig } from './config/configuration';
+import { JwtAuthGuard, TokenValidationService, TOKEN_VALIDATION_OPTIONS } from '@qbit/auth-common';
+import { APP_GUARD } from '@nestjs/core';
 
 // If Winston is not available, this module can be conditionally imported
 // using dynamic imports or reflection to prevent build errors
@@ -51,6 +53,23 @@ import { databaseConfig, appConfig, authConfig, rabbitMQConfig } from './config/
     HealthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    // Configure the TokenValidationService with JWT settings
+    {
+      provide: TOKEN_VALIDATION_OPTIONS,
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        issuer: configService.get<string>('JWT_ISSUER', 'qbit-auth'),
+        audience: configService.get<string>('JWT_AUDIENCE', 'qbit-api'),
+      }),
+      inject: [ConfigService],
+    },
+    TokenValidationService,
+    // Apply the JWT guard globally
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {} 
