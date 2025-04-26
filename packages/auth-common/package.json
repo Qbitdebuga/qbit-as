@@ -24,7 +24,7 @@
     "@types/jsonwebtoken": "^9.0.0",
     "@types/passport-jwt": "^3.0.9",
     "jsonwebtoken": "^9.0.0",
-    "passport": "^0.6.0",
+    "passport": "^0.7.0",
     "passport-jwt": "^4.0.1"
   },
   "peerDependencies": {
