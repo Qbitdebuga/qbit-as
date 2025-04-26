@@ -18,12 +18,16 @@
     "test:integration": "jest --testPathPattern=\\.integration\\.test\\.ts$ --runInBand",
     "test:e2e": "jest --testPathPattern=\\.e2e\\.test\\.ts$ --runInBand",
     "type-check": "turbo run type-check",
-    "prisma:seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts"
+    "prisma:seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build && changeset publish"
   },
   "prisma": {
     "seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.15.2",
