@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-payable-service-deployment
+  namespace: qbit
+  labels:
+    app: accounts-payable-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: accounts-payable-service
+  template:
+    metadata:
+      labels:
+        app: accounts-payable-service
+    spec:
+      containers:
+      - name: accounts-payable-service
+        image: ${DOCKER_REGISTRY}/qbit-accounts-payable:latest
+        ports:
+        - containerPort: 3004
+        envFrom:
+        - configMapRef:
+            name: accounts-payable-service-config
+        - secretRef:
+            name: accounts-payable-service-secrets
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3004
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3004
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-payable-service
+  namespace: qbit
+spec:
+  selector:
+    app: accounts-payable-service
+  ports:
+  - port: 3004
+    targetPort: 3004
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: accounts-payable-service-config
+  namespace: qbit
+data:
+  NODE_ENV: "production"
+  PORT: "3004"
+  SERVICE_NAME: "accounts-payable-service"
+  DATABASE_URL: "postgresql://postgres:postgres@accounts-payable-db:5432/accounts_payable?schema=public"
+  AUTH_SERVICE_URL: "http://auth-service:3002"
+  GENERAL_LEDGER_SERVICE_URL: "http://general-ledger-service:3007"
+  INVENTORY_SERVICE_URL: "http://inventory-service:3005"
+  RABBITMQ_URL: "amqp://rabbitmq-service:5672"
+  RABBITMQ_EXCHANGE: "qbit_events"
+  RABBITMQ_QUEUE: "accounts_payable_queue"
+  CONSUL_HOST: "consul-service"
+  CONSUL_PORT: "8500" 

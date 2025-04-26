@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banking-service-deployment
+  namespace: qbit
+  labels:
+    app: banking-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: banking-service
+  template:
+    metadata:
+      labels:
+        app: banking-service
+    spec:
+      containers:
+      - name: banking-service
+        image: ${DOCKER_REGISTRY}/qbit-banking:latest
+        ports:
+        - containerPort: 3006
+        envFrom:
+        - configMapRef:
+            name: banking-service-config
+        - secretRef:
+            name: banking-service-secrets
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3006
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3006
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: banking-service
+  namespace: qbit
+spec:
+  selector:
+    app: banking-service
+  ports:
+  - port: 3006
+    targetPort: 3006
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: banking-service-config
+  namespace: qbit
+data:
+  NODE_ENV: "production"
+  PORT: "3006"
+  SERVICE_NAME: "banking-service"
+  DATABASE_URL: "postgresql://postgres:postgres@banking-db:5432/banking?schema=public"
+  AUTH_SERVICE_URL: "http://auth-service:3002"
+  GENERAL_LEDGER_SERVICE_URL: "http://general-ledger-service:3007"
+  RABBITMQ_URL: "amqp://rabbitmq-service:5672"
+  RABBITMQ_EXCHANGE: "qbit_events"
+  RABBITMQ_QUEUE: "banking_queue"
+  CONSUL_HOST: "consul-service"
+  CONSUL_PORT: "8500" 

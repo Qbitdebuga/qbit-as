@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+  namespace: qbit
+  labels:
+    app: api-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: ${DOCKER_REGISTRY}/qbit-api-gateway:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: api-gateway-config
+        - secretRef:
+            name: api-gateway-secrets
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: qbit
+spec:
+  selector:
+    app: api-gateway
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: qbit
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  AUTH_SERVICE_URL: "http://auth-service:3002"
+  BANKING_SERVICE_URL: "http://banking-service:3006"
+  ACCOUNTS_RECEIVABLE_SERVICE_URL: "http://accounts-receivable-service:3003"
+  ACCOUNTS_PAYABLE_SERVICE_URL: "http://accounts-payable-service:3004"
+  INVENTORY_SERVICE_URL: "http://inventory-service:3005"
+  GENERAL_LEDGER_SERVICE_URL: "http://general-ledger-service:3007"
+  FIXED_ASSETS_SERVICE_URL: "http://fixed-assets-service:3008"
+  REPORTING_SERVICE_URL: "http://reporting-service:3009"
+  SERVICE_NAME: "api-gateway"
+  CONSUL_HOST: "consul-service"
+  CONSUL_PORT: "8500" 

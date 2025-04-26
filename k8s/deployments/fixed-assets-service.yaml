@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fixed-assets-service-deployment
+  namespace: qbit
+  labels:
+    app: fixed-assets-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fixed-assets-service
+  template:
+    metadata:
+      labels:
+        app: fixed-assets-service
+    spec:
+      containers:
+      - name: fixed-assets-service
+        image: ${DOCKER_REGISTRY}/qbit-fixed-assets:latest
+        ports:
+        - containerPort: 3009
+        envFrom:
+        - configMapRef:
+            name: fixed-assets-service-config
+        - secretRef:
+            name: fixed-assets-service-secrets
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3009
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3009
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fixed-assets-service
+  namespace: qbit
+spec:
+  selector:
+    app: fixed-assets-service
+  ports:
+  - port: 3009
+    targetPort: 3009
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fixed-assets-service-config
+  namespace: qbit
+data:
+  NODE_ENV: "production"
+  PORT: "3009"
+  SERVICE_NAME: "fixed-assets-service"
+  DATABASE_URL: "postgresql://postgres:postgres@fixed-assets-db:5432/fixed_assets?schema=public"
+  AUTH_SERVICE_URL: "http://auth-service:3002"
+  GENERAL_LEDGER_SERVICE_URL: "http://general-ledger-service:3007"
+  RABBITMQ_URL: "amqp://rabbitmq-service:5672"
+  RABBITMQ_EXCHANGE: "qbit_events"
+  RABBITMQ_QUEUE: "fixed_assets_queue"
+  CONSUL_HOST: "consul-service"
+  CONSUL_PORT: "8500" 

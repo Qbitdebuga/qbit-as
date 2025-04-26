@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reporting-service-deployment
+  namespace: qbit
+  labels:
+    app: reporting-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reporting-service
+  template:
+    metadata:
+      labels:
+        app: reporting-service
+    spec:
+      containers:
+      - name: reporting-service
+        image: ${DOCKER_REGISTRY}/qbit-reporting:latest
+        ports:
+        - containerPort: 3010
+        envFrom:
+        - configMapRef:
+            name: reporting-service-config
+        - secretRef:
+            name: reporting-service-secrets
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3010
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3010
+          initialDelaySeconds: 30
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reporting-service
+  namespace: qbit
+spec:
+  selector:
+    app: reporting-service
+  ports:
+  - port: 3010
+    targetPort: 3010
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reporting-service-config
+  namespace: qbit
+data:
+  NODE_ENV: "production"
+  PORT: "3010"
+  SERVICE_NAME: "reporting-service"
+  DATABASE_URL: "postgresql://postgres:postgres@reporting-db:5432/reporting?schema=public"
+  AUTH_SERVICE_URL: "http://auth-service:3002"
+  GENERAL_LEDGER_SERVICE_URL: "http://general-ledger-service:3007"
+  ACCOUNTS_RECEIVABLE_SERVICE_URL: "http://accounts-receivable-service:3003"
+  ACCOUNTS_PAYABLE_SERVICE_URL: "http://accounts-payable-service:3004"
+  RABBITMQ_URL: "amqp://rabbitmq-service:5672"
+  RABBITMQ_EXCHANGE: "qbit_events"
+  RABBITMQ_QUEUE: "reporting_queue"
+  CONSUL_HOST: "consul-service"
+  CONSUL_PORT: "8500" 
