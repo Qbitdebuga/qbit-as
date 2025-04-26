@@ -1,0 +1,29 @@
+name: 'Setup Node.js'
+description: 'Sets up Node.js with proper caching for monorepo'
+
+inputs:
+  node-version:
+    description: 'Node.js version'
+    default: '20'
+    required: false
+  registry-url:
+    description: 'Optional registry to set up for auth'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: ${{ inputs.registry-url }}
+        cache: 'yarn'
+    
+    - name: Output node version
+      shell: bash
+      run: node --version
+    
+    - name: Output yarn version
+      shell: bash
+      run: yarn --version 

@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  template:
+    spec:
+      containers:
+      - name: api-gateway
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+spec:
+  template:
+    spec:
+      containers:
+      - name: auth-service
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: general-ledger-deployment
+spec:
+  template:
+    spec:
+      containers:
+      - name: general-ledger-service
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-payable-deployment
+spec:
+  template:
+    spec:
+      containers:
+      - name: accounts-payable-service
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-receivable-deployment
+spec:
+  template:
+    spec:
+      containers:
+      - name: accounts-receivable-service
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m" 

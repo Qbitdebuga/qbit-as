@@ -93,13 +93,14 @@
     - **Files**:
         - `docker-compose.yml`: Full Docker Compose configuration
         - `Dockerfile`: Root Dockerfile
-        - `k8s/api-gateway.yaml`: API gateway Kubernetes manifest
-        - `k8s/auth-service.yaml`: Auth service Kubernetes manifest
-        - `k8s/database.yaml`: Database Kubernetes manifest
-        - `k8s/ingress.yaml`: Ingress configuration
-        - `k8s/redis.yaml`: Redis Kubernetes manifest
+        - `k8s/base/kustomization.yaml`: Base Kubernetes resources
+        - `k8s/overlays/production/kustomization.yaml`: Production overlay
+        - `k8s/overlays/staging/kustomization.yaml`: Staging overlay
+        - `k8s/overlays/production/resource-patches.yaml`: Production resource configurations
+        - `k8s/overlays/staging/resource-patches.yaml`: Staging resource configurations
+        - `.github/workflows/deploy.yml`: Updated deployment workflow using Kustomize
     - **Step Dependencies**: Steps 4, 5, 6
-    - **User Instructions**: Install Docker and Kubernetes CLI tools
+    - **User Instructions**: Install Docker, Kubernetes CLI tools, and Kustomize
 
 ## Authentication and User Management
 

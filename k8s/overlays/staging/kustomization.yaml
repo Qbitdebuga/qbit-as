@@ -1,0 +1,54 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+commonLabels:
+  app.kubernetes.io/environment: staging
+
+namespace: qbit-staging
+
+patches:
+  - path: resource-patches.yaml
+
+configMapGenerator:
+  - name: qbit-config
+    literals:
+      - NODE_ENV=staging
+      - API_URL=https://api-staging.qbit-accounting.com
+      - LOG_LEVEL=debug
+
+secretGenerator:
+  - name: database-secrets
+    envs:
+      - database-secrets.env
+  - name: auth-secrets
+    envs:
+      - auth-secrets.env
+  - name: general-ledger-secrets
+    envs:
+      - general-ledger-secrets.env
+  - name: accounts-payable-secrets
+    envs:
+      - accounts-payable-secrets.env
+  - name: accounts-receivable-secrets
+    envs:
+      - accounts-receivable-secrets.env
+  - name: inventory-secrets
+    envs:
+      - inventory-secrets.env
+
+replicas:
+  - name: api-gateway
+    count: 2
+  - name: auth-service-deployment
+    count: 1
+  - name: general-ledger-deployment
+    count: 1
+  - name: accounts-payable-deployment
+    count: 1
+  - name: accounts-receivable-deployment
+    count: 1
+  - name: inventory-deployment
+    count: 1 

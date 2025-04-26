@@ -222,7 +222,13 @@ jobs:
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
       
-      # Secrets Management
+      # Install and set up Kustomize
+      - name: Set up Kustomize
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+      
+      # Secrets Management (still needed for databases, etc. that don't use Kustomize)
       - name: Create Kubernetes secrets
         run: |
           echo "Creating Kubernetes secrets from GitHub secrets..."
@@ -236,162 +242,58 @@ jobs:
             --namespace qbit \
             --dry-run=client -o yaml | kubectl apply -f -
           
-          # Create API Gateway secrets
-          kubectl create secret generic api-gateway-secrets \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create Auth Service secrets
-          kubectl create secret generic auth-service-secrets \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create General Ledger secrets
-          kubectl create secret generic general-ledger-secrets \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create Accounts Payable secrets
-          kubectl create secret generic accounts-payable-secrets \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create Accounts Receivable secrets
-          kubectl create secret generic accounts-receivable-secrets \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create Banking secrets
-          kubectl create secret generic banking-secrets \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create Fixed Assets secrets
-          kubectl create secret generic fixed-assets-secrets \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create Inventory secrets
-          kubectl create secret generic inventory-secrets \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
-          # Create Reporting secrets
-          kubectl create secret generic reporting-secrets \
-            --from-literal=DATABASE_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-            --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
-            --from-literal=SERVICE_JWT_SECRET='${{ secrets.SERVICE_JWT_SECRET }}' \
-            --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-            --namespace qbit \
-            --dry-run=client -o yaml | kubectl apply -f -
-            
           # Create RabbitMQ secrets
           kubectl create secret generic rabbitmq-secrets \
             --from-literal=RABBITMQ_PASSWORD='${{ secrets.RABBITMQ_PASSWORD }}' \
             --namespace qbit \
             --dry-run=client -o yaml | kubectl apply -f -
-            
-          echo "Secrets created successfully."
       
-      # Environment variable substitution for K8s manifests
-      - name: Create temporary directory for processed manifests
-        run: mkdir -p processed-k8s
-
-      - name: Create Node.js substitution script
+      # Update secrets in environment files
+      - name: Update production secrets in environment files
         run: |
-          cat > substitute-env.js << 'EOF'
-          const fs = require('fs');
-          const path = require('path');
+          # Update database secrets
+          sed -i 's/password/${{ secrets.POSTGRES_PASSWORD }}/g' k8s/overlays/production/database-secrets.env
           
-          const k8sDir = path.join(process.cwd(), 'k8s');
-          const outputDir = path.join(process.cwd(), 'processed-k8s');
-          const dockerRegistry = process.env.DOCKER_REGISTRY || '';
+          # Update auth secrets
+          sed -i 's/your-production-jwt-secret-here/${{ secrets.JWT_SECRET }}/g' k8s/overlays/production/auth-secrets.env
+          sed -i 's/your-production-refresh-token-secret-here/${{ secrets.REFRESH_TOKEN_SECRET }}/g' k8s/overlays/production/auth-secrets.env
           
-          // Read all yaml files in k8s directory
-          fs.readdirSync(k8sDir)
-            .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'))
-            .forEach(file => {
-              console.log(`Processing ${file}...`);
-              const filePath = path.join(k8sDir, file);
-              const outputPath = path.join(outputDir, file);
-              
-              let content = fs.readFileSync(filePath, 'utf8');
-              content = content.replace(/\${DOCKER_REGISTRY}/g, dockerRegistry);
-              
-              fs.writeFileSync(outputPath, content);
-            });
-            
-          console.log('All Kubernetes manifests processed successfully!');
-          EOF
-
-      - name: Run substitution on Kubernetes manifests
-        env:
-          DOCKER_REGISTRY: ${{ secrets.DOCKER_HUB_USERNAME }}
-        run: node substitute-env.js
+          # Update general ledger secrets
+          sed -i 's/password/${{ secrets.POSTGRES_PASSWORD }}/g' k8s/overlays/production/general-ledger-secrets.env
+          sed -i 's/your-production-gl-api-key-here/${{ secrets.GL_API_KEY }}/g' k8s/overlays/production/general-ledger-secrets.env
+          
+          # Update accounts payable secrets
+          sed -i 's/password/${{ secrets.POSTGRES_PASSWORD }}/g' k8s/overlays/production/accounts-payable-secrets.env
+          sed -i 's/your-production-ap-api-key-here/${{ secrets.AP_API_KEY }}/g' k8s/overlays/production/accounts-payable-secrets.env
+          
+          # Update accounts receivable secrets
+          sed -i 's/password/${{ secrets.POSTGRES_PASSWORD }}/g' k8s/overlays/production/accounts-receivable-secrets.env
+          sed -i 's/your-production-ar-api-key-here/${{ secrets.AR_API_KEY }}/g' k8s/overlays/production/accounts-receivable-secrets.env
+          
+          # Update inventory secrets
+          sed -i 's/password/${{ secrets.POSTGRES_PASSWORD }}/g' k8s/overlays/production/inventory-secrets.env
+          sed -i 's/your-production-inventory-api-key-here/${{ secrets.INVENTORY_API_KEY }}/g' k8s/overlays/production/inventory-secrets.env
       
-      # Apply K8s manifests
-      - name: Deploy to Kubernetes - Core Infrastructure
+      # Apply infrastructure first
+      - name: Deploy Core Infrastructure with Kustomize
         run: |
-          kubectl apply -f processed-k8s/database.yaml -n qbit
-          kubectl apply -f processed-k8s/redis.yaml -n qbit
-          kubectl apply -f processed-k8s/rabbitmq.yaml -n qbit
-          kubectl apply -f processed-k8s/consul.yaml -n qbit
-      
-      # Wait for infrastructure to be ready
-      - name: Wait for infrastructure
-        run: |
+          # Apply the database, Redis, and RabbitMQ separately first
+          kubectl apply -f k8s/database.yaml -n qbit
+          kubectl apply -f k8s/redis.yaml -n qbit
+          kubectl apply -f k8s/rabbitmq.yaml -n qbit
+          
+          # Wait for infrastructure to be ready
           kubectl wait --for=condition=available deployment/redis --timeout=300s -n qbit
           kubectl wait --for=condition=ready pod -l app=postgres --timeout=300s -n qbit
       
-      # Apply service manifests
-      - name: Deploy microservices to Kubernetes
+      # Deploy using Kustomize
+      - name: Deploy to Production with Kustomize
         run: |
-          kubectl apply -f processed-k8s/api-gateway.yaml -n qbit
-          kubectl apply -f processed-k8s/auth-service.yaml -n qbit
-          kubectl apply -f processed-k8s/general-ledger.yaml -n qbit
-          kubectl apply -f processed-k8s/accounts-payable.yaml -n qbit
-          kubectl apply -f processed-k8s/accounts-receivable.yaml -n qbit
-          kubectl apply -f processed-k8s/banking.yaml -n qbit
-          kubectl apply -f processed-k8s/fixed-assets.yaml -n qbit
-          kubectl apply -f processed-k8s/inventory.yaml -n qbit
-          kubectl apply -f processed-k8s/reporting.yaml -n qbit
-          kubectl apply -f processed-k8s/web.yaml -n qbit
-          kubectl apply -f processed-k8s/ingress.yaml -n qbit
-      
-      # Restart deployments for fresh images
-      - name: Restart deployments
-        run: |
-          kubectl rollout restart deployment api-gateway auth-service-deployment general-ledger-deployment accounts-payable-deployment accounts-receivable-deployment banking-deployment fixed-assets-deployment inventory-deployment reporting-deployment web-deployment -n qbit
+          # Deploy using kustomize
+          kustomize build k8s/overlays/production | kubectl apply -f -
+          
+          # Check deployment status
+          kubectl get deployment -n qbit
       
       # Post-deployment validation
       - name: Validate deployments

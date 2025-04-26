@@ -1,0 +1,66 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: Restore build cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/dist
+            **/node_modules
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      
+      - name: Run ESLint
+        run: yarn lint
+        
+      - name: Run Prettier check
+        run: yarn format:check
+        
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: Restore build cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/dist
+            **/node_modules
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      
+      - name: Run TypeScript checks
+        run: yarn type-check 

@@ -1,0 +1,41 @@
+name: 'Setup Kubernetes'
+description: 'Sets up Kubernetes CLI (kubectl) with authentication'
+
+inputs:
+  kubeconfig:
+    description: 'Base64 encoded kubeconfig file'
+    required: true
+  kubernetes-version:
+    description: 'Kubernetes version to use'
+    default: 'latest'
+    required: false
+  namespace:
+    description: 'Kubernetes namespace'
+    default: 'default'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: ${{ inputs.kubernetes-version }}
+    
+    - name: Configure kubectl
+      shell: bash
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ inputs.kubeconfig }}" | base64 -d > ~/.kube/config
+        chmod 600 ~/.kube/config
+    
+    - name: Create namespace if not exists
+      shell: bash
+      run: |
+        kubectl create namespace ${{ inputs.namespace }} --dry-run=client -o yaml | kubectl apply -f -
+    
+    - name: Verify connection
+      shell: bash
+      run: |
+        kubectl cluster-info
+        kubectl get namespaces 

@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - api-gateway.yaml
+  - auth-service.yaml
+  - general-ledger.yaml
+  - accounts-payable.yaml
+  - accounts-receivable.yaml
+  - banking.yaml
+  - fixed-assets.yaml
+  - inventory.yaml
+  - reporting.yaml
+  - web.yaml
+  - database.yaml
+  - redis.yaml
+  - rabbitmq.yaml
+  - ingress.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: qbit-accounting
+  app.kubernetes.io/managed-by: kustomize
+
+namespace: qbit 

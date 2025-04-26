@@ -361,7 +361,7 @@
   - **Step Dependencies**: None
   - **User Instructions**: None
 
-- [ ] Step 18: Enhance backend validation with class-validator
+- [x] Step 18: Enhance backend validation with class-validator
   - **Task**: Enforce DTO validation using class-validator across all services
   - **Files**:
     - `services/auth/src/auth/dto/login.dto.ts`: Login DTO
@@ -374,7 +374,7 @@
 
 ## Stage 4: Production Readiness
 
-- [ ] Step 19: Set up GitHub Actions CI workflow
+- [x] Step 19: Set up GitHub Actions CI workflow
   - **Task**: Create GitHub Actions workflow for continuous integration
   - **Files**:
     - `.github/workflows/ci.yaml`: CI workflow
