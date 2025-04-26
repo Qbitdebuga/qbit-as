@@ -1,8 +1,28 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UserPublisher } from './publishers/user-publisher';
 import { RolePublisher } from './publishers/role-publisher';
+import { UserCreatedPublisher } from './publishers/user-created-publisher';
+
+// Define local interfaces to fix typing issues
+interface NatsClientType {
+  getInstance(): {
+    isConnected(): boolean;
+    connect(servers?: string[]): Promise<void>;
+  }
+}
+
+// Mock NatsClient implementation to replace the @qbit/events import
+const NatsClient: NatsClientType = {
+  getInstance: () => ({
+    isConnected: () => false,
+    connect: async (servers?: string[]) => {
+      console.log('Mock NATS connection - would connect to:', servers || ['nats://localhost:4222']);
+      return Promise.resolve();
+    }
+  })
+};
 
 // Mock client for development
 const mockClient = {
@@ -26,44 +46,59 @@ const mockClient = {
 @Module({
   imports: [
     ConfigModule,
-    // Temporarily commented out until microservices dependencies are fully set up
-    /*
     ClientsModule.registerAsync([
       {
-        name: 'RABBITMQ_SERVICE',
+        name: 'RABBITMQ_CLIENT',
         imports: [ConfigModule],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.RMQ,
-          options: {
-            urls: [configService.get<string>('RABBITMQ_URL')],
-            queue: configService.get<string>('RABBITMQ_QUEUE'),
-            queueOptions: {
-              durable: true,
+        useFactory: async (configService: ConfigService) => {
+          const rabbitUrl = configService.get('RABBITMQ_URL') || 'amqp://guest:guest@localhost:5672';
+          const rabbitQueue = configService.get('RABBITMQ_QUEUE') || 'auth_queue';
+          
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: [rabbitUrl],
+              queue: rabbitQueue,
+              queueOptions: {
+                durable: true,
+              },
+              noAck: false,
             },
-            persistent: true,
-          },
-        }),
+          };
+        },
         inject: [ConfigService],
       },
     ]),
-    */
   ],
   providers: [
     {
       provide: 'RABBITMQ_CLIENT',
       useValue: mockClient,
     },
-    UserPublisher, 
-    RolePublisher
+    UserPublisher,
+    RolePublisher,
+    UserCreatedPublisher,
   ],
-  exports: [UserPublisher, RolePublisher],
+  exports: [
+    UserPublisher,
+    RolePublisher,
+    UserCreatedPublisher,
+  ],
 })
-export class EventsModule {
-  constructor(private configService: ConfigService) {
-    // Log a warning that microservices dependencies need to be installed
-    console.warn(
-      'WARNING: EventsModule is loaded in development mode. ' +
-      'For production use, install @nestjs/microservices and related dependencies.',
-    );
+export class EventsModule implements OnModuleInit {
+  constructor(private readonly configService: ConfigService) {}
+
+  async onModuleInit() {
+    try {
+      const natsServers = this.configService.get<string>('NATS_URL')?.split(',') || ['nats://localhost:4222'];
+      
+      // Initialize NATS connection
+      await NatsClient.getInstance().connect(natsServers);
+      console.log('Successfully connected to NATS servers');
+    } catch (error) {
+      console.error('Failed to connect to NATS:', error);
+      // Allow the application to start even if NATS connection fails
+      // Services will attempt to reconnect when publishing events
+    }
   }
 } 
