@@ -52,3 +52,11 @@ logs
 # Prisma
 prisma/.env
 prisma/client 
+
+
+# Secrets files
+.env.github-secrets
+
+# Secret automation scripts
+extract-secrets.js
+upload-secrets.js
