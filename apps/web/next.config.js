@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["ui-components", "shared-types", "api-client"],
+  transpilePackages: ["shared-types", "api-client"],
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
