@@ -13,7 +13,7 @@ jobs:
     environment:
       name: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -120,7 +120,7 @@ jobs:
       name: production
     needs: build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -217,7 +217,7 @@ jobs:
       name: production
     needs: migrate-databases
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
