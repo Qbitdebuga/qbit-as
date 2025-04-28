@@ -1,4 +1,4 @@
-FROM docker.elastic.co/logstash/logstash:8.12.1
+FROM node:20.18.1-alpine
 
 # Copy configuration files
 COPY ./config/logstash/pipeline/ /usr/share/logstash/pipeline/

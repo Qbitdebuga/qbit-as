@@ -1,5 +1,5 @@
 # Base image for Node.js
-FROM node:20-alpine AS base
+FROM node:20.18.1-alpine AS base
 WORKDIR /app
 
 # Install dependencies only when needed

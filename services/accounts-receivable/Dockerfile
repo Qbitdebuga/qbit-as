@@ -1,5 +1,5 @@
 # Base image with minimal dependencies
-FROM node:20-alpine AS base
+FROM node:20.18.1-alpine AS base
 WORKDIR /app
 # Use non-root user for better security
 RUN addgroup -g 1001 -S nodejs && \

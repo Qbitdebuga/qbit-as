@@ -1,4 +1,4 @@
-FROM node:18-slim AS builder
+FROM node:20.18.1-slim AS builder
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ COPY . .
 RUN yarn build
 
 # Production stage
-FROM node:18-slim
+FROM node:20.18.1-slim
 
 WORKDIR /app
 
