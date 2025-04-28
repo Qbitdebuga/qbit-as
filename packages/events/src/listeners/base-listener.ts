@@ -1,6 +1,6 @@
 import { NatsClient } from '../clients/nats-client';
 import { Event } from '../publishers/base-publisher';
-import { ConsumerConfig, JsMsg } from 'nats';
+import { ConsumerConfig, JsMsg, DeliverPolicy, AckPolicy, ReplayPolicy, RetentionPolicy, StorageType, DiscardPolicy } from 'nats';
 
 /**
  * Abstract base listener for all event listeners
@@ -22,9 +22,9 @@ export abstract class Listener<T extends Event> {
   protected subscriptionOptions(): Partial<ConsumerConfig> {
     return {
       durable_name: this.queueGroup, // Durable consumers remember their position
-      deliver_policy: 'all', // Deliver all available messages
-      ack_policy: 'explicit', // Manual acknowledgment
-      replay_policy: 'instant', // Replay messages as fast as possible
+      deliver_policy: DeliverPolicy.All, // Deliver all available messages
+      ack_policy: AckPolicy.Explicit, // Manual acknowledgment
+      replay_policy: ReplayPolicy.Instant, // Replay messages as fast as possible
     };
   }
 
@@ -50,10 +50,10 @@ export abstract class Listener<T extends Event> {
         await this.natsClient.jsm.streams.add({
           name: streamName,
           subjects: [`${streamName}.*`],
-          retention: 'limits',
+          retention: RetentionPolicy.Limits,
           max_age: 24 * 60 * 60 * 1000 * 7, // 1 week in ms
-          storage: 'file',
-          discard: 'old',
+          storage: StorageType.File,
+          discard: DiscardPolicy.Old,
           max_msgs: 1000000,
         });
       }
@@ -132,6 +132,6 @@ export abstract class Listener<T extends Event> {
    */
   private getStreamName(): string {
     const parts = this.subject.split('.');
-    return parts[0].toUpperCase();
+    return parts?.[0]?.toUpperCase() || this.subject.toUpperCase();
   }
 } 

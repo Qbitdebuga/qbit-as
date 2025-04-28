@@ -1,10 +1,10 @@
 import { Event } from '../publishers/base-publisher';
-import { User } from '@qbit/shared-types';
+import { UserDto } from '@qbit/shared-types';
 
 // User created event
 export interface UserCreatedEvent extends Event {
   subject: 'user.created';
-  data: Omit<User, 'password'>;
+  data: Omit<UserDto, 'password'>;
 }
 
 // User updated event
@@ -12,7 +12,7 @@ export interface UserUpdatedEvent extends Event {
   subject: 'user.updated';
   data: {
     id: string;
-    changes: Partial<Omit<User, 'password'>>;
+    changes: Partial<Omit<UserDto, 'password'>>;
   };
 }
 

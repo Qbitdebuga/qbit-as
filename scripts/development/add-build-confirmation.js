@@ -53,6 +53,7 @@ function updateBuildScript(packageJson) {
   }
 
   const originalBuild = packageJson.scripts.build;
+  const packageName = packageJson.name || "package";
   
   // Skip if it already has a success message
   if (originalBuild.includes('echo') && 
@@ -63,8 +64,8 @@ function updateBuildScript(packageJson) {
     return false;
   }
 
-  // Add success message
-  packageJson.scripts.build = `${originalBuild} && echo "build completed successfully"`;
+  // Add success message with checkmark and package name
+  packageJson.scripts.build = `${originalBuild} && echo "✅ ${packageName} build completed successfully"`;
   console.log(`  - Updated build script: "${packageJson.scripts.build}"`);
   return true;
 }

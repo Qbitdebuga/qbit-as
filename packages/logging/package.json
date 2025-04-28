@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && npx tsc -p tsconfig.json && echo \"✅ @qbit/logging build completed successfully\"",
     "clean": "rimraf dist",
     "dev": "tsc --watch",
     "lint": "eslint --ext .ts src",
@@ -37,6 +37,6 @@
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "rimraf": "^5.0.5",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.5"
   }
 }

@@ -2,4 +2,5 @@
 export * from './models';
 export * from './interfaces';
 export * from './validation';
-export * from './dto'; 
+export * from './dto';
+export * from './test'; 

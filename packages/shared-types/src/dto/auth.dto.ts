@@ -62,9 +62,10 @@ export interface RefreshTokenDto {
  * Service-to-service authentication token request
  */
 export interface ServiceTokenRequestDto {
+  serviceId: string;
   serviceName: string;
-  apiKey: string;
-  scope?: string[];
+  apiKey?: string;
+  scopes?: string[];
   expiresIn?: number;
 }
 

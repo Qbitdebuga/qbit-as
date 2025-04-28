@@ -5,15 +5,42 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@qbit/tracing/*": ["src/*"]
+      "@qbit/tracing/*": [
+        "src/*"
+      ]
     },
-    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types"
+    ],
     "types": [
       "node",
       "jest"
     ],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "target": "es2022",
+    "module": "commonjs",
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
-} 
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
+  ]
+}

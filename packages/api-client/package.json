@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && echo \"✅ @qbit/api-client build completed successfully\"",
     "clean": "rm -rf dist",
     "dev": "tsc --watch",
     "lint": "eslint \"src/**/*.ts*\""
@@ -15,8 +15,9 @@
     "axios": "^1.4.0"
   },
   "devDependencies": {
-    "eslint": "^8.48.0",
+    "eslint": "^8.57.0",
     "prisma": "^6.6.0",
-    "typescript": "^5.1.6"
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
   }
 }

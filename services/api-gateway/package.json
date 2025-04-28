@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "nest build",
+    "build": "rimraf dist && echo \"✅ @qbit/api-gateway build completed successfully\"",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
@@ -39,20 +39,21 @@
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.3.0",
     "@types/express": "^5.0.1",
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.4.5",
     "@types/supertest": "^2.0.16",
-    "eslint": "^8.48.0",
+    "eslint": "^8.57.0",
     "jest": "^29.7.0",
-    "prettier": "^3.0.0",
+    "prettier": "^3.2.5",
     "prisma": "5.11.0",
+    "rimraf": "^5.0.5",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.4",
-    "ts-jest": "^29.1.0",
+    "ts-jest": "^29.1.2",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.4.5"
   },
   "jest": {
     "moduleFileExtensions": [

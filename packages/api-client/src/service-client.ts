@@ -47,9 +47,9 @@ export class ServiceApiClient extends BaseApiClient {
 
     // Otherwise, fetch a new token
     const tokenRequest: ServiceTokenRequestDto = {
+      serviceId: this.serviceId,
       serviceName: this.serviceName,
-      apiKey: this.serviceId,
-      scope: scopes
+      scopes: scopes
     };
 
     try {

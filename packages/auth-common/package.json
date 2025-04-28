@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && npx tsc -p tsconfig.json && echo \"✅ @qbit/auth-common build completed successfully\"",
     "clean": "rimraf dist",
     "dev": "tsc --watch",
     "lint": "eslint --ext .ts src",
@@ -34,9 +34,9 @@
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
-    "eslint": "^8.0.0",
-    "jest": "^29.0.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
     "rimraf": "^5.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.4.5"
   }
 }

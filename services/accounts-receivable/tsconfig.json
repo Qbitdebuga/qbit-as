@@ -7,7 +7,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
+    "target": "es2022",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -19,10 +19,20 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@qbit/shared-types": ["../../packages/shared-types/src"],
-      "@qbit/shared-types/*": ["../../packages/shared-types/src/*"]
-    }
+      "@qbit/shared-types": [
+        "../../packages/shared-types/src"
+      ],
+      "@qbit/shared-types/*": [
+        "../../packages/shared-types/src/*"
+      ]
+    },
+    "moduleResolution": "node"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
-} 
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

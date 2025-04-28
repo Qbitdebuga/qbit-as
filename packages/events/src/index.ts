@@ -23,4 +23,4 @@ export * from './listeners/account-listeners';
 export * from './listeners/transaction-listeners';
 
 // Re-export required NATS types
-export { JsMsg, ConsumerConfig } from 'nats'; 
+export type { JsMsg, ConsumerConfig } from 'nats'; 
