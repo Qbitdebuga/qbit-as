@@ -1,7 +1,11 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DepreciationMethod } from './enums/depreciation-method.enum';
-import { CalculateDepreciationDto, CalculateDepreciationResponseDto } from './dto/calculate-depreciation.dto';
+import {
+  CalculateDepreciationDto,
+  CalculateDepreciationResponseDto,
+} from './dto/calculate-depreciation.dto';
+import { DepreciationEntryResponseDto } from './dto/create-depreciation-entry.dto';
 import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity';
 import { Decimal } from '@prisma/client/runtime/library';
 
@@ -22,10 +26,11 @@ export class DepreciationService {
   async calculateDepreciation(
     calculateDto: CalculateDepreciationDto,
   ): Promise<CalculateDepreciationResponseDto> {
-    const { assetId, depreciationMethod, asOfDate, includeProjections, projectionPeriods } = calculateDto;
+    const { assetId, depreciationMethod, asOfDate, includeProjections, projectionPeriods } =
+      calculateDto;
 
     // Get the asset with its latest depreciation entry
-    const asset = await this.db.asset.findUnique({
+    const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
       include: {
         depreciationEntries: {
@@ -41,43 +46,44 @@ export class DepreciationService {
 
     // Determine which depreciation method to use
     const methodToUse = depreciationMethod || asset.depreciationMethod;
-    
+
     // Get the calculation date (default to today)
     const calculationDate = asOfDate ? new Date(asOfDate) : new Date();
 
     // Get historical depreciation entries
-    const historicalEntries = await this.db.depreciationEntry.findMany({
+    const historicalEntries = await this?.db.depreciationEntry.findMany({
       where: { assetId },
       orderBy: { date: 'asc' },
     });
 
     // Calculate current depreciation values
     const { currentBookValue, accumulatedDepreciation, entries } = this.calculateDepreciationValues(
-      asset, 
-      methodToUse, 
+      asset,
+      methodToUse,
       calculationDate,
-      historicalEntries
+      historicalEntries,
     );
 
     // Check if asset is fully depreciated
-    const isFullyDepreciated = currentBookValue.equals(asset.residualValue) || 
-      (calculationDate > this.calculateFullDepreciationDate(asset, methodToUse));
+    const isFullyDepreciated =
+      currentBookValue.equals(asset.residualValue) ||
+      calculationDate > this.calculateFullDepreciationDate(asset, methodToUse);
 
     // Prepare response
     const response: CalculateDepreciationResponseDto = {
       assetId,
       originalCost: this.decimalToNumber(asset.purchaseCost),
       residualValue: this.decimalToNumber(asset.residualValue),
-      depreciableAmount: this.decimalToNumber(asset.purchaseCost.sub(asset.residualValue)),
+      depreciableAmount: this.decimalToNumber(asset?.purchaseCost.sub(asset.residualValue)),
       accumulatedDepreciation: this.decimalToNumber(accumulatedDepreciation),
       currentBookValue: this.decimalToNumber(currentBookValue),
       isFullyDepreciated,
       depreciationMethod: methodToUse,
-      entries: entries.map(entry => ({
-        date: entry.date.toISOString(),
+      entries: entries.map((entry) => ({
+        date: entry?.date.toISOString(),
         amount: this.decimalToNumber(entry.amount),
-        bookValue: this.decimalToNumber(entry.bookValue)
-      }))
+        bookValue: this.decimalToNumber(entry.bookValue),
+      })),
     };
 
     // Calculate projected depreciation if requested
@@ -87,7 +93,7 @@ export class DepreciationService {
         methodToUse,
         currentBookValue,
         calculationDate,
-        projectionPeriods || 12
+        projectionPeriods || 12,
       );
     }
 
@@ -98,7 +104,7 @@ export class DepreciationService {
    * Generate a depreciation schedule for an asset
    */
   async generateDepreciationSchedule(assetId: string): Promise<DepreciationScheduleEntity> {
-    const asset = await this.db.asset.findUnique({
+    const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
       include: {
         depreciationEntries: {
@@ -112,42 +118,48 @@ export class DepreciationService {
     }
 
     // Calculate current depreciation
-    const { currentBookValue, accumulatedDepreciation } = await this.getCurrentDepreciation(assetId);
-    
+    const { currentBookValue, accumulatedDepreciation } =
+      await this.getCurrentDepreciation(assetId);
+
     // Generate projected entries for the remaining life of the asset
     const currentDate = new Date();
     const remainingMonths = this.calculateRemainingLifeInMonths(asset, currentDate);
-    
+
     const projectedEntries = await this.calculateProjectedDepreciation(
       asset,
       asset.depreciationMethod,
       currentBookValue,
       currentDate,
-      remainingMonths
+      remainingMonths,
     );
 
     return {
       assetId: asset.id,
       originalCost: asset.purchaseCost,
       residualValue: asset.residualValue,
-      depreciableAmount: asset.purchaseCost.sub(asset.residualValue),
+      depreciableAmount: asset?.purchaseCost.sub(asset.residualValue),
       accumulatedDepreciation,
       currentBookValue,
       isFullyDepreciated: currentBookValue.equals(asset.residualValue),
       entries: asset.depreciationEntries,
-      projectedEntries: projectedEntries.map(entry => ({
-        date: new Date(entry.date),
-        amount: new Decimal(entry.amount),
-        bookValue: new Decimal(entry.bookValue)
-      }))
+      projectedEntries: projectedEntries.map((entry) => ({
+        date: new Date(entry.date || new Date()),
+        amount: new Decimal(entry.amount || 0),
+        bookValue: new Decimal(entry.bookValue),
+      })),
     };
   }
 
   /**
    * Record a depreciation entry for an asset
    */
-  async recordDepreciation(assetId: string, date: Date, amount: number): Promise<void> {
-    const asset = await this.db.asset.findUnique({
+  async recordDepreciation(
+    assetId: string, 
+    date: Date, 
+    amount: number,
+    note?: string
+  ): Promise<DepreciationEntryResponseDto> {
+    const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
     });
 
@@ -156,57 +168,76 @@ export class DepreciationService {
     }
 
     // Get the latest depreciation entry
-    const latestEntry = await this.db.depreciationEntry.findFirst({
+    const latestEntry = await this?.db.depreciationEntry.findFirst({
       where: { assetId },
       orderBy: { date: 'desc' },
     });
 
     // Calculate current book value
-    const currentBookValue = latestEntry
-      ? latestEntry.bookValue
-      : asset.purchaseCost;
+    const currentBookValue = latestEntry ? latestEntry.bookValue : asset.purchaseCost;
 
     // Ensure we don't depreciate below residual value
     const depreciationAmount = new Decimal(amount);
     const newBookValue = currentBookValue.sub(depreciationAmount);
-    
+
+    let entry;
+
     if (newBookValue.lessThan(asset.residualValue)) {
-      this.logger.warn(`Depreciation amount ${amount} would reduce book value below residual value for asset ${assetId}`);
+      this?.logger.warn(
+        `Depreciation amount ${amount} would reduce book value below residual value for asset ${assetId}`,
+      );
       // Adjust the amount to not go below residual value
       const adjustedAmount = currentBookValue.sub(asset.residualValue);
-      
-      await this.db.depreciationEntry.create({
+
+      entry = await this?.db.depreciationEntry.create({
         data: {
           assetId,
           date,
           amount: adjustedAmount,
           bookValue: asset.residualValue,
+          note: note || 'Adjusted to residual value',
         },
       });
 
       // Update asset status if fully depreciated
-      await this.db.asset.update({
+      await this?.db.asset.update({
         where: { id: assetId },
         data: { status: 'FULLY_DEPRECIATED' },
       });
     } else {
       // Record the depreciation entry
-      await this.db.depreciationEntry.create({
+      entry = await this?.db.depreciationEntry.create({
         data: {
           assetId,
           date,
           amount: depreciationAmount,
           bookValue: newBookValue,
+          note,
         },
       });
     }
+
+    // Convert and return as DTO
+    const response: DepreciationEntryResponseDto = {
+      id: entry.id || 'generated-id',
+      assetId: entry.assetId,
+      date: entry.date instanceof Date ? entry.date : new Date(),
+      amount: this.decimalToNumber(entry.amount),
+      bookValue: this.decimalToNumber(entry.bookValue),
+      note: entry.note || undefined,
+      createdAt: entry.createdAt instanceof Date ? entry.createdAt : new Date()
+    };
+
+    return response;
   }
 
   /**
    * Get the current depreciation status for an asset
    */
-  async getCurrentDepreciation(assetId: string): Promise<{ currentBookValue: Decimal; accumulatedDepreciation: Decimal }> {
-    const asset = await this.db.asset.findUnique({
+  async getCurrentDepreciation(
+    assetId: string,
+  ): Promise<{ currentBookValue: Decimal; accumulatedDepreciation: Decimal }> {
+    const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
     });
 
@@ -215,7 +246,7 @@ export class DepreciationService {
     }
 
     // Get the latest depreciation entry
-    const latestEntry = await this.db.depreciationEntry.findFirst({
+    const latestEntry = await this?.db.depreciationEntry.findFirst({
       where: { assetId },
       orderBy: { date: 'desc' },
     });
@@ -223,7 +254,7 @@ export class DepreciationService {
     if (latestEntry) {
       return {
         currentBookValue: latestEntry.bookValue,
-        accumulatedDepreciation: asset.purchaseCost.sub(latestEntry.bookValue),
+        accumulatedDepreciation: asset?.purchaseCost.sub(latestEntry.bookValue),
       };
     }
 
@@ -232,7 +263,7 @@ export class DepreciationService {
     const { accumulatedDepreciation, currentBookValue } = this.calculateCurrentDepreciation(
       asset,
       asset.depreciationMethod,
-      currentDate
+      currentDate,
     );
 
     return { currentBookValue, accumulatedDepreciation };
