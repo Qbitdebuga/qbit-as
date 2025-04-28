@@ -4,10 +4,10 @@ import * as bcrypt from 'bcrypt';
 
 // Since we're using a root-level Prisma schema, we need to use type assertions
 type User = {
-  id: string;
-  email: string;
-  name: string;
-  password: string;
+  id: string | null;
+  email: string | null;
+  name: string | null;
+  password: string | null;
   roles: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -19,33 +19,33 @@ export class UserRepository {
 
   async findAll(): Promise<User[]> {
     // @ts-ignore - Using global Prisma schema from root
-    return this.prisma.user.findMany();
+    return this?.prisma.user.findMany();
   }
 
   async findById(id: string): Promise<User | null> {
     // @ts-ignore - Using global Prisma schema from root
-    return this.prisma.user.findUnique({
+    return this?.prisma.user.findUnique({
       where: { id }
     });
   }
 
   async findByEmail(email: string): Promise<User | null> {
     // @ts-ignore - Using global Prisma schema from root
-    return this.prisma.user.findUnique({
+    return this?.prisma.user.findUnique({
       where: { email }
     });
   }
 
   async create(data: {
-    email: string;
-    name: string;
-    password: string;
+    email: string | null;
+    name: string | null;
+    password: string | null;
     roles?: string[];
   }): Promise<User> {
     const hashedPassword = await this.hashPassword(data.password);
 
     // @ts-ignore - Using global Prisma schema from root
-    return this.prisma.user.create({
+    return this?.prisma.user.create({
       data: {
         email: data.email,
         name: data.name,
@@ -58,9 +58,9 @@ export class UserRepository {
   async update(
     id: string,
     data: {
-      email?: string;
-      name?: string;
-      password?: string;
+      email?: string | null;
+      name?: string | null;
+      password?: string | null;
       roles?: string[];
     },
   ): Promise<User> {
@@ -69,7 +69,7 @@ export class UserRepository {
     }
 
     // @ts-ignore - Using global Prisma schema from root
-    return this.prisma.user.update({
+    return this?.prisma.user.update({
       where: { id },
       data
     });
@@ -77,7 +77,7 @@ export class UserRepository {
 
   async delete(id: string): Promise<User> {
     // @ts-ignore - Using global Prisma schema from root
-    return this.prisma.user.delete({
+    return this?.prisma.user.delete({
       where: { id }
     });
   }

@@ -3,26 +3,26 @@
  */
 
 export interface IProduct {
-  id: number;
-  sku: string;
-  name: string;
-  description?: string;
-  categoryId?: number;
-  price: number;
-  cost?: number;
-  quantityOnHand: number;
-  reorderPoint?: number;
-  isActive: boolean;
-  isSellable: boolean;
-  isPurchasable: boolean;
-  barcode?: string;
-  weight?: number;
-  weightUnit?: string;
-  dimensions?: string;
-  taxable: boolean;
-  taxRateId?: number;
-  accountId?: number;
-  imageUrl?: string;
+  id: number | null;
+  sku: string | null;
+  name: string | null;
+  description?: string | null;
+  categoryId?: number | null;
+  price: number | null;
+  cost?: number | null;
+  quantityOnHand: number | null;
+  reorderPoint?: number | null;
+  isActive: boolean | null;
+  isSellable: boolean | null;
+  isPurchasable: boolean | null;
+  barcode?: string | null;
+  weight?: number | null;
+  weightUnit?: string | null;
+  dimensions?: string | null;
+  taxable: boolean | null;
+  taxRateId?: number | null;
+  accountId?: number | null;
+  imageUrl?: string | null;
   createdAt: Date;
   updatedAt: Date;
   category?: IProductCategory;
@@ -30,12 +30,12 @@ export interface IProduct {
 }
 
 export interface IProductCategory {
-  id: number;
-  name: string;
-  description?: string;
-  parentId?: number;
-  isActive: boolean;
-  imageUrl?: string;
+  id: number | null;
+  name: string | null;
+  description?: string | null;
+  parentId?: number | null;
+  isActive: boolean | null;
+  imageUrl?: string | null;
   createdAt: Date;
   updatedAt: Date;
   parent?: IProductCategory;
@@ -44,34 +44,34 @@ export interface IProductCategory {
 }
 
 export interface IProductVariant {
-  id: number;
-  productId: number;
-  sku: string;
-  name: string;
+  id: number | null;
+  productId: number | null;
+  sku: string | null;
+  name: string | null;
   attributes?: Record<string, any>;
-  price?: number;
-  cost?: number;
-  quantityOnHand: number;
-  reorderPoint?: number;
-  barcode?: string;
-  weight?: number;
-  weightUnit?: string;
-  dimensions?: string;
-  imageUrl?: string;
-  isActive: boolean;
+  price?: number | null;
+  cost?: number | null;
+  quantityOnHand: number | null;
+  reorderPoint?: number | null;
+  barcode?: string | null;
+  weight?: number | null;
+  weightUnit?: string | null;
+  dimensions?: string | null;
+  imageUrl?: string | null;
+  isActive: boolean | null;
   createdAt: Date;
   updatedAt: Date;
   product?: IProduct;
 }
 
 export interface IInventoryLevel {
-  id: number;
-  productId?: number;
-  variantId?: number;
-  warehouseId: number;
-  locationId?: number;
-  quantity: number;
-  reorderPoint?: number;
+  id: number | null;
+  productId?: number | null;
+  variantId?: number | null;
+  warehouseId: number | null;
+  locationId?: number | null;
+  quantity: number | null;
+  reorderPoint?: number | null;
   createdAt: Date;
   updatedAt: Date;
   product?: IProduct;
@@ -80,33 +80,33 @@ export interface IInventoryLevel {
 
 export interface IProductListResponse {
   data: IProduct[];
-  total: number;
-  page: number;
-  limit: number;
+  total: number | null;
+  page: number | null;
+  limit: number | null;
 }
 
 export interface IProductCategoryListResponse {
   data: IProductCategory[];
-  total: number;
-  page: number;
-  limit: number;
+  total: number | null;
+  page: number | null;
+  limit: number | null;
 }
 
 export interface IProductFilterParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  categoryId?: number;
-  isActive?: boolean;
-  orderBy?: string;
+  page?: number | null;
+  limit?: number | null;
+  search?: string | null;
+  categoryId?: number | null;
+  isActive?: boolean | null;
+  orderBy?: string | null;
   order?: 'asc' | 'desc';
 }
 
 export interface IProductVariantFilterParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  isActive?: boolean;
-  orderBy?: string;
+  page?: number | null;
+  limit?: number | null;
+  search?: string | null;
+  isActive?: boolean | null;
+  orderBy?: string | null;
   order?: 'asc' | 'desc';
 } 

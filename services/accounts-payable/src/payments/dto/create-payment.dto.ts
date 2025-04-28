@@ -22,7 +22,7 @@ export class CreatePaymentApplicationDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  billId: number;
+  billId: number | null;
 
   @ApiProperty({
     description: 'Amount to apply to this bill',
@@ -30,7 +30,7 @@ export class CreatePaymentApplicationDto {
   })
   @IsNumber()
   @IsPositive()
-  amount: number;
+  amount: number | null;
 }
 
 export class CreatePaymentDto {
@@ -40,7 +40,7 @@ export class CreatePaymentDto {
   })
   @IsString()
   @IsOptional()
-  paymentNumber?: string;
+  paymentNumber?: string | null;
 
   @ApiProperty({
     description: 'ID of the vendor receiving payment',
@@ -48,7 +48,7 @@ export class CreatePaymentDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  vendorId: number;
+  vendorId: number | null;
 
   @ApiProperty({
     description: 'Date of payment',
@@ -56,7 +56,7 @@ export class CreatePaymentDto {
   })
   @IsDateString()
   @IsNotEmpty()
-  paymentDate: string;
+  paymentDate: string | null;
 
   @ApiProperty({
     description: 'Total payment amount',
@@ -64,7 +64,7 @@ export class CreatePaymentDto {
   })
   @IsNumber()
   @IsPositive()
-  amount: number;
+  amount: number | null;
 
   @ApiProperty({
     description: 'Payment method',
@@ -81,7 +81,7 @@ export class CreatePaymentDto {
   })
   @IsString()
   @IsOptional()
-  reference?: string;
+  reference?: string | null;
 
   @ApiPropertyOptional({
     description: 'Memo or notes about the payment',
@@ -89,7 +89,7 @@ export class CreatePaymentDto {
   })
   @IsString()
   @IsOptional()
-  memo?: string;
+  memo?: string | null;
 
   @ApiPropertyOptional({
     description: 'Status of the payment',
@@ -106,7 +106,7 @@ export class CreatePaymentDto {
   })
   @IsNumber()
   @IsOptional()
-  bankAccountId?: number;
+  bankAccountId?: number | null;
 
   @ApiProperty({
     description: 'Bill payment applications',

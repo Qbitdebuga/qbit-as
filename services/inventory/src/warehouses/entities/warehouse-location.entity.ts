@@ -3,28 +3,28 @@ import { WarehouseEntity } from './warehouse.entity';
 
 export class WarehouseLocation {
   @ApiProperty({ example: 1, description: 'Unique identifier for the warehouse location' })
-  id: number;
+  id: number | null;
 
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'ID of the warehouse this location belongs to' })
-  warehouseId: string;
+  warehouseId: string | null;
 
   @ApiProperty({ example: 'Aisle A', description: 'Name of the location' })
-  name: string;
+  name: string | null;
 
-  @ApiProperty({ example: 'A-01-02', description: 'Code for the location, e.g. Aisle-Rack-Shelf' })
-  code: string;
+  @ApiProperty({ example: 'A-01-02', description: 'Code for the location, e?.g. Aisle-Rack-Shelf' })
+  code: string | null;
 
   @ApiPropertyOptional({ example: 'First aisle in the warehouse', description: 'Description of the location' })
-  description?: string;
+  description?: string | null;
 
   @ApiPropertyOptional({ example: 'Aisle', description: 'Type of location (Aisle, Rack, Shelf, Bin, etc.)' })
-  locationType?: string;
+  locationType?: string | null;
 
   @ApiProperty({ example: true, description: 'Whether the location is active', default: true })
-  isActive: boolean;
+  isActive: boolean | null;
 
   @ApiPropertyOptional({ example: 5, description: 'ID of the parent location (for hierarchical locations)' })
-  parentId?: number;
+  parentId?: number | null;
 
   @ApiPropertyOptional({ type: () => WarehouseEntity, description: 'Warehouse this location belongs to' })
   warehouse?: WarehouseEntity;

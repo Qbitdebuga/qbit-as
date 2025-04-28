@@ -3,20 +3,20 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 export interface ServiceTokenPayload {
-  serviceId: string;
-  serviceName: string;
+  serviceId: string | null;
+  serviceName: string | null;
   scopes: string[];
 }
 
 export interface GenerateTokenOptions {
-  serviceId: string;
-  serviceName: string;
+  serviceId: string | null;
+  serviceName: string | null;
   scopes: string[];
 }
 
 @Injectable()
 export class ServiceTokenService {
-  private readonly authorizedServices: Record<string, { secret: string; scopes: string[] }>;
+  private readonly authorizedServices: Record<string, { secret: string | null; scopes: string[] }>;
 
   constructor(
     private readonly jwtService: JwtService,
@@ -27,7 +27,7 @@ export class ServiceTokenService {
   }
 
   private loadAuthorizedServices() {
-    const services: Record<string, { secret: string; scopes: string[] }> = {};
+    const services: Record<string, { secret: string | null; scopes: string[] }> = {};
     
     // Load from environment variables
     // Format: SERVICE_ID_SECRET and SERVICE_ID_SCOPES (comma separated)
@@ -37,11 +37,11 @@ export class ServiceTokenService {
     
     Object.keys(process.env)
       .filter(key => key.startsWith(servicePrefix) && key.endsWith(secretSuffix))
-      .forEach(key => {
+      .forEach(key: any => {
         const serviceId = key.slice(servicePrefix.length, -secretSuffix.length);
         const scopesKey = `${servicePrefix}${serviceId}${scopesSuffix}`;
-        const secret = process.env[key];
-        const scopesString = process.env[scopesKey] || '';
+        const secret = process?.env[key];
+        const scopesString = process?.env[scopesKey] || '';
         
         if (secret) {
           services[serviceId] = {
@@ -58,14 +58,14 @@ export class ServiceTokenService {
     const { serviceId, serviceName, scopes } = options;
     
     // Verify the service is authorized
-    const serviceConfig = this.authorizedServices[serviceId];
+    const serviceConfig = this?.authorizedServices[serviceId];
     if (!serviceConfig) {
       throw new UnauthorizedException(`Service ${serviceId} is not authorized`);
     }
     
     // Verify requested scopes are allowed for this service
     const validScopes = scopes.every(scope => 
-      serviceConfig.scopes.includes(scope) || serviceConfig.scopes.includes('*')
+      serviceConfig?.scopes.includes(scope) || serviceConfig?.scopes.includes('*')
     );
     
     if (!validScopes) {
@@ -78,13 +78,13 @@ export class ServiceTokenService {
       scopes,
     };
     
-    return this.jwtService.signAsync(payload);
+    return this?.jwtService.signAsync(payload);
   }
 
   async validateToken(token: string): Promise<ServiceTokenPayload> {
     try {
-      const payload = await this.jwtService.verifyAsync<ServiceTokenPayload>(token, {
-        secret: this.configService.get<string>('SERVICE_JWT_SECRET'),
+      const payload = await this?.jwtService.verifyAsync<ServiceTokenPayload>(token, {
+        secret: this?.configService.get<string>('SERVICE_JWT_SECRET'),
       });
       
       if (!payload.serviceId || !payload.scopes) {

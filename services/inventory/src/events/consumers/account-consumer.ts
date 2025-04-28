@@ -2,11 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
 interface AccountEvent {
-  serviceSource: string;
-  entityType: string;
+  serviceSource: string | null;
+  entityType: string | null;
   timestamp: Date;
-  action: string;
-  id: number;
+  action: string | null;
+  id: number | null;
   data?: any;
 }
 
@@ -16,7 +16,7 @@ export class AccountConsumer {
 
   @OnEvent('account.created')
   handleAccountCreated(event: AccountEvent) {
-    this.logger.log(`Received account.created event: ${JSON.stringify(event)}`);
+    this?.logger.log(`Received account.created event: ${JSON.stringify(event)}`);
     // This is where we would handle account creation events
     // For example, we might want to:
     // - Store account details locally for reference
@@ -26,7 +26,7 @@ export class AccountConsumer {
 
   @OnEvent('account.updated')
   handleAccountUpdated(event: AccountEvent) {
-    this.logger.log(`Received account.updated event: ${JSON.stringify(event)}`);
+    this?.logger.log(`Received account.updated event: ${JSON.stringify(event)}`);
     // This is where we would handle account update events
     // For example, we might want to:
     // - Update locally stored account details
@@ -35,7 +35,7 @@ export class AccountConsumer {
 
   @OnEvent('account.deleted')
   handleAccountDeleted(event: AccountEvent) {
-    this.logger.log(`Received account.deleted event: ${JSON.stringify(event)}`);
+    this?.logger.log(`Received account.deleted event: ${JSON.stringify(event)}`);
     // This is where we would handle account deletion events
     // For example, we might want to:
     // - Remove locally stored account details

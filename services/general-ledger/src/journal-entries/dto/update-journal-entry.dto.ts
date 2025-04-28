@@ -5,29 +5,29 @@ import { CreateJournalEntryLineDto } from './create-journal-entry.dto';
 export class UpdateJournalEntryLineDto extends CreateJournalEntryLineDto {
   @IsOptional()
   @IsString()
-  accountId!: string;
+  accountId!: string | null;
 }
 
 export class UpdateJournalEntryDto {
   @IsOptional()
   @IsDateString()
-  date?: string;
+  date?: string | null;
 
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 
   @IsOptional()
   @IsString()
-  reference?: string;
+  reference?: string | null;
 
   @IsOptional()
   @IsString()
-  status?: string;
+  status?: string | null;
 
   @IsOptional()
   @IsBoolean()
-  isAdjustment?: boolean;
+  isAdjustment?: boolean | null;
 
   @IsOptional()
   @IsArray()

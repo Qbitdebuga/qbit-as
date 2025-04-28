@@ -7,22 +7,22 @@ import { CreateCustomerContactDto } from './dto/create-customer-contact.dto';
 
 // Define interfaces for Customer and CustomerContact since they're not exported from @prisma/client
 interface Customer {
-  id: string;
-  name: string;
-  email?: string;
-  customerNumber: string;
-  isActive: boolean;
+  id: string | null;
+  name: string | null;
+  email?: string | null;
+  customerNumber: string | null;
+  isActive: boolean | null;
   contacts?: CustomerContact[];
   [key: string]: any;
 }
 
 interface CustomerContact {
-  id: string;
-  customerId: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  isPrimary: boolean;
+  id: string | null;
+  customerId: string | null;
+  name: string | null;
+  email?: string | null;
+  phone?: string | null;
+  isPrimary: boolean | null;
   [key: string]: any;
 }
 
@@ -35,7 +35,7 @@ export class CustomersRepository {
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
     const { contacts, ...customerData } = createCustomerDto;
     
-    return this.prisma.$transaction(async (tx) => {
+    return this?.prisma.$transaction(async (tx) => {
       // Create customer
       const customer = await (tx as any).customer.create({
         data: {
@@ -67,10 +67,10 @@ export class CustomersRepository {
   }
 
   async findAll(params: {
-    skip?: number;
-    take?: number;
-    search?: string;
-    isActive?: boolean;
+    skip?: number | null;
+    take?: number | null;
+    search?: string | null;
+    isActive?: boolean | null;
     orderBy?: any;
   }): Promise<{ data: Customer[]; total: number }> {
     const { skip, take, search, isActive, orderBy } = params;
@@ -186,7 +186,7 @@ export class CustomersRepository {
     }
 
     // Extract the number part and increment
-    const lastNumber = parseInt(lastCustomer.customerNumber.replace('CUST-', ''), 10);
+    const lastNumber = parseInt(lastCustomer?.customerNumber.replace('CUST-', ''), 10);
     const nextNumber = lastNumber + 1;
     
     // Format with leading zeros

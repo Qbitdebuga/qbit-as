@@ -12,22 +12,22 @@ export class PaymentsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createPaymentDto: CreatePaymentDto): Promise<Payment> {
-    return this.paymentsService.createPayment(createPaymentDto);
+    return this?.paymentsService.createPayment(createPaymentDto);
   }
 
   @Get()
   async findAll(): Promise<Payment[]> {
-    return this.paymentsService.findAll();
+    return this?.paymentsService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Payment> {
-    return this.paymentsService.getPaymentById(id);
+    return this?.paymentsService.getPaymentById(id);
   }
 
   @Get('invoice/:invoiceId')
   async findByInvoiceId(@Param('invoiceId') invoiceId: string): Promise<Payment[]> {
-    return this.paymentsService.findByInvoiceId(invoiceId);
+    return this?.paymentsService.findByInvoiceId(invoiceId);
   }
 
   @Post(':id/apply')
@@ -35,7 +35,7 @@ export class PaymentsController {
     @Param('id') id: string,
     @Body() applyPaymentDto: ApplyPaymentDto
   ): Promise<Payment> {
-    return this.paymentsService.applyPayment(id, applyPaymentDto);
+    return this?.paymentsService.applyPayment(id, applyPaymentDto);
   }
 
   @Put(':id')
@@ -43,18 +43,18 @@ export class PaymentsController {
     @Param('id') id: string, 
     @Body() updatePaymentDto: UpdatePaymentDto
   ): Promise<Payment> {
-    return this.paymentsService.update(id, updatePaymentDto);
+    return this?.paymentsService.update(id, updatePaymentDto);
   }
 
   @Get('vendor/:vendorId')
   async getPaymentsByVendor(@Param('vendorId') vendorId: string): Promise<Payment[]> {
     // Convert to number for compatibility with existing method
-    return this.paymentsService.getPaymentsByVendorId(parseInt(vendorId, 10));
+    return this?.paymentsService.getPaymentsByVendorId(parseInt(vendorId, 10));
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string): Promise<void> {
-    await this.paymentsService.deletePayment(id);
+    await this?.paymentsService.deletePayment(id);
   }
 } 

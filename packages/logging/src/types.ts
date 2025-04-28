@@ -18,23 +18,23 @@ export interface ConfigOptions {
    * Using the %DATE% placeholder for the date
    * @default 'logs/app-%DATE%.log'
    */
-  logFilePath?: string;
+  logFilePath?: string | null;
   
   /**
    * Maximum number of days to keep log files
    * @default '14d'
    */
-  maxFiles?: string;
+  maxFiles?: string | null;
   
   /**
    * Whether to output logs to console
    * @default true
    */
-  consoleEnabled?: boolean;
+  consoleEnabled?: boolean | null;
   
   /**
    * Whether to output logs to files
    * @default true
    */
-  fileEnabled?: boolean;
+  fileEnabled?: boolean | null;
 } 

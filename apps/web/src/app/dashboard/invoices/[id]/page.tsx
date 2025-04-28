@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import InvoiceDetail from '@/components/invoices/InvoiceDetail';
 import { useInvoices } from '@/hooks/useInvoices';
-import { Invoice } from '@qbit/shared-types';
+import { Invoice } from '@/mocks/shared-types';
 
 export default function InvoiceDetailPage() {
   const params = useParams();

@@ -5,10 +5,10 @@ import { ConfigService } from '@nestjs/config';
 // Interface for Query Event
 interface QueryEvent {
   timestamp: Date;
-  query: string;
-  params: string;
-  duration: number;
-  target: string;
+  query: string | null;
+  params: string | null;
+  duration: number | null;
+  target: string | null;
 }
 
 @Injectable()
@@ -32,16 +32,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async onModuleInit() {
-    this.logger.log('Connecting to database...');
+    this?.logger.log('Connecting to database...');
     await this.$connect();
-    this.logger.log('Connected to database successfully');
+    this?.logger.log('Connected to database successfully');
 
     // Add middleware for logging
     this.$use(async (params, next) => {
       const before = Date.now();
       const result = await next(params);
       const after = Date.now();
-      this.logger.debug(
+      this?.logger.debug(
         `Query ${params.model}.${params.action} took ${after - before}ms`,
       );
       return result;
@@ -51,19 +51,19 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     // @ts-ignore - Ignore type checking for this event listener
     this.$on('query', (e: QueryEvent) => {
       if (e.duration >= 200) { // Log queries taking more than 200ms
-        this.logger.warn(`Slow query: ${e.query} (${e.duration}ms)`);
+        this?.logger.warn(`Slow query: ${e.query} (${e.duration}ms)`);
       }
     });
   }
 
   async onModuleDestroy() {
-    this.logger.log('Disconnecting from database...');
+    this?.logger.log('Disconnecting from database...');
     await this.$disconnect();
-    this.logger.log('Disconnected from database');
+    this?.logger.log('Disconnected from database');
   }
 
   async cleanDatabase() {
-    if (process.env.NODE_ENV === 'production') {
+    if (process?.env.NODE_ENV === 'production') {
       throw new Error('This method cannot be executed in production');
     }
 
@@ -75,7 +75,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
     return this.$transaction(
       models.map((model) => {
-        const modelName = model as string;
+        const modelName = model as string | null;
         return (this[modelName as keyof this] as unknown as { deleteMany: () => any }).deleteMany();
       })
     );

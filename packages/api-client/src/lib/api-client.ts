@@ -9,7 +9,7 @@ interface RequestOptions {
 }
 
 export class ApiClient {
-  private baseUrl: string;
+  private baseUrl: string | null;
   private token: string | null = null;
 
   constructor(baseUrl: string = '') {
@@ -79,7 +79,7 @@ export class ApiClient {
     // Add query parameters if any
     if (options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
-        url.searchParams.append(key, value);
+        url?.searchParams.append(key, value);
       });
     }
 

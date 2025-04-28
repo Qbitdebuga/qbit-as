@@ -10,7 +10,7 @@ import {
   CardTitle 
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PaymentStatus } from '@qbit/shared-types';
+import { PaymentStatus } from '@/mocks/shared-types';
 import { paymentsClient } from '@/utils/api-clients';
 import { useToast } from '@/components/ui/use-toast';
 import { getAuthToken } from '@/utils/auth-helpers';

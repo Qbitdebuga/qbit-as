@@ -30,36 +30,36 @@ export enum AccountSubType {
 }
 
 export interface Account {
-  id: string;
-  code: string;
-  name: string;
-  description?: string;
+  id: string | null;
+  code: string | null;
+  name: string | null;
+  description?: string | null;
   type: AccountType;
   subtype: AccountSubType;
-  isActive: boolean;
-  parentId?: string;
+  isActive: boolean | null;
+  parentId?: string | null;
   parent?: Account;
   children?: Account[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export interface AccountCreate {
-  code: string;
-  name: string;
-  description?: string;
+  code: string | null;
+  name: string | null;
+  description?: string | null;
   type: AccountType;
   subtype: AccountSubType;
-  isActive?: boolean;
-  parentId?: string;
+  isActive?: boolean | null;
+  parentId?: string | null;
 }
 
 export interface AccountUpdate {
-  code?: string;
-  name?: string;
-  description?: string;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
   type?: AccountType;
   subtype?: AccountSubType;
-  isActive?: boolean;
-  parentId?: string;
+  isActive?: boolean | null;
+  parentId?: string | null;
 } 

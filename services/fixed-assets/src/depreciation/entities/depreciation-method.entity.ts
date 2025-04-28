@@ -13,13 +13,13 @@ export class DepreciationMethodEntity {
     description: 'Human-readable name of the depreciation method',
     example: 'Straight Line',
   })
-  name: string;
+  name: string | null;
 
   @ApiProperty({
     description: 'Description of how the depreciation method works',
     example: 'Depreciates the asset by an equal amount each year over its useful life',
   })
-  description: string;
+  description: string | null;
 
   constructor(method: DepreciationMethod) {
     this.method = method;

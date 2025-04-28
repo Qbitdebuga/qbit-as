@@ -9,7 +9,7 @@ export class CreateExpenseCategoryDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name: string | null;
 
   @ApiPropertyOptional({
     example: 'Expenses related to office supplies and stationery',
@@ -18,7 +18,7 @@ export class CreateExpenseCategoryDto {
   @IsString()
   @IsOptional()
   @MaxLength(500)
-  description?: string;
+  description?: string | null;
 
   @ApiPropertyOptional({
     example: 5001,
@@ -26,7 +26,7 @@ export class CreateExpenseCategoryDto {
   })
   @IsNumber()
   @IsOptional()
-  accountId?: number;
+  accountId?: number | null;
 
   @ApiPropertyOptional({
     example: true,
@@ -35,5 +35,5 @@ export class CreateExpenseCategoryDto {
   })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 } 

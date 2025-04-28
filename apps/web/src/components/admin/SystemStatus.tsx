@@ -6,8 +6,8 @@ import {
   ServiceHealth, 
   HealthCheck,
   SystemStatusData 
-} from '../../hooks/useSystemStatus';
-import { formatDate } from '../../utils/format';
+} from '@/hooks/useSystemStatus';
+import { formatDate } from '@/utils/format';
 
 export const SystemStatus: React.FC = () => {
   const { 

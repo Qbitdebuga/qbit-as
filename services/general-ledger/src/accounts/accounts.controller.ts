@@ -17,7 +17,7 @@ export class AccountsController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input' })
   @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Account with the same code already exists' })
   create(@Body() createAccountDto: CreateAccountDto): Promise<Account> {
-    return this.accountsService.create(createAccountDto);
+    return this?.accountsService.create(createAccountDto);
   }
 
   @Get()
@@ -30,14 +30,14 @@ export class AccountsController {
     @Query('type') type?: string
   ): Promise<Account[]> {
     if (active !== undefined) {
-      return this.accountsService.findAllActive();
+      return this?.accountsService.findAllActive();
     }
 
     if (type) {
-      return this.accountsService.findByType(type);
+      return this?.accountsService.findByType(type);
     }
 
-    return this.accountsService.findAll();
+    return this?.accountsService.findAll();
   }
 
   @Get(':id')
@@ -46,7 +46,7 @@ export class AccountsController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Account not found' })
   @ApiParam({ name: 'id', description: 'Account ID' })
   findOne(@Param('id') id: string): Promise<Account> {
-    return this.accountsService.findOne(id);
+    return this?.accountsService.findOne(id);
   }
 
   @Get(':id/hierarchy')
@@ -55,7 +55,7 @@ export class AccountsController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Account not found' })
   @ApiParam({ name: 'id', description: 'Account ID' })
   findOneWithHierarchy(@Param('id') id: string): Promise<AccountWithHierarchy> {
-    return this.accountsService.findOneWithHierarchy(id);
+    return this?.accountsService.findOneWithHierarchy(id);
   }
 
   @Patch(':id')
@@ -66,7 +66,7 @@ export class AccountsController {
   @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Account with the same code already exists' })
   @ApiParam({ name: 'id', description: 'Account ID' })
   update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto): Promise<Account> {
-    return this.accountsService.update(id, updateAccountDto);
+    return this?.accountsService.update(id, updateAccountDto);
   }
 
   @Delete(':id')
@@ -76,6 +76,6 @@ export class AccountsController {
   @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Cannot delete account with children or in use' })
   @ApiParam({ name: 'id', description: 'Account ID' })
   remove(@Param('id') id: string): Promise<Account> {
-    return this.accountsService.remove(id);
+    return this?.accountsService.remove(id);
   }
 } 

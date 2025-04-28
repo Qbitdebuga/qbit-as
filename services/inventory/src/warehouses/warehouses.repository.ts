@@ -24,7 +24,7 @@ export class WarehousesRepository {
 
   // Warehouse methods
   async createWarehouse(data: CreateWarehouseDto) {
-    return this.db.warehouse.create({
+    return this?.db.warehouse.create({
       data: {
         name: data.name,
         code: data.code,
@@ -41,8 +41,8 @@ export class WarehousesRepository {
   }
 
   async findAllWarehouses(params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     cursor?: WarehouseWhereUniqueInput;
     where?: WarehouseWhereInput;
     orderBy?: WarehouseOrderByWithRelationInput;
@@ -50,7 +50,7 @@ export class WarehousesRepository {
     const { skip, take, cursor, where, orderBy } = params;
     
     const [data, total] = await Promise.all([
-      this.db.warehouse.findMany({
+      this?.db.warehouse.findMany({
         skip,
         take,
         cursor,
@@ -75,7 +75,7 @@ export class WarehousesRepository {
           },
         },
       }),
-      this.db.warehouse.count({ where }),
+      this?.db.warehouse.count({ where }),
     ]);
     
     return {
@@ -87,7 +87,7 @@ export class WarehousesRepository {
   }
 
   async findOneWarehouse(id: string) {
-    return this.db.warehouse.findUnique({
+    return this?.db.warehouse.findUnique({
       where: { id },
       include: {
         locations: {
@@ -98,7 +98,7 @@ export class WarehousesRepository {
   }
 
   async findWarehouseByCode(code: string) {
-    return this.db.warehouse.findUnique({
+    return this?.db.warehouse.findUnique({
       where: { code },
       include: {
         locations: {
@@ -109,14 +109,14 @@ export class WarehousesRepository {
   }
 
   async updateWarehouse(id: string, data: UpdateWarehouseDto) {
-    return this.db.warehouse.update({
+    return this?.db.warehouse.update({
       where: { id },
       data,
     });
   }
 
   async removeWarehouse(id: string) {
-    return this.db.warehouse.delete({
+    return this?.db.warehouse.delete({
       where: { id },
     });
   }
@@ -124,22 +124,22 @@ export class WarehousesRepository {
   // If this is set as the primary warehouse, unset any existing primary warehouses
   async setPrimaryWarehouse(id: string) {
     // First, find the current primary warehouse if any
-    const currentPrimary = await this.db.warehouse.findFirst({
+    const currentPrimary = await this?.db.warehouse.findFirst({
       where: { isPrimary: true },
     });
     
     // Update in a transaction to ensure consistency
-    return this.prisma.$transaction(async (tx: any) => {
+    return this?.prisma.$transaction(async (tx: any) => {
       // If there's a current primary and it's different from the one we're setting
       if (currentPrimary && currentPrimary.id !== id) {
-        await tx.warehouse.update({
+        await tx?.warehouse.update({
           where: { id: currentPrimary.id },
           data: { isPrimary: false },
         });
       }
       
       // Set the new primary warehouse
-      return tx.warehouse.update({
+      return tx?.warehouse.update({
         where: { id },
         data: { isPrimary: true },
       });
@@ -148,7 +148,7 @@ export class WarehousesRepository {
 
   // Warehouse Location methods
   async createLocation(data: CreateWarehouseLocationDto) {
-    return this.db.warehouseLocation.create({
+    return this?.db.warehouseLocation.create({
       data: {
         warehouseId: data.warehouseId,
         name: data.name,
@@ -166,8 +166,8 @@ export class WarehousesRepository {
   }
 
   async findAllLocations(params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     cursor?: WarehouseLocationWhereUniqueInput;
     where?: WarehouseLocationWhereInput;
     orderBy?: WarehouseLocationOrderByWithRelationInput;
@@ -175,7 +175,7 @@ export class WarehousesRepository {
     const { skip, take, cursor, where, orderBy } = params;
     
     const [data, total] = await Promise.all([
-      this.db.warehouseLocation.findMany({
+      this?.db.warehouseLocation.findMany({
         skip,
         take,
         cursor,
@@ -204,7 +204,7 @@ export class WarehousesRepository {
           },
         },
       }),
-      this.db.warehouseLocation.count({ where }),
+      this?.db.warehouseLocation.count({ where }),
     ]);
     
     return {
@@ -216,7 +216,7 @@ export class WarehousesRepository {
   }
 
   async findOneLocation(id: number) {
-    return this.db.warehouseLocation.findUnique({
+    return this?.db.warehouseLocation.findUnique({
       where: { id },
       include: {
         warehouse: true,
@@ -235,7 +235,7 @@ export class WarehousesRepository {
   }
 
   async findLocationByWarehouseAndCode(warehouseId: string, code: string) {
-    return this.db.warehouseLocation.findUnique({
+    return this?.db.warehouseLocation.findUnique({
       where: {
         warehouseId_code: {
           warehouseId,
@@ -251,7 +251,7 @@ export class WarehousesRepository {
   }
 
   async updateLocation(id: number, data: UpdateWarehouseLocationDto) {
-    return this.db.warehouseLocation.update({
+    return this?.db.warehouseLocation.update({
       where: { id },
       data,
       include: {
@@ -262,22 +262,22 @@ export class WarehousesRepository {
   }
 
   async removeLocation(id: number) {
-    return this.db.warehouseLocation.delete({
+    return this?.db.warehouseLocation.delete({
       where: { id },
     });
   }
 
   // Get all locations for a specific warehouse
   async findWarehouseLocations(warehouseId: string, params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     where?: Omit<WarehouseLocationWhereInput, 'warehouseId'>;
     orderBy?: WarehouseLocationOrderByWithRelationInput;
   }) {
     const { skip, take, where, orderBy } = params;
     
     const [data, total] = await Promise.all([
-      this.db.warehouseLocation.findMany({
+      this?.db.warehouseLocation.findMany({
         skip,
         take,
         where: {
@@ -301,7 +301,7 @@ export class WarehousesRepository {
           },
         },
       }),
-      this.db.warehouseLocation.count({
+      this?.db.warehouseLocation.count({
         where: {
           ...where,
           warehouseId,
@@ -319,15 +319,15 @@ export class WarehousesRepository {
 
   // Get child locations of a parent location
   async findChildLocations(parentId: number, params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     where?: Omit<WarehouseLocationWhereInput, 'parentId'>;
     orderBy?: WarehouseLocationOrderByWithRelationInput;
   }) {
     const { skip, take, where, orderBy } = params;
     
     const [data, total] = await Promise.all([
-      this.db.warehouseLocation.findMany({
+      this?.db.warehouseLocation.findMany({
         skip,
         take,
         where: {
@@ -336,7 +336,7 @@ export class WarehousesRepository {
         },
         orderBy,
       }),
-      this.db.warehouseLocation.count({
+      this?.db.warehouseLocation.count({
         where: {
           parentId,
           ...where,

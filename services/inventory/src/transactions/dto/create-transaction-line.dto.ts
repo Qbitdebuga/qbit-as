@@ -28,7 +28,7 @@ export class CreateTransactionLineDto {
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  productId?: number;
+  productId?: number | null;
 
   @ApiPropertyOptional({ 
     description: 'Product variant ID',
@@ -38,7 +38,7 @@ export class CreateTransactionLineDto {
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  variantId?: number;
+  variantId?: number | null;
 
   @ApiPropertyOptional({ 
     description: 'Source location ID for transfers',
@@ -48,7 +48,7 @@ export class CreateTransactionLineDto {
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  sourceLocationId?: number;
+  sourceLocationId?: number | null;
 
   @ApiPropertyOptional({ 
     description: 'Target location ID',
@@ -58,7 +58,7 @@ export class CreateTransactionLineDto {
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  targetLocationId?: number;
+  targetLocationId?: number | null;
 
   @ApiProperty({ 
     description: 'Expected quantity to be processed',
@@ -67,7 +67,7 @@ export class CreateTransactionLineDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0.01)
   @Type(() => Number)
-  expectedQuantity: number;
+  expectedQuantity: number | null;
 
   @ApiPropertyOptional({ 
     description: 'Quantity that has been processed',
@@ -78,7 +78,7 @@ export class CreateTransactionLineDto {
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  processedQuantity?: number;
+  processedQuantity?: number | null;
 
   @ApiPropertyOptional({ 
     enum: TransactionLineStatus, 
@@ -96,7 +96,7 @@ export class CreateTransactionLineDto {
   })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiPropertyOptional({ 
     description: 'Lot number for tracking',
@@ -104,7 +104,7 @@ export class CreateTransactionLineDto {
   })
   @IsString()
   @IsOptional()
-  lotNumber?: string;
+  lotNumber?: string | null;
 
   @ApiPropertyOptional({ 
     description: 'Serial number for tracking',
@@ -112,7 +112,7 @@ export class CreateTransactionLineDto {
   })
   @IsString()
   @IsOptional()
-  serialNumber?: string;
+  serialNumber?: string | null;
 
   @ApiPropertyOptional({ 
     description: 'Expiration date',
@@ -120,7 +120,7 @@ export class CreateTransactionLineDto {
   })
   @IsISO8601()
   @IsOptional()
-  expirationDate?: string;
+  expirationDate?: string | null;
 
   @ApiPropertyOptional({ 
     description: 'Unit cost for the item',
@@ -130,5 +130,5 @@ export class CreateTransactionLineDto {
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  unitCost?: number;
+  unitCost?: number | null;
 } 

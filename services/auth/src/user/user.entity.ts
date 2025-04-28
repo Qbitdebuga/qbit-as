@@ -3,16 +3,16 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class User {
   @ApiProperty({ description: 'Unique identifier' })
-  id!: string;
+  id!: string | null;
 
   @ApiProperty({ description: 'User email address' })
-  email!: string;
+  email!: string | null;
 
   @ApiProperty({ description: 'User display name' })
-  name!: string;
+  name!: string | null;
 
   @Exclude()
-  password!: string;
+  password!: string | null;
 
   @ApiProperty({ description: 'User roles', example: ['user', 'admin'] })
   roles!: string[];

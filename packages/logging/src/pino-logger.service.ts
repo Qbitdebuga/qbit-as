@@ -4,12 +4,12 @@ import { join } from 'path';
 
 // Type definitions for pino-roll
 interface PinoRollOptions {
-  file: string;
-  frequency?: 'hourly' | 'daily' | number;
-  size?: string;
-  mkdir?: boolean;
-  dateFormat?: string;
-  extension?: string;
+  file: string | null;
+  frequency?: 'hourly' | 'daily' | number | null;
+  size?: string | null;
+  mkdir?: boolean | null;
+  dateFormat?: string | null;
+  extension?: string | null;
 }
 
 export interface PinoLoggerOptions {
@@ -17,55 +17,55 @@ export interface PinoLoggerOptions {
    * Minimum log level to record
    * @default 'info'
    */
-  level?: string;
+  level?: string | null;
   
   /**
    * Directory to store log files
    * @default 'logs'
    */
-  logDir?: string;
+  logDir?: string | null;
   
   /**
    * Base name for log files
    * @default 'app'
    */
-  fileName?: string;
+  fileName?: string | null;
 
   /**
    * Whether to output logs to console
    * @default true
    */
-  consoleEnabled?: boolean;
+  consoleEnabled?: boolean | null;
 
   /**
    * Whether to output logs to files
    * @default true
    */
-  fileEnabled?: boolean;
+  fileEnabled?: boolean | null;
 
   /**
    * Log rolling frequency
    * @default 'daily'
    */
-  frequency?: 'hourly' | 'daily' | number;
+  frequency?: 'hourly' | 'daily' | number | null;
 
   /**
    * Maximum size of log files
    * @default '20m'
    */
-  size?: string;
+  size?: string | null;
 
   /**
    * Whether to create directory if it doesn't exist
    * @default true
    */
-  mkdir?: boolean;
+  mkdir?: boolean | null;
 
   /**
    * Date format for log files
    * @default 'yyyy-MM-dd'
    */
-  dateFormat?: string;
+  dateFormat?: string | null;
 
   /**
    * Additional pino options
@@ -80,7 +80,7 @@ export interface PinoLoggerOptions {
 @Injectable({ scope: Scope.TRANSIENT })
 export class PinoLoggerService implements NestLoggerService {
   private logger: any;
-  private context?: string;
+  private context?: string | null;
   
   constructor(options?: PinoLoggerOptions) {
     const {
@@ -235,9 +235,9 @@ export class PinoLoggerService implements NestLoggerService {
       };
 
       if (typeof message === 'object') {
-        this.logger[level]({ ...logObject, ...message });
+        this?.logger[level]({ ...logObject, ...message });
       } else {
-        this.logger[level](logObject, message);
+        this?.logger[level](logObject, message);
       }
     } catch (err) {
       // Fallback to console if logging fails

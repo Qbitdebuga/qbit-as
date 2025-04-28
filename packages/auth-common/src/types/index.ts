@@ -8,8 +8,8 @@
  * JWT payload structure
  */
 export interface JwtPayload {
-  sub: string;
-  username: string;
+  sub: string | null;
+  username: string | null;
   roles?: string[];
   [key: string]: any;
 }
@@ -18,8 +18,8 @@ export interface JwtPayload {
  * User information extracted from JWT
  */
 export interface CurrentUser {
-  id: string;
-  username: string;
+  id: string | null;
+  username: string | null;
   roles: string[];
   [key: string]: any;
 } 

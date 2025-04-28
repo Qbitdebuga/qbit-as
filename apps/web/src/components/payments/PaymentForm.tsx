@@ -12,7 +12,7 @@ import {
   CardFooter, 
   CardHeader, 
   CardTitle 
-} from '../ui/card';
+} from '@/components/ui/card';
 import { 
   Form, 
   FormControl, 
@@ -21,19 +21,19 @@ import {
   FormItem, 
   FormLabel, 
   FormMessage 
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from '../ui/select';
-import { DatePicker } from '../ui/date-picker';
-import { useToast } from '../ui/use-toast';
+} from '@/components/ui/select';
+import { DatePicker } from '@/components/ui/date-picker';
+import { useToast } from '@/components/ui/use-toast';
 import { PaymentMethod, CreatePaymentRequest } from '@qbit/shared-types';
 import { useInvoices } from '@/hooks/useInvoices';
 import { usePayments } from '@/hooks/usePayments';

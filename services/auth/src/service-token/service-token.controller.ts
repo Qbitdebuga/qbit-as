@@ -13,7 +13,7 @@ export class ServiceTokenController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Generate a service token (admin only)' })
   async generateToken(@Body() options: GenerateTokenOptions): Promise<{ token: string }> {
-    const token = await this.serviceTokenService.generateToken(options);
+    const token = await this?.serviceTokenService.generateToken(options);
     return { token };
   }
 } 

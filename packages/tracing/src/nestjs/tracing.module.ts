@@ -6,12 +6,12 @@ import { initTracer, TracingConfig } from '../tracer';
  * Dynamic options for the TracingModule
  */
 export interface TracingModuleOptions {
-  serviceName: string;
-  jaegerEndpoint?: string;
-  useJaeger?: boolean;
-  otlpEndpoint?: string;
-  useOTLP?: boolean;
-  environment?: string;
+  serviceName: string | null;
+  jaegerEndpoint?: string | null;
+  useJaeger?: boolean | null;
+  otlpEndpoint?: string | null;
+  useOTLP?: boolean | null;
+  environment?: string | null;
 }
 
 @Global()
@@ -64,12 +64,12 @@ export class TracingModule implements OnModuleInit {
   onModuleInit() {
     // Initialize the tracer when the module is initialized
     initTracer({
-      serviceName: this.options.serviceName,
-      jaegerEndpoint: this.options.jaegerEndpoint,
-      useJaeger: this.options.useJaeger,
-      otlpEndpoint: this.options.otlpEndpoint,
-      useOTLP: this.options.useOTLP,
-      environment: this.options.environment,
+      serviceName: this?.options.serviceName,
+      jaegerEndpoint: this?.options.jaegerEndpoint,
+      useJaeger: this?.options.useJaeger,
+      otlpEndpoint: this?.options.otlpEndpoint,
+      useOTLP: this?.options.useOTLP,
+      environment: this?.options.environment,
     });
   }
 } 

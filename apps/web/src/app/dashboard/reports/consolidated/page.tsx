@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAggregatedData } from '../../../../hooks/useAggregatedData';
-import ConsolidatedReport from '../../../../components/reports/ConsolidatedReport';
+import { useAggregatedData } from '@/hooks/useAggregatedData';
+import ConsolidatedReport from '@/components/reports/ConsolidatedReport';
 
 export default function ConsolidatedReportPage() {
   const { getFinancialStatements, loading, error } = useAggregatedData();

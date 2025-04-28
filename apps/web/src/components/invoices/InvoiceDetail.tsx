@@ -8,17 +8,17 @@ import {
   CardFooter, 
   CardHeader, 
   CardTitle 
-} from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Separator } from '../ui/separator';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Invoice, InvoiceItem, InvoiceStatus, PaymentMethod } from '@qbit/shared-types';
 import { formatCurrency, formatDate } from '@/utils/format';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { useToast } from '../ui/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useToast } from '@/components/ui/use-toast';
 
 const statusColorMap: Record<InvoiceStatus, string> = {
   DRAFT: 'bg-gray-200 text-gray-800',

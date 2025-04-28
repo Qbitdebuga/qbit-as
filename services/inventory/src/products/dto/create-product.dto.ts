@@ -20,13 +20,13 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  sku?: string;
+  sku?: string | null;
 
   @ApiProperty({ example: 'Office Chair', description: 'Name of the product' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name: string | null;
 
   @ApiPropertyOptional({ 
     example: 'Ergonomic office chair with adjustable height', 
@@ -35,25 +35,25 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   @MaxLength(1000)
-  description?: string;
+  description?: string | null;
 
   @ApiPropertyOptional({ example: 1, description: 'ID of the category this product belongs to' })
   @IsNumber()
   @IsOptional()
-  categoryId?: number;
+  categoryId?: number | null;
 
   @ApiProperty({ example: 199.99, description: 'Selling price of the product' })
   @IsNumber()
   @IsPositive()
   @Type(() => Number)
-  price: number;
+  price: number | null;
 
   @ApiPropertyOptional({ example: 120.00, description: 'Cost price of the product' })
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  cost?: number;
+  cost?: number | null;
 
   @ApiPropertyOptional({ 
     example: 15, 
@@ -64,14 +64,14 @@ export class CreateProductDto {
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  quantityOnHand?: number;
+  quantityOnHand?: number | null;
 
   @ApiPropertyOptional({ example: 5, description: 'Level at which to reorder the product' })
   @IsNumber()
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  reorderPoint?: number;
+  reorderPoint?: number | null;
 
   @ApiPropertyOptional({ 
     example: true, 
@@ -80,7 +80,7 @@ export class CreateProductDto {
   })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 
   @ApiPropertyOptional({ 
     example: true, 
@@ -89,7 +89,7 @@ export class CreateProductDto {
   })
   @IsBoolean()
   @IsOptional()
-  isSellable?: boolean;
+  isSellable?: boolean | null;
 
   @ApiPropertyOptional({ 
     example: true, 
@@ -98,26 +98,26 @@ export class CreateProductDto {
   })
   @IsBoolean()
   @IsOptional()
-  isPurchasable?: boolean;
+  isPurchasable?: boolean | null;
 
   @ApiPropertyOptional({ example: '123456789012', description: 'Barcode for the product' })
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  barcode?: string;
+  barcode?: string | null;
 
   @ApiPropertyOptional({ example: 5.2, description: 'Weight of the product' })
   @IsNumber()
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  weight?: number;
+  weight?: number | null;
 
   @ApiPropertyOptional({ example: 'kg', description: 'Unit of weight measurement' })
   @IsString()
   @IsOptional()
   @MaxLength(10)
-  weightUnit?: string;
+  weightUnit?: string | null;
 
   @ApiPropertyOptional({ 
     example: '{"length": 60, "width": 60, "height": 120, "unit": "cm"}', 
@@ -126,7 +126,7 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   @MaxLength(255)
-  dimensions?: string;
+  dimensions?: string | null;
 
   @ApiPropertyOptional({ 
     example: true, 
@@ -135,17 +135,17 @@ export class CreateProductDto {
   })
   @IsBoolean()
   @IsOptional()
-  taxable?: boolean;
+  taxable?: boolean | null;
 
   @ApiPropertyOptional({ example: 1, description: 'ID of the applicable tax rate' })
   @IsNumber()
   @IsOptional()
-  taxRateId?: number;
+  taxRateId?: number | null;
 
   @ApiPropertyOptional({ example: 5001, description: 'General Ledger account ID for this product' })
   @IsNumber()
   @IsOptional()
-  accountId?: number;
+  accountId?: number | null;
 
   @ApiPropertyOptional({ 
     example: 'https://example.com/images/chair.jpg', 
@@ -153,5 +153,5 @@ export class CreateProductDto {
   })
   @IsUrl()
   @IsOptional()
-  imageUrl?: string;
+  imageUrl?: string | null;
 } 

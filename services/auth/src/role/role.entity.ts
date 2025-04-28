@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Role {
   @ApiProperty({ description: 'Unique identifier' })
-  id!: string;
+  id!: string | null;
 
   @ApiProperty({ description: 'Role name', example: 'admin' })
-  name!: string;
+  name!: string | null;
 
   @ApiProperty({ description: 'Role description', example: 'Administrator with full access' })
-  description!: string;
+  description!: string | null;
 
   @ApiProperty({ description: 'List of permissions', example: ['read:users', 'write:users'] })
   permissions!: string[];

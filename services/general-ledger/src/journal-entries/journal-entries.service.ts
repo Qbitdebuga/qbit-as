@@ -16,11 +16,11 @@ export class JournalEntriesService {
   ) {}
 
   async findAll() {
-    return this.repository.findAll();
+    return this?.repository.findAll();
   }
 
   async findOne(id: string) {
-    const entry = await this.repository.findOne(id);
+    const entry = await this?.repository.findOne(id);
     if (!entry) {
       throw new NotFoundException(`Journal entry with ID ${id} not found`);
     }
@@ -33,12 +33,12 @@ export class JournalEntriesService {
       throw new BadRequestException('Journal entry must be balanced (debits = credits)');
     }
     
-    const journalEntry = await this.repository.create(createJournalEntryDto);
+    const journalEntry = await this?.repository.create(createJournalEntryDto);
 
     try {
       // Publish journal-entry.created event
       if (journalEntry.lines) {
-        const simplifiedLines: JournalEntryLine[] = journalEntry.lines.map(line => ({
+        const simplifiedLines: JournalEntryLine[] = journalEntry?.lines.map(line => ({
           id: line.id,
           journalEntryId: line.journalEntryId,
           accountId: line.accountId,
@@ -47,7 +47,7 @@ export class JournalEntriesService {
           credit: line.credit ? Number(line.credit) : 0
         }));
         
-        await this.journalEntryPublisher.publishJournalEntryCreated(
+        await this?.journalEntryPublisher.publishJournalEntryCreated(
           {
             ...journalEntry,
             totalAmount: this.calculateTotalAmount(journalEntry.lines),
@@ -57,7 +57,7 @@ export class JournalEntriesService {
         );
       }
     } catch (error: any) {
-      this.logger.warn(`Failed to publish journal-entry.created event: ${error.message}`);
+      this?.logger.warn(`Failed to publish journal-entry.created event: ${error.message}`);
       // Don't fail the operation if publishing fails
     }
     
@@ -69,18 +69,18 @@ export class JournalEntriesService {
     await this.findOne(id);
     
     // If lines are updated, validate that they are balanced
-    if (updateJournalEntryDto.lines && updateJournalEntryDto.lines.length > 0) {
+    if (updateJournalEntryDto.lines && updateJournalEntryDto?.lines.length > 0) {
       if (!this.isBalanced(updateJournalEntryDto.lines)) {
         throw new BadRequestException('Journal entry must be balanced (debits = credits)');
       }
     }
     
-    const updatedEntry = await this.repository.update(id, updateJournalEntryDto);
+    const updatedEntry = await this?.repository.update(id, updateJournalEntryDto);
 
     try {
       // Publish journal-entry.updated event
       if (updatedEntry && updatedEntry.lines) {
-        const simplifiedLines: JournalEntryLine[] = updatedEntry.lines.map(line => ({
+        const simplifiedLines: JournalEntryLine[] = updatedEntry?.lines.map(line => ({
           id: line.id,
           journalEntryId: line.journalEntryId,
           accountId: line.accountId,
@@ -89,7 +89,7 @@ export class JournalEntriesService {
           credit: line.credit ? Number(line.credit) : 0
         }));
         
-        await this.journalEntryPublisher.publishJournalEntryUpdated(
+        await this?.journalEntryPublisher.publishJournalEntryUpdated(
           {
             ...updatedEntry,
             totalAmount: this.calculateTotalAmount(updatedEntry.lines),
@@ -99,7 +99,7 @@ export class JournalEntriesService {
         );
       }
     } catch (error: any) {
-      this.logger.warn(`Failed to publish journal-entry.updated event: ${error.message}`);
+      this?.logger.warn(`Failed to publish journal-entry.updated event: ${error.message}`);
       // Don't fail the operation if publishing fails
     }
     
@@ -115,13 +115,13 @@ export class JournalEntriesService {
       throw new BadRequestException('Only draft journal entries can be deleted');
     }
     
-    const deletedEntry = await this.repository.remove(id);
+    const deletedEntry = await this?.repository.remove(id);
 
     try {
       // Publish journal-entry.deleted event
-      await this.journalEntryPublisher.publishJournalEntryDeleted(id);
+      await this?.journalEntryPublisher.publishJournalEntryDeleted(id);
     } catch (error: any) {
-      this.logger.warn(`Failed to publish journal-entry.deleted event: ${error.message}`);
+      this?.logger.warn(`Failed to publish journal-entry.deleted event: ${error.message}`);
       // Don't fail the operation if publishing fails
     }
     
@@ -139,13 +139,13 @@ export class JournalEntriesService {
     this.verifyEntryIsBalanced(journalEntry);
     
     // Update status to POSTED
-    const postedEntry = await this.repository.updateStatus(id, 'POSTED');
+    const postedEntry = await this?.repository.updateStatus(id, 'POSTED');
     
     // Get the journal entry with its lines to pass to the publisher
-    const postedEntryWithLines = await this.repository.findOne(id);
+    const postedEntryWithLines = await this?.repository.findOne(id);
     
     // Now include the lines in the publisher call
-    this.journalEntryPublisher.publishJournalEntryUpdated(postedEntry, postedEntryWithLines.lines);
+    this?.journalEntryPublisher.publishJournalEntryUpdated(postedEntry, postedEntryWithLines.lines);
     
     return postedEntry;
   }
@@ -158,7 +158,7 @@ export class JournalEntriesService {
     }
     
     // Create a reversal entry using the repository
-    return this.repository.createReversalEntry(id);
+    return this?.repository.createReversalEntry(id);
   }
 
   /**
@@ -174,10 +174,10 @@ export class JournalEntriesService {
     
     for (const line of lines) {
       if (line.debit) {
-        totalDebits += parseFloat(line.debit.toString());
+        totalDebits += parseFloat(line?.debit.toString());
       }
       if (line.credit) {
-        totalCredits += parseFloat(line.credit.toString());
+        totalCredits += parseFloat(line?.credit.toString());
       }
     }
     
@@ -197,7 +197,7 @@ export class JournalEntriesService {
     
     for (const line of lines) {
       if (line.debit) {
-        totalDebits += parseFloat(line.debit.toString());
+        totalDebits += parseFloat(line?.debit.toString());
       }
     }
     

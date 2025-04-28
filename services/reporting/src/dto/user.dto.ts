@@ -1,8 +1,8 @@
 export interface UserDto {
-  id: string;
-  email: string;
-  name?: string;
-  isAdmin: boolean;
+  id: string | null;
+  email: string | null;
+  name?: string | null;
+  isAdmin: boolean | null;
   roles?: string[];
   metadata?: Record<string, any>;
   createdAt: Date;

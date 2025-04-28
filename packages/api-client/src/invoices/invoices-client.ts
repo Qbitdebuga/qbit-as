@@ -25,71 +25,71 @@ export class InvoicesClient {
   /**
    * Get a paginated list of invoices
    */
-  async getInvoices(params?: InvoiceListParams): Promise<{ data: Invoice[]; total: number; page: number; limit: number }> {
-    return this.client.get(this.basePath, { params: params as unknown as Record<string, string> });
+  async getInvoices(params?: InvoiceListParams): Promise<{ data: Invoice[]; total: number | null; page: number | null; limit: number }> {
+    return this?.client.get(this.basePath, { params: params as unknown as Record<string, string> });
   }
 
   /**
    * Get a single invoice by ID
    */
   async getInvoiceById(id: string): Promise<Invoice> {
-    return this.client.get(`${this.basePath}/${id}`);
+    return this?.client.get(`${this.basePath}/${id}`);
   }
 
   /**
    * Create a new invoice
    */
   async createInvoice(invoice: CreateInvoiceDto): Promise<Invoice> {
-    return this.client.post(this.basePath, invoice);
+    return this?.client.post(this.basePath, invoice);
   }
 
   /**
    * Update an existing invoice
    */
   async updateInvoice(id: string, updates: UpdateInvoiceDto): Promise<Invoice> {
-    return this.client.patch(`${this.basePath}/${id}`, updates);
+    return this?.client.patch(`${this.basePath}/${id}`, updates);
   }
 
   /**
    * Delete an invoice
    */
   async deleteInvoice(id: string): Promise<void> {
-    return this.client.delete(`${this.basePath}/${id}`);
+    return this?.client.delete(`${this.basePath}/${id}`);
   }
 
   /**
    * Finalize an invoice (change status from DRAFT to PENDING)
    */
   async finalizeInvoice(id: string): Promise<Invoice> {
-    return this.client.post(`${this.basePath}/${id}/finalize`, {});
+    return this?.client.post(`${this.basePath}/${id}/finalize`, {});
   }
 
   /**
    * Mark an invoice as sent
    */
   async markInvoiceAsSent(id: string): Promise<Invoice> {
-    return this.client.post(`${this.basePath}/${id}/send`, {});
+    return this?.client.post(`${this.basePath}/${id}/send`, {});
   }
 
   /**
    * Void an invoice
    */
   async voidInvoice(id: string): Promise<Invoice> {
-    return this.client.post(`${this.basePath}/${id}/void`, {});
+    return this?.client.post(`${this.basePath}/${id}/void`, {});
   }
 
   /**
    * Record a payment for an invoice
    */
   async createPayment(id: string, payment: CreateInvoicePaymentDto): Promise<InvoicePayment> {
-    return this.client.post(`${this.basePath}/${id}/payments`, payment);
+    return this?.client.post(`${this.basePath}/${id}/payments`, payment);
   }
 
   /**
    * Get all payments for an invoice
    */
   async getPaymentsByInvoiceId(id: string): Promise<InvoicePayment[]> {
-    return this.client.get(`${this.basePath}/${id}/payments`);
+    return this?.client.get(`${this.basePath}/${id}/payments`);
   }
 
   /**
@@ -98,7 +98,7 @@ export class InvoicesClient {
   async getInvoicesByCustomer(
     customerId: string, 
     params?: Omit<InvoiceListParams, 'customerId'>
-  ): Promise<{ data: Invoice[]; total: number; page: number; limit: number }> {
-    return this.client.get(`${this.basePath}/customer/${customerId}`, { params: params as unknown as Record<string, string> });
+  ): Promise<{ data: Invoice[]; total: number | null; page: number | null; limit: number }> {
+    return this?.client.get(`${this.basePath}/customer/${customerId}`, { params: params as unknown as Record<string, string> });
   }
 }

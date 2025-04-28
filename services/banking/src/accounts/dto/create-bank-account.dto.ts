@@ -18,12 +18,12 @@ export class CreateBankAccountDto {
   @ApiProperty({ description: 'Bank account number', example: '1234567890' })
   @IsString()
   @IsNotEmpty()
-  accountNumber: string;
+  accountNumber: string | null;
 
   @ApiProperty({ description: 'Name of the bank account', example: 'Operating Account' })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name: string | null;
 
   @ApiProperty({
     description: 'Description of the bank account',
@@ -32,7 +32,7 @@ export class CreateBankAccountDto {
   })
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({
     description: 'Type of bank account',
@@ -56,7 +56,7 @@ export class CreateBankAccountDto {
   @ApiProperty({ description: 'ID of the bank where this account is held' })
   @IsUUID()
   @IsNotEmpty()
-  bankId: string;
+  bankId: string | null;
 
   @ApiProperty({
     description: 'Associated general ledger account ID',
@@ -64,7 +64,7 @@ export class CreateBankAccountDto {
   })
   @IsUUID()
   @IsOptional()
-  glAccountId?: string;
+  glAccountId?: string | null;
 
   @ApiProperty({
     description: 'Initial opening balance of the account',
@@ -95,5 +95,5 @@ export class CreateBankAccountDto {
   })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 } 

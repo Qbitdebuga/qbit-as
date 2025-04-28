@@ -26,7 +26,7 @@ export class ExpenseCategoriesController {
   @ApiResponse({ status: 201, description: 'The expense category has been successfully created.', type: ExpenseCategory })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   create(@Body() createExpenseCategoryDto: CreateExpenseCategoryDto) {
-    return this.expenseCategoriesService.create(createExpenseCategoryDto);
+    return this?.expenseCategoriesService.create(createExpenseCategoryDto);
   }
 
   @Get()
@@ -42,7 +42,7 @@ export class ExpenseCategoriesController {
     @Query('isActive') isActive?: boolean,
     @Query('search') search?: string,
   ) {
-    return this.expenseCategoriesService.findAll({
+    return this?.expenseCategoriesService.findAll({
       page,
       limit,
       isActive,
@@ -54,7 +54,7 @@ export class ExpenseCategoriesController {
   @ApiOperation({ summary: 'Get all active expense categories' })
   @ApiResponse({ status: 200, description: 'Return all active expense categories.', type: [ExpenseCategory] })
   findActive() {
-    return this.expenseCategoriesService.findActive();
+    return this?.expenseCategoriesService.findActive();
   }
 
   @Get(':id')
@@ -63,7 +63,7 @@ export class ExpenseCategoriesController {
   @ApiResponse({ status: 404, description: 'Expense category not found.' })
   @ApiParam({ name: 'id', type: 'number' })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.expenseCategoriesService.findOne(id);
+    return this?.expenseCategoriesService.findOne(id);
   }
 
   @Patch(':id')
@@ -75,7 +75,7 @@ export class ExpenseCategoriesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateExpenseCategoryDto: UpdateExpenseCategoryDto,
   ) {
-    return this.expenseCategoriesService.update(id, updateExpenseCategoryDto);
+    return this?.expenseCategoriesService.update(id, updateExpenseCategoryDto);
   }
 
   @Delete(':id')
@@ -85,6 +85,6 @@ export class ExpenseCategoriesController {
   @ApiResponse({ status: 409, description: 'This category has expenses associated with it and cannot be deleted.' })
   @ApiParam({ name: 'id', type: 'number' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.expenseCategoriesService.remove(id);
+    return this?.expenseCategoriesService.remove(id);
   }
 } 

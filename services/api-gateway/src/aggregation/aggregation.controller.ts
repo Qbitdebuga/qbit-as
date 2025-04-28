@@ -27,7 +27,7 @@ export class AggregationController {
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getDashboard(@Param('userId') userId: string) {
-    return this.aggregationService.getUserFinancialOverview(userId);
+    return this?.aggregationService.getUserFinancialOverview(userId);
   }
 
   @Get('financial-overview/:userId')
@@ -44,7 +44,7 @@ export class AggregationController {
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getFinancialOverview(@Param('userId') userId: string) {
-    return this.aggregationService.getUserFinancialOverview(userId);
+    return this?.aggregationService.getUserFinancialOverview(userId);
   }
 
   @Get('account-details/:accountId')
@@ -75,6 +75,6 @@ export class AggregationController {
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string
   ) {
-    return this.aggregationService.getAccountWithTransactions(accountId, fromDate, toDate);
+    return this?.aggregationService.getAccountWithTransactions(accountId, fromDate, toDate);
   }
 } 

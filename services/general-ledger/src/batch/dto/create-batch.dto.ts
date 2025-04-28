@@ -5,7 +5,7 @@ import { CreateJournalEntryDto } from '../../journal-entries/dto/create-journal-
 export class CreateBatchDto {
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 
   @IsArray()
   @IsNotEmpty()

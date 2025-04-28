@@ -8,11 +8,11 @@ import { PinoLoggerService, LoggerModule, PinoLoggerMiddleware } from '@qbit/log
 @Injectable()
 export class ExampleService {
   constructor(private readonly logger: PinoLoggerService) {
-    this.logger.setContext('ExampleService');
+    this?.logger.setContext('ExampleService');
   }
 
   getHello(): string {
-    this.logger.log('Hello method called');
+    this?.logger.log('Hello method called');
     
     try {
       // Some operation that might fail
@@ -22,23 +22,23 @@ export class ExampleService {
       
       return 'Hello World!';
     } catch (error) {
-      this.logger.error('Error in getHello method', error.stack, { error: error.message });
+      this?.logger.error('Error in getHello method', error.stack, { error: error.message });
       throw error;
     }
   }
 
   performOperation(data: any): void {
-    this.logger.log('Starting operation', { data });
+    this?.logger.log('Starting operation', { data });
     
     // Log different levels
-    this.logger.debug('This is a debug message with details', { step: 'initialization' });
-    this.logger.info('Operation in progress');
+    this?.logger.debug('This is a debug message with details', { step: 'initialization' });
+    this?.logger.info('Operation in progress');
     
     if (!data.isValid) {
-      this.logger.warn('Invalid data provided', { validation: false, data });
+      this?.logger.warn('Invalid data provided', { validation: false, data });
     }
     
-    this.logger.log('Operation completed', { success: true });
+    this?.logger.log('Operation completed', { success: true });
   }
 }
 
@@ -51,12 +51,12 @@ export class ExampleController {
 
   @Get()
   getHello(): string {
-    return this.service.getHello();
+    return this?.service.getHello();
   }
   
   @Get('operation')
   runOperation(): string {
-    this.service.performOperation({ isValid: false, value: 'test' });
+    this?.service.performOperation({ isValid: false, value: 'test' });
     return 'Operation executed';
   }
 }

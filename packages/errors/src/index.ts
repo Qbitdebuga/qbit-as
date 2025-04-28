@@ -1,12 +1,12 @@
 // Export exceptions
-export * from './exceptions/api.exception.js';
-export * from './exceptions/business.exception.js';
+export * from './exceptions/api.exception';
+export * from './exceptions/business.exception';
 
 // Export filters
-export * from './filters/global-exception.filter.js';
+export * from './filters/global-exception.filter';
 
 // Export interceptors
-export * from './interceptors/error-handling.interceptor.js';
+export * from './interceptors/error-handling.interceptor';
 
 // Export type definitions and helpers
 export * from './types.js';

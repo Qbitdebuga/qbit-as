@@ -17,7 +17,7 @@ import { CurrentUser as CurrentUserType } from '../types/token.types';
  * ```
  */
 export const GetCurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): CurrentUserType => {
+  (data: unknown, ctx: ExecutionContext): CurrentUserType: any => {
     const request = ctx.switchToHttp().getRequest();
     return request.user;
   },

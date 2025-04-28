@@ -9,11 +9,11 @@ import { ApiClient } from '../api-client';
 import { ApiClientBase } from '../utils/api-client-base';
 
 export interface VendorListParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  isActive?: boolean;
-  sortBy?: string;
+  page?: number | null;
+  limit?: number | null;
+  search?: string | null;
+  isActive?: boolean | null;
+  sortBy?: string | null;
   sortDirection?: 'asc' | 'desc';
 }
 
@@ -24,11 +24,11 @@ export class VendorsClient extends ApiClientBase {
 
   async getVendors(params?: VendorListParams): Promise<{ 
     data: Vendor[]; 
-    total: number; 
-    page: number; 
+    total: number | null; 
+    page: number | null; 
     limit: number 
   }> {
-    return this.get<{ data: Vendor[]; total: number; page: number; limit: number }>(
+    return this.get<{ data: Vendor[]; total: number | null; page: number | null; limit: number }>(
       '/vendors',
       { params }
     );

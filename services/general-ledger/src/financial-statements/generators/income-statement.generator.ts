@@ -16,10 +16,10 @@ export class IncomeStatementGenerator {
     comparativePeriod?: any,
     includeZeroBalances = false
   ): Promise<any> {
-    this.logger.log(`Generating income statement for period: ${startDate} to ${endDate}`);
+    this?.logger.log(`Generating income statement for period: ${startDate} to ${endDate}`);
 
     // Get revenue and expense accounts
-    const accounts = await this.prisma.db.account.findMany({
+    const accounts = await this?.prisma.db?.account.findMany({
       where: {
         isActive: true,
         type: {
@@ -117,7 +117,7 @@ export class IncomeStatementGenerator {
     const accountIds = accounts.map(account => account.id);
     
     // Execute a raw SQL query to get account balances
-    const result = await this.prisma.$queryRaw<Array<{accountId: string, balance: Decimal}>>`
+    const result = await this?.prisma.$queryRaw<Array<{accountId: string, balance: Decimal}>>`
       SELECT 
         "accountId", 
         SUM(COALESCE("credit", 0) - COALESCE("debit", 0)) as balance
@@ -165,7 +165,7 @@ export class IncomeStatementGenerator {
     const sections: IncomeStatementSection[] = [];
     for (const [subtype, subtypeAccounts] of Object.entries(subtypeGroups)) {
       const formattedAccounts: IncomeStatementAccount[] = subtypeAccounts
-        .map(account => {
+        .map(account: any => {
           const amount = balances[account.id] || 0;
           const previousAmount = comparativeBalances[account.id] || 0;
           const change = amount - previousAmount;

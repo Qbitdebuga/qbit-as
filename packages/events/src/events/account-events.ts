@@ -4,16 +4,16 @@ import { Event } from '../publishers/base-publisher';
  * Account interface for events
  */
 export interface AccountEventData {
-  id: string;
-  code: string;
-  name: string;
-  description?: string;
-  type: string;
-  category: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  createdById: string;
+  id: string | null;
+  code: string | null;
+  name: string | null;
+  description?: string | null;
+  type: string | null;
+  category: string | null;
+  isActive: boolean | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  createdById: string | null;
 }
 
 // Account created event
@@ -26,9 +26,9 @@ export interface AccountCreatedEvent extends Event {
 export interface AccountUpdatedEvent extends Event {
   subject: 'account.updated';
   data: {
-    id: string;
+    id: string | null;
     changes: Partial<AccountEventData>;
-    updatedById: string;
+    updatedById: string | null;
   };
 }
 
@@ -36,8 +36,8 @@ export interface AccountUpdatedEvent extends Event {
 export interface AccountDeletedEvent extends Event {
   subject: 'account.deleted';
   data: {
-    id: string;
-    deactivatedById: string;
+    id: string | null;
+    deactivatedById: string | null;
   };
 }
 
@@ -45,10 +45,10 @@ export interface AccountDeletedEvent extends Event {
 export interface AccountBalanceChangedEvent extends Event {
   subject: 'account.balance_changed';
   data: {
-    id: string;
-    previousBalance: number;
-    newBalance: number;
-    transactionId: string;
-    timestamp: string;
+    id: string | null;
+    previousBalance: number | null;
+    newBalance: number | null;
+    transactionId: string | null;
+    timestamp: string | null;
   };
 } 

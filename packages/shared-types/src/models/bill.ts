@@ -10,105 +10,111 @@ export enum BillStatus {
 }
 
 export interface BillLineItem {
-  id: number;
-  billId: number;
-  description: string;
-  accountId?: number;
-  quantity: number;
-  unitPrice: number;
-  discountPercent?: number;
-  taxPercent?: number;
-  lineTotal: number;
-  notes?: string;
+  id: number | null;
+  billId: number | null;
+  description: string | null;
+  accountId?: number | null;
+  quantity: number | null;
+  unitPrice: number | null;
+  discountPercent?: number | null;
+  taxPercent?: number | null;
+  lineTotal: number | null;
+  notes?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface Bill {
-  id: number;
-  billNumber: string;
-  vendorId: number;
+  id: number | null;
+  billNumber: string | null;
+  vendorId: number | null;
   vendor?: any; // This will be populated with vendor data when needed
-  reference?: string;
+  reference?: string | null;
   issueDate: Date;
   dueDate: Date;
   status: BillStatus;
-  subtotal: number;
-  taxAmount?: number;
-  discountAmount?: number;
-  totalAmount: number;
-  amountPaid: number;
-  balanceDue: number;
-  notes?: string;
-  terms?: string;
+  subtotal: number | null;
+  taxAmount?: number | null;
+  discountAmount?: number | null;
+  totalAmount: number | null;
+  amountPaid: number | null;
+  balanceDue: number | null;
+  notes?: string | null;
+  terms?: string | null;
   lineItems?: BillLineItem[];
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface CreateBillLineItemDto {
-  description: string;
-  accountId?: number;
-  quantity: number;
-  unitPrice: number;
-  discountPercent?: number;
-  taxPercent?: number;
-  lineTotal: number;
-  notes?: string;
+  description: string | null;
+  accountId?: number | null;
+  quantity: number | null;
+  unitPrice: number | null;
+  discountPercent?: number | null;
+  taxPercent?: number | null;
+  lineTotal: number | null;
+  notes?: string | null;
 }
 
 export interface CreateBillDto {
-  billNumber?: string; // Optional, can be auto-generated
-  vendorId: number;
-  reference?: string;
+  billNumber?: string | null; // Optional, can be auto-generated
+  vendorId: number | null;
+  reference?: string | null;
   issueDate: Date;
   dueDate: Date;
   status?: BillStatus;
-  subtotal: number;
-  taxAmount?: number;
-  discountAmount?: number;
-  totalAmount: number;
-  notes?: string;
-  terms?: string;
+  subtotal: number | null;
+  taxAmount?: number | null;
+  discountAmount?: number | null;
+  totalAmount: number | null;
+  notes?: string | null;
+  terms?: string | null;
   lineItems: CreateBillLineItemDto[];
 }
 
+// API client compatible type alias
+export type BillCreate = CreateBillDto;
+
 export interface UpdateBillDto {
-  vendorId?: number;
-  reference?: string;
+  vendorId?: number | null;
+  reference?: string | null;
   issueDate?: Date;
   dueDate?: Date;
   status?: BillStatus;
-  subtotal?: number;
-  taxAmount?: number;
-  discountAmount?: number;
-  totalAmount?: number;
-  amountPaid?: number;
-  balanceDue?: number;
-  notes?: string;
-  terms?: string;
+  subtotal?: number | null;
+  taxAmount?: number | null;
+  discountAmount?: number | null;
+  totalAmount?: number | null;
+  amountPaid?: number | null;
+  balanceDue?: number | null;
+  notes?: string | null;
+  terms?: string | null;
 }
 
+// API client compatible type alias
+export type BillUpdate = UpdateBillDto;
+
 export interface UpdateBillLineItemDto {
-  id?: number;
-  description?: string;
-  accountId?: number;
-  quantity?: number;
-  unitPrice?: number;
-  discountPercent?: number;
-  taxPercent?: number;
-  lineTotal?: number;
-  notes?: string;
+  id?: number | null;
+  description?: string | null;
+  accountId?: number | null;
+  quantity?: number | null;
+  unitPrice?: number | null;
+  discountPercent?: number | null;
+  taxPercent?: number | null;
+  lineTotal?: number | null;
+  notes?: string | null;
 }
 
 export interface BillListParams {
-  page?: number;
-  limit?: number;
+  page?: number | null;
+  limit?: number | null;
   status?: BillStatus;
-  vendorId?: number;
+  vendorId?: number | null;
   fromDate?: Date;
   toDate?: Date;
-  search?: string;
-  sortBy?: string;
+  search?: string | null;
+  sortBy?: string | null;
   sortDirection?: 'asc' | 'desc';
 } 

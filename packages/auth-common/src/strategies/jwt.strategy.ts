@@ -10,17 +10,17 @@ export interface JwtStrategyOptions {
   /**
    * JWT secret key
    */
-  secret: string;
+  secret: string | null;
   
   /**
    * JWT issuer
    */
-  issuer?: string;
+  issuer?: string | null;
   
   /**
    * JWT audience
    */
-  audience?: string;
+  audience?: string | null;
 }
 
 /**

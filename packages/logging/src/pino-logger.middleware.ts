@@ -9,7 +9,7 @@ import { PinoLoggerService } from './pino-logger.service';
 @Injectable()
 export class PinoLoggerMiddleware implements NestMiddleware {
   constructor(private readonly logger: PinoLoggerService) {
-    this.logger.setContext('HTTP');
+    this?.logger.setContext('HTTP');
   }
 
   /**
@@ -21,10 +21,10 @@ export class PinoLoggerMiddleware implements NestMiddleware {
     const ip = this.getIp(req);
     
     // Log request start
-    this.logger.log(`${method} ${originalUrl} - Request received`, { 
+    this?.logger.log(`${method} ${originalUrl} - Request received`, { 
       ip, 
       userAgent,
-      requestId: req.headers['x-request-id'] || '',
+      requestId: req?.headers['x-request-id'] || '',
       route: originalUrl
     });
 
@@ -42,17 +42,17 @@ export class PinoLoggerMiddleware implements NestMiddleware {
         statusCode, 
         duration, 
         contentLength, 
-        requestId: req.headers['x-request-id'] || '',
+        requestId: req?.headers['x-request-id'] || '',
         route: originalUrl
       };
       
       // Log level depends on status code
       if (statusCode >= 500) {
-        this.logger.error(`${method} ${originalUrl} ${statusCode} - ${duration}ms`, undefined, logObject);
+        this?.logger.error(`${method} ${originalUrl} ${statusCode} - ${duration}ms`, undefined, logObject);
       } else if (statusCode >= 400) {
-        this.logger.warn(`${method} ${originalUrl} ${statusCode} - ${duration}ms`, logObject);
+        this?.logger.warn(`${method} ${originalUrl} ${statusCode} - ${duration}ms`, logObject);
       } else {
-        this.logger.log(`${method} ${originalUrl} ${statusCode} - ${duration}ms`, logObject);
+        this?.logger.log(`${method} ${originalUrl} ${statusCode} - ${duration}ms`, logObject);
       }
     });
 
@@ -64,7 +64,7 @@ export class PinoLoggerMiddleware implements NestMiddleware {
    */
   private getIp(request: Request): string {
     // Check X-Forwarded-For header for proxy setups
-    const forwardedFor = request.headers['x-forwarded-for'];
+    const forwardedFor = request?.headers['x-forwarded-for'];
     if (forwardedFor) {
       // If comma-separated list, get the first IP (client IP)
       const ips = Array.isArray(forwardedFor) 

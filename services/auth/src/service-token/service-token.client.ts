@@ -1,17 +1,17 @@
 import axios from 'axios';
 
 export interface ServiceTokenClientOptions {
-  authServiceUrl: string;
-  serviceId: string;
-  serviceName: string;
-  serviceSecret: string;
+  authServiceUrl: string | null;
+  serviceId: string | null;
+  serviceName: string | null;
+  serviceSecret: string | null;
 }
 
 export class ServiceTokenClient {
-  private authServiceUrl: string;
-  private serviceId: string;
-  private serviceName: string;
-  private serviceSecret: string;
+  private authServiceUrl: string | null;
+  private serviceId: string | null;
+  private serviceName: string | null;
+  private serviceSecret: string | null;
   private token: string | null = null;
   private tokenExpiresAt: number | null = null;
 
@@ -44,7 +44,7 @@ export class ServiceTokenClient {
         },
       });
 
-      this.token = response.data.token;
+      this.token = response?.data.token;
       
       // Set expiration time to slightly less than actual to account for clock skew
       // Default to 1 hour before expiry if we can't determine it

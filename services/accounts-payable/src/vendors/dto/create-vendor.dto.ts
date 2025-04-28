@@ -5,63 +5,63 @@ export class CreateVendorDto {
   @ApiProperty({ description: 'Vendor number (unique identifier for the vendor)', example: 'V-10001' })
   @IsString()
   @IsOptional()
-  vendorNumber?: string;
+  vendorNumber?: string | null;
 
   @ApiProperty({ description: 'Name of the vendor', example: 'ABC Supplies Inc.' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Email address of the vendor', example: 'contact@abcsupplies.com' })
   @IsEmail()
   @IsOptional()
-  email?: string;
+  email?: string | null;
 
   @ApiProperty({ description: 'Phone number of the vendor', example: '+1-555-123-4567' })
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone?: string | null;
 
   @ApiProperty({ description: 'Street address of the vendor', example: '123 Business Avenue' })
   @IsString()
   @IsOptional()
-  address?: string;
+  address?: string | null;
 
   @ApiProperty({ description: 'City of the vendor', example: 'New York' })
   @IsString()
   @IsOptional()
-  city?: string;
+  city?: string | null;
 
   @ApiProperty({ description: 'State or province of the vendor', example: 'NY' })
   @IsString()
   @IsOptional()
-  state?: string;
+  state?: string | null;
 
   @ApiProperty({ description: 'ZIP or postal code of the vendor', example: '10001' })
   @IsString()
   @IsOptional()
-  zipCode?: string;
+  zipCode?: string | null;
 
   @ApiProperty({ description: 'Country of the vendor', example: 'USA' })
   @IsString()
   @IsOptional()
-  country?: string;
+  country?: string | null;
 
   @ApiProperty({ description: 'Tax identification number of the vendor', example: '12-3456789' })
   @IsString()
   @IsOptional()
-  taxId?: string;
+  taxId?: string | null;
 
-  @ApiProperty({ description: 'Website of the vendor', example: 'https://www.abcsupplies.com' })
+  @ApiProperty({ description: 'Website of the vendor', example: 'https://www?.abcsupplies.com' })
   @IsString()
   @IsOptional()
-  website?: string;
+  website?: string | null;
 
   @ApiProperty({ description: 'Additional notes about the vendor', example: 'Preferred supplier for office equipment' })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({ description: 'Whether the vendor is active', default: true, example: true })
   @IsBoolean()
@@ -77,11 +77,11 @@ export class CreateVendorDto {
   @ApiProperty({ description: 'Default GL account ID to use for this vendor', example: '2000' })
   @IsString()
   @IsOptional()
-  defaultAccountId?: string;
+  defaultAccountId?: string | null;
 
   @ApiProperty({ description: 'Credit limit for the vendor', example: 10000 })
   @IsNumber()
   @Min(0)
   @IsOptional()
-  creditLimit?: number;
+  creditLimit?: number | null;
 } 

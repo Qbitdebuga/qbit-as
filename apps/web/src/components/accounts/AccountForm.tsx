@@ -11,16 +11,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
-  Textarea,
+} from '@/components/ui';
+import { Input } from '@/components/ui';
+import { Textarea } from '@/components/ui';
+import { 
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Button,
-  Switch
-} from '../ui';
+} from '@/components/ui';
+import { Button } from '@/components/ui';
+import { Switch } from '@/components/ui';
 
 // Define AccountType and AccountSubType directly since there's an import issue
 export enum AccountType {

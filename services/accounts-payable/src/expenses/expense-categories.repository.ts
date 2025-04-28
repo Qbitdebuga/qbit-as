@@ -9,7 +9,7 @@ export class ExpenseCategoriesRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateExpenseCategoryDto) {
-    return this.prisma.expenseCategory.create({
+    return this?.prisma.expenseCategory.create({
       data: {
         name: data.name,
         description: data.description,
@@ -20,8 +20,8 @@ export class ExpenseCategoriesRepository {
   }
 
   async findAll(params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     cursor?: Record<string, any>;
     where?: Record<string, any>;
     orderBy?: Record<string, any>;
@@ -29,7 +29,7 @@ export class ExpenseCategoriesRepository {
     const { skip, take, cursor, where, orderBy } = params;
     
     const [data, total] = await Promise.all([
-      this.prisma.expenseCategory.findMany({
+      this?.prisma.expenseCategory.findMany({
         skip,
         take,
         cursor,
@@ -42,7 +42,7 @@ export class ExpenseCategoriesRepository {
           },
         },
       }),
-      this.prisma.expenseCategory.count({ where }),
+      this?.prisma.expenseCategory.count({ where }),
     ]);
     
     return {
@@ -54,7 +54,7 @@ export class ExpenseCategoriesRepository {
   }
 
   async findOne(id: number) {
-    return this.prisma.expenseCategory.findUnique({
+    return this?.prisma.expenseCategory.findUnique({
       where: { id },
       include: {
         expenses: {
@@ -66,7 +66,7 @@ export class ExpenseCategoriesRepository {
   }
 
   async update(id: number, data: UpdateExpenseCategoryDto) {
-    return this.prisma.expenseCategory.update({
+    return this?.prisma.expenseCategory.update({
       where: { id },
       data,
       include: {
@@ -80,26 +80,26 @@ export class ExpenseCategoriesRepository {
 
   async remove(id: number) {
     // First check if there are any expenses using this category
-    const expenseCount = await this.prisma.expense.count({
+    const expenseCount = await this?.prisma.expense.count({
       where: { categoryId: id },
     });
 
     if (expenseCount > 0) {
       // If expenses exist, just mark the category as inactive instead of deleting
-      return this.prisma.expenseCategory.update({
+      return this?.prisma.expenseCategory.update({
         where: { id },
         data: { isActive: false },
       });
     }
 
     // Otherwise, delete the category
-    return this.prisma.expenseCategory.delete({
+    return this?.prisma.expenseCategory.delete({
       where: { id },
     });
   }
 
   async findActive() {
-    return this.prisma.expenseCategory.findMany({
+    return this?.prisma.expenseCategory.findMany({
       where: { isActive: true },
       orderBy: { name: 'asc' },
     });

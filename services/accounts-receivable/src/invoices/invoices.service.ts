@@ -22,7 +22,7 @@ export class InvoicesService {
       const invoiceNumber = `INV-${(invoiceCount + 1).toString().padStart(5, '0')}`;
 
       // Calculate totals
-      const subtotal = createInvoiceDto.items.reduce(
+      const subtotal = createInvoiceDto?.items.reduce(
         (sum, item) => sum + item.quantity * item.unitPrice,
         0,
       );
@@ -45,7 +45,7 @@ export class InvoicesService {
       const balanceDue = totalAmount; // Initially the balance due is the total amount
 
       // Create invoice and invoice items in a transaction
-      const result = await this.prisma.$transaction(async (prisma) => {
+      const result = await this?.prisma.$transaction(async (prisma) => {
         // Create the invoice with type casting to avoid TS errors
         const invoice = await (prisma as any).invoice.create({
           data: {
@@ -102,12 +102,12 @@ export class InvoicesService {
 
       return result as unknown as Invoice;
     } catch (error: any) {
-      this.logger.error(`Error creating invoice: ${error.message}`, error.stack);
+      this?.logger.error(`Error creating invoice: ${error.message}`, error.stack);
       throw error;
     }
   }
 
-  async findAll(params: InvoiceListParamsDto): Promise<{ data: Invoice[]; total: number; page: number; limit: number }> {
+  async findAll(params: InvoiceListParamsDto): Promise<{ data: Invoice[]; total: number | null; page: number | null; limit: number }> {
     try {
       const { page = 1, limit = 10, status, customerId, sortBy = 'createdAt' } = params;
       const skip = (page - 1) * limit;
@@ -149,7 +149,7 @@ export class InvoicesService {
         limit,
       };
     } catch (error: any) {
-      this.logger.error(`Error finding all invoices: ${error.message}`, error.stack);
+      this?.logger.error(`Error finding all invoices: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -173,7 +173,7 @@ export class InvoicesService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      this.logger.error(`Error finding invoice ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Error finding invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -221,7 +221,7 @@ export class InvoicesService {
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
       }
-      this.logger.error(`Error updating invoice ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Error updating invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -241,7 +241,7 @@ export class InvoicesService {
         where: { id },
       });
     } catch (error: any) {
-      this.logger.error(`Error deleting invoice ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Error deleting invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -266,7 +266,7 @@ export class InvoicesService {
 
       return this.findOne(id);
     } catch (error: any) {
-      this.logger.error(`Error finalizing invoice ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Error finalizing invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -291,7 +291,7 @@ export class InvoicesService {
 
       return this.findOne(id);
     } catch (error: any) {
-      this.logger.error(`Error marking invoice ${id} as sent: ${error.message}`, error.stack);
+      this?.logger.error(`Error marking invoice ${id} as sent: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -305,7 +305,7 @@ export class InvoicesService {
       if (
         existingInvoice.status === InvoiceStatus.PAID ||
         existingInvoice.status === InvoiceStatus.VOID ||
-        (existingInvoice.payments && existingInvoice.payments.length > 0)
+        (existingInvoice.payments && existingInvoice?.payments.length > 0)
       ) {
         throw new BadRequestException(`Cannot void invoice that is paid, already void, or has payments`);
       }
@@ -320,7 +320,7 @@ export class InvoicesService {
 
       return this.findOne(id);
     } catch (error: any) {
-      this.logger.error(`Error voiding invoice ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Error voiding invoice ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -328,7 +328,7 @@ export class InvoicesService {
   async createPayment(createPaymentDto: CreateInvoicePaymentDto): Promise<InvoicePayment> {
     try {
       // Process the payment in a transaction to ensure data consistency
-      return await this.prisma.$transaction(async (prisma) => {
+      return await this?.prisma.$transaction(async (prisma) => {
         // 1. Get the invoice and check its status
         const invoice = await (prisma as any).invoice.findUnique({
           where: { id: createPaymentDto.invoiceId },
@@ -383,7 +383,7 @@ export class InvoicesService {
         return payment;
       });
     } catch (error: any) {
-      this.logger.error(`Error creating payment: ${error.message}`, error.stack);
+      this?.logger.error(`Error creating payment: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -404,7 +404,7 @@ export class InvoicesService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      this.logger.error(`Error getting payments for invoice ${invoiceId}: ${error.message}`, error.stack);
+      this?.logger.error(`Error getting payments for invoice ${invoiceId}: ${error.message}`, error.stack);
       throw error;
     }
   }

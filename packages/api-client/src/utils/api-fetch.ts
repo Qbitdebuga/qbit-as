@@ -1,7 +1,7 @@
 export interface ApiClientOptions {
   headers?: Record<string, string>;
-  method?: string;
-  body?: string;
+  method?: string | null;
+  body?: string | null;
 }
 
 /**

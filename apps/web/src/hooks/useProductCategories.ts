@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useApiClient } from './useApiClient';
-import { IProductCategory } from '@qbit-accounting/shared-types';
+import { IProductCategory } from '@qbit/shared-types';
 
 export function useProductCategories() {
   const [categories, setCategories] = useState<IProductCategory[]>([]);

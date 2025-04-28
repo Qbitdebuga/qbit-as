@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findByEmail(email);
+    const user = await this?.userService.findByEmail(email);
     
     if (user && await bcrypt.compare(password, user.password)) {
       const { password, ...result } = user;
@@ -34,7 +34,7 @@ export class AuthService {
     
     try {
       // Create the user
-      const user = await this.userService.create({
+      const user = await this?.userService.create({
         email: registerDto.email,
         name: registerDto.name,
         password: registerDto.password,
@@ -60,7 +60,7 @@ export class AuthService {
       }
       
       // Handle other errors that might include a message about email uniqueness
-      if (error instanceof Error && error.message.includes('email already exists')) {
+      if (error instanceof Error && error?.message.includes('email already exists')) {
         throw new ConflictException('Email already in use');
       }
       
@@ -70,7 +70,7 @@ export class AuthService {
 
   async forgotPassword(email: string) {
     // Check if user exists
-    const user = await this.userService.findByEmail(email);
+    const user = await this?.userService.findByEmail(email);
     
     // For security reasons, don't reveal if the email exists or not
     if (!user) {
@@ -78,10 +78,10 @@ export class AuthService {
     }
     
     // Generate a password reset token
-    const token = this.jwtService.sign(
+    const token = this?.jwtService.sign(
       { sub: user.id, email: user.email, type: 'password-reset' },
       { 
-        secret: this.configService.get<string>('JWT_SECRET'),
+        secret: this?.configService.get<string>('JWT_SECRET'),
         expiresIn: '15m' 
       }
     );
@@ -103,8 +103,8 @@ export class AuthService {
     
     try {
       // Verify token
-      const decoded = this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
+      const decoded = this?.jwtService.verify(token, {
+        secret: this?.configService.get<string>('JWT_SECRET'),
       });
       
       // Check if this is a password reset token
@@ -113,13 +113,13 @@ export class AuthService {
       }
       
       // Find user
-      const user = await this.userService.findById(decoded.sub);
+      const user = await this?.userService.findById(decoded.sub);
       if (!user) {
         throw new NotFoundException('User not found');
       }
       
       // Update user's password
-      await this.userService.update(user.id, { password });
+      await this?.userService.update(user.id, { password });
       
       return { message: 'Password reset successful' };
     } catch (error) {
@@ -154,12 +154,12 @@ export class AuthService {
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
       // Verify refresh token
-      const decoded = this.jwtService.verify(refreshTokenDto.refreshToken, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      const decoded = this?.jwtService.verify(refreshTokenDto.refreshToken, {
+        secret: this?.configService.get<string>('JWT_REFRESH_SECRET'),
       });
 
       // Get user
-      const user = await this.userService.findById(decoded.sub);
+      const user = await this?.userService.findById(decoded.sub);
       if (!user) {
         throw new ForbiddenException('Access denied');
       }
@@ -173,25 +173,25 @@ export class AuthService {
 
   private async getTokens(userId: string, email: string, roles: string[]) {
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(
+      this?.jwtService.signAsync(
         {
           sub: userId,
           email,
           roles,
         },
         {
-          secret: this.configService.get<string>('JWT_SECRET'),
+          secret: this?.configService.get<string>('JWT_SECRET'),
           expiresIn: '15m',
         },
       ),
-      this.jwtService.signAsync(
+      this?.jwtService.signAsync(
         {
           sub: userId,
           email,
           roles,
         },
         {
-          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          secret: this?.configService.get<string>('JWT_REFRESH_SECRET'),
           expiresIn: '7d',
         },
       ),

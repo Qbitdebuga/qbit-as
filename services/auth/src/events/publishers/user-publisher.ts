@@ -4,10 +4,10 @@ import { USER_EVENTS } from '../constants/event-patterns';
 
 // Define a User interface to avoid the @prisma/client import issue
 interface User {
-  id: string;
-  email: string;
-  name?: string;
-  password: string;
+  id: string | null;
+  email: string | null;
+  name?: string | null;
+  password: string | null;
   roles: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -24,25 +24,25 @@ export class UserPublisher {
   async publishUserCreated(user: User): Promise<void> {
     try {
       const eventPayload = this.sanitizeUser(user);
-      this.logger.log(`Publishing ${USER_EVENTS.CREATED} event for user ${user.id}`);
+      this?.logger.log(`Publishing ${USER_EVENTS.CREATED} event for user ${user.id}`);
       
-      await this.client.emit(USER_EVENTS.CREATED, {
+      await this?.client.emit(USER_EVENTS.CREATED, {
         serviceSource: 'auth-service',
         entityType: 'user',
         timestamp: new Date().toISOString(),
         data: eventPayload
       }).toPromise();
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${USER_EVENTS.CREATED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${USER_EVENTS.CREATED} event: ${error.message}`, error.stack);
     }
   }
 
   async publishUserUpdated(user: User, previousData?: Partial<User> | null): Promise<void> {
     try {
       const eventPayload = this.sanitizeUser(user);
-      this.logger.log(`Publishing ${USER_EVENTS.UPDATED} event for user ${user.id}`);
+      this?.logger.log(`Publishing ${USER_EVENTS.UPDATED} event for user ${user.id}`);
       
-      await this.client.emit(USER_EVENTS.UPDATED, {
+      await this?.client.emit(USER_EVENTS.UPDATED, {
         serviceSource: 'auth-service',
         entityType: 'user',
         timestamp: new Date().toISOString(),
@@ -50,13 +50,13 @@ export class UserPublisher {
         previousData: previousData ? this.sanitizeUser(previousData as User) : undefined
       }).toPromise();
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${USER_EVENTS.UPDATED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${USER_EVENTS.UPDATED} event: ${error.message}`, error.stack);
     }
   }
 
   async publishUserDeleted(userId: string, userData: Partial<User> | null): Promise<void> {
     try {
-      this.logger.log(`Publishing ${USER_EVENTS.DELETED} event for user ${userId}`);
+      this?.logger.log(`Publishing ${USER_EVENTS.DELETED} event for user ${userId}`);
       
       // Only process if userData exists
       if (userData) {
@@ -64,7 +64,7 @@ export class UserPublisher {
         const { id, ...userDataWithoutId } = userData as User;
         const sanitizedData = this.sanitizeUser({ id: userId, ...userDataWithoutId } as User);
         
-        await this.client.emit(USER_EVENTS.DELETED, {
+        await this?.client.emit(USER_EVENTS.DELETED, {
           serviceSource: 'auth-service',
           entityType: 'user',
           timestamp: new Date().toISOString(),
@@ -72,7 +72,7 @@ export class UserPublisher {
         }).toPromise();
       } else {
         // If no user data, just send the basic info
-        await this.client.emit(USER_EVENTS.DELETED, {
+        await this?.client.emit(USER_EVENTS.DELETED, {
           serviceSource: 'auth-service',
           entityType: 'user',
           timestamp: new Date().toISOString(),
@@ -80,7 +80,7 @@ export class UserPublisher {
         }).toPromise();
       }
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${USER_EVENTS.DELETED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${USER_EVENTS.DELETED} event: ${error.message}`, error.stack);
     }
   }
 

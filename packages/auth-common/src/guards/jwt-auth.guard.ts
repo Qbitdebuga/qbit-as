@@ -35,7 +35,7 @@ export class JwtAuthGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = this.getRequest(context);
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+    const isPublic = this?.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
@@ -101,12 +101,12 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Missing authorization header');
     }
 
-    const token = this.tokenValidationService.extractTokenFromHeader(authHeader);
+    const token = this?.tokenValidationService.extractTokenFromHeader(authHeader);
     if (!token) {
       throw new UnauthorizedException('Invalid token format');
     }
 
     // Validate the token and extract user
-    return await this.tokenValidationService.getUserFromToken(token);
+    return await this?.tokenValidationService.getUserFromToken(token);
   }
 } 

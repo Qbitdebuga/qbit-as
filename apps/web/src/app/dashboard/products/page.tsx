@@ -8,8 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Package } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { productsClient } from '@qbit-accounting/api-client';
-import { IProduct } from '@qbit-accounting/shared-types';
+import { productsClient } from '@/mocks/api-client';
+import { IProduct } from '@/mocks/shared-types';
 
 export default function ProductsPage() {
   const router = useRouter();

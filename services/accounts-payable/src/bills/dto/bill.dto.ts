@@ -7,37 +7,37 @@ export class BillDto {
     example: '123e4567-e89b-12d3-a456-426614174000',
     description: 'Unique identifier for the bill',
   })
-  id: string;
+  id: string | null;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174001',
     description: 'ID of the vendor the bill is from',
   })
-  vendorId: string;
+  vendorId: string | null;
 
   @ApiPropertyOptional({
     example: 'Acme Supplies',
     description: 'Name of the vendor',
   })
-  vendorName?: string;
+  vendorName?: string | null;
 
   @ApiProperty({
     example: 'INV-12345',
     description: 'Invoice number from the vendor',
   })
-  invoiceNumber: string;
+  invoiceNumber: string | null;
 
   @ApiProperty({
     example: '2023-05-01',
     description: 'Date the bill was issued',
   })
-  issueDate: string;
+  issueDate: string | null;
 
   @ApiProperty({
     example: '2023-05-31',
     description: 'Date the bill is due',
   })
-  dueDate: string;
+  dueDate: string | null;
 
   @ApiProperty({
     example: BillStatus.PENDING,
@@ -50,37 +50,37 @@ export class BillDto {
     example: 1000.00,
     description: 'Subtotal amount before taxes',
   })
-  subtotal: number;
+  subtotal: number | null;
 
   @ApiProperty({
     example: 100.00,
     description: 'Total tax amount',
   })
-  taxTotal: number;
+  taxTotal: number | null;
 
   @ApiProperty({
     example: 1100.00,
     description: 'Total amount including taxes',
   })
-  total: number;
+  total: number | null;
 
   @ApiProperty({
     example: 500.00,
     description: 'Amount paid so far',
   })
-  amountPaid: number;
+  amountPaid: number | null;
 
   @ApiProperty({
     example: 600.00,
     description: 'Remaining balance due',
   })
-  balanceDue: number;
+  balanceDue: number | null;
 
   @ApiPropertyOptional({
     example: 'Net 30 payment terms',
     description: 'Additional notes about the bill',
   })
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({
     type: [BillLineItemDto],
@@ -92,11 +92,11 @@ export class BillDto {
     example: '2023-05-01T00:00:00.000Z',
     description: 'Date and time when the bill was created',
   })
-  createdAt: string;
+  createdAt: string | null;
 
   @ApiProperty({
     example: '2023-05-01T00:00:00.000Z',
     description: 'Date and time when the bill was last updated',
   })
-  updatedAt: string;
+  updatedAt: string | null;
 } 

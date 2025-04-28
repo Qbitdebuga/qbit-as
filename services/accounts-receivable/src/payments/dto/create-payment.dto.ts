@@ -4,16 +4,16 @@ import { PaymentMethod } from '../../invoices/entities/payment-method.enum';
 export class CreatePaymentDto {
   @IsNotEmpty()
   @IsString()
-  invoiceId!: string;
+  invoiceId!: string | null;
 
   @IsNotEmpty()
   @IsDateString()
-  paymentDate!: string;
+  paymentDate!: string | null;
 
   @IsNotEmpty()
   @IsNumber()
   @Min(0.01)
-  amount!: number;
+  amount!: number | null;
 
   @IsNotEmpty()
   @IsEnum(PaymentMethod)
@@ -21,9 +21,9 @@ export class CreatePaymentDto {
 
   @IsOptional()
   @IsString()
-  referenceNumber?: string;
+  referenceNumber?: string | null;
 
   @IsOptional()
   @IsString()
-  notes?: string;
+  notes?: string | null;
 } 

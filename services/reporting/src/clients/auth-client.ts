@@ -9,7 +9,7 @@ import { UserDto } from '../dto/user.dto';
 @Injectable()
 export class AuthClientService {
   private readonly logger = new Logger(AuthClientService.name);
-  private readonly authServiceUrl: string;
+  private readonly authServiceUrl: string | null;
   private serviceToken: string | null = null;
   private tokenExpiration: Date | null = null;
 
@@ -18,9 +18,9 @@ export class AuthClientService {
     private readonly httpService: HttpService,
     private readonly jwtService: JwtService,
   ) {
-    this.authServiceUrl = this.configService.get<string>('AUTH_SERVICE_URL');
+    this.authServiceUrl = this?.configService.get<string>('AUTH_SERVICE_URL');
     if (!this.authServiceUrl) {
-      this.logger.error('AUTH_SERVICE_URL is not defined in environment variables');
+      this?.logger.error('AUTH_SERVICE_URL is not defined in environment variables');
       throw new Error('AUTH_SERVICE_URL is not defined');
     }
   }
@@ -35,24 +35,24 @@ export class AuthClientService {
     }
 
     try {
-      const serviceId = this.configService.get<string>('SERVICE_ID');
-      const serviceSecret = this.configService.get<string>('SERVICE_SECRET');
+      const serviceId = this?.configService.get<string>('SERVICE_ID');
+      const serviceSecret = this?.configService.get<string>('SERVICE_SECRET');
 
       if (!serviceId || !serviceSecret) {
         throw new Error('Service credentials not properly configured');
       }
 
       const response = await firstValueFrom(
-        this.httpService.post(`${this.authServiceUrl}/auth/service/token`, {
+        this?.httpService.post(`${this.authServiceUrl}/auth/service/token`, {
           serviceId,
           serviceSecret,
         }),
       );
 
-      this.serviceToken = response.data.accessToken;
+      this.serviceToken = response?.data.accessToken;
 
       // Decode token to get expiration
-      const decoded = this.jwtService.decode(this.serviceToken);
+      const decoded = this?.jwtService.decode(this.serviceToken);
       if (decoded && typeof decoded === 'object' && decoded.exp) {
         this.tokenExpiration = new Date(decoded.exp * 1000);
       } else {
@@ -62,7 +62,7 @@ export class AuthClientService {
 
       return this.serviceToken;
     } catch (error) {
-      this.logger.error(`Failed to get service token: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get service token: ${error.message}`, error.stack);
       throw new Error(`Authentication with Auth service failed: ${error.message}`);
     }
   }
@@ -89,19 +89,19 @@ export class AuthClientService {
       let response;
       if (method === 'GET') {
         response = await firstValueFrom(
-          this.httpService.get(url, requestConfig),
+          this?.httpService.get(url, requestConfig),
         );
       } else if (method === 'POST') {
         response = await firstValueFrom(
-          this.httpService.post(url, data, requestConfig),
+          this?.httpService.post(url, data, requestConfig),
         );
       } else if (method === 'PUT') {
         response = await firstValueFrom(
-          this.httpService.put(url, data, requestConfig),
+          this?.httpService.put(url, data, requestConfig),
         );
       } else if (method === 'DELETE') {
         response = await firstValueFrom(
-          this.httpService.delete(url, requestConfig),
+          this?.httpService.delete(url, requestConfig),
         );
       } else {
         throw new Error(`Unsupported HTTP method: ${method}`);
@@ -109,7 +109,7 @@ export class AuthClientService {
 
       return response.data;
     } catch (error) {
-      this.logger.error(`Request to Auth service failed: ${error.message}`, error.stack);
+      this?.logger.error(`Request to Auth service failed: ${error.message}`, error.stack);
       throw new Error(`Request to Auth service failed: ${error.message}`);
     }
   }
@@ -124,7 +124,7 @@ export class AuthClientService {
         'GET',
       );
     } catch (error) {
-      this.logger.error(`Failed to get user by ID: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get user by ID: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -140,7 +140,7 @@ export class AuthClientService {
         { userIds },
       );
     } catch (error) {
-      this.logger.error(`Failed to get users by IDs: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get users by IDs: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -156,7 +156,7 @@ export class AuthClientService {
         { token },
       );
     } catch (error) {
-      this.logger.error(`Failed to validate token: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to validate token: ${error.message}`, error.stack);
       throw error;
     }
   }

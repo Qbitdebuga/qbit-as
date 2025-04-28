@@ -40,7 +40,7 @@ structuredLogger.setContext('StructuredExample');
 structuredLogger.log({
   message: 'User signed in',
   userId: 'abcd-1234',
-  ipAddress: '192.168.1.1',
+  ipAddress: '192?.168.1.1',
   browser: 'Chrome',
   timestamp: new Date().toISOString(),
 });

@@ -9,7 +9,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   // Create custom logger
   const logger = new LoggerService({
-    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    level: process?.env.NODE_ENV === 'production' ? 'info' : 'debug',
     logDir: 'logs',
     fileName: 'accounts-payable',
   });

@@ -4,9 +4,9 @@ import { ROLE_EVENTS } from '../constants/event-patterns';
 
 // Define a Role interface
 interface Role {
-  id: string;
-  name: string;
-  description: string;
+  id: string | null;
+  name: string | null;
+  description: string | null;
   permissions: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -22,24 +22,24 @@ export class RolePublisher {
 
   async publishRoleCreated(role: Role): Promise<void> {
     try {
-      this.logger.log(`Publishing ${ROLE_EVENTS.CREATED} event for role ${role.id}`);
+      this?.logger.log(`Publishing ${ROLE_EVENTS.CREATED} event for role ${role.id}`);
       
-      await this.client.emit(ROLE_EVENTS.CREATED, {
+      await this?.client.emit(ROLE_EVENTS.CREATED, {
         serviceSource: 'auth-service',
         entityType: 'role',
         timestamp: new Date().toISOString(),
         data: role
       }).toPromise();
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${ROLE_EVENTS.CREATED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${ROLE_EVENTS.CREATED} event: ${error.message}`, error.stack);
     }
   }
 
   async publishRoleUpdated(role: Role, previousData?: Partial<Role>): Promise<void> {
     try {
-      this.logger.log(`Publishing ${ROLE_EVENTS.UPDATED} event for role ${role.id}`);
+      this?.logger.log(`Publishing ${ROLE_EVENTS.UPDATED} event for role ${role.id}`);
       
-      await this.client.emit(ROLE_EVENTS.UPDATED, {
+      await this?.client.emit(ROLE_EVENTS.UPDATED, {
         serviceSource: 'auth-service',
         entityType: 'role',
         timestamp: new Date().toISOString(),
@@ -47,15 +47,15 @@ export class RolePublisher {
         previousData: previousData || undefined
       }).toPromise();
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${ROLE_EVENTS.UPDATED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${ROLE_EVENTS.UPDATED} event: ${error.message}`, error.stack);
     }
   }
 
   async publishRoleDeleted(roleId: string, roleData: Partial<Role>): Promise<void> {
     try {
-      this.logger.log(`Publishing ${ROLE_EVENTS.DELETED} event for role ${roleId}`);
+      this?.logger.log(`Publishing ${ROLE_EVENTS.DELETED} event for role ${roleId}`);
       
-      await this.client.emit(ROLE_EVENTS.DELETED, {
+      await this?.client.emit(ROLE_EVENTS.DELETED, {
         serviceSource: 'auth-service',
         entityType: 'role',
         timestamp: new Date().toISOString(),
@@ -65,7 +65,7 @@ export class RolePublisher {
         }
       }).toPromise();
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${ROLE_EVENTS.DELETED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${ROLE_EVENTS.DELETED} event: ${error.message}`, error.stack);
     }
   }
 } 

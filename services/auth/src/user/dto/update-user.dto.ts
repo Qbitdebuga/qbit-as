@@ -9,7 +9,7 @@ export class UpdateUserDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email address' })
   @IsOptional()
-  email?: string;
+  email?: string | null;
 
   @ApiProperty({
     example: 'John Doe',
@@ -18,7 +18,7 @@ export class UpdateUserDto {
   })
   @IsString({ message: 'Name must be a string' })
   @IsOptional()
-  name?: string;
+  name?: string | null;
 
   @ApiProperty({
     example: 'password123',
@@ -28,7 +28,7 @@ export class UpdateUserDto {
   @IsString({ message: 'Password must be a string' })
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   @IsOptional()
-  password?: string;
+  password?: string | null;
 
   @ApiProperty({
     example: ['user', 'admin'],

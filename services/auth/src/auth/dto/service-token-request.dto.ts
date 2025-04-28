@@ -35,5 +35,5 @@ export class ServiceTokenRequestDto {
   })
   @IsOptional()
   @IsString()
-  expiresIn?: string;
+  expiresIn?: string | null;
 } 

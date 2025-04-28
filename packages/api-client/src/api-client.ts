@@ -6,7 +6,7 @@ interface RequestOptions {
 }
 
 export class ApiClient {
-  private baseUrl: string;
+  private baseUrl: string | null;
   private tokenStorage: typeof TokenStorage;
 
   constructor(baseUrl: string, tokenStorage: typeof TokenStorage) {
@@ -25,11 +25,11 @@ export class ApiClient {
     // Add query parameters if any
     if (options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
-        url.searchParams.append(key, value);
+        url?.searchParams.append(key, value);
       });
     }
 
-    const token = this.tokenStorage.getAccessToken();
+    const token = this?.tokenStorage.getAccessToken();
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -80,14 +80,14 @@ export class ApiClient {
     return this.request<T>('DELETE', path, undefined, options);
   }
   public setToken(token: string) {
-    this.tokenStorage.updateAccessToken(token);
+    this?.tokenStorage.updateAccessToken(token);
   }
 
   public clearToken() {
-    this.tokenStorage.clearTokens();
+    this?.tokenStorage.clearTokens();
   }
 
   public get token(): string | null {
-    return this.tokenStorage.getAccessToken();
+    return this?.tokenStorage.getAccessToken();
   }
 }

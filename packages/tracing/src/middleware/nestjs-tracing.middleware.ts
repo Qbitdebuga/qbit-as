@@ -14,8 +14,8 @@ export class TracingMiddleware implements NestMiddleware {
         // Add HTTP request attributes to the span
         span.setAttribute('http.method', req.method);
         span.setAttribute('http.url', req.originalUrl);
-        span.setAttribute('http.host', req.headers.host || '');
-        span.setAttribute('http.user_agent', req.headers['user-agent'] || '');
+        span.setAttribute('http.host', req?.headers.host || '');
+        span.setAttribute('http.user_agent', req?.headers['user-agent'] || '');
         
         // Store original end method
         const originalEnd = res.end;

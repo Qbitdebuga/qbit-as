@@ -19,26 +19,26 @@ export class CreateAssetDto {
   @ApiProperty({ description: 'Name of the asset' })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Description of the asset', required: false })
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({ description: 'Unique asset number for tracking' })
   @IsString()
   @IsNotEmpty()
-  assetNumber: string;
+  assetNumber: string | null;
 
   @ApiProperty({ description: 'Date when the asset was purchased' })
   @IsDateString()
-  purchaseDate: string;
+  purchaseDate: string | null;
 
   @ApiProperty({ description: 'Original cost of the asset' })
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsPositive()
-  purchaseCost: number;
+  purchaseCost: number | null;
 
   @ApiProperty({ description: 'Estimated residual value at the end of useful life' })
   @IsNumber({ maxDecimalPlaces: 2 })
@@ -50,7 +50,7 @@ export class CreateAssetDto {
   @IsNumber()
   @IsPositive()
   @Type(() => Number)
-  assetLifeYears: number;
+  assetLifeYears: number | null;
 
   @ApiProperty({ 
     description: 'Current status of the asset',
@@ -64,22 +64,22 @@ export class CreateAssetDto {
   @ApiProperty({ description: 'Serial number of the asset', required: false })
   @IsString()
   @IsOptional()
-  serialNumber?: string;
+  serialNumber?: string | null;
 
   @ApiProperty({ description: 'Physical location of the asset', required: false })
   @IsString()
   @IsOptional()
-  location?: string;
+  location?: string | null;
 
   @ApiProperty({ description: 'Additional notes about the asset', required: false })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({ description: 'ID of the category this asset belongs to' })
   @IsUUID()
   @IsNotEmpty()
-  categoryId: string;
+  categoryId: string | null;
 
   @ApiProperty({ 
     description: 'Method used to calculate depreciation',

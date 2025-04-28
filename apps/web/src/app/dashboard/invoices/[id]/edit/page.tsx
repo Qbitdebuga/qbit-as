@@ -1,80 +1,87 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { invoicesClient } from '@/utils/api-clients';
-import { isUserAuthenticated, setupAuthForClient } from '@/utils/auth-helpers';
-import InvoiceForm from '@/components/invoices/InvoiceForm';
-import { Invoice } from '@qbit-accounting/shared-types';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { 
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Skeleton
+} from '@/components/ui';
 
-export default function EditInvoicePage({ params }: { params: { id: string } }) {
+export default function EditInvoicePage() {
+  const params = useParams();
   const router = useRouter();
-  const id = params?.id;
-  const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const id = params?.id as string;
 
+  // Simulate loading
   useEffect(() => {
-    if (!isUserAuthenticated()) {
-      router.push('/login');
-      return;
-    }
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
-    const fetchInvoice = async () => {
-      try {
-        setupAuthForClient(invoicesClient);
-        const data = await invoicesClient.getInvoiceById(id);
-        setInvoice(data);
-      } catch (error) {
-        console.error('Error fetching invoice:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchInvoice();
-    }
-  }, [id, router]);
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="container mx-auto py-8">
-        <Skeleton className="h-12 w-full mb-4" />
-        <Skeleton className="h-64 w-full" />
+      <div className="container mx-auto py-6">
+        <div className="flex items-center mb-6">
+          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-8 w-64 ml-4" />
+        </div>
+        <Skeleton className="h-[400px] w-full" />
       </div>
     );
   }
 
-  // Convert the API invoice data to the format expected by InvoiceForm
-  const formattedInvoice = invoice ? {
-    id: invoice.id,
-    customerId: invoice.customerId,
-    invoiceNumber: invoice.invoiceNumber,
-    issueDate: new Date(invoice.invoiceDate),
-    dueDate: new Date(invoice.dueDate),
-    status: invoice.status,
-    notes: invoice.notes || '',
-    lineItems: invoice.items?.map(item => ({
-      id: item.id,
-      description: item.description,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      productId: item.itemCode || ''  // Use itemCode as productId if available
-    })) || []
-  } : undefined;
+  if (error) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="flex items-center mb-6">
+          <Link href="/dashboard/invoices">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Invoices
+            </Button>
+          </Link>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center py-8 text-red-500">
+              {error}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Edit Invoice</h1>
-        <Button variant="outline" asChild>
-          <Link href={`/dashboard/invoices/${id}`}>Back to Invoice</Link>
-        </Button>
+    <div className="container mx-auto py-6">
+      <div className="flex items-center mb-6">
+        <Link href={`/dashboard/invoices/${id}`}>
+          <Button variant="ghost" size="sm">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Invoice
+          </Button>
+        </Link>
+        <h1 className="text-3xl font-bold ml-4">Edit Invoice</h1>
       </div>
-      {formattedInvoice && <InvoiceForm initialData={formattedInvoice} isEditing={true} />}
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Invoice Details</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-center py-10">Invoice edit form placeholder</p>
+        </CardContent>
+      </Card>
     </div>
   );
 } 

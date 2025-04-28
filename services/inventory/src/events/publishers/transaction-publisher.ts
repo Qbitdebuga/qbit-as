@@ -3,11 +3,11 @@ import { ClientProxy } from '@nestjs/microservices';
 import { TransactionStatus, TransactionType } from '../../transactions/dto/create-transaction.dto';
 
 export interface TransactionEvent {
-  serviceSource: string;
-  entityType: string;
+  serviceSource: string | null;
+  entityType: string | null;
   timestamp: Date;
   action: 'created' | 'processed' | 'cancelled';
-  id: string;
+  id: string | null;
   transactionType: TransactionType;
   status: TransactionStatus;
   data?: any;
@@ -35,7 +35,7 @@ export class TransactionPublisher {
       data: transactionData,
     };
 
-    await this.client.emit('inventory.transaction.created', event).toPromise();
+    await this?.client.emit('inventory?.transaction.created', event).toPromise();
   }
 
   async publishTransactionProcessed(
@@ -55,7 +55,7 @@ export class TransactionPublisher {
       data: transactionData,
     };
 
-    await this.client.emit('inventory.transaction.processed', event).toPromise();
+    await this?.client.emit('inventory?.transaction.processed', event).toPromise();
   }
 
   async publishTransactionCancelled(
@@ -74,6 +74,6 @@ export class TransactionPublisher {
       data: transactionData,
     };
 
-    await this.client.emit('inventory.transaction.cancelled', event).toPromise();
+    await this?.client.emit('inventory?.transaction.cancelled', event).toPromise();
   }
 } 

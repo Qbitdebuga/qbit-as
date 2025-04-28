@@ -32,7 +32,7 @@ export class WarehousesController {
     type: WarehouseEntity 
   })
   create(@Body() createWarehouseDto: CreateWarehouseDto) {
-    return this.warehousesService.create(createWarehouseDto);
+    return this?.warehousesService.create(createWarehouseDto);
   }
 
   @Get()
@@ -49,7 +49,7 @@ export class WarehousesController {
     @Query('orderBy') orderBy?: string,
     @Query('includeInactive') includeInactive?: string | boolean,
   ) {
-    return this.warehousesService.findAll({
+    return this?.warehousesService.findAll({
       skip: skip ? +skip : undefined,
       take: take ? +take : undefined,
       searchTerm,
@@ -67,7 +67,7 @@ export class WarehousesController {
   })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Warehouse not found' })
   findOne(@Param('id') id: string) {
-    return this.warehousesService.findOne(id);
+    return this?.warehousesService.findOne(id);
   }
 
   @Patch(':id')
@@ -79,7 +79,7 @@ export class WarehousesController {
   })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Warehouse not found' })
   update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
-    return this.warehousesService.update(id, updateWarehouseDto);
+    return this?.warehousesService.update(id, updateWarehouseDto);
   }
 
   @Delete(':id')
@@ -91,6 +91,6 @@ export class WarehousesController {
   })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Warehouse not found' })
   remove(@Param('id') id: string) {
-    return this.warehousesService.remove(id);
+    return this?.warehousesService.remove(id);
   }
 }

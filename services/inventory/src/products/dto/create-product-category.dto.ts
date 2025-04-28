@@ -6,7 +6,7 @@ export class CreateProductCategoryDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name: string | null;
 
   @ApiPropertyOptional({ 
     example: 'All office furniture products', 
@@ -15,7 +15,7 @@ export class CreateProductCategoryDto {
   @IsString()
   @IsOptional()
   @MaxLength(500)
-  description?: string;
+  description?: string | null;
 
   @ApiPropertyOptional({ 
     example: 5, 
@@ -23,7 +23,7 @@ export class CreateProductCategoryDto {
   })
   @IsNumber()
   @IsOptional()
-  parentId?: number;
+  parentId?: number | null;
 
   @ApiPropertyOptional({ 
     example: true, 
@@ -32,7 +32,7 @@ export class CreateProductCategoryDto {
   })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 
   @ApiPropertyOptional({ 
     example: 'https://example.com/images/office-furniture.jpg', 
@@ -40,5 +40,5 @@ export class CreateProductCategoryDto {
   })
   @IsUrl()
   @IsOptional()
-  imageUrl?: string;
+  imageUrl?: string | null;
 } 

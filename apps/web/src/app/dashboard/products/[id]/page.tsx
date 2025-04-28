@@ -15,8 +15,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { productsClient } from '@qbit-accounting/api-client';
-import { IProduct } from '@qbit-accounting/shared-types';
+import { productsClient } from '@/mocks/api-client';
+import { IProduct } from '@/mocks/shared-types';
 
 export default function ProductDetailPage() {
   const params = useParams();

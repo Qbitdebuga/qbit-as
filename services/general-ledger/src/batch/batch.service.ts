@@ -13,10 +13,10 @@ export class BatchService {
   ) {}
 
   async create(data: JournalEntryBatchCreate, userId?: string): Promise<any> {
-    this.logger.log(`Creating new batch with ${data.entries.length} entries`);
+    this?.logger.log(`Creating new batch with ${data?.entries.length} entries`);
     
     // Use the saga to create the batch
-    const batch = await this.batchProcessingSaga.createBatch({
+    const batch = await this?.batchProcessingSaga.createBatch({
       description: data.description,
       entries: data.entries
     });
@@ -66,19 +66,19 @@ export class BatchService {
     const query = this.getBatchQuery(status, type, dateRange, skip, take);
     
     const [batches, totalCount] = await Promise.all([
-      this.prisma.db.batch.findMany(query),
-      this.prisma.db.batch.count({ where: query.where })
+      this?.prisma.db?.batch.findMany(query),
+      this?.prisma.db?.batch.count({ where: query.where })
     ]);
     
     return { 
       batches,
       totalCount,
-      journalEntryCount: await this.prisma.db.batch.count({ where: { type: 'JOURNAL_ENTRY' } })
+      journalEntryCount: await this?.prisma.db?.batch.count({ where: { type: 'JOURNAL_ENTRY' } })
     };
   }
 
   async findOne(id: string) {
-    const batch = await this.prisma.db.batch.findUnique({
+    const batch = await this?.prisma.db?.batch.findUnique({
       where: { id },
       include: {
         items: {
@@ -95,11 +95,11 @@ export class BatchService {
     
     // For each batch item, if its a journal entry, enrich with account data
     const enrichedItems = await Promise.all(
-      batch.items.map(async (item: any) => {
+      batch?.items.map(async (item: any) => {
         let journalEntry = null;
         
         if (item.type === 'JOURNAL_ENTRY' && item.journalEntryId) {
-          journalEntry = await this.prisma.db.journalEntry.findUnique({
+          journalEntry = await this?.prisma.db?.journalEntry.findUnique({
             where: { id: item.journalEntryId },
             include: {
               lines: {
@@ -125,9 +125,9 @@ export class BatchService {
   }
 
   async process(id: string): Promise<any> {
-    this.logger.log(`Processing batch with ID: ${id}`);
+    this?.logger.log(`Processing batch with ID: ${id}`);
     
-    const batch = await this.prisma.db.batch.findUnique({
+    const batch = await this?.prisma.db?.batch.findUnique({
       where: { id },
     });
     
@@ -140,8 +140,8 @@ export class BatchService {
     }
     
     // Start the batch processing in the background
-    this.batchProcessingSaga.execute(id).catch(error => {
-      this.logger.error(`Error processing batch ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    this?.batchProcessingSaga.execute(id).catch(error: any => {
+      this?.logger.error(`Error processing batch ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     });
     
     return {
@@ -152,9 +152,9 @@ export class BatchService {
   }
 
   async cancel(id: string): Promise<any> {
-    this.logger.log(`Canceling batch with ID: ${id}`);
+    this?.logger.log(`Canceling batch with ID: ${id}`);
     
-    const batch = await this.prisma.db.batch.findUnique({
+    const batch = await this?.prisma.db?.batch.findUnique({
       where: { id },
     });
     
@@ -166,7 +166,7 @@ export class BatchService {
       throw new Error(`Cannot cancel batch with ID ${id} because it is not in DRAFT or PENDING status`);
     }
     
-    const updatedBatch = await this.prisma.db.batch.update({
+    const updatedBatch = await this?.prisma.db?.batch.update({
       where: { id },
       data: {
         status: 'CANCELLED',
@@ -181,7 +181,7 @@ export class BatchService {
   }
 
   async approve(id: string) {
-    const batch = await this.prisma.db.batch.findUnique({
+    const batch = await this?.prisma.db?.batch.findUnique({
       where: { id },
       include: {
         items: true
@@ -193,7 +193,7 @@ export class BatchService {
     }
     
     // Update batch status to APPROVED
-    return this.prisma.db.batch.update({
+    return this?.prisma.db?.batch.update({
       where: { id },
       data: {
         status: 'APPROVED',
@@ -206,7 +206,7 @@ export class BatchService {
   }
 
   async reject(id: string, reason: string) {
-    const batch = await this.prisma.db.batch.findUnique({
+    const batch = await this?.prisma.db?.batch.findUnique({
       where: { id },
       include: {
         items: true
@@ -218,7 +218,7 @@ export class BatchService {
     }
     
     // Update batch status to REJECTED
-    const updatedBatch = await this.prisma.db.batch.update({
+    const updatedBatch = await this?.prisma.db?.batch.update({
       where: { id },
       data: {
         status: 'REJECTED',

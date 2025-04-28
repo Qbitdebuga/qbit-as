@@ -15,7 +15,7 @@ export class CreateBankDto {
   })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name: string | null;
 
   @ApiProperty({
     description: 'Unique bank code',
@@ -23,7 +23,7 @@ export class CreateBankDto {
   })
   @IsString()
   @IsNotEmpty()
-  code: string;
+  code: string | null;
 
   @ApiProperty({
     description: 'Bank routing number',
@@ -33,7 +33,7 @@ export class CreateBankDto {
   @IsString()
   @IsOptional()
   @Matches(/^[0-9]{9}$/, { message: 'Routing number must be 9 digits' })
-  routingNumber?: string;
+  routingNumber?: string | null;
 
   @ApiProperty({
     description: 'SWIFT/BIC code for international transfers',
@@ -42,7 +42,7 @@ export class CreateBankDto {
   })
   @IsString()
   @IsOptional()
-  swiftCode?: string;
+  swiftCode?: string | null;
 
   @ApiProperty({
     description: 'Bank address',
@@ -51,7 +51,7 @@ export class CreateBankDto {
   })
   @IsString()
   @IsOptional()
-  address?: string;
+  address?: string | null;
 
   @ApiProperty({
     description: 'Bank contact person name',
@@ -60,7 +60,7 @@ export class CreateBankDto {
   })
   @IsString()
   @IsOptional()
-  contactName?: string;
+  contactName?: string | null;
 
   @ApiProperty({
     description: 'Bank contact phone number',
@@ -69,7 +69,7 @@ export class CreateBankDto {
   })
   @IsString()
   @IsOptional()
-  contactPhone?: string;
+  contactPhone?: string | null;
 
   @ApiProperty({
     description: 'Bank contact email address',
@@ -78,16 +78,16 @@ export class CreateBankDto {
   })
   @IsEmail()
   @IsOptional()
-  contactEmail?: string;
+  contactEmail?: string | null;
 
   @ApiProperty({
     description: 'Bank website URL',
-    example: 'https://www.chase.com',
+    example: 'https://www?.chase.com',
     required: false,
   })
   @IsString()
   @IsOptional()
-  website?: string;
+  website?: string | null;
 
   @ApiProperty({
     description: 'Additional notes about the bank',
@@ -96,7 +96,7 @@ export class CreateBankDto {
   })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({
     description: 'Whether the bank is active in the system',

@@ -6,17 +6,17 @@ import { SERVICE_SCOPE_KEY } from '../decorators/service-scope.decorator';
 import { Request } from 'express';
 
 interface ServiceJwtPayload {
-  serviceId: string;
-  serviceName: string;
+  serviceId: string | null;
+  serviceName: string | null;
   scopes: string[];
-  iat: number;
-  exp: number;
+  iat: number | null;
+  exp: number | null;
 }
 
 interface RequestWithService extends Request {
   service?: {
-    id: string;
-    name: string;
+    id: string | null;
+    name: string | null;
     scopes: string[];
   };
 }
@@ -40,7 +40,7 @@ export class ServiceAuthGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Get required scopes from handler metadata
-    const requiredScopes = this.reflector.getAllAndOverride<string[]>(
+    const requiredScopes = this?.reflector.getAllAndOverride<string[]>(
       SERVICE_SCOPE_KEY,
       [context.getHandler(), context.getClass()],
     );
@@ -58,10 +58,10 @@ export class ServiceAuthGuard implements CanActivate {
 
     try {
       // Verify the JWT token
-      const payload = await this.jwtService.verifyAsync<ServiceJwtPayload>(
+      const payload = await this?.jwtService.verifyAsync<ServiceJwtPayload>(
         token,
         {
-          secret: this.configService.get<string>('JWT_SERVICE_SECRET'),
+          secret: this?.configService.get<string>('JWT_SERVICE_SECRET'),
         },
       );
 
@@ -91,7 +91,7 @@ export class ServiceAuthGuard implements CanActivate {
    * Extracts the JWT token from the request's Authorization header
    */
   private extractTokenFromHeader(request: RequestWithService): string | undefined {
-    const authHeader = request.headers.authorization;
+    const authHeader = request?.headers.authorization;
     if (!authHeader) return undefined;
     
     const [type, token] = authHeader.split(' ');
@@ -110,13 +110,13 @@ export class ServiceAuthGuard implements CanActivate {
 
     // Check each required scope
     return requiredScopes.every(requiredScope => 
-      serviceScopes.some(serviceScope => {
+      serviceScopes.some(serviceScope: any => {
         // Exact match
         if (serviceScope === requiredScope) {
           return true;
         }
         
-        // Wildcard match (e.g., "accounts:*" matches "accounts:read")
+        // Wildcard match (e?.g., "accounts:*" matches "accounts:read")
         if (serviceScope.endsWith(':*')) {
           const prefix = serviceScope.slice(0, -1); // Remove the "*"
           return requiredScope.startsWith(prefix);

@@ -1,7 +1,7 @@
 /**
  * Safely extracts message and stack from an unknown error
  */
-export function formatError(error: unknown): { message: string; stack?: string } {
+export function formatError(error: unknown): { message: string | null; stack?: string } {
   if (error instanceof Error) {
     return { 
       message: error.message,

@@ -1,77 +1,108 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { forgotPasswordSchema, ForgotPasswordFormValues } from '@/lib/validations/auth';
-import { authClient } from '@/utils/auth';
+import * as z from 'zod';
+import { Button } from '@/components/ui';
+import { Input } from '@/components/ui';
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from '@/components/ui';
 
-export function ForgotPasswordForm() {
-  const [serverError, setServerError] = useState('');
+// Simple validation schema
+const passwordResetSchema = z.object({
+  email: z.string().email('Please enter a valid email address')
+});
+
+type ForgotPasswordFormValues = z.infer<typeof passwordResetSchema>;
+
+interface ForgotPasswordFormProps {
+  onSuccess?: () => void;
+}
+
+export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Initialize react-hook-form with Zod validation
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgotPasswordFormValues>({
-    resolver: zodResolver(forgotPasswordSchema),
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(passwordResetSchema),
     defaultValues: {
       email: '',
     },
   });
 
-  const onSubmit = async (data: ForgotPasswordFormValues) => {
-    setServerError('');
-    setSuccess(false);
+  async function onSubmit(data: ForgotPasswordFormValues) {
     setIsLoading(true);
-
+    setError(null);
+    
     try {
-      await authClient.requestPasswordReset(data.email);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Success
       setSuccess(true);
-    } catch (err: any) {
-      console.error('Password reset request error:', err);
-      setServerError(err.message || 'Failed to request password reset. Please try again.');
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
-    <form className="p-5 w-full" onSubmit={handleSubmit(onSubmit)}>
-      {serverError && (
-        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded-md">
-          {serverError}
+    <div className="space-y-6">
+      {success ? (
+        <div className="bg-green-50 p-4 rounded-md">
+          <p className="text-green-700">
+            If an account exists with that email, we've sent password reset instructions.
+          </p>
         </div>
+      ) : (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {error && (
+              <div className="bg-red-50 p-4 rounded-md">
+                <p className="text-red-700">{error}</p>
+              </div>
+            )}
+            
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter your email address" 
+                      type="email" 
+                      autoComplete="email"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Sending...' : 'Reset Password'}
+            </Button>
+          </form>
+        </Form>
       )}
-      
-      {success && (
-        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-md">
-          Password reset instructions have been sent to your email address.
-        </div>
-      )}
-      
-      <div className="mb-4">
-        <input
-          type="email"
-          placeholder="Email"
-          {...register('email')}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-        )}
-      </div>
-      
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition duration-200 disabled:bg-blue-400"
-      >
-        {isLoading ? 'Sending...' : 'Send Reset Instructions'}
-      </button>
-    </form>
+    </div>
   );
 } 

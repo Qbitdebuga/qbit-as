@@ -12,7 +12,7 @@ export interface Span {
   addEvent(name: string, attributes?: Record<string, any>): this;
   setStatus(status: { code: SpanStatusCode; message?: string }): this;
   end(endTime?: number): void;
-  isRecording(): boolean;
+  isRecording(): boolean | null;
   recordException(exception: any): void;
 }
 
@@ -33,15 +33,15 @@ export enum SpanKind {
 export interface SpanOptions {
   attributes?: Record<string, any>;
   kind?: SpanKind;
-  startTime?: number;
+  startTime?: number | null;
   links?: any[];
 }
 
 export interface SpanContext {
-  traceId: string;
-  spanId: string;
-  traceFlags: number;
-  isRemote?: boolean;
+  traceId: string | null;
+  spanId: string | null;
+  traceFlags: number | null;
+  isRemote?: boolean | null;
 }
 
 export interface TracerProvider {

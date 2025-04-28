@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "rimraf dist && echo \"✅ @qbit/fixed-assets build completed successfully\"",
+    "build": "rimraf dist && tsc && echo \"✅ @qbit/fixed-assets build completed successfully\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -21,7 +21,8 @@
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "prisma:migrate:dev": "prisma migrate dev",
-    "prisma:migrate:deploy": "prisma migrate deploy"
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",

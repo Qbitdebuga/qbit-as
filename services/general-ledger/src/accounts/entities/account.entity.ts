@@ -3,28 +3,28 @@ import { AccountType, AccountSubType } from '../enums/account.enums';
 
 export class Account {
   @ApiProperty({ description: 'Unique identifier' })
-  id: string;
+  id: string | null;
 
-  @ApiProperty({ description: 'Account code (e.g., 1000, 2000)' })
-  code: string;
+  @ApiProperty({ description: 'Account code (e?.g., 1000, 2000)' })
+  code: string | null;
 
-  @ApiProperty({ description: 'Account name (e.g., Cash, Accounts Receivable)' })
-  name: string;
+  @ApiProperty({ description: 'Account name (e?.g., Cash, Accounts Receivable)' })
+  name: string | null;
 
-  @ApiProperty({ description: 'Account type (e.g., ASSET, LIABILITY)' })
+  @ApiProperty({ description: 'Account type (e?.g., ASSET, LIABILITY)' })
   type: AccountType;
 
-  @ApiProperty({ description: 'Account subtype (e.g., CASH, ACCOUNTS_RECEIVABLE)' })
+  @ApiProperty({ description: 'Account subtype (e?.g., CASH, ACCOUNTS_RECEIVABLE)' })
   subtype: AccountSubType;
 
   @ApiProperty({ description: 'Account description' })
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({ description: 'Whether the account is active' })
-  isActive: boolean;
+  isActive: boolean | null;
 
   @ApiProperty({ description: 'Parent account ID (if this is a child account)' })
-  parentId?: string;
+  parentId?: string | null;
 
   @ApiProperty({ description: 'Parent account (if this is a child account)' })
   parent?: Account;
@@ -33,7 +33,7 @@ export class Account {
   children?: Account[];
 
   @ApiProperty({ description: 'Current balance of the account' })
-  balance?: number;
+  balance?: number | null;
 
   @ApiProperty({ description: 'Date when the account was created' })
   createdAt: Date;

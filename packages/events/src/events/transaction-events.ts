@@ -4,21 +4,21 @@ import { Event } from '../publishers/base-publisher';
  * Transaction interface for events
  */
 export interface TransactionEntryEventData {
-  id: string;
-  accountId: string;
-  amount: number;
-  currency: string;
+  id: string | null;
+  accountId: string | null;
+  amount: number | null;
+  currency: string | null;
   type: 'DEBIT' | 'CREDIT';
 }
 
 export interface TransactionEventData {
-  id: string;
-  date: string;
-  description: string;
-  reference?: string;
+  id: string | null;
+  date: string | null;
+  description: string | null;
+  reference?: string | null;
   entries: TransactionEntryEventData[];
-  createdAt: string;
-  createdById: string;
+  createdAt: string | null;
+  createdById: string | null;
   status: 'DRAFT' | 'PENDING' | 'POSTED' | 'VOIDED';
 }
 
@@ -32,9 +32,9 @@ export interface TransactionCreatedEvent extends Event {
 export interface TransactionUpdatedEvent extends Event {
   subject: 'transaction.updated';
   data: {
-    id: string;
+    id: string | null;
     changes: Partial<TransactionEventData>;
-    updatedById: string;
+    updatedById: string | null;
   };
 }
 
@@ -42,9 +42,9 @@ export interface TransactionUpdatedEvent extends Event {
 export interface TransactionPostedEvent extends Event {
   subject: 'transaction.posted';
   data: {
-    id: string;
-    postedAt: string;
-    postedById: string;
+    id: string | null;
+    postedAt: string | null;
+    postedById: string | null;
   };
 }
 
@@ -52,9 +52,9 @@ export interface TransactionPostedEvent extends Event {
 export interface TransactionVoidedEvent extends Event {
   subject: 'transaction.voided';
   data: {
-    id: string;
-    reason: string;
-    voidedAt: string;
-    voidedById: string;
+    id: string | null;
+    reason: string | null;
+    voidedAt: string | null;
+    voidedById: string | null;
   };
 } 

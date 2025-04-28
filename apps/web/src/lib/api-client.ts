@@ -1,5 +1,5 @@
 // API client utilities for the frontend application
-import { PaymentStatus } from '@qbit-accounting/shared-types';
+import { PaymentStatus } from '@qbit/shared-types';
 
 // Base URL from environment variable
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';

@@ -39,7 +39,7 @@ export class ExpensesController {
   @ApiResponse({ status: 201, description: 'The expense has been successfully created.', type: Expense })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   create(@Body() createExpenseDto: CreateExpenseDto) {
-    return this.expensesService.create(createExpenseDto);
+    return this?.expensesService.create(createExpenseDto);
   }
 
   @Get()
@@ -67,7 +67,7 @@ export class ExpensesController {
     @Query('sortBy') sortBy?: string,
     @Query('sortDirection') sortDirection?: 'asc' | 'desc',
   ) {
-    return this.expensesService.findAll({
+    return this?.expensesService.findAll({
       page,
       limit,
       status,
@@ -87,7 +87,7 @@ export class ExpensesController {
   @ApiResponse({ status: 404, description: 'Expense not found.' })
   @ApiParam({ name: 'id', type: 'number' })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.expensesService.findOne(id);
+    return this?.expensesService.findOne(id);
   }
 
   @Patch(':id')
@@ -99,7 +99,7 @@ export class ExpensesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateExpenseDto: UpdateExpenseDto,
   ) {
-    return this.expensesService.update(id, updateExpenseDto);
+    return this?.expensesService.update(id, updateExpenseDto);
   }
 
   @Delete(':id')
@@ -108,7 +108,7 @@ export class ExpensesController {
   @ApiResponse({ status: 404, description: 'Expense not found.' })
   @ApiParam({ name: 'id', type: 'number' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.expensesService.remove(id);
+    return this?.expensesService.remove(id);
   }
 
   @Patch(':id/status')
@@ -131,7 +131,7 @@ export class ExpensesController {
     @Param('id', ParseIntPipe) id: number,
     @Body('status') status: ExpenseStatus,
   ) {
-    return this.expensesService.updateStatus(id, status);
+    return this?.expensesService.updateStatus(id, status);
   }
 
   @Get('vendor/:vendorId')
@@ -139,7 +139,7 @@ export class ExpensesController {
   @ApiResponse({ status: 200, description: 'Return the expenses by vendor.', type: [Expense] })
   @ApiParam({ name: 'vendorId', type: 'number' })
   findByVendor(@Param('vendorId', ParseIntPipe) vendorId: number) {
-    return this.expensesService.findByVendor(vendorId);
+    return this?.expensesService.findByVendor(vendorId);
   }
 
   @Get('category/:categoryId')
@@ -147,7 +147,7 @@ export class ExpensesController {
   @ApiResponse({ status: 200, description: 'Return the expenses by category.', type: [Expense] })
   @ApiParam({ name: 'categoryId', type: 'number' })
   findByCategory(@Param('categoryId', ParseIntPipe) categoryId: number) {
-    return this.expensesService.findByCategory(categoryId);
+    return this?.expensesService.findByCategory(categoryId);
   }
 
   @Post(':id/attachment')
@@ -199,13 +199,13 @@ export class ExpensesController {
   )
   addAttachment(
     @Param('id', ParseIntPipe) id: number,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: Express?.Multer.File,
   ) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
     
-    return this.expensesService.addAttachment(id, {
+    return this?.expensesService.addAttachment(id, {
       fileName: file.originalname,
       fileType: file.mimetype,
       fileSize: file.size,
@@ -219,6 +219,6 @@ export class ExpensesController {
   @ApiResponse({ status: 404, description: 'Attachment not found.' })
   @ApiParam({ name: 'id', type: 'number' })
   removeAttachment(@Param('id', ParseIntPipe) id: number) {
-    return this.expensesService.removeAttachment(id);
+    return this?.expensesService.removeAttachment(id);
   }
 } 

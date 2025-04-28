@@ -14,7 +14,7 @@ export class CreateBillDto {
   })
   @IsUUID()
   @IsNotEmpty()
-  vendorId: string;
+  vendorId: string | null;
 
   @ApiProperty({
     example: 'INV-12345',
@@ -24,7 +24,7 @@ export class CreateBillDto {
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(50)
-  invoiceNumber: string;
+  invoiceNumber: string | null;
 
   @ApiProperty({
     example: '2023-05-01',
@@ -71,5 +71,5 @@ export class CreateBillDto {
   @IsString()
   @IsOptional()
   @MaxLength(1000)
-  notes?: string;
+  notes?: string | null;
 } 

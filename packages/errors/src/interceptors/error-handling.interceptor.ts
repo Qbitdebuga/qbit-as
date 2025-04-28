@@ -22,14 +22,14 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
    */
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      catchError(error => {
+      catchError((error: any) => {
         // If it's already an ApiException, just rethrow it
         if (error instanceof ApiException) {
           return throwError(() => error);
         }
 
         // Log the original error
-        this.logger.error(
+        this?.logger.error(
           `Unexpected error: ${error.message || 'Unknown error'}`,
           error.stack,
         );
@@ -65,7 +65,7 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
           new ApiException(
             ErrorCode.INTERNAL_SERVER_ERROR,
             'An unexpected error occurred',
-            process.env.NODE_ENV !== 'production'
+            process?.env.NODE_ENV !== 'production'
               ? { originalError: this.formatOriginalError(error) }
               : undefined,
           )
@@ -108,7 +108,7 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
   private getServiceName(error: any): string {
     if (error.config?.url) {
       try {
-        const url = new URL(error.config.url);
+        const url = new URL(error?.config.url);
         return url.hostname;
       } catch (e) {
         return 'unknown';
@@ -146,15 +146,15 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
     
     if (error.response) {
       // For axios errors, include relevant response data
-      if (typeof error.response.data === 'object') {
+      if (typeof error?.response.data === 'object') {
         result.response = {
-          status: error.response.status,
-          data: error.response.data,
+          status: error?.response.status,
+          data: error?.response.data,
         };
       } else {
         result.response = {
-          status: error.response.status,
-          data: String(error.response.data).substring(0, 200), // Limit long responses
+          status: error?.response.status,
+          data: String(error?.response.data).substring(0, 200), // Limit long responses
         };
       }
     }

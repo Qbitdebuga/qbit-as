@@ -21,13 +21,13 @@ export class CreateProductVariantDto {
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  sku?: string;
+  sku?: string | null;
 
   @ApiProperty({ example: 'Office Chair - Black, Large', description: 'Name of the variant' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name: string | null;
 
   @ApiPropertyOptional({ 
     example: { color: 'Black', size: 'Large' }, 
@@ -42,14 +42,14 @@ export class CreateProductVariantDto {
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  price?: number;
+  price?: number | null;
 
   @ApiPropertyOptional({ example: 130.00, description: 'Cost price specific to this variant' })
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Type(() => Number)
-  cost?: number;
+  cost?: number | null;
 
   @ApiPropertyOptional({ 
     example: 8, 
@@ -60,33 +60,33 @@ export class CreateProductVariantDto {
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  quantityOnHand?: number;
+  quantityOnHand?: number | null;
 
   @ApiPropertyOptional({ example: 3, description: 'Level at which to reorder this variant' })
   @IsNumber()
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  reorderPoint?: number;
+  reorderPoint?: number | null;
 
   @ApiPropertyOptional({ example: '987654321098', description: 'Barcode for the variant' })
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  barcode?: string;
+  barcode?: string | null;
 
   @ApiPropertyOptional({ example: 5.5, description: 'Weight of the variant' })
   @IsNumber()
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  weight?: number;
+  weight?: number | null;
 
   @ApiPropertyOptional({ example: 'kg', description: 'Unit of weight measurement' })
   @IsString()
   @IsOptional()
   @MaxLength(10)
-  weightUnit?: string;
+  weightUnit?: string | null;
 
   @ApiPropertyOptional({ 
     example: '{"length": 62, "width": 62, "height": 125, "unit": "cm"}', 
@@ -95,7 +95,7 @@ export class CreateProductVariantDto {
   @IsString()
   @IsOptional()
   @MaxLength(255)
-  dimensions?: string;
+  dimensions?: string | null;
 
   @ApiPropertyOptional({ 
     example: 'https://example.com/images/chair-black-large.jpg', 
@@ -103,7 +103,7 @@ export class CreateProductVariantDto {
   })
   @IsUrl()
   @IsOptional()
-  imageUrl?: string;
+  imageUrl?: string | null;
 
   @ApiPropertyOptional({ 
     example: true, 
@@ -112,5 +112,5 @@ export class CreateProductVariantDto {
   })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 } 

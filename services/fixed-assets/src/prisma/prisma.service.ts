@@ -22,22 +22,22 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async onModuleInit() {
-    this.logger.log('Connecting to the database...');
+    this?.logger.log('Connecting to the database...');
     await this.$connect();
-    this.logger.log('Connected to the database successfully');
+    this?.logger.log('Connected to the database successfully');
 
     // Log queries in development mode
-    if (process.env.NODE_ENV === 'development') {
+    if (process?.env.NODE_ENV === 'development') {
       (this as unknown as ExtendedPrismaClient).$on('query', (e: any) => {
-        this.logger.debug(`Query: ${e.query}`);
-        this.logger.debug(`Duration: ${e.duration}ms`);
+        this?.logger.debug(`Query: ${e.query}`);
+        this?.logger.debug(`Duration: ${e.duration}ms`);
       });
     }
   }
 
   async onModuleDestroy() {
-    this.logger.log('Disconnecting from the database...');
+    this?.logger.log('Disconnecting from the database...');
     await this.$disconnect();
-    this.logger.log('Disconnected from the database successfully');
+    this?.logger.log('Disconnected from the database successfully');
   }
 } 

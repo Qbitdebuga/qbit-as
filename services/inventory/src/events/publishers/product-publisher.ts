@@ -2,11 +2,11 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 export interface ProductEvent {
-  serviceSource: string;
-  entityType: string;
+  serviceSource: string | null;
+  entityType: string | null;
   timestamp: Date;
   action: 'created' | 'updated' | 'deleted';
-  id: number;
+  id: number | null;
   data?: any;
 }
 
@@ -26,7 +26,7 @@ export class ProductPublisher {
       data: productData,
     };
 
-    await this.client.emit('product.created', event).toPromise();
+    await this?.client.emit('product.created', event).toPromise();
   }
 
   async publishProductUpdated(productId: number, productData: any): Promise<void> {
@@ -39,7 +39,7 @@ export class ProductPublisher {
       data: productData,
     };
 
-    await this.client.emit('product.updated', event).toPromise();
+    await this?.client.emit('product.updated', event).toPromise();
   }
 
   async publishProductDeleted(productId: number): Promise<void> {
@@ -51,6 +51,6 @@ export class ProductPublisher {
       id: productId,
     };
 
-    await this.client.emit('product.deleted', event).toPromise();
+    await this?.client.emit('product.deleted', event).toPromise();
   }
 } 

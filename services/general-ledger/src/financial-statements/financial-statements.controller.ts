@@ -17,7 +17,7 @@ export class FinancialStatementsController {
     type: Object
   })
   async generateBalanceSheet(@Body() request: StatementRequestDto): Promise<BalanceSheetStatementDto> {
-    return this.financialStatementsService.generateBalanceSheet(request);
+    return this?.financialStatementsService.generateBalanceSheet(request);
   }
 
   @Post('income-statement')
@@ -28,7 +28,7 @@ export class FinancialStatementsController {
     type: Object
   })
   async generateIncomeStatement(@Body() request: StatementRequestDto): Promise<IncomeStatementDto> {
-    return this.financialStatementsService.generateIncomeStatement(request);
+    return this?.financialStatementsService.generateIncomeStatement(request);
   }
 
   @Post('cash-flow')
@@ -39,7 +39,7 @@ export class FinancialStatementsController {
     type: Object
   })
   async generateCashFlowStatement(@Body() request: StatementRequestDto): Promise<CashFlowStatementDto> {
-    return this.financialStatementsService.generateCashFlowStatement(request);
+    return this?.financialStatementsService.generateCashFlowStatement(request);
   }
 
   @Get('balance-sheet')
@@ -68,7 +68,7 @@ export class FinancialStatementsController {
       comparativePeriod,
       includeZeroBalances,
     };
-    return this.financialStatementsService.generateBalanceSheet(request);
+    return this?.financialStatementsService.generateBalanceSheet(request);
   }
 
   @Get('income-statement')
@@ -97,7 +97,7 @@ export class FinancialStatementsController {
       comparativePeriod,
       includeZeroBalances,
     };
-    return this.financialStatementsService.generateIncomeStatement(request);
+    return this?.financialStatementsService.generateIncomeStatement(request);
   }
 
   @Get('cash-flow')
@@ -124,6 +124,6 @@ export class FinancialStatementsController {
       comparativePeriod,
       includeZeroBalances: false,
     };
-    return this.financialStatementsService.generateCashFlowStatement(request);
+    return this?.financialStatementsService.generateCashFlowStatement(request);
   }
 } 

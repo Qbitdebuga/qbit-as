@@ -12,7 +12,7 @@ export async function generateEntryNumber(prismaOrTx: any): Promise<string> {
   
   // Find the highest entry number with this prefix
   const db = prismaOrTx.db || prismaOrTx;
-  const highestEntry = await db.journalEntry.findFirst({
+  const highestEntry = await db?.journalEntry.findFirst({
     where: {
       entryNumber: {
         startsWith: prefix,
@@ -25,7 +25,7 @@ export async function generateEntryNumber(prismaOrTx: any): Promise<string> {
   
   let counter = 1;
   if (highestEntry) {
-    const currentCounter = parseInt(highestEntry.entryNumber.slice(6), 10);
+    const currentCounter = parseInt(highestEntry?.entryNumber.slice(6), 10);
     counter = currentCounter + 1;
   }
   
@@ -47,7 +47,7 @@ export async function generateBatchNumber(prismaOrTx: any): Promise<string> {
   
   // Find the highest batch number with this prefix
   const db = prismaOrTx.db || prismaOrTx;
-  const highestBatch = await db.batch.findFirst({
+  const highestBatch = await db?.batch.findFirst({
     where: {
       batchNumber: {
         startsWith: prefix,
@@ -60,7 +60,7 @@ export async function generateBatchNumber(prismaOrTx: any): Promise<string> {
   
   let counter = 1;
   if (highestBatch) {
-    const currentCounter = parseInt(highestBatch.batchNumber.slice(5), 10);
+    const currentCounter = parseInt(highestBatch?.batchNumber.slice(5), 10);
     counter = currentCounter + 1;
   }
   

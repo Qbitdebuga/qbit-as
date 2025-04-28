@@ -12,9 +12,9 @@ async function bootstrap() {
   // Initialize the tracer before creating the app
   // This ensures that all requests, including those during app creation, are traced
   initTracer({
-    serviceName: process.env.SERVICE_NAME || 'your-service-name',
-    jaegerEndpoint: process.env.JAEGER_ENDPOINT || 'http://jaeger:14268/api/traces',
-    environment: process.env.NODE_ENV || 'development',
+    serviceName: process?.env.SERVICE_NAME || 'your-service-name',
+    jaegerEndpoint: process?.env.JAEGER_ENDPOINT || 'http://jaeger:14268/api/traces',
+    environment: process?.env.NODE_ENV || 'development',
   });
   
   // In your real application, you would create your NestJS app here
@@ -39,6 +39,6 @@ async function bootstrap() {
 }
 
 // In a real application, you would call bootstrap() here
-bootstrap().catch(err => {
+bootstrap().catch((err: any) => {
   console.error('Error bootstrapping application:', err);
 }); 

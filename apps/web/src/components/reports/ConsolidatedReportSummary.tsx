@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { formatCurrency } from '../../utils/format';
+import { formatCurrency } from '@/utils/format';
 
 interface ConsolidatedReportSummaryProps {
   balanceSheet: any;

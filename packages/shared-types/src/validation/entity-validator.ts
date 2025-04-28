@@ -28,7 +28,7 @@ export class ValidationError extends Error {
  * Result of a validation check
  */
 export interface ValidationResult {
-  valid: boolean;
+  valid: boolean | null;
   errors: ValidationError[];
 }
 
@@ -60,7 +60,7 @@ export class EntityValidator {
     let totalDebits = 0;
     let totalCredits = 0;
     
-    entry.lines.forEach(line => {
+    entry?.lines.forEach((line: any) => {
       totalDebits += line.debit || 0;
       totalCredits += line.credit || 0;
     });
@@ -76,7 +76,7 @@ export class EntityValidator {
     }
     
     // Ensure each line has either a debit or credit, but not both
-    entry.lines.forEach((line, index) => {
+    entry?.lines.forEach((line, index) => {
       if ((line.debit && line.credit) || (!line.debit && !line.credit)) {
         errors.push(new ValidationError(
           'Journal entry line must have either a debit or a credit, but not both',
@@ -128,13 +128,22 @@ export class EntityValidator {
    * Validate that accounts used in a journal entry exist and are active
    */
   static validateJournalEntryAccounts(
-    entry: JournalEntry | { lines: { accountId: string }[] },
+    entry: JournalEntry | { lines: { accountId: string | null }[] },
     accountsMap: Map<string, Account>
   ): ValidationResult {
     const errors: ValidationError[] = [];
     
-    entry.lines.forEach((line, index) => {
-      const account = accountsMap.get(line.accountId);
+    entry?.lines.forEach((line, index) => {
+      if (line.accountId === null) {
+        errors.push(new ValidationError(
+          `Account ID cannot be null`,
+          'ACCOUNT_ID_NULL',
+          `lines[${index}].accountId`
+        ));
+        return;
+      }
+      
+      const account = accountsMap.get(line.accountId!);
       
       if (!account) {
         errors.push(new ValidationError(
@@ -157,24 +166,26 @@ export class EntityValidator {
 
   /**
    * Validate that the account's normal balance matches the entry direction
-   * (e.g., assets and expenses normally have debit balances)
+   * (e?.g., assets and expenses normally have debit balances)
    */
   static validateAccountNormalBalances(
-    entry: { lines: { accountId: string; debit?: number; credit?: number }[] },
+    entry: { lines: { accountId: string | null; debit?: number | null; credit?: number }[] },
     accountsMap: Map<string, Account>
   ): ValidationResult {
     const errors: ValidationError[] = [];
     
     // This is just a warning, not an error, so we'll return success even if there are anomalies
     const warnings: { 
-      lineIndex: number; 
-      accountId: string; 
+      lineIndex: number | null; 
+      accountId: string | null; 
       accountType: AccountType; 
       hasDebit: boolean 
     }[] = [];
     
-    entry.lines.forEach((line, index) => {
-      const account = accountsMap.get(line.accountId);
+    entry?.lines.forEach((line, index) => {
+      if (!line.accountId) return; // Skip if accountId is null
+      
+      const account = accountsMap.get(line.accountId!);
       if (!account) return; // Skip if account not found (other validation will catch this)
       
       const hasDebit = !!line.debit;

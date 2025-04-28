@@ -15,7 +15,7 @@ export class RegisterDto {
   })
   @IsEmail({}, { message: 'Please enter a valid email address' })
   @IsNotEmpty({ message: 'Email is required' })
-  email!: string;
+  email!: string | null;
 
   @ApiProperty({
     example: 'John Doe',
@@ -24,7 +24,7 @@ export class RegisterDto {
   @IsString({ message: 'Name must be a string' })
   @MinLength(2, { message: 'Name must be at least 2 characters long' })
   @IsNotEmpty({ message: 'Name is required' })
-  name!: string;
+  name!: string | null;
 
   @ApiProperty({
     example: 'Password123!',
@@ -36,7 +36,7 @@ export class RegisterDto {
     message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
   })
   @IsNotEmpty({ message: 'Password is required' })
-  password!: string;
+  password!: string | null;
 
   @ApiProperty({
     example: 'Password123!',
@@ -44,7 +44,7 @@ export class RegisterDto {
   })
   @IsString({ message: 'Confirm password must be a string' })
   @IsNotEmpty({ message: 'Confirm password is required' })
-  confirmPassword!: string;
+  confirmPassword!: string | null;
 
   @ApiProperty({
     example: ['user'],

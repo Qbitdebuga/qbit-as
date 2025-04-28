@@ -20,7 +20,7 @@ export interface AuthResponse extends TokenResponseDto {
 }
 
 export interface TokenResponse {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
+  accessToken: string | null;
+  refreshToken: string | null;
+  expiresIn: number | null;
 } 

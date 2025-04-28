@@ -30,10 +30,10 @@ export class AccountPublisher {
         timestamp: new Date().toISOString(),
       };
       
-      await this.client.emit('account.created', payload).toPromise();
-      this.logger.log(`Published account.created event for account ${account.id}`);
+      await this?.client.emit('account.created', payload).toPromise();
+      this?.logger.log(`Published account.created event for account ${account.id}`);
     } catch (error) {
-      this.logger.error(
+      this?.logger.error(
         `Failed to publish account.created event for account ${account.id}`, 
         error instanceof Error ? error.stack : error
       );
@@ -57,10 +57,10 @@ export class AccountPublisher {
         timestamp: new Date().toISOString(),
       };
       
-      await this.client.emit('account.updated', payload).toPromise();
-      this.logger.log(`Published account.updated event for account ${account.id}`);
+      await this?.client.emit('account.updated', payload).toPromise();
+      this?.logger.log(`Published account.updated event for account ${account.id}`);
     } catch (error) {
-      this.logger.error(
+      this?.logger.error(
         `Failed to publish account.updated event for account ${account.id}`, 
         error instanceof Error ? error.stack : error
       );
@@ -79,10 +79,10 @@ export class AccountPublisher {
         timestamp: new Date().toISOString(),
       };
       
-      await this.client.emit('account.deleted', payload).toPromise();
-      this.logger.log(`Published account.deleted event for account ${accountId}`);
+      await this?.client.emit('account.deleted', payload).toPromise();
+      this?.logger.log(`Published account.deleted event for account ${accountId}`);
     } catch (error) {
-      this.logger.error(
+      this?.logger.error(
         `Failed to publish account.deleted event for account ${accountId}`, 
         error instanceof Error ? error.stack : error
       );

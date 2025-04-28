@@ -8,24 +8,24 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '../ui/table';
+} from '@/components/ui/table';
 import { 
   Card, 
   CardContent, 
   CardDescription, 
   CardHeader, 
   CardTitle 
-} from '../ui/card';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import { Input } from '../ui/input';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from '../ui/select';
+} from '@/components/ui/select';
 import { Invoice, InvoiceStatus } from '@qbit/shared-types';
 import { useInvoices } from '@/hooks/useInvoices';
 import Link from 'next/link';

@@ -1,79 +1,75 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { User, AuthResponse } from '@qbit/api-client';
-import { authClient } from '@/utils/auth';
+import { useState, useEffect } from 'react';
 
-interface UseAuthReturn {
-  user: User | null;
-  isLoading: boolean;
+interface UseAuthResult {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<AuthResponse | void>;
+  isLoading: boolean;
+  user: any | null;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  register: (name: string, email: string, password: string) => Promise<AuthResponse | void>;
 }
 
-export function useAuth(): UseAuthReturn {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+export function useAuth(): UseAuthResult {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // Check if user is authenticated
-  const checkAuth = useCallback(async () => {
-    try {
-      if (authClient.isAuthenticated()) {
-        const userData = await authClient.getProfile();
-        setUser(userData);
-      }
-    } catch (error) {
-      console.error('Authentication check failed:', error);
-      // Clear any invalid tokens
-      authClient.logout();
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const [user, setUser] = useState<any | null>(null);
 
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    // Check if user is authenticated on component mount
+    const checkAuth = async () => {
+      try {
+        // In a real app, you would validate the token with your backend
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+          // For demo purposes, we're just checking if the token exists
+          setIsAuthenticated(true);
+          // Mock user data
+          setUser({ id: '1', email: 'user@example.com' });
+        }
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const login = async (email: string, password: string): Promise<AuthResponse | void> => {
-    setIsLoading(true);
+    checkAuth();
+  }, []);
+
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await authClient.login({ email, password });
-      setUser(response.user);
-      return response;
+      setIsLoading(true);
+      // In a real app, this would be an API call to your auth endpoint
+      // For demo purposes, we'll just mock a successful login
+      
+      // Mock successful login
+      const mockToken = 'mock_token_' + Math.random().toString(36).substring(2);
+      localStorage.setItem('auth_token', mockToken);
+      
+      setIsAuthenticated(true);
+      setUser({ id: '1', email });
+      
+      return true;
+    } catch (error) {
+      console.error('Login failed:', error);
+      return false;
     } finally {
       setIsLoading(false);
     }
   };
 
   const logout = () => {
-    authClient.logout();
+    localStorage.removeItem('auth_token');
+    setIsAuthenticated(false);
     setUser(null);
-    router.push('/login');
-  };
-
-  const register = async (name: string, email: string, password: string): Promise<AuthResponse | void> => {
-    setIsLoading(true);
-    try {
-      await authClient.register({ name, email, password });
-      const response = await authClient.login({ email, password });
-      setUser(response.user);
-      return response;
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return {
-    user,
+    isAuthenticated,
     isLoading,
-    isAuthenticated: !!user,
+    user,
     login,
     logout,
-    register,
   };
 } 

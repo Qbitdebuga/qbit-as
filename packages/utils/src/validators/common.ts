@@ -44,14 +44,14 @@ export function isValidEmail(email: string): boolean {
 export function validatePassword(
   password: string,
   options: {
-    minLength?: number;
-    requireNumbers?: boolean;
-    requireLowercase?: boolean;
-    requireUppercase?: boolean;
-    requireSpecial?: boolean;
+    minLength?: number | null;
+    requireNumbers?: boolean | null;
+    requireLowercase?: boolean | null;
+    requireUppercase?: boolean | null;
+    requireSpecial?: boolean | null;
     forbiddenChars?: string[];
   } = {}
-): { isValid: boolean; reasons?: string[] } {
+): { isValid: boolean | null; reasons?: string[] } {
   const {
     minLength = 8,
     requireNumbers = true,
@@ -128,8 +128,8 @@ export function isValidUrl(
   url: string,
   options: {
     protocols?: string[];
-    requireTld?: boolean;
-    requireProtocol?: boolean;
+    requireTld?: boolean | null;
+    requireProtocol?: boolean | null;
   } = {}
 ): boolean {
   if (!url) return false;
@@ -145,7 +145,7 @@ export function isValidUrl(
     
     // Check protocol
     if (requireProtocol) {
-      const urlProtocol = parsedUrl.protocol.replace(':', '');
+      const urlProtocol = parsedUrl?.protocol.replace(':', '');
       if (!protocols.includes(urlProtocol)) {
         return false;
       }
@@ -153,7 +153,7 @@ export function isValidUrl(
 
     // Check TLD
     if (requireTld) {
-      const hostnameParts = parsedUrl.hostname.split('.');
+      const hostnameParts = parsedUrl?.hostname.split('.');
       if (hostnameParts.length < 2) {
         return false;
       }
@@ -184,9 +184,9 @@ export function isValidUrl(
 export function isValidPhoneNumber(
   phoneNumber: string,
   options: {
-    strict?: boolean;
-    countryCode?: string;
-    allowExtensions?: boolean;
+    strict?: boolean | null;
+    countryCode?: string | null;
+    allowExtensions?: boolean | null;
   } = {}
 ): boolean {
   if (!phoneNumber) return false;
@@ -240,9 +240,9 @@ export function isValidPhoneNumber(
 export function isValidDate(dateString: string, format: string = 'YYYY-MM-DD'): boolean {
   if (!dateString) return false;
 
-  let day: number;
-  let month: number;
-  let year: number;
+  let day: number | null;
+  let month: number | null;
+  let year: number | null;
 
   // Parse based on format
   if (format === 'YYYY-MM-DD') {
@@ -319,10 +319,10 @@ export function isValidDate(dateString: string, format: string = 'YYYY-MM-DD'): 
 export function isValidNumber(
   value: string | number,
   options: {
-    min?: number;
-    max?: number;
-    integer?: boolean;
-    allowLeadingZeros?: boolean;
+    min?: number | null;
+    max?: number | null;
+    integer?: boolean | null;
+    allowLeadingZeros?: boolean | null;
   } = {}
 ): boolean {
   if (value === '' || value === null || value === undefined) {

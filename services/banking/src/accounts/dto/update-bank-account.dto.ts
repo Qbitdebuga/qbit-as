@@ -21,7 +21,7 @@ export class UpdateBankAccountDto {
   })
   @IsString()
   @IsOptional()
-  name?: string;
+  name?: string | null;
 
   @ApiProperty({
     description: 'Description of the bank account',
@@ -30,7 +30,7 @@ export class UpdateBankAccountDto {
   })
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({
     description: 'Bank account number',
@@ -39,7 +39,7 @@ export class UpdateBankAccountDto {
   })
   @IsString()
   @IsOptional()
-  accountNumber?: string;
+  accountNumber?: string | null;
 
   @ApiProperty({
     description: 'Type of bank account',
@@ -67,7 +67,7 @@ export class UpdateBankAccountDto {
   })
   @IsUUID()
   @IsOptional()
-  bankId?: string;
+  bankId?: string | null;
 
   @ApiProperty({
     description: 'Associated general ledger account ID',
@@ -75,7 +75,7 @@ export class UpdateBankAccountDto {
   })
   @IsUUID()
   @IsOptional()
-  glAccountId?: string;
+  glAccountId?: string | null;
 
   @ApiProperty({
     description: 'Current balance of the account',
@@ -86,7 +86,7 @@ export class UpdateBankAccountDto {
   @Min(0)
   @IsOptional()
   @Type(() => Number)
-  currentBalance?: number;
+  currentBalance?: number | null;
 
   @ApiProperty({
     description: 'Date when the account was last reconciled',
@@ -104,7 +104,7 @@ export class UpdateBankAccountDto {
   })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 
   @ApiProperty({
     description: 'Additional notes about the account',
@@ -113,5 +113,5 @@ export class UpdateBankAccountDto {
   })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 } 

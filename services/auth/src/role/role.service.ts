@@ -13,12 +13,12 @@ export class RoleService {
   ) {}
 
   async findAll(skip = 0, take = 100): Promise<Role[]> {
-    const roles = await this.roleRepository.findAll(skip, take);
+    const roles = await this?.roleRepository.findAll(skip, take);
     return roles.map((role: any) => new Role(role));
   }
 
   async findOne(id: string): Promise<Role> {
-    const role = await this.roleRepository.findById(id);
+    const role = await this?.roleRepository.findById(id);
 
     if (!role) {
       throw new NotFoundException(`Role with ID ${id} not found`);
@@ -28,7 +28,7 @@ export class RoleService {
   }
 
   async findByName(name: string): Promise<Role | null> {
-    const role = await this.roleRepository.findByName(name);
+    const role = await this?.roleRepository.findByName(name);
 
     if (!role) {
       return null;
@@ -44,14 +44,14 @@ export class RoleService {
       throw new ConflictException(`Role with name ${createRoleDto.name} already exists`);
     }
 
-    const role = await this.roleRepository.create({
+    const role = await this?.roleRepository.create({
       name: createRoleDto.name,
       description: createRoleDto.description || '',
       permissions: createRoleDto.permissions || [],
     });
 
     // Publish role created event
-    await this.rolePublisher.publishRoleCreated(role);
+    await this?.rolePublisher.publishRoleCreated(role);
 
     return new Role(role);
   }
@@ -60,14 +60,14 @@ export class RoleService {
     // Check if role exists and get previous data
     const previousRole = await this.findOne(id);
 
-    const role = await this.roleRepository.update(id, {
+    const role = await this?.roleRepository.update(id, {
       name: updateRoleDto.name,
       description: updateRoleDto.description,
       permissions: updateRoleDto.permissions,
     });
 
     // Publish role updated event
-    await this.rolePublisher.publishRoleUpdated(role, previousRole);
+    await this?.rolePublisher.publishRoleUpdated(role, previousRole);
 
     return new Role(role);
   }
@@ -77,9 +77,9 @@ export class RoleService {
     const role = await this.findOne(id);
     
     // Delete the role
-    await this.roleRepository.delete(id);
+    await this?.roleRepository.delete(id);
     
     // Publish role deleted event
-    await this.rolePublisher.publishRoleDeleted(id, role);
+    await this?.rolePublisher.publishRoleDeleted(id, role);
   }
 } 

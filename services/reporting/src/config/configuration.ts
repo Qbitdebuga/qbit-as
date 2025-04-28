@@ -29,33 +29,33 @@ export const configSchemaValidation = Joi.object({
 // Database configuration
 export const databaseConfig = () => ({
   database: {
-    url: process.env.DATABASE_URL,
+    url: process?.env.DATABASE_URL,
   },
 });
 
 // App configuration
 export const appConfig = () => ({
-  port: parseInt(process.env.PORT || '3004', 10),
-  env: process.env.NODE_ENV || 'development',
+  port: parseInt(process?.env.PORT || '3004', 10),
+  env: process?.env.NODE_ENV || 'development',
 });
 
 // Auth configuration
 export const authConfig = () => ({
   jwt: {
-    secret: process.env.JWT_SECRET,
-    expiresIn: process.env.JWT_EXPIRATION || '1d',
+    secret: process?.env.JWT_SECRET,
+    expiresIn: process?.env.JWT_EXPIRATION || '1d',
   },
   serviceJwt: {
-    secret: process.env.SERVICE_JWT_SECRET,
+    secret: process?.env.SERVICE_JWT_SECRET,
   },
 });
 
 // RabbitMQ configuration
 export const rabbitMQConfig = () => ({
   rabbitmq: {
-    url: process.env.RABBITMQ_URL,
-    queueName: process.env.RABBITMQ_QUEUE_NAME || 'reporting_queue',
-    exchange: process.env.RABBITMQ_EXCHANGE || 'reporting_exchange',
+    url: process?.env.RABBITMQ_URL,
+    queueName: process?.env.RABBITMQ_QUEUE_NAME || 'reporting_queue',
+    exchange: process?.env.RABBITMQ_EXCHANGE || 'reporting_exchange',
   },
 });
 
@@ -63,16 +63,16 @@ export const rabbitMQConfig = () => ({
 export const clientsConfig = () => ({
   clients: {
     authService: {
-      url: process.env.AUTH_SERVICE_URL,
-      serviceId: process.env.SERVICE_ID,
-      serviceSecret: process.env.SERVICE_SECRET,
+      url: process?.env.AUTH_SERVICE_URL,
+      serviceId: process?.env.SERVICE_ID,
+      serviceSecret: process?.env.SERVICE_SECRET,
     },
     generalLedgerService: {
-      url: process.env.GENERAL_LEDGER_SERVICE_URL,
+      url: process?.env.GENERAL_LEDGER_SERVICE_URL,
     },
     httpClient: {
-      timeout: parseInt(process.env.HTTP_TIMEOUT || '5000', 10),
-      maxRedirects: parseInt(process.env.HTTP_MAX_REDIRECTS || '5', 10),
+      timeout: parseInt(process?.env.HTTP_TIMEOUT || '5000', 10),
+      maxRedirects: parseInt(process?.env.HTTP_MAX_REDIRECTS || '5', 10),
     },
   },
 }); 

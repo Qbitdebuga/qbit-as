@@ -1,7 +1,88 @@
 'use client';
 
-// Import the authClient directly from the configured module
-import { TokenStorage, AuthClient } from '@qbit/api-client';
+// Mock implementation for the web app
+// TODO: Replace with actual API client imports when package is properly transpiled
+
+// Mock classes to replace the imports
+export class TokenStorage {
+  static getToken(): string | null {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('auth_token');
+    }
+    return null;
+  }
+  
+  static setToken(token: string): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', token);
+    }
+  }
+  
+  static removeToken(): void {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
+  }
+  
+  static getProfile(): any | null {
+    if (typeof window !== 'undefined') {
+      const profile = localStorage.getItem('user_profile');
+      return profile ? JSON.parse(profile) : null;
+    }
+    return null;
+  }
+  
+  static setProfile(profile: any): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user_profile', JSON.stringify(profile));
+    }
+  }
+  
+  static removeProfile(): void {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('user_profile');
+    }
+  }
+}
+
+export class AuthClient {
+  baseUrl: string;
+  
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+  
+  isAuthenticated(): boolean {
+    return !!TokenStorage.getToken();
+  }
+  
+  getProfile(): any {
+    return TokenStorage.getProfile();
+  }
+  
+  async login(email: string, password: string): Promise<any> {
+    // Mock implementation
+    const mockResponse = {
+      token: 'mock-token',
+      user: { 
+        id: '1', 
+        name: 'Mock User', 
+        email, 
+        roles: ['user']
+      }
+    };
+    
+    TokenStorage.setToken(mockResponse.token);
+    TokenStorage.setProfile(mockResponse.user);
+    
+    return mockResponse;
+  }
+  
+  async logout(): Promise<void> {
+    TokenStorage.removeToken();
+    TokenStorage.removeProfile();
+  }
+}
 
 // Create a single instance of AuthClient to be used throughout the app
 export const authClient = new AuthClient(process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3002');

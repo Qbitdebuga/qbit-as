@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import FinancialOverview from '../../components/dashboard/FinancialOverview';
-import ConsolidatedReportSummary from '../../components/reports/ConsolidatedReportSummary';
-import { useAggregatedData } from '../../hooks/useAggregatedData';
+import FinancialOverview from '@/components/dashboard/FinancialOverview';
+import ConsolidatedReportSummary from '@/components/reports/ConsolidatedReportSummary';
+import { useAggregatedData } from '@/hooks/useAggregatedData';
 
 export default function DashboardPage() {
   const router = useRouter();

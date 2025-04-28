@@ -11,45 +11,45 @@ export enum ReportType {
 export class ReportRequestDto {
   @ApiProperty({ enum: ReportType, description: 'Type of financial report to generate' })
   @IsEnum(ReportType)
-  type: string;
+  type: string | null;
 
   @ApiPropertyOptional({ description: 'Custom name for the report' })
   @IsString()
   @IsOptional()
-  name?: string;
+  name?: string | null;
 
   @ApiPropertyOptional({ description: 'Start date for period-based reports (ISO format)' })
   @IsISO8601()
   @IsOptional()
-  startDate?: string;
+  startDate?: string | null;
 
   @ApiPropertyOptional({ description: 'End date for period-based reports (ISO format)' })
   @IsISO8601()
   @IsOptional()
-  endDate?: string;
+  endDate?: string | null;
 
   @ApiPropertyOptional({ description: 'Specific date for point-in-time reports (ISO format)' })
   @IsISO8601()
   @IsOptional()
-  asOfDate?: string;
+  asOfDate?: string | null;
 
   @ApiPropertyOptional({ description: 'Include comparative period data' })
   @IsBoolean()
   @IsOptional()
-  comparativePeriod?: boolean;
+  comparativePeriod?: boolean | null;
 
   @ApiPropertyOptional({ description: 'Include accounts with zero balances' })
   @IsBoolean()
   @IsOptional()
-  includeZeroBalances?: boolean;
+  includeZeroBalances?: boolean | null;
 
   @ApiPropertyOptional({ description: 'Whether to save the report in the database' })
   @IsBoolean()
   @IsOptional()
-  saveReport?: boolean;
+  saveReport?: boolean | null;
 
   @ApiPropertyOptional({ description: 'User ID of the report creator' })
   @IsUUID()
   @IsOptional()
-  userId?: string;
+  userId?: string | null;
 } 

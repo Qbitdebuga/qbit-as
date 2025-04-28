@@ -9,7 +9,7 @@ import {
 import { TokenStorage } from '../utils/token-storage';
 
 export class AuthClient {
-  private apiUrl: string;
+  private apiUrl: string | null;
 
   constructor(apiUrl: string) {
     this.apiUrl = apiUrl;

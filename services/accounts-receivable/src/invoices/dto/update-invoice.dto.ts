@@ -7,7 +7,7 @@ export class UpdateInvoiceDto {
   @ApiPropertyOptional({ description: 'Customer reference number', example: 'PO-12345' })
   @IsOptional()
   @IsString()
-  customerReference?: string;
+  customerReference?: string | null;
 
   @ApiPropertyOptional({ description: 'Invoice date', example: '2023-01-15' })
   @IsOptional()
@@ -33,10 +33,10 @@ export class UpdateInvoiceDto {
   @ApiPropertyOptional({ description: 'Notes', example: 'Payment due within 30 days' })
   @IsOptional()
   @IsString()
-  notes?: string;
+  notes?: string | null;
 
   @ApiPropertyOptional({ description: 'Terms and conditions' })
   @IsOptional()
   @IsString()
-  terms?: string;
+  terms?: string | null;
 } 

@@ -11,7 +11,7 @@ export class JournalEntriesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(params: any = {}) {
-    return this.prisma.db.journalEntry.findMany({
+    return this?.prisma.db?.journalEntry.findMany({
       where: params.where,
       include: { lines: true },
       orderBy: { date: 'desc' },
@@ -21,7 +21,7 @@ export class JournalEntriesRepository {
   }
 
   async findOne(id: string) {
-    return this.prisma.db.journalEntry.findUnique({
+    return this?.prisma.db?.journalEntry.findUnique({
       where: { id },
       include: {
         lines: {
@@ -34,7 +34,7 @@ export class JournalEntriesRepository {
   async create(data: CreateJournalEntryDto) {
     const entryNumber = await generateEntryNumber(this.prisma);
 
-    return this.prisma.db.journalEntry.create({
+    return this?.prisma.db?.journalEntry.create({
       data: {
         entryNumber,
         date: new Date(data.date),
@@ -43,11 +43,11 @@ export class JournalEntriesRepository {
         status: 'DRAFT',
         isAdjustment: data.isAdjustment || false,
         lines: {
-          create: data.lines.map((line) => ({
+          create: data?.lines.map((line) => ({
             accountId: line.accountId,
             description: line.description,
-            debit: line.debit ? parseFloat(line.debit.toString()) : null,
-            credit: line.credit ? parseFloat(line.credit.toString()) : null,
+            debit: line.debit ? parseFloat(line?.debit.toString()) : null,
+            credit: line.credit ? parseFloat(line?.credit.toString()) : null,
           })),
         },
       },
@@ -62,7 +62,7 @@ export class JournalEntriesRepository {
   }
 
   async update(id: string, data: UpdateJournalEntryDto) {
-    const updatedEntry = await this.prisma.db.journalEntry.update({
+    const updatedEntry = await this?.prisma.db?.journalEntry.update({
       where: { id },
       data: {
         date: data.date ? new Date(data.date) : undefined,
@@ -78,18 +78,18 @@ export class JournalEntriesRepository {
 
     if (data.lines) {
       // Delete existing lines
-      await this.prisma.db.journalEntryLine.deleteMany({
+      await this?.prisma.db?.journalEntryLine.deleteMany({
         where: { journalEntryId: id }
       });
 
       // Create new lines
-      await this.prisma.db.journalEntryLine.createMany({
-        data: data.lines.map((line: any) => ({
+      await this?.prisma.db?.journalEntryLine.createMany({
+        data: data?.lines.map((line: any) => ({
           journalEntryId: id,
           accountId: line.accountId,
           description: line.description || '',
-          debit: line.debit ? parseFloat(line.debit.toString()) : null,
-          credit: line.credit ? parseFloat(line.credit.toString()) : null,
+          debit: line.debit ? parseFloat(line?.debit.toString()) : null,
+          credit: line.credit ? parseFloat(line?.credit.toString()) : null,
         }))
       });
     }
@@ -98,13 +98,13 @@ export class JournalEntriesRepository {
   }
 
   async remove(id: string) {
-    return this.prisma.db.journalEntry.delete({
+    return this?.prisma.db?.journalEntry.delete({
       where: { id }
     });
   }
 
   async updateStatus(id: string, status: string) {
-    return this.prisma.db.journalEntry.update({
+    return this?.prisma.db?.journalEntry.update({
       where: { id },
       data: { status }
     });
@@ -117,7 +117,7 @@ export class JournalEntriesRepository {
       throw new Error(`Journal entry with id ${originalEntryId} not found`);
     }
 
-    return this.prisma.db.journalEntry.create({
+    return this?.prisma.db?.journalEntry.create({
       data: {
         date: new Date(),
         reference: `REV-${originalEntry.reference || originalEntry.id}`,
@@ -125,7 +125,7 @@ export class JournalEntriesRepository {
         status: 'POSTED',
         isAdjustment: originalEntry.isAdjustment,
         lines: {
-          create: originalEntry.lines.map((line: any) => ({
+          create: originalEntry?.lines.map((line: any) => ({
             accountId: line.accountId,
             description: `Reversal: ${line.description || ''}`,
             // Swap debits and credits

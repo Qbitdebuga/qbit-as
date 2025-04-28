@@ -1,28 +1,28 @@
 import { JournalEntry as EntityJournalEntry } from '../../journal-entries/entities/journal-entry.entity';
 
 export interface JournalEntryWithExtraFields extends EntityJournalEntry {
-  totalAmount?: number;
-  createdBy?: string;
-  updatedBy?: string;
+  totalAmount?: number | null;
+  createdBy?: string | null;
+  updatedBy?: string | null;
 }
 
 export interface JournalEntryLine {
-  id: string;
-  journalEntryId: string;
-  accountId: string;
-  description?: string;
-  debit: number;
-  credit: number;
+  id: string | null;
+  journalEntryId: string | null;
+  accountId: string | null;
+  description?: string | null;
+  debit: number | null;
+  credit: number | null;
 }
 
 /**
  * Base event payload structure for journal entry events
  */
 export interface JournalEntryEventPayload {
-  id: string;
-  serviceSource: string;
-  entityType: string;
-  timestamp: string;
+  id: string | null;
+  serviceSource: string | null;
+  entityType: string | null;
+  timestamp: string | null;
 }
 
 /**
@@ -30,11 +30,11 @@ export interface JournalEntryEventPayload {
  */
 export interface JournalEntryCreatedPayload extends JournalEntryEventPayload {
   date: Date;
-  reference: string;
-  description: string;
-  status: string; // DRAFT, POSTED, REVERSED
-  totalAmount: number;
-  createdBy: string;
+  reference: string | null;
+  description: string | null;
+  status: string | null; // DRAFT, POSTED, REVERSED
+  totalAmount: number | null;
+  createdBy: string | null;
   lines: JournalEntryLine[];
 }
 
@@ -43,11 +43,11 @@ export interface JournalEntryCreatedPayload extends JournalEntryEventPayload {
  */
 export interface JournalEntryUpdatedPayload extends JournalEntryEventPayload {
   date: Date;
-  reference: string;
-  description: string;
-  status: string; // DRAFT, POSTED, REVERSED
-  totalAmount: number;
-  updatedBy: string;
+  reference: string | null;
+  description: string | null;
+  status: string | null; // DRAFT, POSTED, REVERSED
+  totalAmount: number | null;
+  updatedBy: string | null;
   lines: JournalEntryLine[];
 }
 
@@ -63,6 +63,6 @@ export interface JournalEntryDeletedPayload extends JournalEntryEventPayload {
  */
 export interface JournalEntryPostedPayload extends JournalEntryEventPayload {
   date: Date;
-  reference: string;
-  status: string; // POSTED
+  reference: string | null;
+  status: string | null; // POSTED
 } 

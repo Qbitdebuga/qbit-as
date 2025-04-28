@@ -3,34 +3,34 @@ import { Type } from 'class-transformer';
 
 export class CreateJournalEntryLineDto {
   @IsString()
-  accountId!: string;
+  accountId!: string | null;
 
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 
   @IsOptional()
-  debit?: number;
+  debit?: number | null;
 
   @IsOptional()
-  credit?: number;
+  credit?: number | null;
 }
 
 export class CreateJournalEntryDto {
   @IsDateString()
-  date!: string;
+  date!: string | null;
 
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 
   @IsOptional()
   @IsString()
-  reference?: string;
+  reference?: string | null;
 
   @IsOptional()
   @IsBoolean()
-  isAdjustment?: boolean;
+  isAdjustment?: boolean | null;
 
   @IsArray()
   @ValidateNested({ each: true })

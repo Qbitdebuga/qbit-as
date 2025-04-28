@@ -25,12 +25,12 @@ import { HealthModule } from './health/health.module';
         try {
           return {
             transports: [
-              new winston.transports.Console({
-                format: winston.format.combine(
-                  winston.format.timestamp(),
-                  winston.format.ms(),
-                  winston.format.colorize(),
-                  winston.format.printf(
+              new winston?.transports.Console({
+                format: winston?.format.combine(
+                  winston?.format.timestamp(),
+                  winston?.format.ms(),
+                  winston?.format.colorize(),
+                  winston?.format.printf(
                     (info) => `[${info.timestamp}] [${info.level}] [${info.context || 'Accounts-Receivable'}] - ${info.message}`,
                   ),
                 ),

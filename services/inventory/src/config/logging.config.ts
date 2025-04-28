@@ -11,27 +11,27 @@ import * as Transport from 'winston-transport';
  */
 export const createWinstonLoggerOptions = (
   configService: ConfigService,
-): WinstonModuleOptions => {
+): WinstonModuleOptions: any => {
   // Define the console format
-  const consoleFormat = winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.ms(),
-    nestWinstonUtilities.format.nestLike('INVENTORY', {
+  const consoleFormat = winston?.format.combine(
+    winston?.format.timestamp(),
+    winston?.format.ms(),
+    nestWinstonUtilities?.format.nestLike('INVENTORY', {
       prettyPrint: true,
       colors: true,
     }),
   );
 
   // Define the JSON format for sending logs to Logstash
-  const jsonFormat = winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
+  const jsonFormat = winston?.format.combine(
+    winston?.format.timestamp(),
+    winston?.format.json(),
   );
 
   // Create an array of transports
   const transports: Transport[] = [
     // Console transport for local development
-    new winston.transports.Console({
+    new winston?.transports.Console({
       format: consoleFormat,
       level: configService.get('LOG_LEVEL') || 'info',
     }),
@@ -43,7 +43,7 @@ export const createWinstonLoggerOptions = (
   
   // Add HTTP transport for sending logs to Logstash
   transports.push(
-    new winston.transports.Http({
+    new winston?.transports.Http({
       host: logstashHost,
       port: logstashPort,
       path: '/',

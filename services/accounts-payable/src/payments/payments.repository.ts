@@ -16,7 +16,7 @@ export class PaymentsRepository {
       
       // Generate a new payment number if none exist
       const nextNumber = lastPayment && lastPayment.paymentNumber 
-        ? parseInt(lastPayment.paymentNumber.split('-')[1]) + 1 
+        ? parseInt(lastPayment?.paymentNumber.split('-')[1]) + 1 
         : 1;
       data.paymentNumber = `PAY-${nextNumber.toString().padStart(5, '0')}`;
     }
@@ -27,16 +27,16 @@ export class PaymentsRepository {
         paymentNumber: data.paymentNumber,
         vendorId: data.vendorId,
         paymentDate: new Date(data.paymentDate),
-        amount: data.amount.toString(),
+        amount: data?.amount.toString(),
         paymentMethod: data.paymentMethod,
         reference: data.reference,
         memo: data.memo,
         status: data.status || PaymentStatus.PENDING,
         bankAccountId: data.bankAccountId,
         applications: {
-          create: data.applications.map(app => ({
+          create: data?.applications.map(app => ({
             billId: app.billId,
-            amount: app.amount.toString(),
+            amount: app?.amount.toString(),
           })),
         },
       },
@@ -48,8 +48,8 @@ export class PaymentsRepository {
   }
 
   async findAll(params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     cursor?: any;
     where?: any;
     orderBy?: any;
@@ -102,7 +102,7 @@ export class PaymentsRepository {
       where: { id },
       data: {
         paymentDate: data.paymentDate ? new Date(data.paymentDate) : undefined,
-        amount: data.amount ? data.amount.toString() : undefined,
+        amount: data.amount ? data?.amount.toString() : undefined,
         paymentMethod: data.paymentMethod,
         reference: data.reference,
         memo: data.memo,
@@ -125,7 +125,7 @@ export class PaymentsRepository {
     });
   }
   
-  async applyPayment(paymentId: number, applications: { billId: number; amount: number }[]): Promise<Payment> {
+  async applyPayment(paymentId: number, applications: { billId: number | null; amount: number }[]): Promise<Payment> {
     // Create transaction to ensure atomicity
     return (this.prisma as any).$transaction(async (prisma) => {
       // First, delete existing applications for this payment
@@ -139,7 +139,7 @@ export class PaymentsRepository {
           data: {
             paymentId,
             billId: app.billId,
-            amount: app.amount.toString(),
+            amount: app?.amount.toString(),
           },
         });
         
@@ -149,8 +149,8 @@ export class PaymentsRepository {
         });
         
         if (bill) {
-          const newAmountPaid = parseFloat(bill.amountPaid.toString()) + app.amount;
-          const newBalanceDue = parseFloat(bill.totalAmount.toString()) - newAmountPaid;
+          const newAmountPaid = parseFloat(bill?.amountPaid.toString()) + app.amount;
+          const newBalanceDue = parseFloat(bill?.totalAmount.toString()) - newAmountPaid;
           
           await (prisma as any).bill.update({
             where: { id: app.billId },

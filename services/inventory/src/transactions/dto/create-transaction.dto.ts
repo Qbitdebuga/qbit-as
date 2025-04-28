@@ -23,29 +23,29 @@ export class CreateTransactionDto {
   @IsEnum(TransactionType)
   transactionType: TransactionType;
 
-  @ApiProperty({ required: false, description: 'External reference number (e.g., PO number, SO number)' })
+  @ApiProperty({ required: false, description: 'External reference number (e?.g., PO number, SO number)' })
   @IsString()
   @IsOptional()
-  referenceNumber?: string;
+  referenceNumber?: string | null;
 
-  @ApiProperty({ required: false, description: 'Type of document this is referencing (e.g., "purchase_order", "sales_order")' })
+  @ApiProperty({ required: false, description: 'Type of document this is referencing (e?.g., "purchase_order", "sales_order")' })
   @IsString()
   @IsOptional()
-  referenceType?: string;
+  referenceType?: string | null;
 
   @ApiProperty({ required: false, description: 'ID of the referenced document' })
   @IsString()
   @IsOptional()
-  referenceId?: string;
+  referenceId?: string | null;
 
   @ApiProperty({ required: false, description: 'Source warehouse ID (required for transfers)' })
   @IsUUID()
   @IsOptional()
-  sourceWarehouseId?: string;
+  sourceWarehouseId?: string | null;
 
   @ApiProperty({ description: 'Target warehouse ID (required for all except adjustments)' })
   @IsUUID()
-  targetWarehouseId: string;
+  targetWarehouseId: string | null;
 
   @ApiProperty({ required: false, description: 'Transaction date', type: Date, default: new Date() })
   @IsDate()
@@ -56,12 +56,12 @@ export class CreateTransactionDto {
   @ApiProperty({ required: false, description: 'Transaction notes' })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({ required: false, description: 'Is the transaction backordered', default: false })
   @IsBoolean()
   @IsOptional()
-  isBackordered?: boolean;
+  isBackordered?: boolean | null;
 
   @ApiProperty({ type: [CreateTransactionLineDto], description: 'Transaction line items' })
   @IsArray()

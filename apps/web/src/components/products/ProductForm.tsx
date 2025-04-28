@@ -38,7 +38,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
-import { IProduct, IProductCategory } from '@qbit-accounting/shared-types';
+import { IProduct, IProductCategory } from '@qbit/shared-types';
 import { ProductVariants } from './ProductVariants';
 import { useProductCategories } from '@/hooks/useProductCategories';
 

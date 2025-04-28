@@ -26,7 +26,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async cleanDatabase() {
-    if (this.configService.get<string>('NODE_ENV') === 'test') {
+    if (this?.configService.get<string>('NODE_ENV') === 'test') {
       // Only allow this in test environment
       const models = Reflect.ownKeys(this).filter((key) => {
         return typeof key === 'string' && !key.startsWith('_') && !['$connect', '$disconnect', '$on', '$transaction', '$use'].includes(key as string);

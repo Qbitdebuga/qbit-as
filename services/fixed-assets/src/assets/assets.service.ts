@@ -25,7 +25,7 @@ export class AssetsService {
   async create(createAssetDto: CreateAssetDto): Promise<AssetEntity> {
     try {
       // Check if category exists
-      const category = await this.db.assetCategory.findUnique({
+      const category = await this?.db.assetCategory.findUnique({
         where: { id: createAssetDto.categoryId },
       });
 
@@ -34,7 +34,7 @@ export class AssetsService {
       }
 
       // Check if asset number already exists
-      const existingAsset = await this.db.asset.findUnique({
+      const existingAsset = await this?.db.asset.findUnique({
         where: { assetNumber: createAssetDto.assetNumber },
       });
 
@@ -48,14 +48,14 @@ export class AssetsService {
       // Get the depreciation method value or default to STRAIGHT_LINE
       const depreciationMethodValue = createAssetDto.depreciationMethod || DepreciationMethod.STRAIGHT_LINE;
       
-      const asset = await this.db.asset.create({
+      const asset = await this?.db.asset.create({
         data: {
           name: createAssetDto.name,
           description: createAssetDto.description,
           assetNumber: createAssetDto.assetNumber,
           purchaseDate: new Date(createAssetDto.purchaseDate),
-          purchaseCost: new Prisma.Decimal(createAssetDto.purchaseCost.toString()),
-          residualValue: new Prisma.Decimal(createAssetDto.residualValue.toString()),
+          purchaseCost: new Prisma.Decimal(createAssetDto?.purchaseCost.toString()),
+          residualValue: new Prisma.Decimal(createAssetDto?.residualValue.toString()),
           assetLifeYears: createAssetDto.assetLifeYears,
           // Use type assertion to tell TypeScript this is the correct enum value
           status: statusValue as any,
@@ -78,7 +78,7 @@ export class AssetsService {
         depreciationMethod: depreciationMethodValue,
       });
     } catch (error) {
-      this.logger.error(`Error creating asset: ${error.message}`, error.stack);
+      this?.logger.error(`Error creating asset: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -120,7 +120,7 @@ export class AssetsService {
       }
 
       const [assets, total] = await Promise.all([
-        this.db.asset.findMany({
+        this?.db.asset.findMany({
           where,
           skip,
           take,
@@ -131,7 +131,7 @@ export class AssetsService {
             updatedAt: 'desc',
           },
         }),
-        this.db.asset.count({ where }),
+        this?.db.asset.count({ where }),
       ]);
 
       // Calculate current book value for each asset
@@ -153,14 +153,14 @@ export class AssetsService {
         total,
       };
     } catch (error) {
-      this.logger.error(`Error finding assets: ${error.message}`, error.stack);
+      this?.logger.error(`Error finding assets: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   async findOne(id: string): Promise<AssetEntity> {
     try {
-      const asset = await this.db.asset.findUnique({
+      const asset = await this?.db.asset.findUnique({
         where: { id },
         include: {
           category: true,
@@ -189,7 +189,7 @@ export class AssetsService {
 
       return new AssetEntity(mappedAsset);
     } catch (error) {
-      this.logger.error(`Error finding asset: ${error.message}`, error.stack);
+      this?.logger.error(`Error finding asset: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -197,7 +197,7 @@ export class AssetsService {
   async update(id: string, updateAssetDto: UpdateAssetDto): Promise<AssetEntity> {
     try {
       // Check if asset exists
-      const existingAsset = await this.db.asset.findUnique({
+      const existingAsset = await this?.db.asset.findUnique({
         where: { id },
       });
 
@@ -207,7 +207,7 @@ export class AssetsService {
 
       // Check if category exists if categoryId is provided
       if (updateAssetDto.categoryId) {
-        const category = await this.db.assetCategory.findUnique({
+        const category = await this?.db.assetCategory.findUnique({
           where: { id: updateAssetDto.categoryId },
         });
 
@@ -218,7 +218,7 @@ export class AssetsService {
 
       // Check if asset number is unique if updating
       if (updateAssetDto.assetNumber && updateAssetDto.assetNumber !== existingAsset.assetNumber) {
-        const assetWithSameNumber = await this.db.asset.findUnique({
+        const assetWithSameNumber = await this?.db.asset.findUnique({
           where: { assetNumber: updateAssetDto.assetNumber },
         });
 
@@ -258,14 +258,14 @@ export class AssetsService {
 
       // Convert number values to Prisma.Decimal if provided
       if (updateAssetDto.purchaseCost !== undefined) {
-        data.purchaseCost = new Prisma.Decimal(updateAssetDto.purchaseCost.toString());
+        data.purchaseCost = new Prisma.Decimal(updateAssetDto?.purchaseCost.toString());
       }
 
       if (updateAssetDto.residualValue !== undefined) {
-        data.residualValue = new Prisma.Decimal(updateAssetDto.residualValue.toString());
+        data.residualValue = new Prisma.Decimal(updateAssetDto?.residualValue.toString());
       }
 
-      const asset = await this.db.asset.update({
+      const asset = await this?.db.asset.update({
         where: { id },
         data,
         include: {
@@ -282,7 +282,7 @@ export class AssetsService {
 
       return new AssetEntity(mappedAsset);
     } catch (error) {
-      this.logger.error(`Error updating asset: ${error.message}`, error.stack);
+      this?.logger.error(`Error updating asset: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -290,7 +290,7 @@ export class AssetsService {
   async remove(id: string): Promise<void> {
     try {
       // Check if asset exists
-      const asset = await this.db.asset.findUnique({
+      const asset = await this?.db.asset.findUnique({
         where: { id },
       });
 
@@ -299,23 +299,23 @@ export class AssetsService {
       }
 
       // Delete asset and its depreciation entries in a transaction
-      await this.db.$transaction([
-        this.db.depreciationEntry.deleteMany({
+      await this?.db.$transaction([
+        this?.db.depreciationEntry.deleteMany({
           where: { assetId: id },
         }),
-        this.db.asset.delete({
+        this?.db.asset.delete({
           where: { id },
         }),
       ]);
     } catch (error) {
-      this.logger.error(`Error removing asset: ${error.message}`, error.stack);
+      this?.logger.error(`Error removing asset: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   // Calculate current depreciation for an asset
   private async calculateDepreciation(assetId: string): Promise<{ currentBookValue: Prisma.Decimal; accumulatedDepreciation: Prisma.Decimal }> {
-    const asset = await this.db.asset.findUnique({
+    const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
     });
 
@@ -324,7 +324,7 @@ export class AssetsService {
     }
 
     // Get the latest depreciation entry for the asset
-    const latestEntry = await this.db.depreciationEntry.findFirst({
+    const latestEntry = await this?.db.depreciationEntry.findFirst({
       where: { assetId },
       orderBy: { date: 'desc' },
     });
@@ -332,7 +332,7 @@ export class AssetsService {
     if (latestEntry) {
       return {
         currentBookValue: latestEntry.bookValue,
-        accumulatedDepreciation: asset.purchaseCost.sub(latestEntry.bookValue),
+        accumulatedDepreciation: asset?.purchaseCost.sub(latestEntry.bookValue),
       };
     }
 
@@ -346,7 +346,7 @@ export class AssetsService {
 
     // Simple straight-line depreciation calculation
     const lifetimeInMonths = asset.assetLifeYears * 12;
-    const depreciableAmount = asset.purchaseCost.sub(asset.residualValue);
+    const depreciableAmount = asset?.purchaseCost.sub(asset.residualValue);
     const monthlyDepreciation = depreciableAmount.div(lifetimeInMonths);
     
     // Calculate accumulated depreciation (capped at depreciable amount)
@@ -355,7 +355,7 @@ export class AssetsService {
       ? depreciableAmount 
       : calculatedDepreciation;
     
-    const currentBookValue = asset.purchaseCost.sub(accumulatedDepreciation);
+    const currentBookValue = asset?.purchaseCost.sub(accumulatedDepreciation);
     
     return {
       currentBookValue,
@@ -366,13 +366,13 @@ export class AssetsService {
   // Asset Category methods
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<AssetCategoryEntity> {
     try {
-      const category = await this.db.assetCategory.create({
+      const category = await this?.db.assetCategory.create({
         data: createCategoryDto,
       });
 
       return new AssetCategoryEntity(category);
     } catch (error) {
-      this.logger.error(`Error creating asset category: ${error.message}`, error.stack);
+      this?.logger.error(`Error creating asset category: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -389,7 +389,7 @@ export class AssetsService {
       }
 
       const [categories, total] = await Promise.all([
-        this.db.assetCategory.findMany({
+        this?.db.assetCategory.findMany({
           where,
           skip,
           take,
@@ -397,7 +397,7 @@ export class AssetsService {
             name: 'asc',
           },
         }),
-        this.db.assetCategory.count({ where }),
+        this?.db.assetCategory.count({ where }),
       ]);
 
       return {
@@ -405,14 +405,14 @@ export class AssetsService {
         total,
       };
     } catch (error) {
-      this.logger.error(`Error finding asset categories: ${error.message}`, error.stack);
+      this?.logger.error(`Error finding asset categories: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   async findOneCategory(id: string): Promise<AssetCategoryEntity> {
     try {
-      const category = await this.db.assetCategory.findUnique({
+      const category = await this?.db.assetCategory.findUnique({
         where: { id },
         include: {
           assets: {
@@ -433,7 +433,7 @@ export class AssetsService {
 
       return new AssetCategoryEntity(category);
     } catch (error) {
-      this.logger.error(`Error finding asset category: ${error.message}`, error.stack);
+      this?.logger.error(`Error finding asset category: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -441,7 +441,7 @@ export class AssetsService {
   async updateCategory(id: string, updateCategoryDto: UpdateCategoryDto): Promise<AssetCategoryEntity> {
     try {
       // Check if category exists
-      const category = await this.db.assetCategory.findUnique({
+      const category = await this?.db.assetCategory.findUnique({
         where: { id },
       });
 
@@ -449,14 +449,14 @@ export class AssetsService {
         throw new NotFoundException(`Asset category with ID ${id} not found`);
       }
 
-      const updatedCategory = await this.db.assetCategory.update({
+      const updatedCategory = await this?.db.assetCategory.update({
         where: { id },
         data: updateCategoryDto,
       });
 
       return new AssetCategoryEntity(updatedCategory);
     } catch (error) {
-      this.logger.error(`Error updating asset category: ${error.message}`, error.stack);
+      this?.logger.error(`Error updating asset category: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -464,7 +464,7 @@ export class AssetsService {
   async removeCategory(id: string): Promise<void> {
     try {
       // Check if category exists
-      const category = await this.db.assetCategory.findUnique({
+      const category = await this?.db.assetCategory.findUnique({
         where: { id },
         include: {
           _count: {
@@ -478,15 +478,15 @@ export class AssetsService {
       }
 
       // Check if category has assets
-      if (category._count.assets > 0) {
-        throw new ConflictException(`Cannot delete category with ${category._count.assets} assets. Please reassign or delete the assets first.`);
+      if (category?._count.assets > 0) {
+        throw new ConflictException(`Cannot delete category with ${category?._count.assets} assets. Please reassign or delete the assets first.`);
       }
 
-      await this.db.assetCategory.delete({
+      await this?.db.assetCategory.delete({
         where: { id },
       });
     } catch (error) {
-      this.logger.error(`Error removing asset category: ${error.message}`, error.stack);
+      this?.logger.error(`Error removing asset category: ${error.message}`, error.stack);
       throw error;
     }
   }

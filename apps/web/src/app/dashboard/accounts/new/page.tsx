@@ -1,12 +1,17 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { AccountForm } from '@/components/accounts/AccountForm';
 import { PageHeader } from '@/components/page-header';
-import { Button } from '@/components/ui';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { 
+  Button, 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui';
 
 export default function NewAccountPage() {
   // In a real app, this would be a server action or API call

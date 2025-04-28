@@ -12,7 +12,7 @@ export class CreateBillLineItemDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  description: string;
+  description: string | null;
 
   @ApiProperty({
     example: 1,
@@ -21,7 +21,7 @@ export class CreateBillLineItemDto {
   @IsNumber()
   @IsPositive()
   @Min(0.01)
-  quantity: number;
+  quantity: number | null;
 
   @ApiProperty({
     example: 500.00,
@@ -30,7 +30,7 @@ export class CreateBillLineItemDto {
   @IsNumber()
   @IsPositive()
   @Min(0.01)
-  unitPrice: number;
+  unitPrice: number | null;
 
   @ApiPropertyOptional({
     example: '123e4567-e89b-12d3-a456-426614174002',
@@ -38,7 +38,7 @@ export class CreateBillLineItemDto {
   })
   @IsUUID()
   @IsOptional()
-  accountId?: string;
+  accountId?: string | null;
 
   @ApiPropertyOptional({
     example: 'IT-EXP',
@@ -47,7 +47,7 @@ export class CreateBillLineItemDto {
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  accountCode?: string;
+  accountCode?: string | null;
 
   @ApiPropertyOptional({
     example: 10.00,
@@ -56,5 +56,5 @@ export class CreateBillLineItemDto {
   @IsNumber()
   @IsOptional()
   @Min(0)
-  taxRate?: number;
+  taxRate?: number | null;
 } 

@@ -2,32 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Bill, BillStatus } from '@qbit-accounting/shared-types';
-import { billsClient } from '@qbit-accounting/api-client';
+import { ArrowLeft, FileEdit, Printer, CheckCircle, XCircle, AlertCircle, CreditCard } from 'lucide-react';
+import Link from 'next/link';
+import { Bill, BillStatus } from '@/mocks/shared-types';
+import { billsClient } from '@/mocks/api-client';
 import { useAuth } from '@/hooks/useAuth';
 import { setupAuthForClient } from '@/utils/auth-helpers';
 import BillDetail from '@/components/bills/BillDetail';
 import { 
-  ArrowLeft, 
-  FileEdit, 
-  Printer, 
-  CheckCircle, 
-  XCircle,
-  AlertCircle,
-  CreditCard
-} from 'lucide-react';
-import { 
+  Button,
   Card, 
   CardContent, 
   CardDescription, 
   CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import Link from 'next/link';
-import { toast } from '@/components/ui/use-toast';
-import { Skeleton } from '@/components/ui/skeleton';
-import { 
+  CardTitle,
+  Skeleton,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -37,7 +26,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui';
+import { toast } from '@/components/ui/use-toast';
 
 export default function BillDetailPage() {
   const params = useParams();

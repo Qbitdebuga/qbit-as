@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class WarehouseEntity {
   @ApiProperty({ description: 'Unique identifier for the warehouse' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'Unique warehouse code' })
-  code: string;
+  code: string | null;
 
   @ApiProperty({ description: 'Warehouse name' })
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Warehouse description', required: false })
   description: string | null;
@@ -29,10 +29,10 @@ export class WarehouseEntity {
   country: string | null;
 
   @ApiProperty({ description: 'Whether this is the primary warehouse' })
-  isPrimary: boolean;
+  isPrimary: boolean | null;
 
   @ApiProperty({ description: 'Whether this warehouse is active' })
-  isActive: boolean;
+  isActive: boolean | null;
 
   @ApiProperty({ description: 'Date and time when the warehouse was created' })
   createdAt: Date;

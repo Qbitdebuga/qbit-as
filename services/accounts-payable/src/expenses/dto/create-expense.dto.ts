@@ -15,7 +15,7 @@ export class CreateExpenseTagDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  name: string;
+  name: string | null;
 }
 
 export class CreateExpenseDto {
@@ -26,7 +26,7 @@ export class CreateExpenseDto {
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  expenseNumber?: string;
+  expenseNumber?: string | null;
 
   @ApiPropertyOptional({
     example: 1,
@@ -34,7 +34,7 @@ export class CreateExpenseDto {
   })
   @IsNumber()
   @IsOptional()
-  categoryId?: number;
+  categoryId?: number | null;
 
   @ApiPropertyOptional({
     example: 1,
@@ -42,7 +42,7 @@ export class CreateExpenseDto {
   })
   @IsNumber()
   @IsOptional()
-  vendorId?: number;
+  vendorId?: number | null;
 
   @ApiPropertyOptional({
     example: 1,
@@ -50,7 +50,7 @@ export class CreateExpenseDto {
   })
   @IsNumber()
   @IsOptional()
-  employeeId?: number;
+  employeeId?: number | null;
 
   @ApiProperty({
     example: 'Office supplies',
@@ -59,7 +59,7 @@ export class CreateExpenseDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  description: string;
+  description: string | null;
 
   @ApiProperty({
     example: 85.5,
@@ -67,7 +67,7 @@ export class CreateExpenseDto {
   })
   @IsNumber()
   @Min(0)
-  amount: number;
+  amount: number | null;
 
   @ApiPropertyOptional({
     example: 14.5,
@@ -76,7 +76,7 @@ export class CreateExpenseDto {
   @IsNumber()
   @Min(0)
   @IsOptional()
-  taxAmount?: number;
+  taxAmount?: number | null;
 
   @ApiProperty({
     example: 100.0,
@@ -84,15 +84,15 @@ export class CreateExpenseDto {
   })
   @IsNumber()
   @Min(0)
-  totalAmount: number;
+  totalAmount: number | null;
 
   @ApiPropertyOptional({
-    example: 'https://storage.example.com/receipts/receipt-123.jpg',
+    example: 'https://storage?.example.com/receipts/receipt-123.jpg',
     description: 'URL to the receipt image or file',
   })
   @IsUrl()
   @IsOptional()
-  receiptUrl?: string;
+  receiptUrl?: string | null;
 
   @ApiProperty({
     example: '2023-01-15',
@@ -117,7 +117,7 @@ export class CreateExpenseDto {
   @IsString()
   @IsOptional()
   @MaxLength(100)
-  paymentReference?: string;
+  paymentReference?: string | null;
 
   @ApiPropertyOptional({
     enum: ExpenseStatus,
@@ -136,7 +136,7 @@ export class CreateExpenseDto {
   @IsString()
   @IsOptional()
   @MaxLength(1000)
-  notes?: string;
+  notes?: string | null;
 
   @ApiPropertyOptional({
     example: false,
@@ -145,7 +145,7 @@ export class CreateExpenseDto {
   })
   @IsBoolean()
   @IsOptional()
-  isReimbursable?: boolean;
+  isReimbursable?: boolean | null;
 
   @ApiPropertyOptional({
     example: false,
@@ -154,7 +154,7 @@ export class CreateExpenseDto {
   })
   @IsBoolean()
   @IsOptional()
-  isReconciled?: boolean;
+  isReconciled?: boolean | null;
 
   @ApiPropertyOptional({
     type: [CreateExpenseTagDto],

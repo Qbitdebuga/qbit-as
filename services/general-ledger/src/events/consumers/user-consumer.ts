@@ -4,30 +4,30 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 
 interface UserCreatedEvent {
-  id: string;
-  email: string;
-  name?: string;
+  id: string | null;
+  email: string | null;
+  name?: string | null;
   roles: string[];
-  serviceSource: string;
-  entityType: string;
-  timestamp: string;
+  serviceSource: string | null;
+  entityType: string | null;
+  timestamp: string | null;
 }
 
 interface UserUpdatedEvent {
-  id: string;
-  email: string;
-  name?: string;
+  id: string | null;
+  email: string | null;
+  name?: string | null;
   roles: string[];
-  serviceSource: string;
-  entityType: string;
-  timestamp: string;
+  serviceSource: string | null;
+  entityType: string | null;
+  timestamp: string | null;
 }
 
 interface UserDeletedEvent {
-  id: string;
-  serviceSource: string;
-  entityType: string;
-  timestamp: string;
+  id: string | null;
+  serviceSource: string | null;
+  entityType: string | null;
+  timestamp: string | null;
 }
 
 /**
@@ -46,7 +46,7 @@ export class UserConsumer implements OnModuleInit {
    * Setup event connections when the module initializes
    */
   async onModuleInit() {
-    this.logger.log('User event consumer initialized');
+    this?.logger.log('User event consumer initialized');
   }
 
   /**
@@ -55,17 +55,17 @@ export class UserConsumer implements OnModuleInit {
   @EventPattern('user.created')
   async handleUserCreated(@Payload() event: UserCreatedEvent, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received user.created event for user ${event.id}`);
+      this?.logger.log(`Received user.created event for user ${event.id}`);
       
       // Example implementation - store a reference to the user
       // Check if the user already exists in our local db
-      const existingUser = await this.prisma.$queryRaw`
+      const existingUser = await this?.prisma.$queryRaw`
         SELECT * FROM user_references WHERE external_id = ${event.id}
       `;
 
       if (!existingUser || (Array.isArray(existingUser) && existingUser.length === 0)) {
         // Create a new user reference record
-        await this.prisma.$executeRaw`
+        await this?.prisma.$executeRaw`
           INSERT INTO user_references (
             id, 
             external_id, 
@@ -80,7 +80,7 @@ export class UserConsumer implements OnModuleInit {
             ${event.id}, 
             ${event.email}, 
             ${event.name || null}, 
-            ${event.roles.includes('admin')}, 
+            ${event?.roles.includes('admin')}, 
             ${JSON.stringify({
               roles: event.roles,
               source: event.serviceSource,
@@ -89,7 +89,7 @@ export class UserConsumer implements OnModuleInit {
             NOW()
           )
         `;
-        this.logger.log(`Created local reference for user ${event.id}`);
+        this?.logger.log(`Created local reference for user ${event.id}`);
       }
       
       // Acknowledge the message
@@ -97,7 +97,7 @@ export class UserConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling user.created event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling user.created event: ${error.message}`, error.stack);
     }
   }
 
@@ -107,16 +107,16 @@ export class UserConsumer implements OnModuleInit {
   @EventPattern('user.updated')
   async handleUserUpdated(@Payload() event: UserUpdatedEvent, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received user.updated event for user ${event.id}`);
+      this?.logger.log(`Received user.updated event for user ${event.id}`);
       
       try {
         // Update the user reference record
-        const result = await this.prisma.$executeRaw`
+        const result = await this?.prisma.$executeRaw`
           UPDATE user_references 
           SET 
             email = ${event.email}, 
             name = ${event.name || null}, 
-            is_admin = ${event.roles.includes('admin')}, 
+            is_admin = ${event?.roles.includes('admin')}, 
             metadata = ${JSON.stringify({
               roles: event.roles,
               source: event.serviceSource,
@@ -131,13 +131,13 @@ export class UserConsumer implements OnModuleInit {
           throw { code: 'P2025' }; // Simulate Prisma's not found error
         }
         
-        this.logger.log(`Updated local reference for user ${event.id}`);
+        this?.logger.log(`Updated local reference for user ${event.id}`);
       } catch (dbError: any) {
-        this.logger.error(`Failed to update user reference: ${dbError.message}`, dbError.stack);
+        this?.logger.error(`Failed to update user reference: ${dbError.message}`, dbError.stack);
         // If the user doesn't exist, create it
         if (dbError.code === 'P2025') { // Prisma record not found error
-          this.logger.log(`User reference not found, creating new record for user ${event.id}`);
-          await this.prisma.$executeRaw`
+          this?.logger.log(`User reference not found, creating new record for user ${event.id}`);
+          await this?.prisma.$executeRaw`
             INSERT INTO user_references (
               id, 
               external_id, 
@@ -152,7 +152,7 @@ export class UserConsumer implements OnModuleInit {
               ${event.id}, 
               ${event.email}, 
               ${event.name || null}, 
-              ${event.roles.includes('admin')}, 
+              ${event?.roles.includes('admin')}, 
               ${JSON.stringify({
                 roles: event.roles,
                 source: event.serviceSource,
@@ -171,7 +171,7 @@ export class UserConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling user.updated event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling user.updated event: ${error.message}`, error.stack);
     }
   }
 
@@ -181,11 +181,11 @@ export class UserConsumer implements OnModuleInit {
   @EventPattern('user.deleted')
   async handleUserDeleted(@Payload() event: UserDeletedEvent, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received user.deleted event for user ${event.id}`);
+      this?.logger.log(`Received user.deleted event for user ${event.id}`);
       
       try {
         // Delete the user reference record
-        const result = await this.prisma.$executeRaw`
+        const result = await this?.prisma.$executeRaw`
           DELETE FROM user_references WHERE external_id = ${event.id}
         `;
         
@@ -194,13 +194,13 @@ export class UserConsumer implements OnModuleInit {
           throw { code: 'P2025' }; // Simulate Prisma's not found error
         }
         
-        this.logger.log(`Deleted local reference for user ${event.id}`);
+        this?.logger.log(`Deleted local reference for user ${event.id}`);
       } catch (dbError: any) {
         // If the user doesn't exist, just log it
         if (dbError.code === 'P2025') { // Prisma record not found error
-          this.logger.log(`No local reference found for deleted user ${event.id}`);
+          this?.logger.log(`No local reference found for deleted user ${event.id}`);
         } else {
-          this.logger.error(`Failed to delete user reference: ${dbError.message}`, dbError.stack);
+          this?.logger.error(`Failed to delete user reference: ${dbError.message}`, dbError.stack);
           throw dbError;
         }
       }
@@ -210,7 +210,7 @@ export class UserConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling user.deleted event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling user.deleted event: ${error.message}`, error.stack);
     }
   }
 } 

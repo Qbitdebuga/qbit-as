@@ -19,7 +19,7 @@ export class UserController {
     @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip: number,
     @Query('take', new DefaultValuePipe(100), ParseIntPipe) take: number,
   ): Promise<User[]> {
-    return this.userService.findAll(skip, take);
+    return this?.userService.findAll(skip, take);
   }
 
   @Get(':id')
@@ -27,7 +27,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Returns the user' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async findOne(@Param('id') id: string): Promise<User> {
-    const user = await this.userService.findById(id);
+    const user = await this?.userService.findById(id);
     return user as User;
   }
 
@@ -37,7 +37,7 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 409, description: 'Email already in use' })
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.create(createUserDto);
+    return this?.userService.create(createUserDto);
   }
 
   @Put(':id')
@@ -50,7 +50,7 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.userService.update(id, updateUserDto);
+    return this?.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
@@ -59,6 +59,6 @@ export class UserController {
   @ApiResponse({ status: 204, description: 'User successfully deleted' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async remove(@Param('id') id: string): Promise<void> {
-    return this.userService.remove(id);
+    return this?.userService.remove(id);
   }
 } 

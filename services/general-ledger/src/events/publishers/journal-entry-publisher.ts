@@ -45,10 +45,10 @@ export class JournalEntryPublisher {
         timestamp: new Date().toISOString(),
       };
       
-      await this.client.emit('journal-entry.created', payload).toPromise();
-      this.logger.log(`Published journal-entry.created event for entry ${journalEntry.id}`);
+      await this?.client.emit('journal-entry.created', payload).toPromise();
+      this?.logger.log(`Published journal-entry.created event for entry ${journalEntry.id}`);
     } catch (error) {
-      this.logger.error(
+      this?.logger.error(
         `Failed to publish journal-entry.created event for entry ${journalEntry.id}`, 
         error instanceof Error ? error.stack : error
       );
@@ -77,10 +77,10 @@ export class JournalEntryPublisher {
         timestamp: new Date().toISOString(),
       };
       
-      await this.client.emit('journal-entry.updated', payload).toPromise();
-      this.logger.log(`Published journal-entry.updated event for entry ${journalEntry.id}`);
+      await this?.client.emit('journal-entry.updated', payload).toPromise();
+      this?.logger.log(`Published journal-entry.updated event for entry ${journalEntry.id}`);
     } catch (error) {
-      this.logger.error(
+      this?.logger.error(
         `Failed to publish journal-entry.updated event for entry ${journalEntry.id}`, 
         error instanceof Error ? error.stack : error
       );
@@ -99,10 +99,10 @@ export class JournalEntryPublisher {
         timestamp: new Date().toISOString(),
       };
       
-      await this.client.emit('journal-entry.deleted', payload).toPromise();
-      this.logger.log(`Published journal-entry.deleted event for entry ${journalEntryId}`);
+      await this?.client.emit('journal-entry.deleted', payload).toPromise();
+      this?.logger.log(`Published journal-entry.deleted event for entry ${journalEntryId}`);
     } catch (error: any) {
-      this.logger.error(`Failed to publish journal-entry.deleted event for entry ${journalEntryId}`, error.stack);
+      this?.logger.error(`Failed to publish journal-entry.deleted event for entry ${journalEntryId}`, error.stack);
     }
   }
 
@@ -121,18 +121,18 @@ export class JournalEntryPublisher {
         timestamp: new Date().toISOString(),
       };
       
-      await this.client.emit('journal-entry.posted', payload).toPromise();
-      this.logger.log(`Published journal-entry.posted event for entry ${journalEntry.id}`);
+      await this?.client.emit('journal-entry.posted', payload).toPromise();
+      this?.logger.log(`Published journal-entry.posted event for entry ${journalEntry.id}`);
     } catch (error: any) {
-      this.logger.error(`Failed to publish journal-entry.posted event for entry ${journalEntry.id}`, error.stack);
+      this?.logger.error(`Failed to publish journal-entry.posted event for entry ${journalEntry.id}`, error.stack);
     }
   }
 
   async publishJournalEntryStatusChanged(journalEntry: JournalEntry, previousStatus: string): Promise<void> {
-    this.logger.log(`Publishing journal.entry.status.changed event for entry: ${journalEntry.id}`);
+    this?.logger.log(`Publishing journal?.entry.status.changed event for entry: ${journalEntry.id}`);
     
     try {
-      await this.client.emit('journal.entry.status.changed', {
+      await this?.client.emit('journal?.entry.status.changed', {
         serviceSource: 'general-ledger',
         entityType: 'journal-entry',
         timestamp: new Date().toISOString(),
@@ -141,21 +141,21 @@ export class JournalEntryPublisher {
           entryNumber: journalEntry.entryNumber,
           previousStatus,
           currentStatus: journalEntry.status,
-          updatedAt: journalEntry.updatedAt.toISOString()
+          updatedAt: journalEntry?.updatedAt.toISOString()
         }
       });
       
-      this.logger.debug(`Successfully published journal.entry.status.changed event for entry: ${journalEntry.id}`);
+      this?.logger.debug(`Successfully published journal?.entry.status.changed event for entry: ${journalEntry.id}`);
     } catch (error) {
-      this.logger.error(`Failed to publish journal.entry.status.changed event: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      this?.logger.error(`Failed to publish journal?.entry.status.changed event: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   async publishBatchProcessed(result: BatchProcessResult): Promise<void> {
-    this.logger.log(`Publishing batch.processed event for batch: ${result.batchId}`);
+    this?.logger.log(`Publishing batch.processed event for batch: ${result.batchId}`);
     
     try {
-      await this.client.emit('batch.processed', {
+      await this?.client.emit('batch.processed', {
         serviceSource: 'general-ledger',
         entityType: 'batch',
         timestamp: new Date().toISOString(),
@@ -168,9 +168,9 @@ export class JournalEntryPublisher {
         }
       });
       
-      this.logger.debug(`Successfully published batch.processed event for batch: ${result.batchId}`);
+      this?.logger.debug(`Successfully published batch.processed event for batch: ${result.batchId}`);
     } catch (error) {
-      this.logger.error(`Failed to publish batch.processed event: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      this?.logger.error(`Failed to publish batch.processed event: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 } 

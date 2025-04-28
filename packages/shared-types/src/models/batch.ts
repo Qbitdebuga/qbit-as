@@ -9,18 +9,18 @@ export enum BatchStatus {
 }
 
 export interface BatchProcess {
-  id: string;
-  batchNumber: string;
-  description?: string;
+  id: string | null;
+  batchNumber: string | null;
+  description?: string | null;
   status: BatchStatus;
-  itemCount: number;
-  processedCount: number;
-  failedCount: number;
-  startedAt?: string;
-  completedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  createdBy?: string;
+  itemCount: number | null;
+  processedCount: number | null;
+  failedCount: number | null;
+  startedAt?: string | null;
+  completedAt?: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  createdBy?: string | null;
 }
 
 export interface JournalEntryBatch extends BatchProcess {
@@ -28,32 +28,32 @@ export interface JournalEntryBatch extends BatchProcess {
 }
 
 export interface JournalEntryBatchCreate {
-  description?: string;
+  description?: string | null;
   entries: JournalEntryCreate[];
 }
 
 export interface JournalEntryBatchItem {
-  id: string;
-  batchId: string;
-  journalEntryId?: string;
+  id: string | null;
+  batchId: string | null;
+  journalEntryId?: string | null;
   entryData: JournalEntryCreate;
   status: BatchStatus;
-  errorMessage?: string;
-  processedAt?: string;
-  createdAt: string;
-  updatedAt: string;
+  errorMessage?: string | null;
+  processedAt?: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export interface BatchProcessResult {
-  batchId: string;
-  success: boolean;
-  processedCount: number;
-  failedCount: number;
+  batchId: string | null;
+  success: boolean | null;
+  processedCount: number | null;
+  failedCount: number | null;
   errors?: BatchProcessError[];
 }
 
 export interface BatchProcessError {
-  itemId: string;
-  message: string;
+  itemId: string | null;
+  message: string | null;
   details?: any;
 } 

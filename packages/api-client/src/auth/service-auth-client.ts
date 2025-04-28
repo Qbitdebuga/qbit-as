@@ -9,9 +9,9 @@ import {
  * This client is used for secure communication between microservices
  */
 export class ServiceAuthClient {
-  private readonly apiUrl: string;
-  private readonly serviceId: string;
-  private readonly serviceName: string;
+  private readonly apiUrl: string | null;
+  private readonly serviceId: string | null;
+  private readonly serviceName: string | null;
   private serviceToken: string | null = null;
   private tokenExpiry: number | null = null;
 

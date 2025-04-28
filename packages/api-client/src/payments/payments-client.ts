@@ -28,7 +28,7 @@ export class PaymentsClient extends ApiClientBase {
   /**
    * Get a paginated list of payments (accounts receivable)
    */
-  async getPayments(params?: PaymentListParams): Promise<{ data: PaymentResponse[]; total: number; page: number; limit: number }> {
+  async getPayments(params?: PaymentListParams): Promise<{ data: PaymentResponse[]; total: number | null; page: number | null; limit: number }> {
     return this.get(this.arBasePath, { params: params as Record<string, any> });
   }
 
@@ -84,7 +84,7 @@ export class PaymentsClient extends ApiClientBase {
   /**
    * Get a paginated list of payments (accounts payable)
    */
-  async getVendorPayments(params?: PaymentListParams): Promise<{ data: Payment[]; total: number; page: number; limit: number }> {
+  async getVendorPayments(params?: PaymentListParams): Promise<{ data: Payment[]; total: number | null; page: number | null; limit: number }> {
     return this.get(this.apBasePath, { params: params as Record<string, any> });
   }
 

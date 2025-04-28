@@ -4,15 +4,15 @@ import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { PrismaService } from '../../prisma/prisma.service';
 
 interface AccountEventPayload {
-  id: string;
-  serviceSource: string;
-  entityType: string;
-  timestamp: string;
-  code?: string;
-  name?: string;
-  type?: string;
-  subtype?: string;
-  isActive?: boolean;
+  id: string | null;
+  serviceSource: string | null;
+  entityType: string | null;
+  timestamp: string | null;
+  code?: string | null;
+  name?: string | null;
+  type?: string | null;
+  subtype?: string | null;
+  isActive?: boolean | null;
 }
 
 /**
@@ -31,7 +31,7 @@ export class AccountConsumer implements OnModuleInit {
    * Setup event connections when the module initializes
    */
   async onModuleInit() {
-    this.logger.log('Account event consumer initialized');
+    this?.logger.log('Account event consumer initialized');
   }
 
   /**
@@ -40,7 +40,7 @@ export class AccountConsumer implements OnModuleInit {
   @EventPattern('account.created')
   async handleAccountCreated(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received account.created event for account ${payload.id}`);
+      this?.logger.log(`Received account.created event for account ${payload.id}`);
       
       // TODO: Implement account creation logic
       // Example: Create a local reference to the account
@@ -50,7 +50,7 @@ export class AccountConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling account.created event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling account.created event: ${error.message}`, error.stack);
     }
   }
 
@@ -60,7 +60,7 @@ export class AccountConsumer implements OnModuleInit {
   @EventPattern('account.updated')
   async handleAccountUpdated(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received account.updated event for account ${payload.id}`);
+      this?.logger.log(`Received account.updated event for account ${payload.id}`);
       
       // TODO: Implement account update logic
       // Example: Update the local reference to the account
@@ -70,7 +70,7 @@ export class AccountConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling account.updated event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling account.updated event: ${error.message}`, error.stack);
     }
   }
 
@@ -80,7 +80,7 @@ export class AccountConsumer implements OnModuleInit {
   @EventPattern('account.deleted')
   async handleAccountDeleted(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received account.deleted event for account ${payload.id}`);
+      this?.logger.log(`Received account.deleted event for account ${payload.id}`);
       
       // TODO: Implement account deletion logic
       // Example: Delete the local reference to the account
@@ -90,7 +90,7 @@ export class AccountConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling account.deleted event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling account.deleted event: ${error.message}`, error.stack);
     }
   }
 } 

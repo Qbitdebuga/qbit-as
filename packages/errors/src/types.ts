@@ -6,10 +6,10 @@
  * Interface for standardized error responses
  */
 export interface ErrorResponseOptions {
-  message: string;
-  code: string;
+  message: string | null;
+  code: string | null;
   details?: Record<string, any>;
-  status?: number;
+  status?: number | null;
 }
 
 /**
@@ -40,8 +40,8 @@ export enum ErrorSeverity {
 export interface ErrorMetadata {
   source?: ErrorSource;
   severity?: ErrorSeverity;
-  correlationId?: string;
+  correlationId?: string | null;
   timestamp?: Date;
-  component?: string;
-  service?: string;
+  component?: string | null;
+  service?: string | null;
 } 

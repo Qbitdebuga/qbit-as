@@ -59,9 +59,9 @@ export function simpleHash(str: string): string {
 export function generateRandomString(
   length: number,
   options: {
-    charset?: string;
-    prefix?: string;
-    suffix?: string;
+    charset?: string | null;
+    prefix?: string | null;
+    suffix?: string | null;
   } = {}
 ): string {
   const {
@@ -81,10 +81,10 @@ export function generateRandomString(
   let result = '';
 
   // Use crypto.getRandomValues if available (browser)
-  if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.getRandomValues === 'function') {
+  if (typeof window !== 'undefined' && window.crypto && typeof window?.crypto.getRandomValues === 'function') {
     try {
       const randomValues = new Uint32Array(length);
-      window.crypto.getRandomValues(randomValues);
+      window?.crypto.getRandomValues(randomValues);
 
       for (let i = 0; i < length; i++) {
         // Ensure we have a valid value
@@ -124,10 +124,10 @@ export function generateUUID(): string {
   let dt = new Date().getTime();
   
   // Use crypto.getRandomValues if available (browser)
-  if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.getRandomValues === 'function') {
+  if (typeof window !== 'undefined' && window.crypto && typeof window?.crypto.getRandomValues === 'function') {
     try {
       const randomValues = new Uint32Array(4);
-      window.crypto.getRandomValues(randomValues);
+      window?.crypto.getRandomValues(randomValues);
       
       // We need to use an index variable to keep track of the current position
       let randomIndex = 0;
@@ -198,7 +198,7 @@ export function compareStringsConstantTime(a: string, b: string): boolean {
 }
 
 /**
- * Mask a sensitive string (e.g., for logging)
+ * Mask a sensitive string (e?.g., for logging)
  * 
  * @param input - String to mask
  * @param options - Masking options
@@ -219,9 +219,9 @@ export function compareStringsConstantTime(a: string, b: string): boolean {
 export function maskString(
   input: string,
   options: {
-    maskChar?: string;
-    showFirst?: number;
-    showLast?: number;
+    maskChar?: string | null;
+    showFirst?: number | null;
+    showLast?: number | null;
   } = {}
 ): string {
   if (typeof input !== 'string') {

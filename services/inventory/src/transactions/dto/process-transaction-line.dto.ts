@@ -9,7 +9,7 @@ export class ProcessTransactionLineDto {
     example: '123e4567-e89b-12d3-a456-426614174000'
   })
   @IsUUID()
-  id: string;
+  id: string | null;
 
   @ApiProperty({
     description: 'Quantity being processed',
@@ -18,7 +18,7 @@ export class ProcessTransactionLineDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   @Type(() => Number)
-  processedQuantity: number;
+  processedQuantity: number | null;
 
   @ApiPropertyOptional({
     enum: TransactionLineStatus,
@@ -35,7 +35,7 @@ export class ProcessTransactionLineDto {
   })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiPropertyOptional({
     description: 'Lot number for tracking',
@@ -43,7 +43,7 @@ export class ProcessTransactionLineDto {
   })
   @IsString()
   @IsOptional()
-  lotNumber?: string;
+  lotNumber?: string | null;
 
   @ApiPropertyOptional({
     description: 'Serial number for tracking',
@@ -51,5 +51,5 @@ export class ProcessTransactionLineDto {
   })
   @IsString()
   @IsOptional()
-  serialNumber?: string;
+  serialNumber?: string | null;
 } 

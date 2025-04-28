@@ -10,7 +10,7 @@ import { ApiClient } from '../api-client';
 import { ApiClientBase } from '../utils/api-client-base';
 
 export class CustomersClient extends ApiClientBase {
-  private baseUrl: string;
+  private baseUrl: string | null;
 
   constructor(apiClient: ApiClient) {
     super(apiClient);
@@ -19,22 +19,22 @@ export class CustomersClient extends ApiClientBase {
 
   async getCustomers(params?: CustomerListParams): Promise<{ 
     data: Customer[]; 
-    total: number; 
-    page: number; 
+    total: number | null; 
+    page: number | null; 
     limit: number 
   }> {
     const searchParams: Record<string, string> = {};
     
     if (params) {
-      if (params.page) searchParams['page'] = params.page.toString();
-      if (params.limit) searchParams['limit'] = params.limit.toString();
+      if (params.page) searchParams['page'] = params?.page.toString();
+      if (params.limit) searchParams['limit'] = params?.limit.toString();
       if (params.search) searchParams['search'] = params.search;
-      if (params.isActive !== undefined) searchParams['isActive'] = params.isActive.toString();
+      if (params.isActive !== undefined) searchParams['isActive'] = params?.isActive.toString();
       if (params.sortBy) searchParams['sortBy'] = params.sortBy;
       if (params.sortDirection) searchParams['sortDirection'] = params.sortDirection;
     }
 
-    return this.get<{ data: Customer[]; total: number; page: number; limit: number }>(
+    return this.get<{ data: Customer[]; total: number | null; page: number | null; limit: number }>(
       this.baseUrl,
       { params: searchParams }
     );

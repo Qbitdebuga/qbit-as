@@ -5,10 +5,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && echo \"✅ @qbit/api-client build completed successfully\"",
+    "build": "rimraf dist && tsc && echo \"✅ @qbit/api-client build completed successfully\"",
     "clean": "rm -rf dist",
     "dev": "tsc --watch",
-    "lint": "eslint \"src/**/*.ts*\""
+    "lint": "eslint \"src/**/*.ts*\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@qbit/shared-types": "*",

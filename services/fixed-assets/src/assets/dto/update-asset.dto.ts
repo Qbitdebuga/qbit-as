@@ -18,42 +18,42 @@ export class UpdateAssetDto {
   @ApiProperty({ description: 'Name of the asset', required: false })
   @IsString()
   @IsOptional()
-  name?: string;
+  name?: string | null;
 
   @ApiProperty({ description: 'Description of the asset', required: false })
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({ description: 'Unique asset number for tracking', required: false })
   @IsString()
   @IsOptional()
-  assetNumber?: string;
+  assetNumber?: string | null;
 
   @ApiProperty({ description: 'Date when the asset was purchased', required: false })
   @IsDateString()
   @IsOptional()
-  purchaseDate?: string;
+  purchaseDate?: string | null;
 
   @ApiProperty({ description: 'Original cost of the asset', required: false })
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsPositive()
   @IsOptional()
-  purchaseCost?: number;
+  purchaseCost?: number | null;
 
   @ApiProperty({ description: 'Estimated residual value at the end of useful life', required: false })
   @IsNumber({ maxDecimalPlaces: 2 })
   @ValidateIf(o => o.residualValue !== undefined)
   @Min(0)
   @IsOptional()
-  residualValue?: number;
+  residualValue?: number | null;
 
   @ApiProperty({ description: 'Expected useful life in years', required: false })
   @IsNumber()
   @IsPositive()
   @Type(() => Number)
   @IsOptional()
-  assetLifeYears?: number;
+  assetLifeYears?: number | null;
 
   @ApiProperty({ 
     description: 'Current status of the asset',
@@ -67,22 +67,22 @@ export class UpdateAssetDto {
   @ApiProperty({ description: 'Serial number of the asset', required: false })
   @IsString()
   @IsOptional()
-  serialNumber?: string;
+  serialNumber?: string | null;
 
   @ApiProperty({ description: 'Physical location of the asset', required: false })
   @IsString()
   @IsOptional()
-  location?: string;
+  location?: string | null;
 
   @ApiProperty({ description: 'Additional notes about the asset', required: false })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({ description: 'ID of the category this asset belongs to', required: false })
   @IsUUID()
   @IsOptional()
-  categoryId?: string;
+  categoryId?: string | null;
 
   @ApiProperty({ 
     description: 'Method used to calculate depreciation',

@@ -109,7 +109,7 @@ export class DataValidator {
     obj: Record<string, any>,
     requiredFields: string[]
   ): ValidationResult {
-    const missingFields = requiredFields.filter(field => {
+    const missingFields = requiredFields.filter((field: any) => {
       const value = obj[field];
       return value === undefined || value === null || value === '';
     });
@@ -137,7 +137,7 @@ export class DataValidator {
   static validateMonetaryValue(
     value: number,
     fieldName: string,
-    options: { allowNegative?: boolean; allowZero?: boolean } = {}
+    options: { allowNegative?: boolean | null; allowZero?: boolean } = {}
   ): ValidationResult {
     const errors: ValidationError[] = [];
     

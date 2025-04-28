@@ -3,12 +3,12 @@ import { TransactionLineEntity } from './transaction-line.entity';
 
 export class InventoryTransactionEntity {
   @ApiProperty({ description: 'Unique identifier for the transaction' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'Type of inventory transaction (receipt, shipment, transfer, adjustment, count)' })
-  transactionType: string;
+  transactionType: string | null;
 
-  @ApiPropertyOptional({ description: 'External reference number (e.g., PO number, SO number)' })
+  @ApiPropertyOptional({ description: 'External reference number (e?.g., PO number, SO number)' })
   referenceNumber: string | null;
 
   @ApiPropertyOptional({ description: 'Type of document this is referencing' })
@@ -27,13 +27,13 @@ export class InventoryTransactionEntity {
   transactionDate: Date;
 
   @ApiProperty({ description: 'Status of the transaction (draft, pending, completed, cancelled)' })
-  status: string;
+  status: string | null;
 
   @ApiPropertyOptional({ description: 'Notes about the transaction' })
   notes: string | null;
 
   @ApiProperty({ description: 'Whether items are on backorder' })
-  isBackordered: boolean;
+  isBackordered: boolean | null;
 
   @ApiPropertyOptional({ description: 'User who created the transaction' })
   createdBy: string | null;

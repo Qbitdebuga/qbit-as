@@ -3,10 +3,10 @@ import { Decimal } from '@prisma/client/runtime/library';
 
 export class DepreciationEntryEntity {
   @ApiProperty({ description: 'Unique identifier of the depreciation entry' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'ID of the asset this entry belongs to' })
-  assetId: string;
+  assetId: string | null;
 
   @ApiProperty({ description: 'Date when this depreciation was recorded' })
   date: Date;
@@ -26,7 +26,7 @@ export class DepreciationEntryEntity {
 
 export class DepreciationScheduleEntity {
   @ApiProperty({ description: 'Asset ID that this schedule belongs to' })
-  assetId: string;
+  assetId: string | null;
 
   @ApiProperty({ description: 'Original cost of the asset' })
   originalCost: Decimal;
@@ -44,7 +44,7 @@ export class DepreciationScheduleEntity {
   currentBookValue: Decimal;
 
   @ApiProperty({ description: 'Whether the asset is fully depreciated' })
-  isFullyDepreciated: boolean;
+  isFullyDepreciated: boolean | null;
 
   @ApiProperty({ description: 'List of depreciation entries that make up this schedule' })
   entries: DepreciationEntryEntity[];

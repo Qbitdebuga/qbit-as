@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { IncomeStatementDto, StatementPeriod } from '@qbit/shared-types';
-import { ReportsClient } from '@qbit/api-client';
+import { IncomeStatementDto, StatementPeriod } from '@/mocks/shared-types';
+import { ReportsClient } from '@/mocks/api-client';
 import { useApiClient } from '@/hooks/useApiClient';
 import { StatementFilters, StatementFilterValues } from '@/components/reports/StatementFilters';
 import { IncomeStatementReport } from '@/components/reports/IncomeStatementReport';

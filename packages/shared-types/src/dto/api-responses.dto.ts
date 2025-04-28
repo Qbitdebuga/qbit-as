@@ -6,7 +6,7 @@
  * Base API response format
  */
 export interface ApiResponse<T = any> {
-  success: boolean;
+  success: boolean | null;
   data?: T;
   error?: ApiError;
   meta?: ApiResponseMeta;
@@ -16,20 +16,20 @@ export interface ApiResponse<T = any> {
  * API error details
  */
 export interface ApiError {
-  code: string;
-  message: string;
+  code: string | null;
+  message: string | null;
   details?: Record<string, any>;
-  stack?: string; // Only included in development environment
+  stack?: string | null; // Only included in development environment
 }
 
 /**
  * API response metadata for pagination, etc.
  */
 export interface ApiResponseMeta {
-  page?: number;
-  limit?: number;
-  totalItems?: number;
-  totalPages?: number;
+  page?: number | null;
+  limit?: number | null;
+  totalItems?: number | null;
+  totalPages?: number | null;
   timestamp?: Date;
 }
 
@@ -37,9 +37,9 @@ export interface ApiResponseMeta {
  * Pagination parameters
  */
 export interface PaginationParams {
-  page?: number;
-  limit?: number;
-  sortBy?: string;
+  page?: number | null;
+  limit?: number | null;
+  sortBy?: string | null;
   sortOrder?: 'asc' | 'desc';
 }
 

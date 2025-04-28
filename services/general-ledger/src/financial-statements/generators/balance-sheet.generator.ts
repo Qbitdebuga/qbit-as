@@ -17,10 +17,10 @@ export class BalanceSheetGenerator {
     comparativePeriod?: any,
     includeZeroBalances = false
   ): Promise<any> {
-    this.logger.log(`Generating balance sheet for period: ${startDate} to ${endDate}`);
+    this?.logger.log(`Generating balance sheet for period: ${startDate} to ${endDate}`);
 
     // Find all accounts that are of type ASSET, LIABILITY, or EQUITY
-    const accounts = await this.prisma.db.account.findMany({
+    const accounts = await this?.prisma.db?.account.findMany({
       where: {
         isActive: true,
         type: {
@@ -94,7 +94,7 @@ export class BalanceSheetGenerator {
     const accountIds = accounts.map(account => account.id);
     
     // Execute a raw SQL query to get account balances
-    const result = await this.prisma.$queryRaw<Array<{accountId: string, balance: Decimal}>>`
+    const result = await this?.prisma.$queryRaw<Array<{accountId: string, balance: Decimal}>>`
       SELECT 
         "accountId", 
         SUM(COALESCE("debit", 0) - COALESCE("credit", 0)) as balance
@@ -141,7 +141,7 @@ export class BalanceSheetGenerator {
     const sections: BalanceSheetSection[] = [];
     for (const [subtype, subtypeAccounts] of Object.entries(subtypeGroups)) {
       const formattedAccounts: BalanceSheetAccount[] = subtypeAccounts
-        .map(account => {
+        .map(account: any => {
           const balance = balances[account.id] || 0;
           const previousBalance = comparativeBalances[account.id] || 0;
           const change = balance - previousBalance;

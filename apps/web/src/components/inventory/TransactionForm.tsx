@@ -54,7 +54,7 @@ import {
   IWarehouse, 
   IWarehouseLocation,
   ITransactionLine 
-} from '@qbit-accounting/shared-types';
+} from '@qbit/shared-types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';

@@ -6,8 +6,8 @@ import { ConsumerConfig, JsMsg, DeliverPolicy, AckPolicy, ReplayPolicy, Retentio
  * Abstract base listener for all event listeners
  */
 export abstract class Listener<T extends Event> {
-  abstract readonly subject: string;
-  abstract readonly queueGroup: string;
+  abstract readonly subject: string | null;
+  abstract readonly queueGroup: string | null;
   abstract onMessage(data: T['data'], msg: JsMsg): Promise<void>;
   private readonly natsClient: NatsClient;
   private running = false;
@@ -36,7 +36,7 @@ export abstract class Listener<T extends Event> {
       return;
     }
 
-    if (!this.natsClient.isConnected()) {
+    if (!this?.natsClient.isConnected()) {
       throw new Error('Cannot listen for events: Not connected to NATS');
     }
 
@@ -44,10 +44,10 @@ export abstract class Listener<T extends Event> {
       // Ensure the stream exists
       const streamName = this.getStreamName();
       try {
-        await this.natsClient.jsm.streams.info(streamName);
+        await this?.natsClient.jsm?.streams.info(streamName);
       } catch (error) {
         // Stream doesn't exist, create it
-        await this.natsClient.jsm.streams.add({
+        await this?.natsClient.jsm?.streams.add({
           name: streamName,
           subjects: [`${streamName}.*`],
           retention: RetentionPolicy.Limits,
@@ -59,7 +59,7 @@ export abstract class Listener<T extends Event> {
       }
 
       // Create JetStream consumer
-      const js = this.natsClient.jetstream;
+      const js = this?.natsClient.jetstream;
       const consumerOpts = this.subscriptionOptions();
       
       console.log(`Listening for events on ${this.subject} [${this.queueGroup}]...`);
@@ -84,15 +84,15 @@ export abstract class Listener<T extends Event> {
    * Process messages from a pull subscription
    */
   private async processPullSubscription(subscription: any): Promise<void> {
-    while (this.running && this.natsClient.isConnected()) {
+    while (this.running && this?.natsClient.isConnected()) {
       try {
         // Pull up to 10 messages at a time with a 1s timeout
         const messages = await subscription.fetch(10, { timeout: 1000 });
         
         for (const msg of messages) {
           try {
-            const decoder = this.natsClient.jsonCodec;
-            const decodedData = decoder.decode(msg.data) as { id: string; timestamp: string; data: T['data'] };
+            const decoder = this?.natsClient.jsonCodec;
+            const decodedData = decoder.decode(msg.data) as { id: string | null; timestamp: string | null; data: T['data'] };
             
             // Process the message
             await this.onMessage(decodedData.data, msg);
@@ -109,7 +109,7 @@ export abstract class Listener<T extends Event> {
         }
       } catch (error) {
         // Most likely a timeout, which is fine
-        if (!(error instanceof Error) || !error.message.includes('timeout')) {
+        if (!(error instanceof Error) || !error?.message.includes('timeout')) {
           console.error(`Error fetching messages from ${this.subject}:`, error);
         }
       }
@@ -131,7 +131,7 @@ export abstract class Listener<T extends Event> {
    * Converts subjects like 'user.created' to 'USER'
    */
   private getStreamName(): string {
-    const parts = this.subject.split('.');
-    return parts?.[0]?.toUpperCase() || this.subject.toUpperCase();
+    const parts = this?.subject.split('.');
+    return parts?.[0]?.toUpperCase() || this?.subject.toUpperCase();
   }
 } 

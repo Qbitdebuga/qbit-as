@@ -14,7 +14,7 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
+    const requiredRoles = this?.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
@@ -29,23 +29,23 @@ export class RolesGuard implements CanActivate {
     
     // Make sure user exists (JwtAuthGuard should have run first)
     if (!user) {
-      this.logger.warn('Role check failed: No user found in request');
+      this?.logger.warn('Role check failed: No user found in request');
       throw new UnauthorizedException('Authentication required');
     }
 
     try {
       // Get token from request (added by JwtAuthGuard)
-      const authHeader = request.headers.authorization;
+      const authHeader = request?.headers.authorization;
       const token = authHeader.split(' ')[1];
       
       // Get a service token for checking roles
-      const serviceToken = await this.authClient.getServiceToken(['users:read']);
+      const serviceToken = await this?.authClient.getServiceToken(['users:read']);
       
       // Check if user has required roles using the auth service
-      const hasRoles = await this.authClient.checkUserRoles(user.id, requiredRoles, serviceToken);
+      const hasRoles = await this?.authClient.checkUserRoles(user.id, requiredRoles, serviceToken);
       
       if (!hasRoles) {
-        this.logger.warn(`User ${user.id} does not have required roles: ${requiredRoles.join(', ')}`);
+        this?.logger.warn(`User ${user.id} does not have required roles: ${requiredRoles.join(', ')}`);
         throw new ForbiddenException('You do not have permission to access this resource');
       }
       
@@ -54,7 +54,7 @@ export class RolesGuard implements CanActivate {
       if (error instanceof ForbiddenException) {
         throw error;
       }
-      this.logger.error(`Role check failed: ${error.message}`);
+      this?.logger.error(`Role check failed: ${error.message}`);
       throw new ForbiddenException('Role check failed');
     }
   }

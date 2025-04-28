@@ -9,7 +9,7 @@ import {
 
 export class ReportsClient {
   private client: ApiClient;
-  private baseUrl: string;
+  private baseUrl: string | null;
 
   constructor(client: ApiClient) {
     this.client = client;
@@ -34,14 +34,14 @@ export class ReportsClient {
       includeZeroBalances: includeZeroBalances.toString()
     });
     
-    return this.client.get<BalanceSheetStatementDto>(`${this.baseUrl}/balance-sheet?${params.toString()}`);
+    return this?.client.get<BalanceSheetStatementDto>(`${this.baseUrl}/balance-sheet?${params.toString()}`);
   }
 
   /**
    * Generate a balance sheet report with request body
    */
   async generateBalanceSheet(data: StatementRequestDto): Promise<BalanceSheetStatementDto> {
-    return this.client.post<BalanceSheetStatementDto>(`${this.baseUrl}/balance-sheet`, data);
+    return this?.client.post<BalanceSheetStatementDto>(`${this.baseUrl}/balance-sheet`, data);
   }
 
   /**
@@ -62,14 +62,14 @@ export class ReportsClient {
       includeZeroBalances: includeZeroBalances.toString()
     });
     
-    return this.client.get<IncomeStatementDto>(`${this.baseUrl}/income-statement?${params.toString()}`);
+    return this?.client.get<IncomeStatementDto>(`${this.baseUrl}/income-statement?${params.toString()}`);
   }
 
   /**
    * Generate an income statement report with request body
    */
   async generateIncomeStatement(data: StatementRequestDto): Promise<IncomeStatementDto> {
-    return this.client.post<IncomeStatementDto>(`${this.baseUrl}/income-statement`, data);
+    return this?.client.post<IncomeStatementDto>(`${this.baseUrl}/income-statement`, data);
   }
 
   /**
@@ -88,13 +88,13 @@ export class ReportsClient {
       comparativePeriod: comparativePeriod.toString()
     });
     
-    return this.client.get<CashFlowStatementDto>(`${this.baseUrl}/cash-flow?${params.toString()}`);
+    return this?.client.get<CashFlowStatementDto>(`${this.baseUrl}/cash-flow?${params.toString()}`);
   }
 
   /**
    * Generate a cash flow statement report with request body
    */
   async generateCashFlowStatement(data: StatementRequestDto): Promise<CashFlowStatementDto> {
-    return this.client.post<CashFlowStatementDto>(`${this.baseUrl}/cash-flow`, data);
+    return this?.client.post<CashFlowStatementDto>(`${this.baseUrl}/cash-flow`, data);
   }
 } 

@@ -9,37 +9,37 @@ export class JournalEntriesController {
 
   @Post()
   create(@Body() createJournalEntryDto: CreateJournalEntryDto) {
-    return this.journalEntriesService.create(createJournalEntryDto);
+    return this?.journalEntriesService.create(createJournalEntryDto);
   }
 
   @Get()
   findAll() {
-    return this.journalEntriesService.findAll();
+    return this?.journalEntriesService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.journalEntriesService.findOne(id);
+    return this?.journalEntriesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateJournalEntryDto: UpdateJournalEntryDto) {
-    return this.journalEntriesService.update(id, updateJournalEntryDto);
+    return this?.journalEntriesService.update(id, updateJournalEntryDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.journalEntriesService.remove(id);
+    return this?.journalEntriesService.remove(id);
   }
 
   @Post(':id/post')
   post(@Param('id') id: string) {
-    return this.journalEntriesService.post(id);
+    return this?.journalEntriesService.post(id);
   }
 
   @Post(':id/reverse')
   reverse(@Param('id') id: string) {
-    return this.journalEntriesService.reverse(id);
+    return this?.journalEntriesService.reverse(id);
   }
 } 

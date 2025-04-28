@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import LineItems from './LineItems';
-import { InvoiceStatus } from '@qbit-accounting/shared-types';
+import { InvoiceStatus } from '@qbit/shared-types';
 import { invoicesClient } from '@/utils/api-clients';
 import { setupAuthForClient } from '@/utils/auth-helpers';
 

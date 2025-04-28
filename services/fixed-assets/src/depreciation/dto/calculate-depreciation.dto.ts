@@ -16,7 +16,7 @@ export class CalculateDepreciationDto {
   @ApiProperty({ description: 'ID of the asset to calculate depreciation for' })
   @IsUUID()
   @IsNotEmpty()
-  assetId: string;
+  assetId: string | null;
 
   @ApiProperty({ 
     description: 'Method to use for depreciation calculation',
@@ -33,7 +33,7 @@ export class CalculateDepreciationDto {
   })
   @IsDateString()
   @IsOptional()
-  asOfDate?: string;
+  asOfDate?: string | null;
 
   @ApiProperty({ 
     description: 'Whether to include projected future depreciation',
@@ -57,40 +57,40 @@ export class CalculateDepreciationDto {
 
 export class CalculateDepreciationResponseDto {
   @ApiProperty({ description: 'ID of the asset' })
-  assetId: string;
+  assetId: string | null;
 
   @ApiProperty({ description: 'Original cost of the asset' })
-  originalCost: number;
+  originalCost: number | null;
 
   @ApiProperty({ description: 'Residual value at the end of useful life' })
-  residualValue: number;
+  residualValue: number | null;
 
   @ApiProperty({ description: 'Total depreciable amount (original cost - residual value)' })
-  depreciableAmount: number;
+  depreciableAmount: number | null;
 
   @ApiProperty({ description: 'Current accumulated depreciation to date' })
-  accumulatedDepreciation: number;
+  accumulatedDepreciation: number | null;
 
   @ApiProperty({ description: 'Current book value of the asset' })
-  currentBookValue: number;
+  currentBookValue: number | null;
 
   @ApiProperty({ description: 'Whether the asset is fully depreciated' })
-  isFullyDepreciated: boolean;
+  isFullyDepreciated: boolean | null;
 
   @ApiProperty({ description: 'Depreciation method used in calculation' })
   depreciationMethod: DepreciationMethod;
 
   @ApiProperty({ description: 'List of historical depreciation entries' })
   entries: {
-    date: string;
-    amount: number;
-    bookValue: number;
+    date: string | null;
+    amount: number | null;
+    bookValue: number | null;
   }[];
 
   @ApiProperty({ description: 'List of projected future depreciation entries' })
   projectedEntries?: {
-    date: string;
-    amount: number;
-    bookValue: number;
+    date: string | null;
+    amount: number | null;
+    bookValue: number | null;
   }[];
 } 

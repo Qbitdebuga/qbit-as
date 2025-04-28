@@ -8,7 +8,7 @@ export class ResetPasswordDto {
   })
   @IsString({ message: 'Token must be a string' })
   @IsNotEmpty({ message: 'Token is required' })
-  token!: string;
+  token!: string | null;
 
   @ApiProperty({
     example: 'Password123!',
@@ -20,7 +20,7 @@ export class ResetPasswordDto {
     message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
   })
   @IsNotEmpty({ message: 'Password is required' })
-  password!: string;
+  password!: string | null;
 
   @ApiProperty({
     example: 'Password123!',
@@ -28,5 +28,5 @@ export class ResetPasswordDto {
   })
   @IsString({ message: 'Confirm password must be a string' })
   @IsNotEmpty({ message: 'Confirm password is required' })
-  confirmPassword!: string;
+  confirmPassword!: string | null;
 } 

@@ -6,57 +6,57 @@ export class CreateWarehouseDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  code: string;
+  code: string | null;
 
   @ApiProperty({ description: 'Warehouse name', example: 'Main Warehouse' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Warehouse description', example: 'Main storage facility', required: false })
   @IsString()
   @IsOptional()
   @MaxLength(500)
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({ description: 'Warehouse address', example: '123 Storage St', required: false })
   @IsString()
   @IsOptional()
   @MaxLength(200)
-  address?: string;
+  address?: string | null;
 
   @ApiProperty({ description: 'Warehouse city', example: 'New York', required: false })
   @IsString()
   @IsOptional()
   @MaxLength(100)
-  city?: string;
+  city?: string | null;
 
   @ApiProperty({ description: 'Warehouse state/province', example: 'NY', required: false })
   @IsString()
   @IsOptional()
   @MaxLength(100)
-  state?: string;
+  state?: string | null;
 
   @ApiProperty({ description: 'Warehouse postal code', example: '10001', required: false })
   @IsString()
   @IsOptional()
   @MaxLength(20)
-  postalCode?: string;
+  postalCode?: string | null;
 
   @ApiProperty({ description: 'Warehouse country', example: 'USA', required: false })
   @IsString()
   @IsOptional()
   @MaxLength(100)
-  country?: string;
+  country?: string | null;
 
   @ApiProperty({ description: 'Whether this is the primary warehouse', example: false, required: false, default: false })
   @IsBoolean()
   @IsOptional()
-  isPrimary?: boolean;
+  isPrimary?: boolean | null;
 
   @ApiProperty({ description: 'Whether this warehouse is active', example: true, required: false, default: true })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 } 

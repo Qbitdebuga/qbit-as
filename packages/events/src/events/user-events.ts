@@ -11,7 +11,7 @@ export interface UserCreatedEvent extends Event {
 export interface UserUpdatedEvent extends Event {
   subject: 'user.updated';
   data: {
-    id: string;
+    id: string | null;
     changes: Partial<Omit<UserDto, 'password'>>;
   };
 }
@@ -20,7 +20,7 @@ export interface UserUpdatedEvent extends Event {
 export interface UserDeletedEvent extends Event {
   subject: 'user.deleted';
   data: {
-    id: string;
+    id: string | null;
   };
 }
 
@@ -28,10 +28,10 @@ export interface UserDeletedEvent extends Event {
 export interface UserLoggedInEvent extends Event {
   subject: 'user.logged_in';
   data: {
-    id: string;
-    timestamp: string;
-    ip?: string;
-    userAgent?: string;
+    id: string | null;
+    timestamp: string | null;
+    ip?: string | null;
+    userAgent?: string | null;
   };
 }
 
@@ -39,7 +39,7 @@ export interface UserLoggedInEvent extends Event {
 export interface UserRoleChangedEvent extends Event {
   subject: 'user.role_changed';
   data: {
-    id: string;
+    id: string | null;
     oldRoles: string[];
     newRoles: string[];
   };

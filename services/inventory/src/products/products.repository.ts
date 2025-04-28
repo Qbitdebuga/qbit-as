@@ -54,8 +54,8 @@ export class ProductsRepository {
   }
 
   async findAllProducts(params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     cursor?: any;
     where?: any;
     orderBy?: any;
@@ -141,8 +141,8 @@ export class ProductsRepository {
   }
 
   async findAllCategories(params: {
-    skip?: number;
-    take?: number;
+    skip?: number | null;
+    take?: number | null;
     cursor?: any;
     where?: any;
     orderBy?: any;

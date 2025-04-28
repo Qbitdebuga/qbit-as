@@ -10,7 +10,8 @@
     "dev": "tsc --watch",
     "lint": "eslint --ext .ts src",
     "test": "jest",
-    "test:log": "ts-node test.ts"
+    "test:log": "ts-node test.ts",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "logging",

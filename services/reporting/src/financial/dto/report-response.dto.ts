@@ -5,11 +5,11 @@ import { FinancialStatementDto } from '../../dto/general-ledger.dto';
  * Report parameters interface
  */
 export interface ReportParameters {
-  startDate?: string;
-  endDate?: string;
-  asOfDate?: string;
-  comparativePeriod?: boolean;
-  includeZeroBalances?: boolean;
+  startDate?: string | null;
+  endDate?: string | null;
+  asOfDate?: string | null;
+  comparativePeriod?: boolean | null;
+  includeZeroBalances?: boolean | null;
   [key: string]: any;
 }
 
@@ -18,13 +18,13 @@ export interface ReportParameters {
  */
 export class ReportResponseDto {
   @ApiPropertyOptional({ description: 'Report ID (if saved)' })
-  id?: string;
+  id?: string | null;
 
   @ApiProperty({ description: 'Report name' })
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Report type' })
-  type: string;
+  type: string | null;
 
   @ApiProperty({ description: 'Report data (financial statement, etc.)' })
   data: FinancialStatementDto | any;
@@ -41,11 +41,11 @@ export class ReportResponseDto {
  */
 export class ReportSnapshotResponseDto extends ReportResponseDto {
   @ApiProperty({ description: 'Snapshot ID' })
-  snapshotId: string;
+  snapshotId: string | null;
 
   @ApiProperty({ description: 'User ID who generated the snapshot' })
-  generatedBy?: string;
+  generatedBy?: string | null;
 
   @ApiProperty({ description: 'Original report ID' })
-  reportId: string;
+  reportId: string | null;
 } 

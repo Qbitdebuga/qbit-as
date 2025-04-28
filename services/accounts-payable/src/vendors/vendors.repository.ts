@@ -72,7 +72,7 @@ export class VendorsRepository {
     
     // Convert credit limit to Decimal compatible value
     if (result.creditLimit !== undefined) {
-      result.creditLimit = result.creditLimit.toString();
+      result.creditLimit = result?.creditLimit.toString();
     }
     
     // Convert defaultAccountId from string to number if needed
@@ -93,7 +93,7 @@ export class VendorsRepository {
     
     // Convert credit limit to Decimal compatible value
     if (result.creditLimit !== undefined) {
-      result.creditLimit = result.creditLimit.toString();
+      result.creditLimit = result?.creditLimit.toString();
     }
     
     // Convert defaultAccountId from string to number if needed
@@ -106,7 +106,7 @@ export class VendorsRepository {
 
   private mapToDto(vendor: any): VendorDto {
     return {
-      id: vendor.id.toString(),
+      id: vendor?.id.toString(),
       vendorNumber: vendor.vendorNumber,
       name: vendor.name,
       email: vendor.email,
@@ -122,7 +122,7 @@ export class VendorsRepository {
       isActive: vendor.isActive,
       paymentTerms: vendor.paymentTerms ? parseInt(vendor.paymentTerms, 10) : 0,
       defaultAccountId: vendor.defaultAccountId?.toString(),
-      creditLimit: vendor.creditLimit ? parseFloat(vendor.creditLimit.toString()) : undefined,
+      creditLimit: vendor.creditLimit ? parseFloat(vendor?.creditLimit.toString()) : undefined,
       createdAt: vendor.createdAt,
       updatedAt: vendor.updatedAt,
     };

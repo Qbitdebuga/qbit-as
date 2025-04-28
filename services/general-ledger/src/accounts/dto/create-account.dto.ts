@@ -6,17 +6,17 @@ export class CreateAccountDto {
   @ApiProperty({ description: 'Account code, must be unique' })
   @IsString()
   @IsNotEmpty()
-  code!: string;
+  code!: string | null;
 
   @ApiProperty({ description: 'Account name' })
   @IsString()
   @IsNotEmpty()
-  name!: string;
+  name!: string | null;
 
   @ApiProperty({ description: 'Account description', required: false })
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({ 
     description: 'Account type',
@@ -43,7 +43,7 @@ export class CreateAccountDto {
   })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 
   @ApiProperty({ 
     description: 'Parent account ID, if any',
@@ -51,5 +51,5 @@ export class CreateAccountDto {
   })
   @IsUUID('4')
   @IsOptional()
-  parentId?: string;
+  parentId?: string | null;
 } 

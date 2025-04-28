@@ -15,23 +15,23 @@ import { ProcessTransactionLineDto } from './dto/process-transaction-line.dto';
 import { TransactionLineStatus } from './dto/create-transaction-line.dto';
 
 interface FindAllOptions {
-  skip?: number;
-  take?: number;
-  searchTerm?: string;
-  orderBy?: string;
+  skip?: number | null;
+  take?: number | null;
+  searchTerm?: string | null;
+  orderBy?: string | null;
   type?: TransactionType;
   status?: TransactionStatus;
-  sourceWarehouseId?: string;
-  targetWarehouseId?: string;
-  referenceType?: string;
-  referenceId?: string;
+  sourceWarehouseId?: string | null;
+  targetWarehouseId?: string | null;
+  referenceType?: string | null;
+  referenceId?: string | null;
   fromDate?: Date;
   toDate?: Date;
 }
 
 // Update the ProcessTransactionLineDto interface if it doesn't include the expirationDate property
 interface ProcessTransactionLineWithExpirationDto extends ProcessTransactionLineDto {
-  expirationDate?: string;
+  expirationDate?: string | null;
 }
 
 @Injectable()
@@ -50,7 +50,7 @@ export class TransactionsService {
     try {
       // Validate warehouse IDs
       if (createTransactionDto.targetWarehouseId) {
-        const targetWarehouse = await this.db.warehouse.findUnique({
+        const targetWarehouse = await this?.db.warehouse.findUnique({
           where: { id: createTransactionDto.targetWarehouseId }
         });
         if (!targetWarehouse) {
@@ -59,7 +59,7 @@ export class TransactionsService {
       }
 
       if (createTransactionDto.sourceWarehouseId) {
-        const sourceWarehouse = await this.db.warehouse.findUnique({
+        const sourceWarehouse = await this?.db.warehouse.findUnique({
           where: { id: createTransactionDto.sourceWarehouseId }
         });
         if (!sourceWarehouse) {
@@ -100,7 +100,7 @@ export class TransactionsService {
       }
 
       // Validate line items
-      if (!createTransactionDto.lines || createTransactionDto.lines.length === 0) {
+      if (!createTransactionDto.lines || createTransactionDto?.lines.length === 0) {
         throw new BadRequestException('At least one line item is required');
       }
 
@@ -113,7 +113,7 @@ export class TransactionsService {
         // Location validations for transfers
         if (createTransactionDto.transactionType === TransactionType.TRANSFER) {
           if (line.sourceLocationId) {
-            const sourceLocation = await this.db.warehouseLocation.findUnique({
+            const sourceLocation = await this?.db.warehouseLocation.findUnique({
               where: { id: line.sourceLocationId }
             });
             if (!sourceLocation) {
@@ -125,7 +125,7 @@ export class TransactionsService {
           }
 
           if (line.targetLocationId) {
-            const targetLocation = await this.db.warehouseLocation.findUnique({
+            const targetLocation = await this?.db.warehouseLocation.findUnique({
               where: { id: line.targetLocationId }
             });
             if (!targetLocation) {
@@ -139,7 +139,7 @@ export class TransactionsService {
       }
 
       // Create the transaction
-      const createdTransaction = await this.db.inventoryTransaction.create({
+      const createdTransaction = await this?.db.inventoryTransaction.create({
         data: {
           transactionType: createTransactionDto.transactionType,
           referenceNumber: createTransactionDto.referenceNumber,
@@ -155,7 +155,7 @@ export class TransactionsService {
           isBackordered: createTransactionDto.isBackordered || false,
           createdBy: 'system', // To be replaced with authenticated user ID
           lines: {
-            create: createTransactionDto.lines.map(line => ({
+            create: createTransactionDto?.lines.map(line => ({
               productId: line.productId,
               variantId: line.variantId,
               sourceLocationId: line.sourceLocationId,
@@ -179,7 +179,7 @@ export class TransactionsService {
       });
 
       // Publish transaction created event
-      await this.transactionPublisher.publishTransactionCreated(
+      await this?.transactionPublisher.publishTransactionCreated(
         createdTransaction.id,
         createdTransaction.transactionType as TransactionType,
         createdTransaction
@@ -280,7 +280,7 @@ export class TransactionsService {
 
       // Execute query
       const [transactions, total] = await Promise.all([
-        this.db.inventoryTransaction.findMany({
+        this?.db.inventoryTransaction.findMany({
           where,
           skip,
           take,
@@ -307,7 +307,7 @@ export class TransactionsService {
             }
           }
         }),
-        this.db.inventoryTransaction.count({ where })
+        this?.db.inventoryTransaction.count({ where })
       ]);
 
       return {
@@ -325,7 +325,7 @@ export class TransactionsService {
   }
 
   async findOne(id: string) {
-    const transaction = await this.db.inventoryTransaction.findUnique({
+    const transaction = await this?.db.inventoryTransaction.findUnique({
       where: { id },
       include: {
         lines: {
@@ -385,7 +385,7 @@ export class TransactionsService {
       // Handle warehouse changes
       if (updateTransactionDto.sourceWarehouseId !== undefined) {
         if (updateTransactionDto.sourceWarehouseId) {
-          const sourceWarehouse = await this.db.warehouse.findUnique({
+          const sourceWarehouse = await this?.db.warehouse.findUnique({
             where: { id: updateTransactionDto.sourceWarehouseId }
           });
           if (!sourceWarehouse) {
@@ -399,7 +399,7 @@ export class TransactionsService {
 
       if (updateTransactionDto.targetWarehouseId !== undefined) {
         if (updateTransactionDto.targetWarehouseId) {
-          const targetWarehouse = await this.db.warehouse.findUnique({
+          const targetWarehouse = await this?.db.warehouse.findUnique({
             where: { id: updateTransactionDto.targetWarehouseId }
           });
           if (!targetWarehouse) {
@@ -412,7 +412,7 @@ export class TransactionsService {
       }
 
       // Update the transaction
-      const updatedTransaction = await this.db.inventoryTransaction.update({
+      const updatedTransaction = await this?.db.inventoryTransaction.update({
         where: { id },
         data: transactionData,
         include: {
@@ -448,12 +448,12 @@ export class TransactionsService {
 
     try {
       // Delete the transaction
-      const result = await this.db.inventoryTransaction.delete({
+      const result = await this?.db.inventoryTransaction.delete({
         where: { id }
       });
 
       // Publish transaction cancelled event
-      await this.transactionPublisher.publishTransactionCancelled(
+      await this?.transactionPublisher.publishTransactionCancelled(
         id,
         existingTransaction.transactionType as TransactionType,
         existingTransaction
@@ -477,11 +477,11 @@ export class TransactionsService {
 
     // Begin a transaction to ensure all operations succeed or fail together
     try {
-      const result = await this.prisma.$transaction(async (tx) => {
+      const result = await this?.prisma.$transaction(async (tx) => {
         // Use the "db" type wrapper instead of direct prisma property access
         const prisma = tx as any;
         
-        const transaction = await prisma.inventoryTransaction.update({
+        const transaction = await prisma?.inventoryTransaction.update({
           where: { id },
           data: {
             status: TransactionStatus.COMPLETED,
@@ -497,13 +497,13 @@ export class TransactionsService {
 
         // Process each line
         for (const lineUpdate of processDto.lines) {
-          const line = transaction.lines.find(l => l.id === lineUpdate.id);
+          const line = transaction?.lines.find(l => l.id === lineUpdate.id);
           if (!line) {
             throw new NotFoundException(`Transaction line with ID ${lineUpdate.id} not found`);
           }
 
           // Update the transaction line
-          await prisma.transactionLine.update({
+          await prisma?.transactionLine.update({
             where: { id: lineUpdate.id },
             data: {
               processedQuantity: lineUpdate.processedQuantity,
@@ -614,7 +614,7 @@ export class TransactionsService {
       });
 
       // Publish transaction processed event
-      await this.transactionPublisher.publishTransactionProcessed(
+      await this?.transactionPublisher.publishTransactionProcessed(
         result.id,
         result.transactionType as TransactionType,
         result.status as TransactionStatus,
@@ -658,13 +658,13 @@ export class TransactionsService {
       serialNumber: serialNumber || null
     };
 
-    const existingInventory = await prisma.inventory.findFirst({
+    const existingInventory = await prisma?.inventory.findFirst({
       where: inventoryKey
     });
 
     if (existingInventory) {
       // Update existing inventory
-      await prisma.inventory.update({
+      await prisma?.inventory.update({
         where: { id: existingInventory.id },
         data: {
           quantity: existingInventory.quantity + quantity,
@@ -673,7 +673,7 @@ export class TransactionsService {
       });
     } else {
       // Create new inventory record
-      await prisma.inventory.create({
+      await prisma?.inventory.create({
         data: {
           ...inventoryKey,
           quantity,
@@ -705,7 +705,7 @@ export class TransactionsService {
       serialNumber: serialNumber || null
     };
 
-    const existingInventory = await prisma.inventory.findFirst({
+    const existingInventory = await prisma?.inventory.findFirst({
       where: inventoryKey
     });
 
@@ -718,7 +718,7 @@ export class TransactionsService {
     }
 
     // Update inventory
-    await prisma.inventory.update({
+    await prisma?.inventory.update({
       where: { id: existingInventory.id },
       data: {
         quantity: existingInventory.quantity - quantity,

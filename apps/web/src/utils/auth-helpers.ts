@@ -27,15 +27,20 @@ export const isUserAuthenticated = (): boolean => {
 };
 
 /**
- * Setup authentication for clients that need a token
- * @param client Any API client with a setAuthToken method
- * @deprecated No longer needed with cookie-based authentication
+ * Auth helper utilities for setting up API clients
  */
-export const setupAuthForClient = (client: { setAuthToken: (token: string) => void }): boolean => {
-  const token = getAuthToken();
-  if (token && client.setAuthToken) {
-    client.setAuthToken(token);
-    return true;
+
+interface ApiClient {
+  setToken: (token: string) => void;
+}
+
+/**
+ * Sets up authentication for an API client using the token from local storage
+ * @param client The API client instance to set up
+ */
+export function setupAuthForClient(client: ApiClient): void {
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    client.setToken(token);
   }
-  return false;
-}; 
+} 

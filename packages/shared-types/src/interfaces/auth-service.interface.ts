@@ -17,20 +17,20 @@ import {
 } from '../dto/auth.dto';
 
 export interface TokenResponseDto {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-  userId: string;
+  accessToken: string | null;
+  refreshToken: string | null;
+  expiresIn: number | null;
+  userId: string | null;
 }
 
 export interface ServiceTokenResponseDto {
-  accessToken: string;
-  expiresIn: number;
+  accessToken: string | null;
+  expiresIn: number | null;
 }
 
 export interface ValidateTokenResponseDto {
-  valid: boolean;
-  userId?: string;
+  valid: boolean | null;
+  userId?: string | null;
   roles?: string[];
 }
 

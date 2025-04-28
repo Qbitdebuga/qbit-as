@@ -5,24 +5,24 @@ import { CUSTOMER_EVENTS, EventPayload } from '../events.constants';
 
 // Customer entity interface (simplified - should match your actual Customer entity)
 export interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-  taxId?: string;
-  creditLimit?: number;
-  status: string;
+  id: string | null;
+  name: string | null;
+  email: string | null;
+  phone?: string | null;
+  address?: string | null;
+  taxId?: string | null;
+  creditLimit?: number | null;
+  status: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 // Customer event payload
 export interface CustomerEventPayload {
-  id: string;
-  name: string;
-  email: string;
-  status: string;
+  id: string | null;
+  name: string | null;
+  email: string | null;
+  status: string | null;
   metadata?: Record<string, any>;
 }
 
@@ -44,7 +44,7 @@ export class CustomerPublisher {
    */
   async publishCustomerCreated(customer: Customer): Promise<void> {
     try {
-      this.logger.log(`Publishing ${CUSTOMER_EVENTS.CREATED} event for customer ${customer.id}`);
+      this?.logger.log(`Publishing ${CUSTOMER_EVENTS.CREATED} event for customer ${customer.id}`);
       
       const payload: EventPayload<CustomerEventPayload> = {
         serviceSource: this.SERVICE_NAME,
@@ -54,10 +54,10 @@ export class CustomerPublisher {
         data: this.sanitizeCustomer(customer)
       };
       
-      await this.client.emit(CUSTOMER_EVENTS.CREATED, payload).toPromise();
-      this.logger.log(`Successfully published ${CUSTOMER_EVENTS.CREATED} event for customer ${customer.id}`);
+      await this?.client.emit(CUSTOMER_EVENTS.CREATED, payload).toPromise();
+      this?.logger.log(`Successfully published ${CUSTOMER_EVENTS.CREATED} event for customer ${customer.id}`);
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${CUSTOMER_EVENTS.CREATED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${CUSTOMER_EVENTS.CREATED} event: ${error.message}`, error.stack);
     }
   }
 
@@ -68,7 +68,7 @@ export class CustomerPublisher {
    */
   async publishCustomerUpdated(customer: Customer, previousData?: Partial<Customer>): Promise<void> {
     try {
-      this.logger.log(`Publishing ${CUSTOMER_EVENTS.UPDATED} event for customer ${customer.id}`);
+      this?.logger.log(`Publishing ${CUSTOMER_EVENTS.UPDATED} event for customer ${customer.id}`);
       
       const payload: EventPayload<CustomerEventPayload> = {
         serviceSource: this.SERVICE_NAME,
@@ -84,10 +84,10 @@ export class CustomerPublisher {
         }
       };
       
-      await this.client.emit(CUSTOMER_EVENTS.UPDATED, payload).toPromise();
-      this.logger.log(`Successfully published ${CUSTOMER_EVENTS.UPDATED} event for customer ${customer.id}`);
+      await this?.client.emit(CUSTOMER_EVENTS.UPDATED, payload).toPromise();
+      this?.logger.log(`Successfully published ${CUSTOMER_EVENTS.UPDATED} event for customer ${customer.id}`);
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${CUSTOMER_EVENTS.UPDATED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${CUSTOMER_EVENTS.UPDATED} event: ${error.message}`, error.stack);
     }
   }
 
@@ -98,7 +98,7 @@ export class CustomerPublisher {
    */
   async publishCustomerDeleted(customerId: string, customerData?: Partial<Customer>): Promise<void> {
     try {
-      this.logger.log(`Publishing ${CUSTOMER_EVENTS.DELETED} event for customer ${customerId}`);
+      this?.logger.log(`Publishing ${CUSTOMER_EVENTS.DELETED} event for customer ${customerId}`);
       
       const payload: EventPayload<CustomerEventPayload> = {
         serviceSource: this.SERVICE_NAME,
@@ -113,10 +113,10 @@ export class CustomerPublisher {
         }
       };
       
-      await this.client.emit(CUSTOMER_EVENTS.DELETED, payload).toPromise();
-      this.logger.log(`Successfully published ${CUSTOMER_EVENTS.DELETED} event for customer ${customerId}`);
+      await this?.client.emit(CUSTOMER_EVENTS.DELETED, payload).toPromise();
+      this?.logger.log(`Successfully published ${CUSTOMER_EVENTS.DELETED} event for customer ${customerId}`);
     } catch (error: any) {
-      this.logger.error(`Failed to publish ${CUSTOMER_EVENTS.DELETED} event: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to publish ${CUSTOMER_EVENTS.DELETED} event: ${error.message}`, error.stack);
     }
   }
 
@@ -132,7 +132,7 @@ export class CustomerPublisher {
    * Get the list of changed fields between an updated customer and its previous state
    */
   private getChangedFields(current: Customer, previous: Partial<Customer>): string[] {
-    return Object.keys(previous).filter(key => {
+    return Object.keys(previous).filter(key: any => {
       return previous[key as keyof Partial<Customer>] !== current[key as keyof Customer];
     });
   }

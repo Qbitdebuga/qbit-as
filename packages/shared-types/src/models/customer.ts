@@ -1,7 +1,7 @@
 export interface Customer {
-  id: string;
-  customerNumber: string;
-  name: string;
+  id: string | null;
+  customerNumber: string | null;
+  name: string | null;
   email?: string | null;
   phone?: string | null;
   address?: string | null;
@@ -12,7 +12,7 @@ export interface Customer {
   taxId?: string | null;
   website?: string | null;
   notes?: string | null;
-  isActive: boolean;
+  isActive: boolean | null;
   creditLimit?: number | null;
   createdAt: Date;
   updatedAt: Date;
@@ -20,75 +20,75 @@ export interface Customer {
 }
 
 export interface CustomerContact {
-  id: string;
-  customerId: string;
-  firstName: string;
-  lastName: string;
+  id: string | null;
+  customerId: string | null;
+  firstName: string | null;
+  lastName: string | null;
   email?: string | null;
   phone?: string | null;
   position?: string | null;
-  isPrimary: boolean;
+  isPrimary: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface CreateCustomerDto {
-  customerNumber?: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  country?: string;
-  taxId?: string;
-  website?: string;
-  notes?: string;
-  isActive?: boolean;
-  creditLimit?: number;
+  customerNumber?: string | null;
+  name: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zipCode?: string | null;
+  country?: string | null;
+  taxId?: string | null;
+  website?: string | null;
+  notes?: string | null;
+  isActive?: boolean | null;
+  creditLimit?: number | null;
   contacts?: CreateCustomerContactDto[];
 }
 
 export interface CreateCustomerContactDto {
-  firstName: string;
-  lastName: string;
-  email?: string;
-  phone?: string;
-  position?: string;
-  isPrimary?: boolean;
+  firstName: string | null;
+  lastName: string | null;
+  email?: string | null;
+  phone?: string | null;
+  position?: string | null;
+  isPrimary?: boolean | null;
 }
 
 export interface UpdateCustomerDto {
-  name?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  country?: string;
-  taxId?: string;
-  website?: string;
-  notes?: string;
-  isActive?: boolean;
-  creditLimit?: number;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zipCode?: string | null;
+  country?: string | null;
+  taxId?: string | null;
+  website?: string | null;
+  notes?: string | null;
+  isActive?: boolean | null;
+  creditLimit?: number | null;
 }
 
 export interface UpdateCustomerContactDto {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  position?: string;
-  isPrimary?: boolean;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  position?: string | null;
+  isPrimary?: boolean | null;
 }
 
 export interface CustomerListParams {
-  search?: string;
-  isActive?: boolean;
-  page?: number;
-  limit?: number;
-  sortBy?: string;
+  search?: string | null;
+  isActive?: boolean | null;
+  page?: number | null;
+  limit?: number | null;
+  sortBy?: string | null;
   sortDirection?: 'asc' | 'desc';
 } 

@@ -11,9 +11,9 @@ const setCookie = (name: string, value: string, days = 7) => {
 };
 
 // Helper to get cookie value
-const getCookie = (name: string): string | null => {
+const getCookie = (name: string): string | null: any => {
   if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(new RegExp(`(^|;\\s*)(${name})=([^;]*)`));
+  const match = document?.cookie.match(new RegExp(`(^|;\\s*)(${name})=([^;]*)`));
   return match ? (match[3] || null) : null;
 };
 

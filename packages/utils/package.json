@@ -11,10 +11,11 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "rimraf dist && echo \"✅ @qbit/utils build completed successfully\"",
+    "build": "rimraf dist && tsc && echo \"✅ @qbit/utils build completed successfully\"",
     "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
     "lint": "eslint \"src/**/*.ts*\"",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",

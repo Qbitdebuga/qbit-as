@@ -31,7 +31,7 @@ export class ProductsController {
   @ApiOperation({ summary: 'Create a new product' })
   @ApiResponse({ status: 201, description: 'The product has been created successfully.', type: Product })
   create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.createProduct(createProductDto);
+    return this?.productsService.createProduct(createProductDto);
   }
 
   @Get()
@@ -67,7 +67,7 @@ export class ProductsController {
       where.isActive = active;
     }
     
-    return this.productsService.findAllProducts({
+    return this?.productsService.findAllProducts({
       skip,
       take: limit,
       where,
@@ -81,7 +81,7 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @ApiParam({ name: 'id', type: 'number', description: 'Product ID' })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOneProduct(id);
+    return this?.productsService.findOneProduct(id);
   }
 
   @Patch(':id')
@@ -93,7 +93,7 @@ export class ProductsController {
     @Param('id', ParseIntPipe) id: number, 
     @Body() updateProductDto: UpdateProductDto
   ) {
-    return this.productsService.updateProduct(id, updateProductDto);
+    return this?.productsService.updateProduct(id, updateProductDto);
   }
 
   @Delete(':id')
@@ -103,7 +103,7 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @ApiParam({ name: 'id', type: 'number', description: 'Product ID' })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.productsService.removeProduct(id);
+    await this?.productsService.removeProduct(id);
   }
 
   // Product Variants
@@ -116,7 +116,7 @@ export class ProductsController {
     @Param('id', ParseIntPipe) productId: number,
     @Body() createVariantDto: CreateProductVariantDto
   ) {
-    return this.productsService.createVariant(productId, createVariantDto);
+    return this?.productsService.createVariant(productId, createVariantDto);
   }
 
   @Get(':id/variants')
@@ -125,7 +125,7 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Product not found.' })
   @ApiParam({ name: 'id', type: 'number', description: 'Product ID' })
   findAllVariants(@Param('id', ParseIntPipe) productId: number) {
-    return this.productsService.findAllVariants(productId);
+    return this?.productsService.findAllVariants(productId);
   }
 
   @Get('variants/:id')
@@ -134,7 +134,7 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Product variant not found.' })
   @ApiParam({ name: 'id', type: 'number', description: 'Variant ID' })
   findOneVariant(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOneVariant(id);
+    return this?.productsService.findOneVariant(id);
   }
 
   @Patch('variants/:id')
@@ -146,7 +146,7 @@ export class ProductsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateVariantDto: UpdateProductVariantDto
   ) {
-    return this.productsService.updateVariant(id, updateVariantDto);
+    return this?.productsService.updateVariant(id, updateVariantDto);
   }
 
   @Delete('variants/:id')
@@ -156,7 +156,7 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Product variant not found.' })
   @ApiParam({ name: 'id', type: 'number', description: 'Variant ID' })
   async removeVariant(@Param('id', ParseIntPipe) id: number) {
-    await this.productsService.removeVariant(id);
+    await this?.productsService.removeVariant(id);
   }
 }
 
@@ -169,7 +169,7 @@ export class ProductCategoriesController {
   @ApiOperation({ summary: 'Create a new product category' })
   @ApiResponse({ status: 201, description: 'The category has been created successfully.', type: ProductCategory })
   create(@Body() createCategoryDto: CreateProductCategoryDto) {
-    return this.productsService.createCategory(createCategoryDto);
+    return this?.productsService.createCategory(createCategoryDto);
   }
 
   @Get()
@@ -196,7 +196,7 @@ export class ProductCategoriesController {
       where.isActive = active;
     }
     
-    return this.productsService.findAllCategories({
+    return this?.productsService.findAllCategories({
       skip,
       take: limit,
       where,
@@ -210,7 +210,7 @@ export class ProductCategoriesController {
   @ApiResponse({ status: 404, description: 'Product category not found.' })
   @ApiParam({ name: 'id', type: 'number', description: 'Category ID' })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOneCategory(id);
+    return this?.productsService.findOneCategory(id);
   }
 
   @Patch(':id')
@@ -222,7 +222,7 @@ export class ProductCategoriesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateProductCategoryDto
   ) {
-    return this.productsService.updateCategory(id, updateCategoryDto);
+    return this?.productsService.updateCategory(id, updateCategoryDto);
   }
 
   @Delete(':id')
@@ -232,6 +232,6 @@ export class ProductCategoriesController {
   @ApiResponse({ status: 404, description: 'Product category not found.' })
   @ApiParam({ name: 'id', type: 'number', description: 'Category ID' })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.productsService.removeCategory(id);
+    await this?.productsService.removeCategory(id);
   }
 } 

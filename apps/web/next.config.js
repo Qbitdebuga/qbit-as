@@ -1,18 +1,26 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["shared-types", "api-client"],
+  transpilePackages: ["@qbit/shared-types", "@qbit/api-client"],
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
+    // Type checking is enabled for production builds
+    ignoreBuildErrors: process.env.NODE_ENV === 'development',
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    // ESLint checking is enabled for production builds
+    ignoreDuringBuilds: process.env.NODE_ENV === 'development',
+  },
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+    return config;
+  },
+  // Use stable turbopack config instead of experimental
+  turbopack: {
+    resolveAlias: {
+      '@': path.join(__dirname, 'src'),
+    },
   },
 };
 

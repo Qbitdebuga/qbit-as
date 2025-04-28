@@ -34,8 +34,8 @@ export class DepreciationController {
     type: CalculateDepreciationResponseDto 
   })
   calculateDepreciation(@Body() calculateDto: CalculateDepreciationDto): Promise<CalculateDepreciationResponseDto> {
-    this.logger.log(`Calculating depreciation for asset: ${calculateDto.assetId}`);
-    return this.depreciationService.calculateDepreciation(calculateDto);
+    this?.logger.log(`Calculating depreciation for asset: ${calculateDto.assetId}`);
+    return this?.depreciationService.calculateDepreciation(calculateDto);
   }
 
   @Get('schedule/:assetId')
@@ -47,8 +47,8 @@ export class DepreciationController {
     type: DepreciationScheduleEntity 
   })
   getDepreciationSchedule(@Param('assetId', ParseUUIDPipe) assetId: string): Promise<DepreciationScheduleEntity> {
-    this.logger.log(`Generating depreciation schedule for asset: ${assetId}`);
-    return this.depreciationService.generateDepreciationSchedule(assetId);
+    this?.logger.log(`Generating depreciation schedule for asset: ${assetId}`);
+    return this?.depreciationService.generateDepreciationSchedule(assetId);
   }
 
   @Post('record/:assetId')
@@ -60,22 +60,22 @@ export class DepreciationController {
     @Param('assetId', ParseUUIDPipe) assetId: string,
     @Query('date') dateString?: string,
     @Body('amount') amount?: number,
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ success: boolean | null; message: string }> {
     const date = dateString ? new Date(dateString) : new Date();
     
     // If amount is not provided, calculate it based on the depreciation method
     if (!amount) {
-      const { currentBookValue, accumulatedDepreciation } = await this.depreciationService.getCurrentDepreciation(assetId);
-      const asset = await this.depreciationService.calculateDepreciation({ assetId, asOfDate: date.toISOString() });
+      const { currentBookValue, accumulatedDepreciation } = await this?.depreciationService.getCurrentDepreciation(assetId);
+      const asset = await this?.depreciationService.calculateDepreciation({ assetId, asOfDate: date.toISOString() });
       
       // Use the calculated monthly depreciation
       const depreciableAmount = asset.originalCost - asset.residualValue;
-      const monthlyDepreciation = depreciableAmount / (asset.entries.length > 0 ? asset.entries.length : 12);
+      const monthlyDepreciation = depreciableAmount / (asset?.entries.length > 0 ? asset?.entries.length : 12);
       amount = monthlyDepreciation;
     }
     
-    this.logger.log(`Recording depreciation of ${amount} for asset: ${assetId} on date: ${date.toISOString()}`);
-    await this.depreciationService.recordDepreciation(assetId, date, amount);
+    this?.logger.log(`Recording depreciation of ${amount} for asset: ${assetId} on date: ${date.toISOString()}`);
+    await this?.depreciationService.recordDepreciation(assetId, date, amount);
     
     return { 
       success: true, 
@@ -110,13 +110,13 @@ export class DepreciationController {
   })
   async getCurrentDepreciation(
     @Param('assetId', ParseUUIDPipe) assetId: string
-  ): Promise<{ currentBookValue: number; accumulatedDepreciation: number }> {
-    this.logger.log(`Getting current depreciation for asset: ${assetId}`);
-    const result = await this.depreciationService.getCurrentDepreciation(assetId);
+  ): Promise<{ currentBookValue: number | null; accumulatedDepreciation: number }> {
+    this?.logger.log(`Getting current depreciation for asset: ${assetId}`);
+    const result = await this?.depreciationService.getCurrentDepreciation(assetId);
     
     return {
-      currentBookValue: parseFloat(result.currentBookValue.toString()),
-      accumulatedDepreciation: parseFloat(result.accumulatedDepreciation.toString()),
+      currentBookValue: parseFloat(result?.currentBookValue.toString()),
+      accumulatedDepreciation: parseFloat(result?.accumulatedDepreciation.toString()),
     };
   }
 } 

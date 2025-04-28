@@ -15,7 +15,7 @@ export class UpdateBankDto {
   })
   @IsString()
   @IsOptional()
-  name?: string;
+  name?: string | null;
 
   @ApiProperty({
     description: 'Unique bank code',
@@ -24,7 +24,7 @@ export class UpdateBankDto {
   })
   @IsString()
   @IsOptional()
-  code?: string;
+  code?: string | null;
 
   @ApiProperty({
     description: 'Bank routing number',
@@ -34,7 +34,7 @@ export class UpdateBankDto {
   @IsString()
   @IsOptional()
   @Matches(/^[0-9]{9}$/, { message: 'Routing number must be 9 digits' })
-  routingNumber?: string;
+  routingNumber?: string | null;
 
   @ApiProperty({
     description: 'SWIFT/BIC code for international transfers',
@@ -43,7 +43,7 @@ export class UpdateBankDto {
   })
   @IsString()
   @IsOptional()
-  swiftCode?: string;
+  swiftCode?: string | null;
 
   @ApiProperty({
     description: 'Bank address',
@@ -52,7 +52,7 @@ export class UpdateBankDto {
   })
   @IsString()
   @IsOptional()
-  address?: string;
+  address?: string | null;
 
   @ApiProperty({
     description: 'Bank contact person name',
@@ -61,7 +61,7 @@ export class UpdateBankDto {
   })
   @IsString()
   @IsOptional()
-  contactName?: string;
+  contactName?: string | null;
 
   @ApiProperty({
     description: 'Bank contact phone number',
@@ -70,7 +70,7 @@ export class UpdateBankDto {
   })
   @IsString()
   @IsOptional()
-  contactPhone?: string;
+  contactPhone?: string | null;
 
   @ApiProperty({
     description: 'Bank contact email address',
@@ -79,16 +79,16 @@ export class UpdateBankDto {
   })
   @IsEmail()
   @IsOptional()
-  contactEmail?: string;
+  contactEmail?: string | null;
 
   @ApiProperty({
     description: 'Bank website URL',
-    example: 'https://www.chase.com',
+    example: 'https://www?.chase.com',
     required: false,
   })
   @IsString()
   @IsOptional()
-  website?: string;
+  website?: string | null;
 
   @ApiProperty({
     description: 'Additional notes about the bank',
@@ -97,7 +97,7 @@ export class UpdateBankDto {
   })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({
     description: 'Whether the bank is active in the system',
@@ -106,5 +106,5 @@ export class UpdateBankDto {
   })
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  isActive?: boolean | null;
 } 

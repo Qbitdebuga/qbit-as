@@ -8,7 +8,7 @@ export class CreateInvoicePaymentDto {
   @ApiProperty({ description: 'Invoice ID', example: 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6' })
   @IsNotEmpty()
   @IsUUID()
-  invoiceId!: string;
+  invoiceId!: string | null;
 
   @ApiProperty({ description: 'Payment date', example: '2023-02-10T00:00:00.000Z' })
   @IsNotEmpty()
@@ -20,7 +20,7 @@ export class CreateInvoicePaymentDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(0.01)
-  amount!: number;
+  amount!: number | null;
 
   @ApiProperty({ 
     description: 'Payment method',
@@ -44,10 +44,10 @@ export class CreateInvoicePaymentDto {
   @ApiPropertyOptional({ description: 'Reference/transaction number', example: 'TRX-123456' })
   @IsOptional()
   @IsString()
-  referenceNumber?: string;
+  referenceNumber?: string | null;
 
   @ApiPropertyOptional({ description: 'Additional notes' })
   @IsOptional()
   @IsString()
-  notes?: string;
+  notes?: string | null;
 } 

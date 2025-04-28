@@ -8,8 +8,8 @@ import { getRequiredConfig, getConfig } from '../utils/config-utils';
 export class AuthClientService {
   private readonly logger = new Logger(AuthClientService.name);
   private readonly httpClient: AxiosInstance;
-  private readonly serviceUrl: string;
-  private readonly apiKey: string;
+  private readonly serviceUrl: string | null;
+  private readonly apiKey: string | null;
 
   constructor(private readonly configService: ConfigService) {
     // These are required config values that will throw if missing
@@ -24,7 +24,7 @@ export class AuthClientService {
       },
     });
 
-    this.logger.log(`Auth client initialized with URL: ${this.serviceUrl}`);
+    this?.logger.log(`Auth client initialized with URL: ${this.serviceUrl}`);
   }
 
   /**
@@ -35,16 +35,16 @@ export class AuthClientService {
       const serviceId = getRequiredConfig<string>(this.configService, 'SERVICE_ID');
       const serviceName = getRequiredConfig<string>(this.configService, 'SERVICE_NAME');
       
-      const response = await this.httpClient.post('/auth/service-token', {
+      const response = await this?.httpClient.post('/auth/service-token', {
         serviceId,
         serviceName,
         scopes,
       });
       
-      return response.data.accessToken;
+      return response?.data.accessToken;
     } catch (error: unknown) {
       const { message, stack } = formatError(error);
-      this.logger.error(`Failed to get service token: ${message}`, stack);
+      this?.logger.error(`Failed to get service token: ${message}`, stack);
       throw new Error(`Failed to get service token: ${message}`);
     }
   }
@@ -54,11 +54,11 @@ export class AuthClientService {
    */
   async validateToken(token: string): Promise<any> {
     try {
-      const response = await this.httpClient.post('/auth/validate-token', { token });
+      const response = await this?.httpClient.post('/auth/validate-token', { token });
       return response.data;
     } catch (error: unknown) {
       const { message, stack } = formatError(error);
-      this.logger.error(`Token validation failed: ${message}`, stack);
+      this?.logger.error(`Token validation failed: ${message}`, stack);
       throw new Error(`Token validation failed: ${message}`);
     }
   }
@@ -68,7 +68,7 @@ export class AuthClientService {
    */
   async getUserById(userId: string, serviceToken: string): Promise<any> {
     try {
-      const response = await this.httpClient.get(`/users/${userId}`, {
+      const response = await this?.httpClient.get(`/users/${userId}`, {
         headers: {
           'Authorization': `Bearer ${serviceToken}`
         }
@@ -76,7 +76,7 @@ export class AuthClientService {
       return response.data;
     } catch (error: unknown) {
       const { message, stack } = formatError(error);
-      this.logger.error(`Failed to get user by ID: ${message}`, stack);
+      this?.logger.error(`Failed to get user by ID: ${message}`, stack);
       throw new Error(`Failed to get user: ${message}`);
     }
   }
@@ -86,7 +86,7 @@ export class AuthClientService {
    */
   async checkUserRoles(userId: string, requiredRoles: string[], serviceToken: string): Promise<boolean> {
     try {
-      const response = await this.httpClient.post('/auth/check-roles', 
+      const response = await this?.httpClient.post('/auth/check-roles', 
         { userId, requiredRoles },
         {
           headers: {
@@ -94,10 +94,10 @@ export class AuthClientService {
           }
         }
       );
-      return response.data.hasAccess;
+      return response?.data.hasAccess;
     } catch (error: unknown) {
       const { message, stack } = formatError(error);
-      this.logger.error(`Role check failed: ${message}`, stack);
+      this?.logger.error(`Role check failed: ${message}`, stack);
       return false;
     }
   }

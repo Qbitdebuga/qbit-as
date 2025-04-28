@@ -6,22 +6,22 @@ export enum StatementPeriod {
 }
 
 export interface StatementRequestDto {
-  startDate: string;
-  endDate: string;
+  startDate: string | null;
+  endDate: string | null;
   period: StatementPeriod;
-  comparativePeriod?: boolean;
-  includeZeroBalances?: boolean;
+  comparativePeriod?: boolean | null;
+  includeZeroBalances?: boolean | null;
 }
 
 export interface StatementResponseDto {
   meta: {
-    title: string;
-    reportType: string;
-    startDate: string;
-    endDate: string;
-    generatedAt: string;
+    title: string | null;
+    reportType: string | null;
+    startDate: string | null;
+    endDate: string | null;
+    generatedAt: string | null;
     period: StatementPeriod;
-    comparativePeriod?: boolean;
+    comparativePeriod?: boolean | null;
   };
   data: any;
 }
@@ -31,59 +31,59 @@ export interface BalanceSheetStatementDto extends StatementResponseDto {
     assets: BalanceSheetSection[];
     liabilities: BalanceSheetSection[];
     equity: BalanceSheetSection[];
-    totalAssets: number;
-    totalLiabilities: number;
-    totalEquity: number;
-    totalLiabilitiesAndEquity: number;
+    totalAssets: number | null;
+    totalLiabilities: number | null;
+    totalEquity: number | null;
+    totalLiabilitiesAndEquity: number | null;
   };
 }
 
 export interface BalanceSheetSection {
-  title: string;
+  title: string | null;
   accounts: BalanceSheetAccount[];
-  total: number;
+  total: number | null;
 }
 
 export interface BalanceSheetAccount {
-  accountId: string;
-  accountCode: string;
-  accountName: string;
-  balance: number;
-  previousBalance?: number;
-  change?: number;
-  changePercentage?: number;
+  accountId: string | null;
+  accountCode: string | null;
+  accountName: string | null;
+  balance: number | null;
+  previousBalance?: number | null;
+  change?: number | null;
+  changePercentage?: number | null;
 }
 
 export interface IncomeStatementDto extends StatementResponseDto {
   data: {
     revenue: IncomeStatementSection[];
     expenses: IncomeStatementSection[];
-    totalRevenue: number;
-    totalExpenses: number;
-    netIncome: number;
-    previousNetIncome?: number;
-    netIncomeChange?: number;
-    netIncomeChangePercentage?: number;
+    totalRevenue: number | null;
+    totalExpenses: number | null;
+    netIncome: number | null;
+    previousNetIncome?: number | null;
+    netIncomeChange?: number | null;
+    netIncomeChangePercentage?: number | null;
   };
 }
 
 export interface IncomeStatementSection {
-  title: string;
+  title: string | null;
   accounts: IncomeStatementAccount[];
-  total: number;
-  previousTotal?: number;
-  change?: number;
-  changePercentage?: number;
+  total: number | null;
+  previousTotal?: number | null;
+  change?: number | null;
+  changePercentage?: number | null;
 }
 
 export interface IncomeStatementAccount {
-  accountId: string;
-  accountCode: string;
-  accountName: string;
-  amount: number;
-  previousAmount?: number;
-  change?: number;
-  changePercentage?: number;
+  accountId: string | null;
+  accountCode: string | null;
+  accountName: string | null;
+  amount: number | null;
+  previousAmount?: number | null;
+  change?: number | null;
+  changePercentage?: number | null;
 }
 
 export interface CashFlowStatementDto extends StatementResponseDto {
@@ -91,25 +91,25 @@ export interface CashFlowStatementDto extends StatementResponseDto {
     operatingActivities: CashFlowSection[];
     investingActivities: CashFlowSection[];
     financingActivities: CashFlowSection[];
-    netCashFromOperatingActivities: number;
-    netCashFromInvestingActivities: number;
-    netCashFromFinancingActivities: number;
-    netChangeInCash: number;
-    beginningCash: number;
-    endingCash: number;
+    netCashFromOperatingActivities: number | null;
+    netCashFromInvestingActivities: number | null;
+    netCashFromFinancingActivities: number | null;
+    netChangeInCash: number | null;
+    beginningCash: number | null;
+    endingCash: number | null;
   };
 }
 
 export interface CashFlowSection {
-  title: string;
+  title: string | null;
   items: CashFlowItem[];
-  total: number;
+  total: number | null;
 }
 
 export interface CashFlowItem {
-  description: string;
-  amount: number;
-  accountId?: string;
-  accountCode?: string;
-  accountName?: string;
+  description: string | null;
+  amount: number | null;
+  accountId?: string | null;
+  accountCode?: string | null;
+  accountName?: string | null;
 } 

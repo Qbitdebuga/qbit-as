@@ -13,8 +13,8 @@ interface Resource {
 }
 
 interface ResourceAttributes {
-  SERVICE_NAME: string;
-  DEPLOYMENT_ENVIRONMENT: string;
+  SERVICE_NAME: string | null;
+  DEPLOYMENT_ENVIRONMENT: string | null;
 }
 
 // Internal trace API 
@@ -88,16 +88,16 @@ const DEFAULT_CONFIG = {
   otlpEndpoint: 'http://collector:4318/v1/traces',
   useJaeger: true,
   useOTLP: false,
-  environment: process.env.NODE_ENV || 'development',
+  environment: process?.env.NODE_ENV || 'development',
 };
 
 export interface TracingConfig {
-  serviceName: string;
-  jaegerEndpoint?: string;
-  otlpEndpoint?: string;
-  useJaeger?: boolean;
-  useOTLP?: boolean;
-  environment?: string;
+  serviceName: string | null;
+  jaegerEndpoint?: string | null;
+  otlpEndpoint?: string | null;
+  useJaeger?: boolean | null;
+  useOTLP?: boolean | null;
+  environment?: string | null;
 }
 
 // Tracer interface as a stub for the real thing

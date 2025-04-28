@@ -5,7 +5,7 @@ export class UpdateRoleDto {
   @ApiProperty({ example: 'admin', description: 'Role name', required: false })
   @IsString({ message: 'Role name must be a string' })
   @IsOptional()
-  name?: string;
+  name?: string | null;
 
   @ApiProperty({ 
     example: 'Administrator with full access', 
@@ -14,7 +14,7 @@ export class UpdateRoleDto {
   })
   @IsString({ message: 'Description must be a string' })
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({ 
     example: ['read:users', 'write:users'], 

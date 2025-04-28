@@ -1,50 +1,50 @@
 import { Account } from './account';
 
 export interface JournalEntryLine {
-  id: string;
-  journalEntryId: string;
-  accountId: string;
+  id: string | null;
+  journalEntryId: string | null;
+  accountId: string | null;
   account?: Account;
-  description?: string;
-  debit?: number;
-  credit?: number;
-  createdAt: string;
-  updatedAt: string;
+  description?: string | null;
+  debit?: number | null;
+  credit?: number | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export interface JournalEntry {
-  id: string;
-  entryNumber: string;
-  date: string;
-  description?: string;
-  reference?: string;
+  id: string | null;
+  entryNumber: string | null;
+  date: string | null;
+  description?: string | null;
+  reference?: string | null;
   status: 'DRAFT' | 'POSTED' | 'REVERSED';
-  isAdjustment: boolean;
+  isAdjustment: boolean | null;
   lines: JournalEntryLine[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export interface JournalEntryCreate {
-  date: string;
-  description?: string;
-  reference?: string;
-  isAdjustment?: boolean;
+  date: string | null;
+  description?: string | null;
+  reference?: string | null;
+  isAdjustment?: boolean | null;
   lines: JournalEntryLineCreate[];
 }
 
 export interface JournalEntryLineCreate {
-  accountId: string;
-  description?: string;
-  debit?: number;
-  credit?: number;
+  accountId: string | null;
+  description?: string | null;
+  debit?: number | null;
+  credit?: number | null;
 }
 
 export interface JournalEntryUpdate {
-  date?: string;
-  description?: string;
-  reference?: string;
+  date?: string | null;
+  description?: string | null;
+  reference?: string | null;
   status?: 'DRAFT' | 'POSTED' | 'REVERSED';
-  isAdjustment?: boolean;
+  isAdjustment?: boolean | null;
   lines?: JournalEntryLineCreate[];
 } 

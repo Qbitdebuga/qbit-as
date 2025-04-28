@@ -1,6 +1,6 @@
 'use client';
 
-import { BillLineItem } from '@qbit-accounting/shared-types';
+import { BillLineItem } from '@qbit/shared-types';
 import {
   Table,
   TableBody,

@@ -10,7 +10,7 @@ import { PinoLoggerService } from '@qbit/logging';
 async function bootstrap() {
   // Create custom logger
   const logger = new PinoLoggerService({
-    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    level: process?.env.NODE_ENV === 'production' ? 'info' : 'debug',
     logDir: 'logs',
     fileName: 'api-gateway',
   });
@@ -59,7 +59,7 @@ async function bootstrap() {
   });
   
   // Start the server
-  const port = process.env.PORT || 3001;
+  const port = process?.env.PORT || 3001;
   await app.listen(port);
   logger.log(`Application is running on: http://localhost:${port}/api`);
 }

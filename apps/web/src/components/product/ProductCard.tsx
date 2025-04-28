@@ -1,6 +1,6 @@
 import React from 'react';
-import { Product } from '../../hooks/useProducts';
-import { EditIcon, DeleteIcon } from '../ui/icons';
+import { Product } from '@/hooks/useProducts';
+import { EditIcon, DeleteIcon } from '@/icons';
 
 interface ProductCardProps {
   product: Product;

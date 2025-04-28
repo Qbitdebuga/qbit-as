@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import AggregatedDataExample from '../../../components/AggregatedDataExample';
-import DashboardLayout from '../../../components/DashboardLayout';
+import AggregatedDataExample from '@/components/AggregatedDataExample';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function AggregatedDataPage() {
   return (

@@ -1,23 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, RegisterFormValues } from '@/lib/validations/auth';
-import { authClient } from '@/utils/auth';
+import * as z from 'zod';
+import { Button } from '@/components/ui';
+import { Input } from '@/components/ui';
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from '@/components/ui';
+
+// Simple validation schema
+const registerSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const router = useRouter();
-  const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Initialize react-hook-form with Zod validation
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormValues>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: '',
@@ -27,103 +45,127 @@ export function RegisterForm() {
     },
   });
 
-  const onSubmit = async (data: RegisterFormValues) => {
-    setServerError('');
+  async function onSubmit(data: RegisterFormValues) {
     setIsLoading(true);
-
+    setError(null);
+    
     try {
-      console.log("Attempting registration with auth client URL:", process.env.NEXT_PUBLIC_AUTH_URL);
-      // Use the shared authClient instance
-      await authClient.register({ 
-        email: data.email, 
-        name: data.name, 
-        password: data.password 
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Auto-login after registration
-      await authClient.login({ 
-        email: data.email, 
-        password: data.password 
-      });
-      
-      // Redirect to dashboard
-      router.push('/dashboard');
-    } catch (err: any) {
-      console.error('Registration error:', err);
-      // Display more detailed error message
-      if (err.message === 'Failed to fetch') {
-        setServerError('Connection error: Cannot reach authentication service. Please try again later or contact support.');
-      } else {
-        setServerError(err.message || 'Registration failed. Please try again.');
-      }
+      // Success - redirect to login
+      router.push('/login');
+    } catch (err) {
+      setError('An error occurred during registration. Please try again.');
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
-    <form className="p-5 w-full" onSubmit={handleSubmit(onSubmit)}>
-      {serverError && (
-        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded-md">
-          {serverError}
-        </div>
-      )}
+    <div className="space-y-6">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {error && (
+            <div className="bg-red-50 p-4 rounded-md">
+              <p className="text-red-700">{error}</p>
+            </div>
+          )}
+          
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Your name" 
+                    autoComplete="name"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="your.email@example.com" 
+                    type="email" 
+                    autoComplete="email"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Create a password" 
+                    type="password" 
+                    autoComplete="new-password"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Confirm your password" 
+                    type="password" 
+                    autoComplete="new-password"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Creating account...' : 'Register'}
+          </Button>
+        </form>
+      </Form>
       
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Full Name"
-          {...register('name')}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-        )}
+      <div className="text-center">
+        <p className="text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link href="/login" className="text-primary hover:underline">
+            Login
+          </Link>
+        </p>
       </div>
-      
-      <div className="mb-4">
-        <input
-          type="email"
-          placeholder="Email"
-          {...register('email')}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-        )}
-      </div>
-      
-      <div className="mb-4">
-        <input
-          type="password"
-          placeholder="Password"
-          {...register('password')}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-        {errors.password && (
-          <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-        )}
-      </div>
-      
-      <div className="mb-4">
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          {...register('confirmPassword')}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-        {errors.confirmPassword && (
-          <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
-        )}
-      </div>
-      
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition duration-200 disabled:bg-blue-400"
-      >
-        {isLoading ? 'Registering...' : 'Register'}
-      </button>
-    </form>
+    </div>
   );
 } 

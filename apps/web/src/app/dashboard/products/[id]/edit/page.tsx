@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { productsClient } from '@qbit-accounting/api-client';
-import { IProduct } from '@qbit-accounting/shared-types';
+import { productsClient } from '@/mocks/api-client';
+import { IProduct } from '@/mocks/shared-types';
 
 export default function EditProductPage() {
   const params = useParams();

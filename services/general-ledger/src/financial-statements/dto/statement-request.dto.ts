@@ -9,7 +9,7 @@ export class StatementRequestDto {
   })
   @IsDateString()
   @IsNotEmpty()
-  startDate!: string;
+  startDate!: string | null;
 
   @ApiProperty({
     description: 'End date for the statement period (format: YYYY-MM-DD)',
@@ -17,7 +17,7 @@ export class StatementRequestDto {
   })
   @IsDateString()
   @IsNotEmpty()
-  endDate!: string;
+  endDate!: string | null;
 
   @ApiProperty({
     description: 'Period type for the statement',

@@ -7,10 +7,10 @@ import {
   CardDescription, 
   CardHeader, 
   CardTitle 
-} from '../ui/card';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import { Input } from '../ui/input';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { 
   Table, 
   TableBody, 
@@ -18,20 +18,20 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '../ui/table';
+} from '@/components/ui/table';
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from '../ui/select';
+} from '@/components/ui/select';
 import { Payment, PaymentMethod, PaymentStatus } from '@qbit/shared-types';
 import { usePayments } from '@/hooks/usePayments';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatCurrency, formatDate } from '@/utils/formatters';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 const paymentStatusColorMap: Record<PaymentStatus, string> = {
   PENDING: 'bg-yellow-200 text-yellow-800',

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "rimraf dist && echo \"✅ @qbit/auth build completed successfully\"",
+    "build": "rimraf dist && tsc && echo \"✅ @qbit/auth build completed successfully\"",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
@@ -19,7 +19,8 @@
     "prisma:studio": "prisma studio",
     "db:seed": "ts-node prisma/seed.ts",
     "install-logging": "yarn add --no-lockfile winston winston-transport nest-winston",
-    "install-health-check": "yarn add --no-lockfile @nestjs/terminus"
+    "install-health-check": "yarn add --no-lockfile @nestjs/terminus",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.0",

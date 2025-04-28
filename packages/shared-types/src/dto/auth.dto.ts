@@ -7,66 +7,66 @@ import { UserDto } from '../models/user';
  * Login request DTO
  */
 export interface LoginDto {
-  email: string;
-  password: string;
-  rememberMe?: boolean;
+  email: string | null;
+  password: string | null;
+  rememberMe?: boolean | null;
 }
 
 /**
  * Registration request DTO
  */
 export interface RegisterDto {
-  email: string;
-  password: string;
-  name?: string;
+  email: string | null;
+  password: string | null;
+  name?: string | null;
 }
 
 /**
  * Email verification request DTO
  */
 export interface VerifyEmailDto {
-  token: string;
+  token: string | null;
 }
 
 /**
  * Password reset request DTO
  */
 export interface RequestPasswordResetDto {
-  email: string;
+  email: string | null;
 }
 
 /**
  * Reset password DTO
  */
 export interface ResetPasswordDto {
-  token: string;
-  password: string;
+  token: string | null;
+  password: string | null;
 }
 
 /**
  * Change password DTO
  */
 export interface ChangePasswordDto {
-  currentPassword: string;
-  newPassword: string;
+  currentPassword: string | null;
+  newPassword: string | null;
 }
 
 /**
  * Refresh token DTO
  */
 export interface RefreshTokenDto {
-  refreshToken: string;
+  refreshToken: string | null;
 }
 
 /**
  * Service-to-service authentication token request
  */
 export interface ServiceTokenRequestDto {
-  serviceId: string;
-  serviceName: string;
-  apiKey?: string;
+  serviceId: string | null;
+  serviceName: string | null;
+  apiKey?: string | null;
   scopes?: string[];
-  expiresIn?: number;
+  expiresIn?: number | null;
 }
 
 /**
@@ -74,16 +74,16 @@ export interface ServiceTokenRequestDto {
  */
 export interface AuthResponseDto {
   user: UserDto;
-  accessToken: string;
-  refreshToken?: string;
-  expiresIn: number;
-  csrfToken?: string;
+  accessToken: string | null;
+  refreshToken?: string | null;
+  expiresIn: number | null;
+  csrfToken?: string | null;
 }
 
 /**
  * Token verification response
  */
 export interface TokenVerificationResponse {
-  isValid: boolean;
+  isValid: boolean | null;
   user?: UserDto;
 } 

@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class AssetCategoryEntity {
   @ApiProperty({ description: 'Unique identifier of the asset category' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'Name of the asset category' })
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Description of the asset category', required: false })
   description: string | null;

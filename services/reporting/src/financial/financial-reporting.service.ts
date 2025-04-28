@@ -25,12 +25,12 @@ export class FinancialReportingService {
    * Generate a financial report based on the request parameters
    */
   async generateReport(request: ReportRequestDto): Promise<ReportResponseDto> {
-    this.logger.log(`Generating financial report of type ${request.type}`);
+    this?.logger.log(`Generating financial report of type ${request.type}`);
     
     try {
       // Get the financial statement from the General Ledger service
-      const statement = await this.generalLedgerClient.getFinancialStatement(
-        request.type.toLowerCase(),
+      const statement = await this?.generalLedgerClient.getFinancialStatement(
+        request?.type.toLowerCase(),
         {
           startDate: request.startDate,
           endDate: request.endDate,
@@ -64,7 +64,7 @@ export class FinancialReportingService {
       
       return report;
     } catch (error) {
-      this.logger.error(`Error generating financial report: ${error.message}`, error.stack);
+      this?.logger.error(`Error generating financial report: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -78,11 +78,11 @@ export class FinancialReportingService {
   ): Promise<{ id: string }> {
     try {
       // Create the report record
-      const savedReport = await this.db.report.create({
+      const savedReport = await this?.db.report.create({
         data: {
           name: report.name,
           type: this.getReportTypeEnum(report.type),
-          description: `${report.type} generated on ${report.generatedAt.toISOString()}`,
+          description: `${report.type} generated on ${report?.generatedAt.toISOString()}`,
           parameters: report.parameters as Prisma.InputJsonValue,
           ownerId: userId,
           isPublic: false,
@@ -99,7 +99,7 @@ export class FinancialReportingService {
       
       return { id: savedReport.id };
     } catch (error) {
-      this.logger.error(`Error saving report: ${error.message}`, error.stack);
+      this?.logger.error(`Error saving report: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -134,7 +134,7 @@ export class FinancialReportingService {
       
       // Get reports with pagination
       const [reports, total] = await Promise.all([
-        this.db.report.findMany({
+        this?.db.report.findMany({
           where,
           orderBy: { createdAt: 'desc' },
           skip,
@@ -151,7 +151,7 @@ export class FinancialReportingService {
             },
           },
         }),
-        this.db.report.count({ where }),
+        this?.db.report.count({ where }),
       ]);
       
       return {
@@ -164,7 +164,7 @@ export class FinancialReportingService {
         },
       };
     } catch (error) {
-      this.logger.error(`Error getting reports: ${error.message}`, error.stack);
+      this?.logger.error(`Error getting reports: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -178,7 +178,7 @@ export class FinancialReportingService {
     userId?: string
   ): Promise<any> {
     try {
-      const report = await this.db.report.findUnique({
+      const report = await this?.db.report.findUnique({
         where: { id },
         include: {
           snapshots: includeLatestSnapshot ? {
@@ -199,7 +199,7 @@ export class FinancialReportingService {
       
       return report;
     } catch (error) {
-      this.logger.error(`Error getting report by ID: ${error.message}`, error.stack);
+      this?.logger.error(`Error getting report by ID: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -209,7 +209,7 @@ export class FinancialReportingService {
    */
   async getSnapshotById(id: string, userId?: string): Promise<any> {
     try {
-      const snapshot = await this.db.reportSnapshot.findUnique({
+      const snapshot = await this?.db.reportSnapshot.findUnique({
         where: { id },
         include: {
           report: true,
@@ -221,13 +221,13 @@ export class FinancialReportingService {
       }
       
       // Check permissions
-      if (!snapshot.report.isPublic && snapshot.report.ownerId !== userId) {
+      if (!snapshot?.report.isPublic && snapshot?.report.ownerId !== userId) {
         throw new NotFoundException(`Report snapshot with ID ${id} not found`);
       }
       
       return snapshot;
     } catch (error) {
-      this.logger.error(`Error getting snapshot by ID: ${error.message}`, error.stack);
+      this?.logger.error(`Error getting snapshot by ID: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -258,7 +258,7 @@ export class FinancialReportingService {
       });
       
       // Create a new snapshot
-      const snapshot = await this.db.reportSnapshot.create({
+      const snapshot = await this?.db.reportSnapshot.create({
         data: {
           reportId,
           name: name || `Snapshot ${new Date().toISOString().split('T')[0]}`,
@@ -270,7 +270,7 @@ export class FinancialReportingService {
       
       return snapshot;
     } catch (error) {
-      this.logger.error(`Error creating report snapshot: ${error.message}`, error.stack);
+      this?.logger.error(`Error creating report snapshot: ${error.message}`, error.stack);
       throw error;
     }
   }

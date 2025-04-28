@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UserInfo {
   @ApiProperty({ description: 'User ID' })
-  id!: string;
+  id!: string | null;
 
   @ApiProperty({ description: 'User name' })
-  name!: string;
+  name!: string | null;
 
   @ApiProperty({ description: 'User email' })
-  email!: string;
+  email!: string | null;
 
   @ApiProperty({ description: 'User roles', type: [String] })
   roles!: string[];
@@ -16,29 +16,29 @@ export class UserInfo {
 
 export class BalanceSheetSummary {
   @ApiProperty({ description: 'Total assets' })
-  totalAssets!: number;
+  totalAssets!: number | null;
 
   @ApiProperty({ description: 'Total liabilities' })
-  totalLiabilities!: number;
+  totalLiabilities!: number | null;
 
   @ApiProperty({ description: 'Total equity' })
-  equity!: number;
+  equity!: number | null;
 }
 
 export class IncomeStatementSummary {
   @ApiProperty({ description: 'Total revenue' })
-  revenue!: number;
+  revenue!: number | null;
 
   @ApiProperty({ description: 'Total expenses' })
-  expenses!: number;
+  expenses!: number | null;
 
   @ApiProperty({ description: 'Net income' })
-  netIncome!: number;
+  netIncome!: number | null;
 }
 
 export class FinancialSummary {
   @ApiProperty({ description: 'Total number of accounts' })
-  totalAccounts!: number;
+  totalAccounts!: number | null;
 
   @ApiProperty({ description: 'Recent journal entry transactions', type: 'array' })
   recentTransactions!: any[];

@@ -16,7 +16,7 @@ export class BatchController {
   // @UseGuards(ServiceAuthGuard)
   // @RequireServiceScope('general-ledger:write')
   create(@Body() createBatchDto: CreateBatchDto) {
-    return this.batchService.create(createBatchDto);
+    return this?.batchService.create(createBatchDto);
   }
 
   @Get()
@@ -28,7 +28,7 @@ export class BatchController {
     @Query('status') status?: string,
     @Query('type') type?: string
   ): Promise<any> {
-    return this.batchService.findAll(
+    return this?.batchService.findAll(
       status,
       type,
       undefined,
@@ -41,26 +41,26 @@ export class BatchController {
   // @UseGuards(ServiceAuthGuard)
   // @RequireServiceScope('general-ledger:read')
   findOne(@Param('id') id: string) {
-    return this.batchService.findOne(id);
+    return this?.batchService.findOne(id);
   }
 
   @Post('journal-entries')
   // @UseGuards(ServiceAuthGuard)
   // @RequireServiceScope('general-ledger:write')
   async createJournalEntryBatch(@Body() data: JournalEntryBatchCreate) {
-    return this.batchService.create(data);
+    return this?.batchService.create(data);
   }
 
   @Post(':id/process')
   // @UseGuards(ServiceAuthGuard)
   async processBatch(@Param('id') id: string) {
-    return this.batchService.process(id);
+    return this?.batchService.process(id);
   }
 
   @Post(':id/cancel')
   // @UseGuards(ServiceAuthGuard)
   // @RequireServiceScope('general-ledger:write')
   async cancel(@Param('id') id: string) {
-    return this.batchService.cancel(id);
+    return this?.batchService.cancel(id);
   }
 } 

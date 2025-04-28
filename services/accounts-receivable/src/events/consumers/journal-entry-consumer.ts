@@ -4,15 +4,15 @@ import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { PrismaService } from '../../prisma/prisma.service';
 
 interface JournalEntryEventPayload {
-  id: string;
-  serviceSource: string;
-  entityType: string;
-  timestamp: string;
+  id: string | null;
+  serviceSource: string | null;
+  entityType: string | null;
+  timestamp: string | null;
   date?: Date;
-  reference?: string;
-  description?: string;
-  status?: string;
-  totalAmount?: number;
+  reference?: string | null;
+  description?: string | null;
+  status?: string | null;
+  totalAmount?: number | null;
   lines?: any[];
 }
 
@@ -32,7 +32,7 @@ export class JournalEntryConsumer implements OnModuleInit {
    * Setup event connections when the module initializes
    */
   async onModuleInit() {
-    this.logger.log('Journal Entry event consumer initialized');
+    this?.logger.log('Journal Entry event consumer initialized');
   }
 
   /**
@@ -41,7 +41,7 @@ export class JournalEntryConsumer implements OnModuleInit {
   @EventPattern('journal-entry.created')
   async handleJournalEntryCreated(@Payload() payload: JournalEntryEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received journal-entry.created event for entry ${payload.id}`);
+      this?.logger.log(`Received journal-entry.created event for entry ${payload.id}`);
       
       // TODO: Implement journal entry creation logic
       // Example: Update financial data based on the journal entry
@@ -51,7 +51,7 @@ export class JournalEntryConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling journal-entry.created event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling journal-entry.created event: ${error.message}`, error.stack);
     }
   }
 
@@ -61,7 +61,7 @@ export class JournalEntryConsumer implements OnModuleInit {
   @EventPattern('journal-entry.updated')
   async handleJournalEntryUpdated(@Payload() payload: JournalEntryEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received journal-entry.updated event for entry ${payload.id}`);
+      this?.logger.log(`Received journal-entry.updated event for entry ${payload.id}`);
       
       // TODO: Implement journal entry update logic
       
@@ -70,7 +70,7 @@ export class JournalEntryConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling journal-entry.updated event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling journal-entry.updated event: ${error.message}`, error.stack);
     }
   }
 
@@ -80,7 +80,7 @@ export class JournalEntryConsumer implements OnModuleInit {
   @EventPattern('journal-entry.deleted')
   async handleJournalEntryDeleted(@Payload() payload: JournalEntryEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received journal-entry.deleted event for entry ${payload.id}`);
+      this?.logger.log(`Received journal-entry.deleted event for entry ${payload.id}`);
       
       // TODO: Implement journal entry deletion logic
       
@@ -89,7 +89,7 @@ export class JournalEntryConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling journal-entry.deleted event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling journal-entry.deleted event: ${error.message}`, error.stack);
     }
   }
 
@@ -99,7 +99,7 @@ export class JournalEntryConsumer implements OnModuleInit {
   @EventPattern('journal-entry.posted')
   async handleJournalEntryPosted(@Payload() payload: JournalEntryEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received journal-entry.posted event for entry ${payload.id}`);
+      this?.logger.log(`Received journal-entry.posted event for entry ${payload.id}`);
       
       // TODO: Implement journal entry posted logic
       // Example: Update financial reports based on the posted journal entry
@@ -109,7 +109,7 @@ export class JournalEntryConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling journal-entry.posted event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling journal-entry.posted event: ${error.message}`, error.stack);
     }
   }
 } 

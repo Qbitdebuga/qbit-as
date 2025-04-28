@@ -5,10 +5,10 @@ export class CreateCategoryDto {
   @ApiProperty({ description: 'Name of the asset category' })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Description of the asset category', required: false })
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 } 

@@ -22,8 +22,8 @@ export class FinancialStatementsService {
   ) {}
 
   async generateBalanceSheet(request: StatementRequestDto): Promise<BalanceSheetStatementDto> {
-    this.logger.log(`Generating balance sheet report from ${request.startDate} to ${request.endDate}`);
-    const balanceSheetData = await this.balanceSheetGenerator.generate(
+    this?.logger.log(`Generating balance sheet report from ${request.startDate} to ${request.endDate}`);
+    const balanceSheetData = await this?.balanceSheetGenerator.generate(
       request.startDate,
       request.endDate,
       request.comparativePeriod,
@@ -45,8 +45,8 @@ export class FinancialStatementsService {
   }
 
   async generateIncomeStatement(request: StatementRequestDto): Promise<IncomeStatementDto> {
-    this.logger.log(`Generating income statement report from ${request.startDate} to ${request.endDate}`);
-    const incomeStatementData = await this.incomeStatementGenerator.generate(
+    this?.logger.log(`Generating income statement report from ${request.startDate} to ${request.endDate}`);
+    const incomeStatementData = await this?.incomeStatementGenerator.generate(
       request.startDate,
       request.endDate,
       request.comparativePeriod,
@@ -68,8 +68,8 @@ export class FinancialStatementsService {
   }
 
   async generateCashFlowStatement(request: StatementRequestDto): Promise<CashFlowStatementDto> {
-    this.logger.log(`Generating cash flow statement report from ${request.startDate} to ${request.endDate}`);
-    const cashFlowData = await this.cashFlowGenerator.generate(
+    this?.logger.log(`Generating cash flow statement report from ${request.startDate} to ${request.endDate}`);
+    const cashFlowData = await this?.cashFlowGenerator.generate(
       request.startDate,
       request.endDate,
       request.comparativePeriod,
@@ -93,7 +93,7 @@ export class FinancialStatementsService {
     startDate: string,
     endDate: string,
     period: StatementPeriod,
-  ): Promise<{ startDate: string; endDate: string }> {
+  ): Promise<{ startDate: string | null; endDate: string }> {
     // Calculate previous period dates based on the current period
     const start = new Date(startDate);
     const end = new Date(endDate);

@@ -2,34 +2,34 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class InvoiceItem {
   @ApiProperty({ description: 'Unique identifier', example: 'b2c3d4e5-f6g7-h8i9-j0k1-l2m3n4o5p6q7' })
-  id!: string;
+  id!: string | null;
 
   @ApiProperty({ description: 'Invoice ID', example: 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6' })
-  invoiceId!: string;
+  invoiceId!: string | null;
 
   @ApiPropertyOptional({ description: 'Item code or SKU', example: 'SKU-12345' })
-  itemCode?: string;
+  itemCode?: string | null;
 
   @ApiProperty({ description: 'Item description', example: 'Web Development Services' })
-  description!: string;
+  description!: string | null;
 
   @ApiProperty({ description: 'Quantity', example: 5 })
-  quantity!: number;
+  quantity!: number | null;
 
   @ApiProperty({ description: 'Unit price', example: 120.00 })
-  unitPrice!: number;
+  unitPrice!: number | null;
 
   @ApiPropertyOptional({ description: 'Discount percentage', example: 10 })
-  discountPercentage?: number;
+  discountPercentage?: number | null;
 
   @ApiPropertyOptional({ description: 'Tax percentage', example: 8.25 })
-  taxPercentage?: number;
+  taxPercentage?: number | null;
 
   @ApiProperty({ description: 'Line total (quantity * unitPrice)', example: 600.00 })
-  lineTotal!: number;
+  lineTotal!: number | null;
 
   @ApiPropertyOptional({ description: 'Additional notes for this item' })
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({ description: 'Created date' })
   createdAt!: Date;

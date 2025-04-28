@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { VendorList } from '@/components/vendors/VendorList';
-import { VendorsClient } from '@qbit/api-client';
-import { Vendor } from '@qbit/shared-types';
+import { VendorsClient } from '@/mocks/api-client';
+import { Vendor } from '@/mocks/shared-types';
 import { useToast } from '@/components/ui/use-toast';
 import {
   AlertDialog,

@@ -33,9 +33,9 @@ export const PAYMENT_EVENTS = {
  * Standard event payload structure
  */
 export interface EventPayload<T> {
-  serviceSource: string;
-  entityType: string;
-  entityId: string;
-  timestamp: string;
+  serviceSource: string | null;
+  entityType: string | null;
+  entityId: string | null;
+  timestamp: string | null;
   data: T;
 } 

@@ -2,11 +2,11 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 export interface WarehouseEvent {
-  serviceSource: string;
-  entityType: string;
+  serviceSource: string | null;
+  entityType: string | null;
   timestamp: Date;
   action: 'created' | 'updated' | 'deleted';
-  id: string;
+  id: string | null;
   data?: any;
 }
 
@@ -26,7 +26,7 @@ export class WarehousePublisher {
       data: warehouseData,
     };
 
-    await this.client.emit('warehouse.created', event).toPromise();
+    await this?.client.emit('warehouse.created', event).toPromise();
   }
 
   async publishWarehouseUpdated(warehouseId: string, warehouseData: any): Promise<void> {
@@ -39,7 +39,7 @@ export class WarehousePublisher {
       data: warehouseData,
     };
 
-    await this.client.emit('warehouse.updated', event).toPromise();
+    await this?.client.emit('warehouse.updated', event).toPromise();
   }
 
   async publishWarehouseDeleted(warehouseId: string): Promise<void> {
@@ -51,6 +51,6 @@ export class WarehousePublisher {
       id: warehouseId,
     };
 
-    await this.client.emit('warehouse.deleted', event).toPromise();
+    await this?.client.emit('warehouse.deleted', event).toPromise();
   }
 } 

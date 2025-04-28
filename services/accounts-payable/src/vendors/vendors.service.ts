@@ -9,15 +9,15 @@ export class VendorsService {
   constructor(private readonly vendorsRepository: VendorsRepository) {}
 
   async create(createVendorDto: CreateVendorDto): Promise<VendorDto> {
-    return this.vendorsRepository.create(createVendorDto);
+    return this?.vendorsRepository.create(createVendorDto);
   }
 
   async findAll(): Promise<VendorDto[]> {
-    return this.vendorsRepository.findAll();
+    return this?.vendorsRepository.findAll();
   }
 
   async findOne(id: number): Promise<VendorDto> {
-    const vendor = await this.vendorsRepository.findOne(id);
+    const vendor = await this?.vendorsRepository.findOne(id);
     if (!vendor) {
       throw new NotFoundException(`Vendor with ID ${id} not found`);
     }
@@ -25,18 +25,18 @@ export class VendorsService {
   }
 
   async update(id: number, updateVendorDto: UpdateVendorDto): Promise<VendorDto> {
-    const existingVendor = await this.vendorsRepository.findOne(id);
+    const existingVendor = await this?.vendorsRepository.findOne(id);
     if (!existingVendor) {
       throw new NotFoundException(`Vendor with ID ${id} not found`);
     }
-    return this.vendorsRepository.update(id, updateVendorDto);
+    return this?.vendorsRepository.update(id, updateVendorDto);
   }
 
   async remove(id: number): Promise<void> {
-    const existingVendor = await this.vendorsRepository.findOne(id);
+    const existingVendor = await this?.vendorsRepository.findOne(id);
     if (!existingVendor) {
       throw new NotFoundException(`Vendor with ID ${id} not found`);
     }
-    return this.vendorsRepository.remove(id);
+    return this?.vendorsRepository.remove(id);
   }
 } 

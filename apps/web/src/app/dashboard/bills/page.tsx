@@ -1,13 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import BillList from '@/components/bills/BillList';
-import { BillStatus } from '@qbit-accounting/shared-types';
+import { Plus } from 'lucide-react';
+import { 
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Tabs,
+  TabsContent,
+  TabsList, 
+  TabsTrigger
+} from '@/components/ui';
+import { BillStatus } from '@/mocks/shared-types';
 
 export default function BillsPage() {
   const [activeTab, setActiveTab] = useState<string>('all');
@@ -15,12 +22,7 @@ export default function BillsPage() {
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Bills</h1>
-          <p className="text-muted-foreground">
-            Manage vendor bills and purchase invoices.
-          </p>
-        </div>
+        <h1 className="text-3xl font-bold">Bills</h1>
         <Link href="/dashboard/bills/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
@@ -28,37 +30,44 @@ export default function BillsPage() {
           </Button>
         </Link>
       </div>
-
+      
       <Card>
         <CardHeader>
-          <CardTitle>Bills Overview</CardTitle>
-          <CardDescription>
-            View and manage all vendor bills in one place.
-          </CardDescription>
+          <CardTitle>Manage Bills</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="all" onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5">
+          <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
+            <TabsList className="mb-4">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="draft">Draft</TabsTrigger>
               <TabsTrigger value="pending">Pending</TabsTrigger>
               <TabsTrigger value="approved">Approved</TabsTrigger>
+              <TabsTrigger value="paid">Paid</TabsTrigger>
               <TabsTrigger value="overdue">Overdue</TabsTrigger>
             </TabsList>
-            <TabsContent value="all" className="mt-6">
-              <BillList status={undefined} />
+            
+            <TabsContent value="all" className="space-y-4">
+              <p className="text-center py-10">Bill list placeholder</p>
             </TabsContent>
-            <TabsContent value="draft" className="mt-6">
-              <BillList status={BillStatus.DRAFT} />
+            
+            <TabsContent value="draft" className="space-y-4">
+              <p className="text-center py-10">Draft bills placeholder</p>
             </TabsContent>
-            <TabsContent value="pending" className="mt-6">
-              <BillList status={BillStatus.PENDING} />
+            
+            <TabsContent value="pending" className="space-y-4">
+              <p className="text-center py-10">Pending bills placeholder</p>
             </TabsContent>
-            <TabsContent value="approved" className="mt-6">
-              <BillList status={BillStatus.APPROVED} />
+            
+            <TabsContent value="approved" className="space-y-4">
+              <p className="text-center py-10">Approved bills placeholder</p>
             </TabsContent>
-            <TabsContent value="overdue" className="mt-6">
-              <BillList status={BillStatus.OVERDUE} />
+            
+            <TabsContent value="paid" className="space-y-4">
+              <p className="text-center py-10">Paid bills placeholder</p>
+            </TabsContent>
+            
+            <TabsContent value="overdue" className="space-y-4">
+              <p className="text-center py-10">Overdue bills placeholder</p>
             </TabsContent>
           </Tabs>
         </CardContent>

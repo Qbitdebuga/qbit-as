@@ -6,31 +6,31 @@ export class StatementMetaDto {
     description: 'Title of the financial statement',
     example: 'Balance Sheet',
   })
-  title: string;
+  title: string | null;
 
   @ApiProperty({
     description: 'Type of financial report',
     example: 'BALANCE_SHEET',
   })
-  reportType: string;
+  reportType: string | null;
 
   @ApiProperty({
     description: 'Start date of the reporting period',
     example: '2023-01-01',
   })
-  startDate: string;
+  startDate: string | null;
 
   @ApiProperty({
     description: 'End date of the reporting period',
     example: '2023-12-31',
   })
-  endDate: string;
+  endDate: string | null;
 
   @ApiProperty({
     description: 'Date and time when the report was generated',
     example: '2023-12-31T23:59:59Z',
   })
-  generatedAt: string;
+  generatedAt: string | null;
 
   @ApiProperty({
     description: 'Period type of the report',
@@ -44,7 +44,7 @@ export class StatementMetaDto {
     example: true,
     required: false,
   })
-  comparativePeriod?: boolean;
+  comparativePeriod?: boolean | null;
 
   @ApiProperty({ description: 'Total number of accounts' })
   totalAccounts: number = 0;
@@ -55,19 +55,19 @@ export class StatementMetaDto {
 
 export class StatementResponseDto {
   @ApiProperty({ description: 'Title of the financial statement' })
-  title!: string;
+  title!: string | null;
 
   @ApiProperty({ description: 'Type of the financial report' })
-  reportType!: string;
+  reportType!: string | null;
 
   @ApiProperty({ description: 'Start date of the statement period' })
-  startDate!: string;
+  startDate!: string | null;
 
   @ApiProperty({ description: 'End date of the statement period' })
-  endDate!: string;
+  endDate!: string | null;
 
   @ApiProperty({ description: 'Date when the statement was generated' })
-  generatedAt!: string;
+  generatedAt!: string | null;
 
   @ApiProperty({
     description: 'Period type of the statement',

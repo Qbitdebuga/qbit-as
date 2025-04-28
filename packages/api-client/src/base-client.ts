@@ -13,33 +13,33 @@ import { TokenStorage } from './utils/token-storage';
 export interface RequestOptions {
   headers?: Record<string, string>;
   params?: Record<string, string | number | boolean>;
-  withCredentials?: boolean;
+  withCredentials?: boolean | null;
   responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
-  timeout?: number;
-  skipInterceptors?: boolean;
-  skipAuthHeader?: boolean;
-  skipCsrfToken?: boolean;
+  timeout?: number | null;
+  skipInterceptors?: boolean | null;
+  skipAuthHeader?: boolean | null;
+  skipCsrfToken?: boolean | null;
 }
 
 // Error response structure
 export interface ApiErrorResponse {
-  statusCode: number;
-  message: string;
-  error?: string;
+  statusCode: number | null;
+  message: string | null;
+  error?: string | null;
   details?: any;
-  timestamp?: string;
-  path?: string;
+  timestamp?: string | null;
+  path?: string | null;
 }
 
 // Interceptor types
 export type RequestInterceptor = (config: {
-  method: string;
-  url: string;
+  method: string | null;
+  url: string | null;
   data?: any;
   options: RequestOptions;
 }) => Promise<{
-  method: string;
-  url: string;
+  method: string | null;
+  url: string | null;
   data: any;
   options: RequestOptions;
 }>;
@@ -49,12 +49,12 @@ export type ResponseInterceptor = <T>(response: T) => Promise<T>;
 export type ErrorInterceptor = (error: any) => Promise<any>;
 
 export class BaseApiClient {
-  private baseUrl: string;
+  private baseUrl: string | null;
   private tokenStorage: typeof TokenStorage;
   private requestInterceptors: RequestInterceptor[] = [];
   private responseInterceptors: ResponseInterceptor[] = [];
   private errorInterceptors: ErrorInterceptor[] = [];
-  private serviceToken?: string;
+  private serviceToken?: string | null;
 
   constructor(baseUrl: string, tokenStorage: typeof TokenStorage = TokenStorage) {
     this.baseUrl = baseUrl;
@@ -66,7 +66,7 @@ export class BaseApiClient {
    * @param interceptor Function that will be called before each request
    */
   addRequestInterceptor(interceptor: RequestInterceptor): void {
-    this.requestInterceptors.push(interceptor);
+    this?.requestInterceptors.push(interceptor);
   }
 
   /**
@@ -74,7 +74,7 @@ export class BaseApiClient {
    * @param interceptor Function that will be called after each successful response
    */
   addResponseInterceptor(interceptor: ResponseInterceptor): void {
-    this.responseInterceptors.push(interceptor);
+    this?.responseInterceptors.push(interceptor);
   }
 
   /**
@@ -82,7 +82,7 @@ export class BaseApiClient {
    * @param interceptor Function that will be called after each error
    */
   addErrorInterceptor(interceptor: ErrorInterceptor): void {
-    this.errorInterceptors.push(interceptor);
+    this?.errorInterceptors.push(interceptor);
   }
 
   /**
@@ -105,21 +105,21 @@ export class BaseApiClient {
    * @param token The user token
    */
   setToken(token: string): void {
-    this.tokenStorage.updateAccessToken(token);
+    this?.tokenStorage.updateAccessToken(token);
   }
 
   /**
    * Clear all user tokens
    */
   clearTokens(): void {
-    this.tokenStorage.clearTokens();
+    this?.tokenStorage.clearTokens();
   }
 
   /**
    * Get the current user token
    */
   get token(): string | null {
-    return this.tokenStorage.getAccessToken();
+    return this?.tokenStorage.getAccessToken();
   }
 
   /**
@@ -184,26 +184,26 @@ export class BaseApiClient {
       const url = new URL(config.url, this.baseUrl);
       
       // Add query parameters if any
-      if (config.options.params) {
-        Object.entries(config.options.params).forEach(([key, value]) => {
-          url.searchParams.append(key, String(value));
+      if (config?.options.params) {
+        Object.entries(config?.options.params).forEach(([key, value]) => {
+          url?.searchParams.append(key, String(value));
         });
       }
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
-        ...config.options.headers,
+        ...config?.options.headers,
       };
 
       // Add authentication header if not skipped
-      if (!config.options.skipAuthHeader) {
+      if (!config?.options.skipAuthHeader) {
         // First try service token (for service-to-service auth)
         if (this.serviceToken) {
           headers['Authorization'] = `Bearer ${this.serviceToken}`;
         }
         // Then try user token
         else {
-          const token = this.tokenStorage.getAccessToken();
+          const token = this?.tokenStorage.getAccessToken();
           if (token) {
             headers['Authorization'] = `Bearer ${token}`;
           }
@@ -211,15 +211,15 @@ export class BaseApiClient {
       }
 
       // Add CSRF token if not skipped
-      if (!config.options.skipCsrfToken) {
-        const csrfToken = this.tokenStorage.getCsrfToken();
+      if (!config?.options.skipCsrfToken) {
+        const csrfToken = this?.tokenStorage.getCsrfToken();
         if (csrfToken && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(config.method)) {
           headers['X-XSRF-TOKEN'] = csrfToken;
         }
       }
 
       // Include credentials for cookies if specified
-      const credentials = config.options.withCredentials ? 'include' : 'same-origin';
+      const credentials = config?.options.withCredentials ? 'include' : 'same-origin';
 
       const response = await fetch(url.toString(), {
         method: config.method,
@@ -251,7 +251,7 @@ export class BaseApiClient {
 
       // Parse response based on responseType
       let result: any;
-      switch(config.options.responseType) {
+      switch(config?.options.responseType) {
         case 'text':
           result = await response.text();
           break;
@@ -267,7 +267,7 @@ export class BaseApiClient {
       }
 
       // Apply response interceptors if not skipped
-      if (!config.options.skipInterceptors) {
+      if (!config?.options.skipInterceptors) {
         for (const interceptor of this.responseInterceptors) {
           result = await interceptor(result);
         }

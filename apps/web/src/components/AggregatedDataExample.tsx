@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useAggregatedData } from '../hooks/useAggregatedData';
-import { formatCurrency } from '../utils/format';
+import { useAggregatedData } from '@/hooks/useAggregatedData';
+import { formatCurrency } from '@/utils/format';
 
 const AggregatedDataExample: React.FC = () => {
   const { 

@@ -34,7 +34,7 @@ export class FinancialReportingController {
 
     try {
       const token = authorization.replace('Bearer ', '');
-      const validationResult = await this.authClient.validateToken(token);
+      const validationResult = await this?.authClient.validateToken(token);
       
       if (validationResult && validationResult.userId) {
         return validationResult.userId;
@@ -63,7 +63,7 @@ export class FinancialReportingController {
     }
     
     // Generate the report
-    return this.financialReportingService.generateReport(reportRequest);
+    return this?.financialReportingService.generateReport(reportRequest);
   }
 
   @Get('reports')
@@ -82,7 +82,7 @@ export class FinancialReportingController {
     const userId = await this.getUserIdFromToken(authorization);
     
     // Get reports
-    return this.financialReportingService.getReports(
+    return this?.financialReportingService.getReports(
       userId,
       type,
       page ? parseInt(page.toString(), 10) : 1,
@@ -102,7 +102,7 @@ export class FinancialReportingController {
     const userId = await this.getUserIdFromToken(authorization);
     
     // Get the report
-    return this.financialReportingService.getReportById(id, true, userId);
+    return this?.financialReportingService.getReportById(id, true, userId);
   }
 
   @Get('snapshots/:id')
@@ -117,7 +117,7 @@ export class FinancialReportingController {
     const userId = await this.getUserIdFromToken(authorization);
     
     // Get the snapshot
-    return this.financialReportingService.getSnapshotById(id, userId);
+    return this?.financialReportingService.getSnapshotById(id, userId);
   }
 
   @Post('reports/:id/snapshots')
@@ -138,6 +138,6 @@ export class FinancialReportingController {
     }
     
     // Create the snapshot
-    return this.financialReportingService.createReportSnapshot(id, name, userId);
+    return this?.financialReportingService.createReportSnapshot(id, name, userId);
   }
 } 

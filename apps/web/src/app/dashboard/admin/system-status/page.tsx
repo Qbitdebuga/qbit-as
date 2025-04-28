@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import SystemStatus from '../../../../components/admin/SystemStatus';
+import SystemStatus from '@/components/admin/SystemStatus';
 import { NextPage } from 'next';
 
 const SystemStatusPage: NextPage = () => {

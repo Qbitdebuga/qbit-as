@@ -75,7 +75,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       }
     }
     
-    let errorCode: string;
+    let errorCode: string | null;
     switch (status) {
       case HttpStatus.BAD_REQUEST:
         errorCode = ErrorCode.INVALID_INPUT;
@@ -118,12 +118,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     
     // Log with appropriate level based on status code
     if (status >= 500) {
-      this.logger.error(message);
-      this.logger.error(this.getStack(exception));
+      this?.logger.error(message);
+      this?.logger.error(this.getStack(exception));
     } else if (status >= 400) {
-      this.logger.warn(message);
+      this?.logger.warn(message);
     } else {
-      this.logger.log(message);
+      this?.logger.log(message);
     }
   }
 
@@ -157,6 +157,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
    * Check if running in development environment
    */
   private isDevelopment(): boolean {
-    return process.env.NODE_ENV !== 'production';
+    return process?.env.NODE_ENV !== 'production';
   }
 } 

@@ -7,7 +7,7 @@ import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
  * Service information interface
  */
 export interface ServiceInfo {
-  service: string;
+  service: string | null;
   permissions: string[];
   [key: string]: any;
 }
@@ -43,7 +43,7 @@ export class ServiceAuthGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = this.getRequest(context);
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+    const isPublic = this?.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
@@ -109,13 +109,13 @@ export class ServiceAuthGuard implements CanActivate {
       throw new UnauthorizedException('Missing authorization header');
     }
 
-    const token = this.serviceTokenService.extractTokenFromHeader(authHeader);
+    const token = this?.serviceTokenService.extractTokenFromHeader(authHeader);
     if (!token) {
       throw new UnauthorizedException('Invalid token format');
     }
 
     // Validate the token and extract service info
-    const payload = this.serviceTokenService.validateToken(token);
+    const payload = this?.serviceTokenService.validateToken(token);
     
     // Create a clone of the payload without service and permissions
     // to avoid property name collisions

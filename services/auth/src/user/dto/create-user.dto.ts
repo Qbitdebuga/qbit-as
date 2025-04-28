@@ -8,7 +8,7 @@ export class CreateUserDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email address' })
   @IsNotEmpty({ message: 'Email is required' })
-  email!: string;
+  email!: string | null;
 
   @ApiProperty({
     example: 'John Doe',
@@ -16,7 +16,7 @@ export class CreateUserDto {
   })
   @IsString({ message: 'Name must be a string' })
   @IsNotEmpty({ message: 'Name is required' })
-  name!: string;
+  name!: string | null;
 
   @ApiProperty({
     example: 'password123',
@@ -25,7 +25,7 @@ export class CreateUserDto {
   @IsString({ message: 'Password must be a string' })
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
-  password!: string;
+  password!: string | null;
 
   @ApiProperty({
     example: ['user'],

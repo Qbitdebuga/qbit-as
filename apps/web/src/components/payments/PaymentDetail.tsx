@@ -8,15 +8,15 @@ import {
   CardFooter, 
   CardHeader, 
   CardTitle 
-} from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Separator } from '../ui/separator';
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Payment, PaymentMethod, PaymentStatus } from '@qbit/shared-types';
 import { formatCurrency, formatDate } from '@/utils/formatters';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { usePayments } from '@/hooks/usePayments';
 
 const paymentStatusColorMap: Record<PaymentStatus, string> = {

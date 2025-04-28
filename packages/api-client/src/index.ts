@@ -49,7 +49,7 @@ import { InventoryClient } from './inventory/inventory-client';
 export * from './auth/types';
 
 // Default Base URL (can adjust later)
-const DEFAULT_API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
+const DEFAULT_API_BASE_URL = process?.env.API_BASE_URL || 'http://localhost:3000';
 
 // Initialize API client instances
 // Legacy clients

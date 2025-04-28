@@ -9,23 +9,23 @@ export interface TokenValidationOptions {
   /**
    * JWT secret key
    */
-  secret: string;
+  secret: string | null;
   
   /**
    * JWT expiration time in seconds
    * @default 3600 (1 hour)
    */
-  expiresIn?: number;
+  expiresIn?: number | null;
   
   /**
    * JWT issuer
    */
-  issuer?: string;
+  issuer?: string | null;
   
   /**
    * JWT audience
    */
-  audience?: string;
+  audience?: string | null;
 }
 
 /**
@@ -120,9 +120,9 @@ export class TokenValidationService {
    */
   async validateTokenFromService(token: string): Promise<JwtPayload> {
     try {
-      const payload = jwt.verify(token, this.options.secret, {
-        issuer: this.options.issuer,
-        audience: this.options.audience,
+      const payload = jwt.verify(token, this?.options.secret, {
+        issuer: this?.options.issuer,
+        audience: this?.options.audience,
       }) as JwtPayload;
       
       return payload;
@@ -161,18 +161,18 @@ export class TokenValidationService {
    */
   generateToken(payload: Omit<JwtPayload, 'iat' | 'exp' | 'iss' | 'aud'>): string {
     const tokenOptions: jwt.SignOptions = {
-      expiresIn: this.options.expiresIn,
+      expiresIn: this?.options.expiresIn,
     };
     
-    if (this.options.issuer) {
-      tokenOptions.issuer = this.options.issuer;
+    if (this?.options.issuer) {
+      tokenOptions.issuer = this?.options.issuer;
     }
     
-    if (this.options.audience) {
-      tokenOptions.audience = this.options.audience;
+    if (this?.options.audience) {
+      tokenOptions.audience = this?.options.audience;
     }
     
-    return jwt.sign(payload, this.options.secret, tokenOptions);
+    return jwt.sign(payload, this?.options.secret, tokenOptions);
   }
 
   /**

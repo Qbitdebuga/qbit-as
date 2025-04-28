@@ -12,22 +12,22 @@ import { ConfigService } from '@nestjs/config';
 
 // Define missing types
 interface JournalEntryCreationCommand {
-  sourceDocument?: string;
-  sourceType?: string;
-  memo?: string;
+  sourceDocument?: string | null;
+  sourceType?: string | null;
+  memo?: string | null;
   lines: {
-    accountId: string;
-    description?: string;
-    debit: number;
-    credit: number;
-    memo?: string;
+    accountId: string | null;
+    description?: string | null;
+    debit: number | null;
+    credit: number | null;
+    memo?: string | null;
   }[];
 }
 
 interface JournalEntryCreationResult {
-  success: boolean;
+  success: boolean | null;
   journalEntry?: any;
-  error?: string;
+  error?: string | null;
 }
 
 // Temporary enum for JournalEntryStatus
@@ -57,15 +57,15 @@ enum SagaStep {
  * State tracking for the saga
  */
 interface SagaState {
-  id: string;
+  id: string | null;
   step: SagaStep;
   journalEntryDto: CreateJournalEntryDto;
-  journalEntryId?: string;
+  journalEntryId?: string | null;
   validationResults?: ValidationResult[];
   error?: Error;
   startTime: Date;
   endTime?: Date;
-  compensationNeeded: boolean;
+  compensationNeeded: boolean | null;
 }
 
 /**
@@ -82,8 +82,8 @@ interface SagaState {
 @Injectable()
 export class JournalEntryCreationSaga {
   private readonly logger = new Logger(JournalEntryCreationSaga.name);
-  private readonly accountsPayableUrl: string;
-  private readonly accountsReceivableUrl: string;
+  private readonly accountsPayableUrl: string | null;
+  private readonly accountsReceivableUrl: string | null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -92,8 +92,8 @@ export class JournalEntryCreationSaga {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService
   ) {
-    this.accountsPayableUrl = this.configService.get<string>('ACCOUNTS_PAYABLE_URL', 'http://localhost:3002');
-    this.accountsReceivableUrl = this.configService.get<string>('ACCOUNTS_RECEIVABLE_URL', 'http://localhost:3003');
+    this.accountsPayableUrl = this?.configService.get<string>('ACCOUNTS_PAYABLE_URL', 'http://localhost:3002');
+    this.accountsReceivableUrl = this?.configService.get<string>('ACCOUNTS_RECEIVABLE_URL', 'http://localhost:3003');
   }
 
   /**
@@ -101,7 +101,7 @@ export class JournalEntryCreationSaga {
    */
   async execute(command: JournalEntryCreationCommand): Promise<JournalEntryCreationResult> {
     try {
-      const result = await this.prisma.$transaction(async (tx) => {
+      const result = await this?.prisma.$transaction(async (tx) => {
         // Create journal entry with its lines
         const { sourceDocument, sourceType, memo, lines } = command;
         
@@ -158,7 +158,7 @@ export class JournalEntryCreationSaga {
       
       return { success: true, journalEntry: result };
     } catch (error) {
-      this.logger.error('Failed to create journal entry', error);
+      this?.logger.error('Failed to create journal entry', error);
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
@@ -171,7 +171,7 @@ export class JournalEntryCreationSaga {
    */
   private mapToJournalEntryDto(journalEntry: any): CreateJournalEntryDto {
     return {
-      date: journalEntry.date.toISOString().split('T')[0],
+      date: journalEntry?.date.toISOString().split('T')[0],
       description: journalEntry.description || journalEntry.memo,
       reference: journalEntry.reference || journalEntry.sourceDocument,
       isAdjustment: journalEntry.isAdjustment || false,
@@ -215,23 +215,23 @@ export class JournalEntryCreationSaga {
    * Step 2: Check if all accounts exist and are active
    */
   private async checkAccounts(state: SagaState): Promise<void> {
-    this.logger.debug(`Checking accounts: ${state.id}`);
+    this?.logger.debug(`Checking accounts: ${state.id}`);
     
     // Extract unique account IDs
-    const accountIds = [...new Set(state.journalEntryDto.lines.map(line => line.accountId))];
+    const accountIds = [...new Set(state?.journalEntryDto.lines.map(line => line.accountId))];
     
     // Get all accounts at once
-    const accounts = await this.accountsService.findByIds(accountIds);
+    const accounts = await this?.accountsService.findByIds(accountIds);
     
     // Create a map for quick lookup
     const accountsMap = new Map();
-    accounts.forEach(account => {
+    accounts.forEach(account: any => {
       accountsMap.set(account.id, account);
     });
     
     // Validate accounts
     const accountsValidationResult = EntityValidator.validateJournalEntryAccounts(
-      { lines: state.journalEntryDto.lines },
+      { lines: state?.journalEntryDto.lines },
       accountsMap
     );
     
@@ -240,13 +240,13 @@ export class JournalEntryCreationSaga {
     
     // If validation failed, throw an error
     if (!accountsValidationResult.valid) {
-      const errors = accountsValidationResult.errors.map(e => e.message).join(', ');
+      const errors = accountsValidationResult?.errors.map(e => e.message).join(', ');
       throw new BadRequestException(`Account validation failed: ${errors}`);
     }
     
     // Also check for normal balance warnings
     const normalBalanceResult = EntityValidator.validateAccountNormalBalances(
-      { lines: state.journalEntryDto.lines },
+      { lines: state?.journalEntryDto.lines },
       accountsMap
     );
     
@@ -260,11 +260,11 @@ export class JournalEntryCreationSaga {
    * Step 3: Create the journal entry in the database
    */
   private async createJournalEntry(state: SagaState): Promise<void> {
-    this.logger.debug(`Creating journal entry: ${state.id}`);
+    this?.logger.debug(`Creating journal entry: ${state.id}`);
     
     try {
       // Start a transaction
-      const result = await this.prisma.$transaction(async (tx) => {
+      const result = await this?.prisma.$transaction(async (tx) => {
         // Generate entry number
         const entryNumber = await generateEntryNumber(tx);
         
@@ -273,17 +273,17 @@ export class JournalEntryCreationSaga {
         const journalEntry = await (tx as any).journalEntry.create({
           data: {
             entryNumber,
-            date: new Date(state.journalEntryDto.date),
-            description: state.journalEntryDto.description,
-            reference: state.journalEntryDto.reference,
+            date: new Date(state?.journalEntryDto.date),
+            description: state?.journalEntryDto.description,
+            reference: state?.journalEntryDto.reference,
             status: 'DRAFT',
-            isAdjustment: state.journalEntryDto.isAdjustment || false,
+            isAdjustment: state?.journalEntryDto.isAdjustment || false,
             lines: {
-              create: state.journalEntryDto.lines.map((line) => ({
+              create: state?.journalEntryDto.lines.map((line) => ({
                 accountId: line.accountId,
                 description: line.description,
-                debit: line.debit ? parseFloat(line.debit.toString()) : null,
-                credit: line.credit ? parseFloat(line.credit.toString()) : null,
+                debit: line.debit ? parseFloat(line?.debit.toString()) : null,
+                credit: line.credit ? parseFloat(line?.credit.toString()) : null,
               })),
             },
           },
@@ -307,7 +307,7 @@ export class JournalEntryCreationSaga {
       
       state.step = SagaStep.CREATED;
     } catch (error: any) {
-      this.logger.error(`Error creating journal entry: ${error.message}`);
+      this?.logger.error(`Error creating journal entry: ${error.message}`);
       throw error;
     }
   }
@@ -316,10 +316,10 @@ export class JournalEntryCreationSaga {
    * Step 4: Publish events for cross-service synchronization
    */
   private async publishEvents(state: SagaState): Promise<void> {
-    this.logger.debug(`Publishing events: ${state.id}`);
+    this?.logger.debug(`Publishing events: ${state.id}`);
     
     // Get the full journal entry with lines
-    const journalEntry = await this.prisma.db.journalEntry.findUnique({
+    const journalEntry = await this?.prisma.db?.journalEntry.findUnique({
       where: { id: state.journalEntryId },
       include: {
         lines: true,
@@ -331,7 +331,7 @@ export class JournalEntryCreationSaga {
     }
     
     // Map to the simplified lines format for the publisher
-    const simplifiedLines = journalEntry.lines.map(line => ({
+    const simplifiedLines = journalEntry?.lines.map(line => ({
       id: line.id,
       journalEntryId: line.journalEntryId,
       accountId: line.accountId,
@@ -344,7 +344,7 @@ export class JournalEntryCreationSaga {
     const totalAmount = simplifiedLines.reduce((sum, line) => sum + (line.debit || 0), 0);
     
     // Publish the event
-    await this.journalEntryPublisher.publishJournalEntryCreated(
+    await this?.journalEntryPublisher.publishJournalEntryCreated(
       {
         ...journalEntry,
         totalAmount,
@@ -360,18 +360,18 @@ export class JournalEntryCreationSaga {
    * Compensate for failures by rolling back journal entry creation
    */
   private async compensate(state: SagaState): Promise<void> {
-    this.logger.warn(`Compensating for failed journal entry creation: ${state.id}`);
+    this?.logger.warn(`Compensating for failed journal entry creation: ${state.id}`);
     
     if (state.journalEntryId) {
       try {
         // Delete the journal entry
-        await this.prisma.db.journalEntry.delete({
+        await this?.prisma.db?.journalEntry.delete({
           where: { id: state.journalEntryId },
         });
         
-        this.logger.log(`Compensation completed: Deleted journal entry ${state.journalEntryId}`);
+        this?.logger.log(`Compensation completed: Deleted journal entry ${state.journalEntryId}`);
       } catch (error: any) {
-        this.logger.error(
+        this?.logger.error(
           `Error compensating journal entry creation: ${error.message}`,
           error.stack
         );
@@ -381,8 +381,8 @@ export class JournalEntryCreationSaga {
   }
 
   async checkJournalEntry(id: string): Promise<any> {
-    this.logger.log(`Checking journal entry: ${id}`);
-    const journalEntry = await this.prisma.db.journalEntry.findUnique({
+    this?.logger.log(`Checking journal entry: ${id}`);
+    const journalEntry = await this?.prisma.db?.journalEntry.findUnique({
       where: { id },
       include: {
         lines: true
@@ -398,13 +398,13 @@ export class JournalEntryCreationSaga {
 
   async rollbackJournalEntry(id: string): Promise<void> {
     try {
-      this.logger.log(`Rolling back journal entry: ${id}`);
-      await this.prisma.db.journalEntry.delete({
+      this?.logger.log(`Rolling back journal entry: ${id}`);
+      await this?.prisma.db?.journalEntry.delete({
         where: { id }
       });
-      this.logger.log(`Journal entry ${id} successfully rolled back`);
+      this?.logger.log(`Journal entry ${id} successfully rolled back`);
     } catch (error: any) {
-      this.logger.error(`Failed to rollback journal entry ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to rollback journal entry ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -431,15 +431,15 @@ export class JournalEntryCreationSaga {
   ): Promise<void> {
     try {
       // Call Accounts Payable microservice to update the invoice status
-      const response = await this.httpService.patch(
+      const response = await this?.httpService.patch(
         `${this.accountsPayableUrl}/invoices/${apInvoiceId}/journal-status`,
         { journalEntryId, status: 'JOURNALIZED' }
       ).toPromise();
       
-      this.logger.log(`Updated AP invoice ${apInvoiceId} journal status: ${response.data}`);
+      this?.logger.log(`Updated AP invoice ${apInvoiceId} journal status: ${response.data}`);
     } catch (error: any) {
       // If the AP service is unavailable, we'll log it but not fail the transaction
-      this.logger.error(`Failed to update AP invoice journal status: ${error.message}`);
+      this?.logger.error(`Failed to update AP invoice journal status: ${error.message}`);
       
       // Store this in a retry queue - use type casting to bypass TypeScript type checking
       await (tx as any).pendingServiceUpdate.create({
@@ -462,15 +462,15 @@ export class JournalEntryCreationSaga {
   ): Promise<void> {
     try {
       // Call Accounts Receivable microservice to update the invoice status
-      const response = await this.httpService.patch(
+      const response = await this?.httpService.patch(
         `${this.accountsReceivableUrl}/invoices/${arInvoiceId}/journal-status`,
         { journalEntryId, status: 'JOURNALIZED' }
       ).toPromise();
       
-      this.logger.log(`Updated AR invoice ${arInvoiceId} journal status: ${response.data}`);
+      this?.logger.log(`Updated AR invoice ${arInvoiceId} journal status: ${response.data}`);
     } catch (error: any) {
       // If the AR service is unavailable, we'll log it but not fail the transaction
-      this.logger.error(`Failed to update AR invoice journal status: ${error.message}`);
+      this?.logger.error(`Failed to update AR invoice journal status: ${error.message}`);
       
       // Store this in a retry queue - use type casting to bypass TypeScript type checking
       await (tx as any).pendingServiceUpdate.create({
@@ -491,7 +491,7 @@ export class JournalEntryCreationSaga {
     lines: CreateJournalEntryLineDto[]
   ): Promise<void> {
     // Group by accountId and calculate net changes
-    const accountChanges = new Map<string, { debit: number; credit: number }>();
+    const accountChanges = new Map<string, { debit: number | null; credit: number }>();
     
     for (const line of lines) {
       const accountId = line.accountId;
@@ -536,7 +536,7 @@ export class JournalEntryCreationSaga {
   }
 
   async findJournalEntry(id: string): Promise<JournalEntry> {
-    const journalEntry = await this.prisma.db.journalEntry.findUnique({
+    const journalEntry = await this?.prisma.db?.journalEntry.findUnique({
       where: { id },
       include: {
         lines: true
@@ -551,7 +551,7 @@ export class JournalEntryCreationSaga {
   }
 
   async deleteJournalEntry(id: string): Promise<void> {
-    await this.prisma.db.journalEntry.delete({
+    await this?.prisma.db?.journalEntry.delete({
       where: { id }
     });
   }

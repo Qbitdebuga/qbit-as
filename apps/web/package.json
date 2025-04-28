@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build && echo \"✅ @qbit/web build completed successfully\"",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

@@ -14,16 +14,16 @@ import {
 @Injectable()
 export class GeneralLedgerClientService {
   private readonly logger = new Logger(GeneralLedgerClientService.name);
-  private readonly generalLedgerServiceUrl: string;
+  private readonly generalLedgerServiceUrl: string | null;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private readonly authClientService: AuthClientService,
   ) {
-    this.generalLedgerServiceUrl = this.configService.get<string>('GENERAL_LEDGER_SERVICE_URL');
+    this.generalLedgerServiceUrl = this?.configService.get<string>('GENERAL_LEDGER_SERVICE_URL');
     if (!this.generalLedgerServiceUrl) {
-      this.logger.error('GENERAL_LEDGER_SERVICE_URL is not defined in environment variables');
+      this?.logger.error('GENERAL_LEDGER_SERVICE_URL is not defined in environment variables');
       throw new Error('GENERAL_LEDGER_SERVICE_URL is not defined');
     }
   }
@@ -40,7 +40,7 @@ export class GeneralLedgerClientService {
   ): Promise<T> {
     try {
       // Get a service token from the Auth service
-      const token = await this.authClientService.fetchServiceToken();
+      const token = await this?.authClientService.fetchServiceToken();
       
       const requestConfig: AxiosRequestConfig = {
         ...config,
@@ -53,19 +53,19 @@ export class GeneralLedgerClientService {
       let response;
       if (method === 'GET') {
         response = await firstValueFrom(
-          this.httpService.get(url, requestConfig),
+          this?.httpService.get(url, requestConfig),
         );
       } else if (method === 'POST') {
         response = await firstValueFrom(
-          this.httpService.post(url, data, requestConfig),
+          this?.httpService.post(url, data, requestConfig),
         );
       } else if (method === 'PUT') {
         response = await firstValueFrom(
-          this.httpService.put(url, data, requestConfig),
+          this?.httpService.put(url, data, requestConfig),
         );
       } else if (method === 'DELETE') {
         response = await firstValueFrom(
-          this.httpService.delete(url, requestConfig),
+          this?.httpService.delete(url, requestConfig),
         );
       } else {
         throw new Error(`Unsupported HTTP method: ${method}`);
@@ -73,7 +73,7 @@ export class GeneralLedgerClientService {
 
       return response.data;
     } catch (error) {
-      this.logger.error(`Request to General Ledger service failed: ${error.message}`, error.stack);
+      this?.logger.error(`Request to General Ledger service failed: ${error.message}`, error.stack);
       throw new Error(`Request to General Ledger service failed: ${error.message}`);
     }
   }
@@ -88,7 +88,7 @@ export class GeneralLedgerClientService {
         'GET',
       );
     } catch (error) {
-      this.logger.error(`Failed to get accounts: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get accounts: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -103,7 +103,7 @@ export class GeneralLedgerClientService {
         'GET',
       );
     } catch (error) {
-      this.logger.error(`Failed to get account by ID: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get account by ID: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -118,7 +118,7 @@ export class GeneralLedgerClientService {
         'GET',
       );
     } catch (error) {
-      this.logger.error(`Failed to get journal entries: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get journal entries: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -133,7 +133,7 @@ export class GeneralLedgerClientService {
         'GET',
       );
     } catch (error) {
-      this.logger.error(`Failed to get journal entry by ID: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get journal entry by ID: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -149,7 +149,7 @@ export class GeneralLedgerClientService {
         request,
       );
     } catch (error) {
-      this.logger.error(`Failed to get financial statement: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get financial statement: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -165,7 +165,7 @@ export class GeneralLedgerClientService {
       
       return this.makeAuthenticatedRequest<any>(url, 'GET');
     } catch (error) {
-      this.logger.error(`Failed to get trial balance: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get trial balance: ${error.message}`, error.stack);
       throw error;
     }
   }

@@ -21,12 +21,12 @@ import { EventsModule } from './events/events.module';
     // Winston Logger
     WinstonModule.forRoot({
       transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.ms(),
-            winston.format.colorize(),
-            winston.format.printf(
+        new winston?.transports.Console({
+          format: winston?.format.combine(
+            winston?.format.timestamp(),
+            winston?.format.ms(),
+            winston?.format.colorize(),
+            winston?.format.printf(
               (info) => `${info.timestamp} ${info.level}: ${info.message}`,
             ),
           ),

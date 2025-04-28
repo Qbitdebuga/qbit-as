@@ -5,12 +5,12 @@ export class CreateRoleDto {
   @ApiProperty({ example: 'admin', description: 'Role name' })
   @IsString({ message: 'Role name must be a string' })
   @IsNotEmpty({ message: 'Role name is required' })
-  name!: string;
+  name!: string | null;
 
   @ApiProperty({ example: 'Administrator with full access', description: 'Role description' })
   @IsString({ message: 'Description must be a string' })
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @ApiProperty({ 
     example: ['read:users', 'write:users'], 

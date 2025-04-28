@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 interface JwtPayload {
-  sub: string;
-  email: string;
+  sub: string | null;
+  email: string | null;
   roles: string[];
 }
 
@@ -24,15 +24,15 @@ export class AdminAuthGuard implements CanActivate {
     }
     
     try {
-      const payload = await this.jwtService.verifyAsync<JwtPayload>(
+      const payload = await this?.jwtService.verifyAsync<JwtPayload>(
         token,
         {
-          secret: this.configService.get<string>('JWT_SECRET'),
+          secret: this?.configService.get<string>('JWT_SECRET'),
         },
       );
       
       // Check if the user has admin role
-      if (!payload.roles || !payload.roles.includes('admin')) {
+      if (!payload.roles || !payload?.roles.includes('admin')) {
         throw new UnauthorizedException('Insufficient permissions: admin role required');
       }
       
@@ -46,7 +46,7 @@ export class AdminAuthGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: any): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    const [type, token] = request?.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 } 

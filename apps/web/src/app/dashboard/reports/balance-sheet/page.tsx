@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { BalanceSheetStatementDto, StatementPeriod } from '@qbit/shared-types';
-import { ReportsClient } from '@qbit/api-client';
+import { BalanceSheetStatementDto, StatementPeriod } from '@/mocks/shared-types';
+import { ReportsClient } from '@/mocks/api-client';
 import { useApiClient } from '@/hooks/useApiClient';
 import { StatementFilters, StatementFilterValues } from '@/components/reports/StatementFilters';
 import { BalanceSheetReport } from '@/components/reports/BalanceSheetReport';

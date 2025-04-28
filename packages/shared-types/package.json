@@ -8,7 +8,8 @@
     "build": "rimraf dist && tsc && echo \"✅ @qbit/shared-types build completed successfully\"",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "test": "jest"
+    "test": "jest",
+    "type-check": "tsc --noEmit"
   },
   "author": "Qbit Team",
   "license": "UNLICENSED",

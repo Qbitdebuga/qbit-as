@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { formatCurrency, formatDate } from '../../utils/format';
-import { exportToCsv, exportToExcel, exportToPdf } from '../../utils/report-export';
+import { formatCurrency, formatDate } from '@/utils/format';
+import { exportToCsv, exportToExcel, exportToPdf } from '@/utils/report-export';
 
 interface ConsolidatedReportProps {
   balanceSheet: any;

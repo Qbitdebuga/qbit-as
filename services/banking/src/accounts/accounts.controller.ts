@@ -39,8 +39,8 @@ export class AccountsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 409, description: 'Conflict. Bank with this code already exists.' })
   createBank(@Body() createBankDto: CreateBankDto): Promise<BankEntity> {
-    this.logger.log('Creating a new bank');
-    return this.accountsService.createBank(createBankDto);
+    this?.logger.log('Creating a new bank');
+    return this?.accountsService.createBank(createBankDto);
   }
 
   @Get('banks')
@@ -48,11 +48,11 @@ export class AccountsController {
   @ApiResponse({ status: 200, description: 'Return all banks.', type: [BankEntity] })
   @ApiQuery({ name: 'active', required: false, type: Boolean, description: 'Filter by active status' })
   findAllBanks(@Query('active') active?: string): Promise<BankEntity[]> {
-    this.logger.log('Finding all banks');
+    this?.logger.log('Finding all banks');
     if (active === 'true') {
-      return this.accountsService.findActivebanks();
+      return this?.accountsService.findActivebanks();
     }
-    return this.accountsService.findAllBanks();
+    return this?.accountsService.findAllBanks();
   }
 
   @Get('banks/:id')
@@ -61,8 +61,8 @@ export class AccountsController {
   @ApiResponse({ status: 404, description: 'Bank not found.' })
   @ApiParam({ name: 'id', description: 'Bank ID' })
   findBankById(@Param('id', ParseUUIDPipe) id: string): Promise<BankEntity> {
-    this.logger.log(`Finding bank with ID: ${id}`);
-    return this.accountsService.findBankById(id);
+    this?.logger.log(`Finding bank with ID: ${id}`);
+    return this?.accountsService.findBankById(id);
   }
 
   @Patch('banks/:id')
@@ -76,8 +76,8 @@ export class AccountsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateBankDto: UpdateBankDto,
   ): Promise<BankEntity> {
-    this.logger.log(`Updating bank with ID: ${id}`);
-    return this.accountsService.updateBank(id, updateBankDto);
+    this?.logger.log(`Updating bank with ID: ${id}`);
+    return this?.accountsService.updateBank(id, updateBankDto);
   }
 
   @Delete('banks/:id')
@@ -88,8 +88,8 @@ export class AccountsController {
   @ApiParam({ name: 'id', description: 'Bank ID' })
   @HttpCode(HttpStatus.NO_CONTENT)
   removeBank(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    this.logger.log(`Deleting bank with ID: ${id}`);
-    return this.accountsService.removeBank(id);
+    this?.logger.log(`Deleting bank with ID: ${id}`);
+    return this?.accountsService.removeBank(id);
   }
 
   // Bank Account Endpoints
@@ -100,8 +100,8 @@ export class AccountsController {
   @ApiResponse({ status: 404, description: 'Bank not found.' })
   @ApiResponse({ status: 409, description: 'Conflict. Bank account with this account number already exists at this bank.' })
   createBankAccount(@Body() createBankAccountDto: CreateBankAccountDto): Promise<BankAccountEntity> {
-    this.logger.log('Creating a new bank account');
-    return this.accountsService.createBankAccount(createBankAccountDto);
+    this?.logger.log('Creating a new bank account');
+    return this?.accountsService.createBankAccount(createBankAccountDto);
   }
 
   @Get('bank-accounts')
@@ -113,17 +113,17 @@ export class AccountsController {
     @Query('active') active?: string,
     @Query('bankId') bankId?: string,
   ): Promise<BankAccountEntity[]> {
-    this.logger.log('Finding all bank accounts');
+    this?.logger.log('Finding all bank accounts');
     
     if (bankId) {
-      return this.accountsService.findBankAccountsByBankId(bankId);
+      return this?.accountsService.findBankAccountsByBankId(bankId);
     }
     
     if (active === 'true') {
-      return this.accountsService.findActiveBankAccounts();
+      return this?.accountsService.findActiveBankAccounts();
     }
     
-    return this.accountsService.findAllBankAccounts();
+    return this?.accountsService.findAllBankAccounts();
   }
 
   @Get('bank-accounts/:id')
@@ -132,8 +132,8 @@ export class AccountsController {
   @ApiResponse({ status: 404, description: 'Bank account not found.' })
   @ApiParam({ name: 'id', description: 'Bank account ID' })
   findBankAccountById(@Param('id', ParseUUIDPipe) id: string): Promise<BankAccountEntity> {
-    this.logger.log(`Finding bank account with ID: ${id}`);
-    return this.accountsService.findBankAccountById(id);
+    this?.logger.log(`Finding bank account with ID: ${id}`);
+    return this?.accountsService.findBankAccountById(id);
   }
 
   @Patch('bank-accounts/:id')
@@ -147,8 +147,8 @@ export class AccountsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateBankAccountDto: UpdateBankAccountDto,
   ): Promise<BankAccountEntity> {
-    this.logger.log(`Updating bank account with ID: ${id}`);
-    return this.accountsService.updateBankAccount(id, updateBankAccountDto);
+    this?.logger.log(`Updating bank account with ID: ${id}`);
+    return this?.accountsService.updateBankAccount(id, updateBankAccountDto);
   }
 
   @Delete('bank-accounts/:id')
@@ -159,7 +159,7 @@ export class AccountsController {
   @ApiParam({ name: 'id', description: 'Bank account ID' })
   @HttpCode(HttpStatus.NO_CONTENT)
   removeBankAccount(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    this.logger.log(`Deleting bank account with ID: ${id}`);
-    return this.accountsService.removeBankAccount(id);
+    this?.logger.log(`Deleting bank account with ID: ${id}`);
+    return this?.accountsService.removeBankAccount(id);
   }
 } 

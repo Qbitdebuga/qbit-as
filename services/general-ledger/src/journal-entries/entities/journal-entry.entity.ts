@@ -1,13 +1,13 @@
 import { JournalEntryLine } from './journal-entry-line.entity';
 
 export class JournalEntry {
-  id!: string;
-  entryNumber!: string;
+  id!: string | null;
+  entryNumber!: string | null;
   date!: Date;
-  reference?: string;
-  description?: string;
-  status!: string; // DRAFT, POSTED, REVERSED
-  isAdjustment!: boolean;
+  reference?: string | null;
+  description?: string | null;
+  status!: string | null; // DRAFT, POSTED, REVERSED
+  isAdjustment!: boolean | null;
   lines!: JournalEntryLine[];
   createdAt!: Date;
   updatedAt!: Date;

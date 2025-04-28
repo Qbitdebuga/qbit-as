@@ -22,21 +22,21 @@ export class HealthController {
   @HealthCheck()
   @ApiOperation({ summary: 'Check service health' })
   check() {
-    return this.health.check([
+    return this?.health.check([
       // Database connection check
-      () => this.prismaHealth.isHealthy('database'),
+      () => this?.prismaHealth.isHealthy('database'),
       
       // Disk storage check
-      () => this.disk.checkStorage('storage', { 
+      () => this?.disk.checkStorage('storage', { 
         path: '/', 
         thresholdPercent: 0.9 
       }),
       
       // Memory heap check
-      () => this.memory.checkHeap('memory_heap', 0.8),
+      () => this?.memory.checkHeap('memory_heap', 0.8),
       
       // Memory RSS check (Resident Set Size)
-      () => this.memory.checkRSS('memory_rss', 0.8),
+      () => this?.memory.checkRSS('memory_rss', 0.8),
     ]);
   }
 } 

@@ -8,14 +8,14 @@ export class ExpenseCategoriesService {
   constructor(private readonly expenseCategoriesRepository: ExpenseCategoriesRepository) {}
 
   async create(createExpenseCategoryDto: CreateExpenseCategoryDto) {
-    return this.expenseCategoriesRepository.create(createExpenseCategoryDto);
+    return this?.expenseCategoriesRepository.create(createExpenseCategoryDto);
   }
 
   async findAll(query: {
-    page?: number;
-    limit?: number;
-    isActive?: boolean;
-    search?: string;
+    page?: number | null;
+    limit?: number | null;
+    isActive?: boolean | null;
+    search?: string | null;
   }) {
     const { 
       page = 1, 
@@ -38,7 +38,7 @@ export class ExpenseCategoriesService {
       ];
     }
 
-    return this.expenseCategoriesRepository.findAll({
+    return this?.expenseCategoriesRepository.findAll({
       skip: (page - 1) * limit,
       take: limit,
       where,
@@ -47,7 +47,7 @@ export class ExpenseCategoriesService {
   }
 
   async findOne(id: number) {
-    const category = await this.expenseCategoriesRepository.findOne(id);
+    const category = await this?.expenseCategoriesRepository.findOne(id);
     
     if (!category) {
       throw new NotFoundException(`Expense category with ID ${id} not found`);
@@ -58,14 +58,14 @@ export class ExpenseCategoriesService {
 
   async update(id: number, updateExpenseCategoryDto: UpdateExpenseCategoryDto) {
     await this.findOne(id); // Ensure category exists
-    return this.expenseCategoriesRepository.update(id, updateExpenseCategoryDto);
+    return this?.expenseCategoriesRepository.update(id, updateExpenseCategoryDto);
   }
 
   async remove(id: number) {
     await this.findOne(id); // Ensure category exists
     
     try {
-      return await this.expenseCategoriesRepository.remove(id);
+      return await this?.expenseCategoriesRepository.remove(id);
     } catch (error) {
       // If there's a foreign key constraint (expenses using this category)
       if (error.code === 'P2003') {
@@ -76,6 +76,6 @@ export class ExpenseCategoriesService {
   }
 
   async findActive() {
-    return this.expenseCategoriesRepository.findActive();
+    return this?.expenseCategoriesRepository.findActive();
   }
 } 

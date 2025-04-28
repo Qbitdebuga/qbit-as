@@ -63,9 +63,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { IProductVariant } from '@qbit-accounting/shared-types';
+import { IProductVariant } from '@qbit/shared-types';
 import { formatCurrency } from '@/utils/format';
-import { productsClient } from '@qbit-accounting/api-client';
+import { productsClient } from '@qbit/api-client';
 
 // Placeholder variants - replace with actual data fetching in a real implementation
 const MOCK_VARIANTS: IProductVariant[] = [

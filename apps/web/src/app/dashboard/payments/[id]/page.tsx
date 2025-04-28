@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import PaymentDetail from '@/components/payments/PaymentDetail';
 import { useVendorPayments } from '@/hooks/useVendorPayments';
-import { Payment } from '@qbit/shared-types';
+import { Payment } from '@/mocks/shared-types';
 
 export default function PaymentDetailPage() {
   const params = useParams();

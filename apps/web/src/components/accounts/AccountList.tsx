@@ -1,20 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow,
-  Button,
-  Badge
-} from "@/components/ui";
-import { Account, AccountType } from '@qbit/api-client';
+import React from 'react';
 import Link from 'next/link';
 import { Edit, Eye, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui';
+import { 
+  Table, 
+  TableHeader, 
+  TableRow, 
+  TableHead, 
+  TableBody, 
+  TableCell 
+} from '@/components/ui';
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui';
+import { Badge } from '@/components/ui';
+import { Account, AccountType } from '@qbit/api-client';
 
 interface AccountListProps {
   accounts: Account[];
@@ -38,67 +43,65 @@ const getAccountTypeColor = (type: AccountType) => {
   }
 };
 
-export const AccountList: React.FC<AccountListProps> = ({ accounts, onDelete }) => {
+export function AccountList({ accounts, onDelete }: AccountListProps) {
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableCaption>List of Chart of Accounts</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Code</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Subtype</TableHead>
-            <TableHead className="text-center">Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {accounts.map((account) => (
-            <TableRow key={account.id}>
-              <TableCell className="font-medium">{account.code}</TableCell>
-              <TableCell>{account.name}</TableCell>
-              <TableCell>
-                <Badge variant="outline" className={getAccountTypeColor(account.type)}>
-                  {account.type}
-                </Badge>
-              </TableCell>
-              <TableCell>{account.subtype.replace(/_/g, ' ')}</TableCell>
-              <TableCell className="text-center">
-                {account.isActive ? (
-                  <Badge variant="default" className="bg-green-500">Active</Badge>
-                ) : (
-                  <Badge variant="outline" className="text-gray-500">Inactive</Badge>
-                )}
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end space-x-2">
-                  <Link href={`/dashboard/accounts/${account.id}`} passHref>
-                    <Button variant="ghost" size="sm">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  <Link href={`/dashboard/accounts/${account.id}/edit`} passHref>
-                    <Button variant="ghost" size="sm">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  {onDelete && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => onDelete(account.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </TableCell>
+    <Card>
+      <CardHeader>
+        <CardTitle>Chart of Accounts</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Code</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Subtype</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {accounts.map((account) => (
+              <TableRow key={account.id}>
+                <TableCell>{account.code}</TableCell>
+                <TableCell className="font-medium">{account.name}</TableCell>
+                <TableCell>{account.type}</TableCell>
+                <TableCell>{account.subtype.replace(/_/g, ' ')}</TableCell>
+                <TableCell>
+                  <Badge variant={account.isActive ? 'success' : 'secondary'}>
+                    {account.isActive ? 'Active' : 'Inactive'}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex justify-end space-x-2">
+                    <Link href={`/dashboard/accounts/${account.id}`} passHref>
+                      <Button variant="ghost" size="sm">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Link href={`/dashboard/accounts/${account.id}/edit`} passHref>
+                      <Button variant="ghost" size="sm">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    {onDelete && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => onDelete(account.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
-}; 
+} 

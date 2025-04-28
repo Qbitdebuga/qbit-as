@@ -31,19 +31,19 @@ export enum InvoicePaymentStatus {
 }
 
 export interface Invoice {
-  id: string;
-  invoiceNumber: string;
-  customerId: string;
+  id: string | null;
+  invoiceNumber: string | null;
+  customerId: string | null;
   customerReference?: string | null;
   invoiceDate: Date;
   dueDate: Date;
   status: InvoiceStatus;
-  subtotal: number;
+  subtotal: number | null;
   taxAmount?: number | null;
   discountAmount?: number | null;
-  totalAmount: number;
-  amountPaid: number;
-  balanceDue: number;
+  totalAmount: number | null;
+  amountPaid: number | null;
+  balanceDue: number | null;
   notes?: string | null;
   terms?: string | null;
   createdAt: Date;
@@ -53,25 +53,25 @@ export interface Invoice {
 }
 
 export interface InvoiceItem {
-  id: string;
-  invoiceId: string;
+  id: string | null;
+  invoiceId: string | null;
   itemCode?: string | null;
-  description: string;
-  quantity: number;
-  unitPrice: number;
+  description: string | null;
+  quantity: number | null;
+  unitPrice: number | null;
   discountPercentage?: number | null;
   taxPercentage?: number | null;
-  lineTotal: number;
+  lineTotal: number | null;
   notes?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface InvoicePayment {
-  id: string;
-  invoiceId: string;
+  id: string | null;
+  invoiceId: string | null;
   paymentDate: Date;
-  amount: number;
+  amount: number | null;
   paymentMethod: InvoicePaymentMethod;
   status: InvoicePaymentStatus;
   referenceNumber?: string | null;
@@ -81,52 +81,52 @@ export interface InvoicePayment {
 }
 
 export interface CreateInvoiceDto {
-  customerId: string;
-  customerReference?: string;
+  customerId: string | null;
+  customerReference?: string | null;
   invoiceDate: Date;
   dueDate: Date;
   status?: InvoiceStatus;
-  notes?: string;
-  terms?: string;
+  notes?: string | null;
+  terms?: string | null;
   items: CreateInvoiceItemDto[];
 }
 
 export interface CreateInvoiceItemDto {
-  itemCode?: string;
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  discountPercentage?: number;
-  taxPercentage?: number;
-  notes?: string;
+  itemCode?: string | null;
+  description: string | null;
+  quantity: number | null;
+  unitPrice: number | null;
+  discountPercentage?: number | null;
+  taxPercentage?: number | null;
+  notes?: string | null;
 }
 
 export interface UpdateInvoiceDto {
-  customerReference?: string;
+  customerReference?: string | null;
   invoiceDate?: Date;
   dueDate?: Date;
   status?: InvoiceStatus;
-  notes?: string;
-  terms?: string;
+  notes?: string | null;
+  terms?: string | null;
 }
 
 export interface CreateInvoicePaymentDto {
-  invoiceId: string;
+  invoiceId: string | null;
   paymentDate: Date;
-  amount: number;
+  amount: number | null;
   paymentMethod: InvoicePaymentMethod;
-  referenceNumber?: string;
-  notes?: string;
+  referenceNumber?: string | null;
+  notes?: string | null;
 }
 
 export interface InvoiceListParams {
-  customerId?: string;
+  customerId?: string | null;
   status?: InvoiceStatus;
   startDate?: Date;
   endDate?: Date;
-  search?: string;
-  page?: number;
-  limit?: number;
-  sortBy?: string;
+  search?: string | null;
+  page?: number | null;
+  limit?: number | null;
+  sortBy?: string | null;
   sortDirection?: 'asc' | 'desc';
 } 

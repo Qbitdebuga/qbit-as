@@ -6,16 +6,16 @@ import { DepreciationMethod } from '../../depreciation/enums/depreciation-method
 
 export class AssetEntity {
   @ApiProperty({ description: 'Unique identifier of the asset' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'Name of the asset' })
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Description of the asset', required: false })
   description: string | null;
 
   @ApiProperty({ description: 'Unique asset number for tracking' })
-  assetNumber: string;
+  assetNumber: string | null;
 
   @ApiProperty({ description: 'Date when the asset was purchased' })
   purchaseDate: Date;
@@ -27,7 +27,7 @@ export class AssetEntity {
   residualValue: Decimal;
 
   @ApiProperty({ description: 'Expected useful life in years' })
-  assetLifeYears: number;
+  assetLifeYears: number | null;
 
   @ApiProperty({ 
     description: 'Current status of the asset',
@@ -51,7 +51,7 @@ export class AssetEntity {
   updatedAt: Date;
 
   @ApiProperty({ description: 'ID of the category this asset belongs to' })
-  categoryId: string;
+  categoryId: string | null;
 
   @ApiProperty({ 
     description: 'Method used to calculate depreciation',

@@ -5,5 +5,5 @@ import { IsString, IsUUID, IsOptional } from 'class-validator';
 export class UpdateTransactionLineDto extends PartialType(CreateTransactionLineDto) {
   @IsUUID()
   @IsOptional()
-  id?: string;
+  id?: string | null;
 } 

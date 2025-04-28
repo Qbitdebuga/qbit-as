@@ -16,7 +16,7 @@ export class CreateCustomerContactDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(50)
-  firstName!: string;
+  firstName!: string | null;
 
   @ApiProperty({
     description: 'Last name of the contact',
@@ -25,7 +25,7 @@ export class CreateCustomerContactDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(50)
-  lastName!: string;
+  lastName!: string | null;
 
   @ApiPropertyOptional({
     description: 'Email address of the contact',
@@ -34,7 +34,7 @@ export class CreateCustomerContactDto {
   @IsOptional()
   @IsEmail()
   @MaxLength(100)
-  email?: string;
+  email?: string | null;
 
   @ApiPropertyOptional({
     description: 'Phone number of the contact',
@@ -43,7 +43,7 @@ export class CreateCustomerContactDto {
   @IsOptional()
   @IsString()
   @MaxLength(20)
-  phone?: string;
+  phone?: string | null;
 
   @ApiPropertyOptional({
     description: 'Position/title of the contact',
@@ -52,7 +52,7 @@ export class CreateCustomerContactDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  position?: string;
+  position?: string | null;
 
   @ApiPropertyOptional({
     description: 'Whether this is the primary contact',
@@ -61,5 +61,5 @@ export class CreateCustomerContactDto {
   })
   @IsOptional()
   @IsBoolean()
-  isPrimary?: boolean;
+  isPrimary?: boolean | null;
 } 

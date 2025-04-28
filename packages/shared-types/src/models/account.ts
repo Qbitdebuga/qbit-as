@@ -17,30 +17,30 @@ export enum AccountType {
  * Account entity representing a GL account
  */
 export interface Account {
-  id: string;
-  code: string;
-  name: string;
-  description?: string;
+  id: string | null;
+  code: string | null;
+  name: string | null;
+  description?: string | null;
   type: AccountType;
-  isActive: boolean;
-  parentAccountId?: string;
+  isActive: boolean | null;
+  parentAccountId?: string | null;
   createdAt: Date;
   updatedAt: Date;
-  balance?: number;
+  balance?: number | null;
 }
 
 /**
  * Account DTO for API responses
  */
 export interface AccountDto {
-  id: string;
-  code: string;
-  name: string;
-  description?: string;
+  id: string | null;
+  code: string | null;
+  name: string | null;
+  description?: string | null;
   type: AccountType;
-  isActive: boolean;
-  parentAccountId?: string;
-  balance?: number;
+  isActive: boolean | null;
+  parentAccountId?: string | null;
+  balance?: number | null;
   children?: AccountDto[];
 }
 
@@ -48,38 +48,38 @@ export interface AccountDto {
  * DTO for creating a new account
  */
 export interface CreateAccountDto {
-  code: string;
-  name: string;
-  description?: string;
+  code: string | null;
+  name: string | null;
+  description?: string | null;
   type: AccountType;
-  isActive?: boolean;
-  parentAccountId?: string;
+  isActive?: boolean | null;
+  parentAccountId?: string | null;
 }
 
 /**
  * DTO for updating an existing account
  */
 export interface UpdateAccountDto {
-  code?: string;
-  name?: string;
-  description?: string;
+  code?: string | null;
+  name?: string | null;
+  description?: string | null;
   type?: AccountType;
-  isActive?: boolean;
-  parentAccountId?: string;
+  isActive?: boolean | null;
+  parentAccountId?: string | null;
 }
 
 /**
  * Transaction entity representing a financial transaction
  */
 export interface Transaction {
-  id: string;
+  id: string | null;
   date: Date;
-  description: string;
-  reference?: string;
+  description: string | null;
+  reference?: string | null;
   entries: TransactionEntry[];
   createdAt: Date;
   updatedAt: Date;
-  createdById: string;
+  createdById: string | null;
   status: TransactionStatus;
 }
 
@@ -87,12 +87,12 @@ export interface Transaction {
  * Transaction entry for a line in a transaction
  */
 export interface TransactionEntry {
-  id: string;
-  transactionId: string;
-  accountId: string;
-  description?: string;
-  debit: number;
-  credit: number;
+  id: string | null;
+  transactionId: string | null;
+  accountId: string | null;
+  description?: string | null;
+  debit: number | null;
+  credit: number | null;
 }
 
 /**
@@ -108,13 +108,13 @@ export enum TransactionStatus {
  * Transaction DTO for API responses
  */
 export interface TransactionDto {
-  id: string;
+  id: string | null;
   date: Date;
-  description: string;
-  reference?: string;
+  description: string | null;
+  reference?: string | null;
   entries: TransactionEntryDto[];
   createdAt: Date;
-  createdBy?: string;
+  createdBy?: string | null;
   status: TransactionStatus;
 }
 
@@ -122,13 +122,13 @@ export interface TransactionDto {
  * Transaction entry DTO
  */
 export interface TransactionEntryDto {
-  id: string;
-  accountId: string;
-  accountCode?: string;
-  accountName?: string;
-  description?: string;
-  debit: number;
-  credit: number;
+  id: string | null;
+  accountId: string | null;
+  accountCode?: string | null;
+  accountName?: string | null;
+  description?: string | null;
+  debit: number | null;
+  credit: number | null;
 }
 
 export enum AccountSubType {

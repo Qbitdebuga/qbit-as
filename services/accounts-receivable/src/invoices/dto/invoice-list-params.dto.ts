@@ -15,7 +15,7 @@ export class InvoiceListParamsDto {
   @ApiPropertyOptional({ description: 'Customer ID filter', example: 'c7fb7b8a-b35d-4d5f-a766-78364b5ac1ff' })
   @IsOptional()
   @IsUUID()
-  customerId?: string;
+  customerId?: string | null;
 
   @ApiPropertyOptional({ 
     description: 'Invoice status filter', 
@@ -41,7 +41,7 @@ export class InvoiceListParamsDto {
   @ApiPropertyOptional({ description: 'Search term for invoice number or customer reference', example: 'INV-00001' })
   @IsOptional()
   @IsString()
-  search?: string;
+  search?: string | null;
 
   @ApiPropertyOptional({ description: 'Page number (1-based)', default: 1, example: 1 })
   @IsOptional()

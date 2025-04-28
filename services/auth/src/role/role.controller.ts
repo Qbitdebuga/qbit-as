@@ -19,7 +19,7 @@ export class RoleController {
     @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip: number,
     @Query('take', new DefaultValuePipe(100), ParseIntPipe) take: number,
   ): Promise<Role[]> {
-    return this.roleService.findAll(skip, take);
+    return this?.roleService.findAll(skip, take);
   }
 
   @Get(':id')
@@ -27,7 +27,7 @@ export class RoleController {
   @ApiResponse({ status: 200, description: 'Returns the role' })
   @ApiResponse({ status: 404, description: 'Role not found' })
   async findOne(@Param('id') id: string): Promise<Role> {
-    return this.roleService.findOne(id);
+    return this?.roleService.findOne(id);
   }
 
   @Post()
@@ -36,7 +36,7 @@ export class RoleController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 409, description: 'Role name already in use' })
   async create(@Body() createRoleDto: CreateRoleDto): Promise<Role> {
-    return this.roleService.create(createRoleDto);
+    return this?.roleService.create(createRoleDto);
   }
 
   @Put(':id')
@@ -49,7 +49,7 @@ export class RoleController {
     @Param('id') id: string,
     @Body() updateRoleDto: UpdateRoleDto,
   ): Promise<Role> {
-    return this.roleService.update(id, updateRoleDto);
+    return this?.roleService.update(id, updateRoleDto);
   }
 
   @Delete(':id')
@@ -58,6 +58,6 @@ export class RoleController {
   @ApiResponse({ status: 204, description: 'Role successfully deleted' })
   @ApiResponse({ status: 404, description: 'Role not found' })
   async remove(@Param('id') id: string): Promise<void> {
-    return this.roleService.remove(id);
+    return this?.roleService.remove(id);
   }
 } 

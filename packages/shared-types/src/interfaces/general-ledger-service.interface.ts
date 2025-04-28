@@ -26,41 +26,41 @@ import {
 export interface PaginatedResponseDto<T> {
   data: T[];
   meta: {
-    page: number;
-    limit: number;
-    totalItems: number;
-    totalPages: number;
+    page: number | null;
+    limit: number | null;
+    totalItems: number | null;
+    totalPages: number | null;
   };
 }
 
 export interface BalanceSheetSummaryDto {
-  totalAssets: number;
-  totalLiabilities: number;
-  equity: number;
-  asOfDate: string;
+  totalAssets: number | null;
+  totalLiabilities: number | null;
+  equity: number | null;
+  asOfDate: string | null;
 }
 
 export interface IncomeStatementSummaryDto {
-  revenue: number;
-  expenses: number;
-  netIncome: number;
-  startDate: string;
-  endDate: string;
+  revenue: number | null;
+  expenses: number | null;
+  netIncome: number | null;
+  startDate: string | null;
+  endDate: string | null;
 }
 
 export interface AccountTransactionsDto {
-  accountId: string;
-  accountName: string;
-  accountCode: string;
+  accountId: string | null;
+  accountName: string | null;
+  accountCode: string | null;
   transactions: Array<{
-    id: string;
-    date: string;
-    description: string;
-    reference?: string;
-    debit?: number;
-    credit?: number;
+    id: string | null;
+    date: string | null;
+    description: string | null;
+    reference?: string | null;
+    debit?: number | null;
+    credit?: number | null;
   }>;
-  balance: number;
+  balance: number | null;
 }
 
 /**

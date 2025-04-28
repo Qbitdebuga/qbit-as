@@ -5,10 +5,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && echo \"✅ @qbit/ui-components build completed successfully\"",
+    "build": "rimraf dist && tsc && echo \"✅ @qbit/ui-components build completed successfully\"",
     "clean": "rm -rf dist",
     "dev": "tsup --watch",
-    "lint": "eslint \"src/**/*.ts*\""
+    "lint": "eslint \"src/**/*.ts*\"",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

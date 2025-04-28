@@ -6,13 +6,13 @@ import { CurrencyCode } from '../enums/currency-code.enum';
 
 export class BankAccountEntity {
   @ApiProperty({ description: 'Unique identifier of the bank account' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'Bank account number', example: '1234567890' })
-  accountNumber: string;
+  accountNumber: string | null;
 
   @ApiProperty({ description: 'Name of the bank account', example: 'Operating Account' })
-  name: string;
+  name: string | null;
 
   @ApiProperty({
     description: 'Description of the bank account',
@@ -36,7 +36,7 @@ export class BankAccountEntity {
   currencyCode: CurrencyCode;
 
   @ApiProperty({ description: 'ID of the bank where this account is held' })
-  bankId: string;
+  bankId: string | null;
 
   @ApiProperty({
     description: 'Associated general ledger account ID',
@@ -60,7 +60,7 @@ export class BankAccountEntity {
     description: 'Whether the account is active',
     example: true,
   })
-  isActive: boolean;
+  isActive: boolean | null;
 
   @ApiProperty({
     description: 'Date when the account was last reconciled',

@@ -8,9 +8,9 @@ import { ServiceTokenRequestDto, ServiceTokenResponseDto } from '@qbit/shared-ty
 import { TokenStorage } from './utils/token-storage';
 
 export class ServiceApiClient extends BaseApiClient {
-  private readonly serviceId: string;
-  private readonly serviceName: string;
-  private readonly authUrl: string;
+  private readonly serviceId: string | null;
+  private readonly serviceName: string | null;
+  private readonly authUrl: string | null;
   private tokenExpiry: number | null = null;
 
   /**
@@ -108,7 +108,7 @@ export class ServiceApiClient extends BaseApiClient {
     } catch (error) {
       // If token expired, try to refresh and retry once
       if (error instanceof Error && 
-          (error.message.includes('401') || error.message.includes('unauthorized'))) {
+          (error?.message.includes('401') || error?.message.includes('unauthorized'))) {
         // Clear token and expiry to force refresh
         this.clearServiceToken();
         this.tokenExpiry = null;

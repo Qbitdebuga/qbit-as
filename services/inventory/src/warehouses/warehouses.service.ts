@@ -11,11 +11,11 @@ import {
 } from '../prisma/prisma.types';
 
 interface FindAllOptions {
-  skip?: number;
-  take?: number;
-  searchTerm?: string;
-  orderBy?: string;
-  includeInactive?: boolean;
+  skip?: number | null;
+  take?: number | null;
+  searchTerm?: string | null;
+  orderBy?: string | null;
+  includeInactive?: boolean | null;
 }
 
 @Injectable()
@@ -32,12 +32,12 @@ export class WarehousesService {
 
   async create(createWarehouseDto: CreateWarehouseDto) {
     try {
-      const warehouse = await this.db.warehouse.create({
+      const warehouse = await this?.db.warehouse.create({
         data: createWarehouseDto,
       });
       
       // Publish warehouse created event
-      await this.warehousePublisher.publishWarehouseCreated(warehouse.id, warehouse);
+      await this?.warehousePublisher.publishWarehouseCreated(warehouse.id, warehouse);
       
       return warehouse;
     } catch (error) {
@@ -75,13 +75,13 @@ export class WarehousesService {
     }
 
     const [warehouses, total] = await Promise.all([
-      this.db.warehouse.findMany({
+      this?.db.warehouse.findMany({
         where,
         skip,
         take,
         orderBy: orderByClause,
       }),
-      this.db.warehouse.count({ where }),
+      this?.db.warehouse.count({ where }),
     ]);
 
     return {
@@ -95,7 +95,7 @@ export class WarehousesService {
   }
 
   async findOne(id: string) {
-    const warehouse = await this.db.warehouse.findUnique({
+    const warehouse = await this?.db.warehouse.findUnique({
       where: { id },
     });
 
@@ -111,13 +111,13 @@ export class WarehousesService {
       // Check if warehouse exists
       await this.findOne(id);
       
-      const updatedWarehouse = await this.db.warehouse.update({
+      const updatedWarehouse = await this?.db.warehouse.update({
         where: { id },
         data: updateWarehouseDto,
       });
       
       // Publish warehouse updated event
-      await this.warehousePublisher.publishWarehouseUpdated(updatedWarehouse.id, updatedWarehouse);
+      await this?.warehousePublisher.publishWarehouseUpdated(updatedWarehouse.id, updatedWarehouse);
       
       return updatedWarehouse;
     } catch (error) {
@@ -135,12 +135,12 @@ export class WarehousesService {
     // Check if warehouse exists
     await this.findOne(id);
     
-    const removedWarehouse = await this.db.warehouse.delete({
+    const removedWarehouse = await this?.db.warehouse.delete({
       where: { id },
     });
     
     // Publish warehouse deleted event
-    await this.warehousePublisher.publishWarehouseDeleted(id);
+    await this?.warehousePublisher.publishWarehouseDeleted(id);
     
     return removedWarehouse;
   }

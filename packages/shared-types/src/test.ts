@@ -1,7 +1,7 @@
 // Test TypeScript file
 export interface TestType {
-  id: string;
-  name: string;
+  id: string | null;
+  name: string | null;
 }
 
 export const testFunction = (): TestType => {

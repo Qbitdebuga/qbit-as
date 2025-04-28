@@ -45,7 +45,7 @@ export class TransactionsController {
     type: InventoryTransactionEntity 
   })
   create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+    return this?.transactionsService.create(createTransactionDto);
   }
 
   @Get()
@@ -91,7 +91,7 @@ export class TransactionsController {
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
   ) {
-    return this.transactionsService.findAll({
+    return this?.transactionsService.findAll({
       skip: skip ? +skip : undefined,
       take: take ? +take : undefined,
       searchTerm,
@@ -117,7 +117,7 @@ export class TransactionsController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Transaction not found' })
   @ApiParam({ name: 'id', description: 'Transaction ID' })
   findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(id);
+    return this?.transactionsService.findOne(id);
   }
 
   @Patch(':id')
@@ -131,7 +131,7 @@ export class TransactionsController {
   @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Only draft transactions can be updated' })
   @ApiParam({ name: 'id', description: 'Transaction ID' })
   update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
-    return this.transactionsService.update(id, updateTransactionDto);
+    return this?.transactionsService.update(id, updateTransactionDto);
   }
 
   @Delete(':id')
@@ -145,7 +145,7 @@ export class TransactionsController {
   @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Only draft transactions can be deleted' })
   @ApiParam({ name: 'id', description: 'Transaction ID' })
   remove(@Param('id') id: string) {
-    return this.transactionsService.remove(id);
+    return this?.transactionsService.remove(id);
   }
 
   @Post(':id/process')
@@ -159,6 +159,6 @@ export class TransactionsController {
   @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Transaction cannot be processed' })
   @ApiParam({ name: 'id', description: 'Transaction ID' })
   process(@Param('id') id: string, @Body() processTransactionDto: ProcessTransactionDto) {
-    return this.transactionsService.process(id, processTransactionDto);
+    return this?.transactionsService.process(id, processTransactionDto);
   }
 } 

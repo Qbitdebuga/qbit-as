@@ -17,7 +17,7 @@ export class ApplyPaymentDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  paymentId: number;
+  paymentId: number | null;
 
   @ApiProperty({
     description: 'List of bill applications',

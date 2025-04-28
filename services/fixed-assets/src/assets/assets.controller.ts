@@ -41,7 +41,7 @@ export class AssetsController {
   @ApiResponse({ status: 404, description: 'Asset category not found.' })
   @ApiResponse({ status: 409, description: 'Asset number already exists.' })
   async create(@Body() createAssetDto: CreateAssetDto): Promise<AssetEntity> {
-    return this.assetsService.create(createAssetDto);
+    return this?.assetsService.create(createAssetDto);
   }
 
   @Get()
@@ -60,7 +60,7 @@ export class AssetsController {
     @Query('categoryId') categoryId?: string,
     @Query('search') search?: string,
   ): Promise<{ assets: AssetEntity[]; total: number }> {
-    return this.assetsService.findAll(
+    return this?.assetsService.findAll(
       skip ? +skip : 0,
       take ? +take : 10,
       status,
@@ -75,7 +75,7 @@ export class AssetsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Asset not found.' })
   async findOne(@Param('id') id: string): Promise<AssetEntity> {
-    return this.assetsService.findOne(id);
+    return this?.assetsService.findOne(id);
   }
 
   @Patch(':id')
@@ -92,7 +92,7 @@ export class AssetsController {
     @Param('id') id: string,
     @Body() updateAssetDto: UpdateAssetDto,
   ): Promise<AssetEntity> {
-    return this.assetsService.update(id, updateAssetDto);
+    return this?.assetsService.update(id, updateAssetDto);
   }
 
   @Delete(':id')
@@ -104,7 +104,7 @@ export class AssetsController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'Asset not found.' })
   async remove(@Param('id') id: string): Promise<void> {
-    return this.assetsService.remove(id);
+    return this?.assetsService.remove(id);
   }
 
   // Asset Category endpoints
@@ -117,7 +117,7 @@ export class AssetsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   async createCategory(@Body() createCategoryDto: CreateCategoryDto): Promise<AssetCategoryEntity> {
-    return this.assetsService.createCategory(createCategoryDto);
+    return this?.assetsService.createCategory(createCategoryDto);
   }
 
   @Get('categories')
@@ -132,7 +132,7 @@ export class AssetsController {
     @Query('take') take?: number,
     @Query('search') search?: string,
   ): Promise<{ categories: AssetCategoryEntity[]; total: number }> {
-    return this.assetsService.findAllCategories(
+    return this?.assetsService.findAllCategories(
       skip ? +skip : 0,
       take ? +take : 10,
       search,
@@ -145,7 +145,7 @@ export class AssetsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Asset category not found.' })
   async findOneCategory(@Param('id') id: string): Promise<AssetCategoryEntity> {
-    return this.assetsService.findOneCategory(id);
+    return this?.assetsService.findOneCategory(id);
   }
 
   @Patch('categories/:id')
@@ -161,7 +161,7 @@ export class AssetsController {
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<AssetCategoryEntity> {
-    return this.assetsService.updateCategory(id, updateCategoryDto);
+    return this?.assetsService.updateCategory(id, updateCategoryDto);
   }
 
   @Delete('categories/:id')
@@ -174,6 +174,6 @@ export class AssetsController {
   @ApiResponse({ status: 404, description: 'Asset category not found.' })
   @ApiResponse({ status: 409, description: 'Cannot delete category with assets.' })
   async removeCategory(@Param('id') id: string): Promise<void> {
-    return this.assetsService.removeCategory(id);
+    return this?.assetsService.removeCategory(id);
   }
 } 

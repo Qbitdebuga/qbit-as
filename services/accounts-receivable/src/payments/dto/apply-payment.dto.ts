@@ -3,14 +3,14 @@ import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 export class ApplyPaymentDto {
   @IsNotEmpty()
   @IsString()
-  paymentId!: string;
+  paymentId!: string | null;
 
   @IsNotEmpty()
   @IsString()
-  invoiceId!: string;
+  invoiceId!: string | null;
 
   @IsNotEmpty()
   @IsNumber()
   @Min(0.01)
-  amountApplied!: number;
+  amountApplied!: number | null;
 } 

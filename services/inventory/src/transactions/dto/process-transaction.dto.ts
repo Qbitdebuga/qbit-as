@@ -19,7 +19,7 @@ export class ProcessTransactionDto {
   })
   @IsString()
   @IsOptional()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({
     type: [ProcessTransactionLineDto],

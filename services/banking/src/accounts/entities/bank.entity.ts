@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class BankEntity {
   @ApiProperty({ description: 'Unique identifier of the bank' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'Name of the bank', example: 'Chase Bank' })
-  name: string;
+  name: string | null;
 
   @ApiProperty({ description: 'Unique bank code', example: 'CHASE' })
-  code: string;
+  code: string | null;
 
   @ApiProperty({
     description: 'Bank routing number',
@@ -54,7 +54,7 @@ export class BankEntity {
 
   @ApiProperty({
     description: 'Bank website URL',
-    example: 'https://www.chase.com',
+    example: 'https://www?.chase.com',
     required: false,
   })
   website: string | null;
@@ -70,7 +70,7 @@ export class BankEntity {
     description: 'Whether the bank is active in the system',
     example: true,
   })
-  isActive: boolean;
+  isActive: boolean | null;
 
   @ApiProperty({ description: 'Date when the bank was created in the system' })
   createdAt: Date;

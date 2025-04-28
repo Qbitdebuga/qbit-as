@@ -21,28 +21,28 @@ export class AggregationService {
   async getUserFinancialOverview(userId: string): Promise<DashboardResponseDto> {
     try {
       // Get a service token for Auth service
-      const serviceToken = await this.authClient.getServiceToken(['users:read', 'gl:read']);
+      const serviceToken = await this?.authClient.getServiceToken(['users:read', 'gl:read']);
       
       // Fetch user data from Auth service
-      const user = await this.authClient.getUserById(userId, serviceToken);
+      const user = await this?.authClient.getUserById(userId, serviceToken);
       
       if (!user) {
         throw new NotFoundException(`User with ID ${userId} not found`);
       }
       
       // Fetch financial data from General Ledger service
-      const accounts = await this.glClient.getAccounts();
+      const accounts = await this?.glClient.getAccounts();
       
       // Get journal entries for recent transactions
-      const journalEntriesResponse = await this.glClient.getJournalEntries(1, 5); // Most recent 5 entries
+      const journalEntriesResponse = await this?.glClient.getJournalEntries(1, 5); // Most recent 5 entries
       const recentTransactions = journalEntriesResponse.data || [];
       
       // Get financial statements
-      const balanceSheetData = await this.glClient.getFinancialStatement('balance-sheet', {
+      const balanceSheetData = await this?.glClient.getFinancialStatement('balance-sheet', {
         asOfDate: new Date().toISOString().split('T')[0]
       });
       
-      const incomeStatementData = await this.glClient.getFinancialStatement('income-statement', {
+      const incomeStatementData = await this?.glClient.getFinancialStatement('income-statement', {
         fromDate: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0],
         toDate: new Date().toISOString().split('T')[0]
       });
@@ -76,7 +76,7 @@ export class AggregationService {
         }
       };
     } catch (error: any) {
-      this.logger.error(`Error fetching dashboard data for user ${userId}:`, error);
+      this?.logger.error(`Error fetching dashboard data for user ${userId}:`, error);
       if (error instanceof NotFoundException) {
         throw error;
       }
@@ -94,7 +94,7 @@ export class AggregationService {
   ): Promise<AccountDetailsResponseDto> {
     try {
       // Get account details
-      const account = await this.glClient.getAccountById(accountId);
+      const account = await this?.glClient.getAccountById(accountId);
       
       if (!account) {
         throw new NotFoundException(`Account with ID ${accountId} not found`);
@@ -102,7 +102,7 @@ export class AggregationService {
       
       // Get journal entries for this account using filtering parameters
       // This is a simulation - in a real implementation we would call a specialized endpoint
-      const journalEntriesResponse = await this.glClient.getJournalEntries(1, 100);
+      const journalEntriesResponse = await this?.glClient.getJournalEntries(1, 100);
       const transactions = (journalEntriesResponse.data || [])
         .filter((entry: any) => {
           // Filter entries that include this account ID
@@ -111,7 +111,7 @@ export class AggregationService {
         .map((entry: any) => {
           // Map journal entries to transactions format
           // Find the line for this account
-          const line = entry.lines.find((l: any) => l.accountId === accountId);
+          const line = entry?.lines.find((l: any) => l.accountId === accountId);
           return {
             id: entry.id,
             date: entry.date,
@@ -134,7 +134,7 @@ export class AggregationService {
         balance
       };
     } catch (error: any) {
-      this.logger.error(`Error fetching account details for account ${accountId}:`, error);
+      this?.logger.error(`Error fetching account details for account ${accountId}:`, error);
       if (error instanceof NotFoundException) {
         throw error;
       }

@@ -11,23 +11,23 @@ import { Invoice } from '../invoices/entities/invoice.entity';
 import { Prisma } from '@prisma/client';
 
 interface PrismaPayment {
-  id: string;
-  invoiceId: string;
-  amount: number;
+  id: string | null;
+  invoiceId: string | null;
+  amount: number | null;
   paymentDate: Date;
-  paymentMethod: string;
-  reference?: string;
-  notes?: string;
-  status: string;
+  paymentMethod: string | null;
+  reference?: string | null;
+  notes?: string | null;
+  status: string | null;
   createdAt: Date;
   updatedAt: Date;
   invoice?: {
-    id: string;
-    invoiceNumber: string;
-    customerId: string;
-    totalAmount: number;
-    amountPaid?: number;
-    status?: string;
+    id: string | null;
+    invoiceNumber: string | null;
+    customerId: string | null;
+    totalAmount: number | null;
+    amountPaid?: number | null;
+    status?: string | null;
   };
 }
 
@@ -42,7 +42,7 @@ export class PaymentsRepository {
       const { invoiceId, ...paymentData } = createPaymentDto;
       
       // Start a transaction to create the payment and update the invoice
-      const payment = await this.prisma.$transaction(async (tx) => {
+      const payment = await this?.prisma.$transaction(async (tx) => {
         // Create the payment
         const newPayment = await (tx as any).invoicePayment.create({
           data: {
@@ -92,7 +92,7 @@ export class PaymentsRepository {
 
       return this.mapToEntity(payment);
     } catch (error: any) {
-      this.logger.error(`Failed to create payment: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to create payment: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to create payment', error.message);
     }
   }
@@ -114,7 +114,7 @@ export class PaymentsRepository {
       
       return payments.map((payment: PrismaPayment) => this.mapToEntity(payment));
     } catch (error: any) {
-      this.logger.error(`Failed to fetch payments: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to fetch payments: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to fetch payments', error.message);
     }
   }
@@ -144,7 +144,7 @@ export class PaymentsRepository {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      this.logger.error(`Failed to fetch payment: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to fetch payment: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to fetch payment', error.message);
     }
   }
@@ -167,7 +167,7 @@ export class PaymentsRepository {
       
       return payments.map((payment: PrismaPayment) => this.mapToEntity(payment));
     } catch (error: any) {
-      this.logger.error(`Failed to fetch payments for invoice ${invoiceId}: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to fetch payments for invoice ${invoiceId}: ${error.message}`, error.stack);
       throw new InternalServerErrorException(`Failed to fetch payments for invoice ${invoiceId}`, error.message);
     }
   }
@@ -191,7 +191,7 @@ export class PaymentsRepository {
       
       return this.mapToEntity(payment);
     } catch (error: any) {
-      this.logger.error(`Failed to update payment status: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to update payment status: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to update payment status', error.message);
     }
   }
@@ -199,7 +199,7 @@ export class PaymentsRepository {
   async deletePayment(id: string): Promise<void> {
     try {
       // Start a transaction to delete the payment and update the invoice
-      await this.prisma.$transaction(async (tx) => {
+      await this?.prisma.$transaction(async (tx) => {
         // Get the payment first to get the invoice ID and amount
         const payment = await (tx as any).invoicePayment.findUnique({
           where: { id },
@@ -265,14 +265,14 @@ export class PaymentsRepository {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      this.logger.error(`Failed to delete payment: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to delete payment: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to delete payment', error.message);
     }
   }
 
   async getInvoiceWithPayments(invoiceId: string): Promise<Invoice | null> {
     try {
-      this.logger.log(`Getting invoice ${invoiceId} with its payments`);
+      this?.logger.log(`Getting invoice ${invoiceId} with its payments`);
       const invoice = await (this.prisma as any).invoice.findUnique({
         where: { id: invoiceId },
         include: {
@@ -288,14 +288,14 @@ export class PaymentsRepository {
 
       return this.mapPrismaInvoiceToEntity(invoice);
     } catch (error: any) {
-      this.logger.error(`Error getting invoice with payments: ${error.message}`, error);
+      this?.logger.error(`Error getting invoice with payments: ${error.message}`, error);
       throw error;
     }
   }
 
   private async updateInvoiceBalances(tx: any, invoiceId: string, amountApplied: number) {
     try {
-      const invoice = await tx.invoice.findUnique({
+      const invoice = await tx?.invoice.findUnique({
         where: { id: invoiceId }
       });
 
@@ -311,7 +311,7 @@ export class PaymentsRepository {
       const newStatus = this.calculateInvoiceStatus(newBalanceDue, invoice.totalAmount);
 
       // Update the invoice
-      await tx.invoice.update({
+      await tx?.invoice.update({
         where: { id: invoiceId },
         data: {
           amountPaid: newAmountPaid,
@@ -322,7 +322,7 @@ export class PaymentsRepository {
 
       return true;
     } catch (error: any) {
-      this.logger.error(`Error updating invoice balances for invoice ${invoiceId}: ${error instanceof Error ? error.message : String(error)}`);
+      this?.logger.error(`Error updating invoice balances for invoice ${invoiceId}: ${error instanceof Error ? error.message : String(error)}`);
       throw new Error(`Failed to update invoice balances: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
@@ -339,7 +339,7 @@ export class PaymentsRepository {
 
   async updateInvoiceStatus(invoiceId: string, status: InvoiceStatus): Promise<Invoice> {
     try {
-      this.logger.log(`Updating invoice ${invoiceId} status to ${status}`);
+      this?.logger.log(`Updating invoice ${invoiceId} status to ${status}`);
       const updatedInvoice = await (this.prisma as any).invoice.update({
         where: { id: invoiceId },
         data: { status },
@@ -352,7 +352,7 @@ export class PaymentsRepository {
       
       return this.mapPrismaInvoiceToEntity(updatedInvoice);
     } catch (error: any) {
-      this.logger.error(`Error updating invoice status: ${error.message}`, error);
+      this?.logger.error(`Error updating invoice status: ${error.message}`, error);
       throw error;
     }
   }
@@ -360,7 +360,7 @@ export class PaymentsRepository {
   async applyPayment(dto: ApplyPaymentDto): Promise<Payment> {
     try {
       // Start a transaction to apply the payment to the invoice
-      const result = await this.prisma.$transaction(async (tx) => {
+      const result = await this?.prisma.$transaction(async (tx) => {
         // Get the payment
         const payment = await (tx as any).invoicePayment.findUnique({
           where: { id: dto.paymentId },
@@ -432,7 +432,7 @@ export class PaymentsRepository {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      this.logger.error(`Failed to apply payment: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to apply payment: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to apply payment', error.message);
     }
   }
@@ -441,7 +441,7 @@ export class PaymentsRepository {
     // Since this is the accounts receivable service, this method is likely misplaced
     // and should be in the accounts payable service instead
     // For now, we'll just return all payments
-    this.logger.warn(`getPaymentsByVendorId called with vendor ID ${vendorId} in accounts-receivable - this may be misplaced functionality`);
+    this?.logger.warn(`getPaymentsByVendorId called with vendor ID ${vendorId} in accounts-receivable - this may be misplaced functionality`);
     return this.findAll();
   }
 
@@ -461,12 +461,12 @@ export class PaymentsRepository {
       createdAt: payment.createdAt,
       updatedAt: payment.updatedAt,
       invoice: payment.invoice ? {
-        id: payment.invoice.id,
-        invoiceNumber: payment.invoice.invoiceNumber,
-        customerId: payment.invoice.customerId,
-        totalAmount: payment.invoice.totalAmount,
-        amountPaid: payment.invoice.amountPaid,
-        status: payment.invoice.status,
+        id: payment?.invoice.id,
+        invoiceNumber: payment?.invoice.invoiceNumber,
+        customerId: payment?.invoice.customerId,
+        totalAmount: payment?.invoice.totalAmount,
+        amountPaid: payment?.invoice.amountPaid,
+        status: payment?.invoice.status,
       } : undefined,
     });
   }
@@ -476,7 +476,7 @@ export class PaymentsRepository {
       id: prismaInvoice.id,
       invoiceNumber: prismaInvoice.invoiceNumber,
       customerId: prismaInvoice.customerId,
-      customerName: prismaInvoice.customer ? prismaInvoice.customer.name : '',
+      customerName: prismaInvoice.customer ? prismaInvoice?.customer.name : '',
       customerReference: prismaInvoice.customerReference,
       invoiceDate: prismaInvoice.invoiceDate,
       dueDate: prismaInvoice.dueDate,
@@ -494,7 +494,7 @@ export class PaymentsRepository {
     } as Invoice;
 
     if (prismaInvoice.items) {
-      invoice.items = prismaInvoice.items.map((item: any) => ({
+      invoice.items = prismaInvoice?.items.map((item: any) => ({
         id: item.id,
         description: item.description,
         quantity: item.quantity,
@@ -504,7 +504,7 @@ export class PaymentsRepository {
     }
 
     if (prismaInvoice.payments) {
-      invoice.payments = prismaInvoice.payments.map((payment: any) => ({
+      invoice.payments = prismaInvoice?.payments.map((payment: any) => ({
         id: payment.id,
         paymentDate: payment.paymentDate,
         amount: payment.amount,

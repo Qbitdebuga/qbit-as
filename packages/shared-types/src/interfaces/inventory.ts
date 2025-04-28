@@ -10,11 +10,11 @@ import { IProduct, IProductVariant, IInventoryLevel } from '../models/product';
  * Warehouse interface
  */
 export interface IWarehouse {
-  id: string;
-  name: string;
-  code: string;
-  address?: string;
-  isActive: boolean;
+  id: string | null;
+  name: string | null;
+  code: string | null;
+  address?: string | null;
+  isActive: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,11 +23,11 @@ export interface IWarehouse {
  * Warehouse location interface
  */
 export interface IWarehouseLocation {
-  id: string;
-  warehouseId: string;
-  name: string;
-  code: string;
-  isActive: boolean;
+  id: string | null;
+  warehouseId: string | null;
+  name: string | null;
+  code: string | null;
+  isActive: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,12 +36,12 @@ export interface IWarehouseLocation {
  * Transaction line interface
  */
 export interface ITransactionLine {
-  id: string;
-  transactionId: string;
-  productId: string;
-  variantId?: string;
-  quantity: number;
-  unitCost?: number;
+  id: string | null;
+  transactionId: string | null;
+  productId: string | null;
+  variantId?: string | null;
+  quantity: number | null;
+  unitCost?: number | null;
   product?: IProduct;
   variant?: IProductVariant;
   createdAt: Date;
@@ -52,15 +52,15 @@ export interface ITransactionLine {
  * Inventory transaction interface
  */
 export interface IInventoryTransaction {
-  id: string;
+  id: string | null;
   type: 'RECEIPT' | 'ISSUE' | 'TRANSFER' | 'ADJUSTMENT';
   status: 'DRAFT' | 'PENDING' | 'PROCESSED' | 'CANCELLED';
-  sourceWarehouseId?: string;
-  sourceLocationId?: string;
-  destinationWarehouseId?: string;
-  destinationLocationId?: string;
-  referenceNumber?: string;
-  notes?: string;
+  sourceWarehouseId?: string | null;
+  sourceLocationId?: string | null;
+  destinationWarehouseId?: string | null;
+  destinationLocationId?: string | null;
+  referenceNumber?: string | null;
+  notes?: string | null;
   lines: ITransactionLine[];
   sourceWarehouse?: IWarehouse;
   destinationWarehouse?: IWarehouse;
@@ -74,9 +74,9 @@ export interface IInventoryTransaction {
  */
 export interface IInventoryTransactionListResponse {
   data: IInventoryTransaction[];
-  total: number;
-  page: number;
-  limit: number;
+  total: number | null;
+  page: number | null;
+  limit: number | null;
 }
 
 /**
@@ -84,22 +84,22 @@ export interface IInventoryTransactionListResponse {
  */
 export interface IInventoryLevelListResponse {
   data: IInventoryLevel[];
-  total: number;
-  page: number;
-  limit: number;
+  total: number | null;
+  page: number | null;
+  limit: number | null;
 }
 
 /**
  * Inventory filter parameters interface
  */
 export interface IInventoryFilterParams {
-  page?: number;
-  limit?: number;
-  type?: string;
-  status?: string;
-  warehouseId?: string;
-  productId?: string;
-  startDate?: string;
-  endDate?: string;
-  search?: string;
+  page?: number | null;
+  limit?: number | null;
+  type?: string | null;
+  status?: string | null;
+  warehouseId?: string | null;
+  productId?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  search?: string | null;
 }

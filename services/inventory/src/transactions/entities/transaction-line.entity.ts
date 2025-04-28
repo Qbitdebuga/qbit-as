@@ -3,10 +3,10 @@ import { Decimal } from '@prisma/client/runtime/library';
 
 export class TransactionLineEntity {
   @ApiProperty({ description: 'Unique identifier for the transaction line' })
-  id: string;
+  id: string | null;
 
   @ApiProperty({ description: 'ID of the parent transaction' })
-  transactionId: string;
+  transactionId: string | null;
 
   @ApiPropertyOptional({ description: 'Product ID' })
   productId: number | null;
@@ -27,7 +27,7 @@ export class TransactionLineEntity {
   processedQuantity: Decimal;
 
   @ApiProperty({ description: 'Status of the transaction line (pending, partial, complete, cancelled)' })
-  status: string;
+  status: string | null;
 
   @ApiPropertyOptional({ description: 'Notes about the transaction line' })
   notes: string | null;

@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Warehouse } from 'lucide-react';
-import { IWarehouse } from '@qbit-accounting/shared-types';
+import { IWarehouse } from '@qbit/shared-types';
 
 interface WarehouseSelectorProps {
   warehouses: IWarehouse[];

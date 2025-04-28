@@ -2,34 +2,34 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class BillLineItem {
   @ApiProperty({ description: 'The unique identifier of the line item' })
-  id: number;
+  id: number | null;
 
   @ApiProperty({ description: 'The ID of the bill this line item belongs to' })
-  billId: number;
+  billId: number | null;
 
   @ApiProperty({ description: 'Description of the product or service', example: 'Office Supplies' })
-  description: string;
+  description: string | null;
 
   @ApiProperty({ description: 'The account ID for this expense', example: 5001 })
-  accountId: number;
+  accountId: number | null;
 
   @ApiProperty({ description: 'The quantity of the item', example: 5 })
-  quantity: number;
+  quantity: number | null;
 
   @ApiProperty({ description: 'The price per unit', example: 45.99 })
-  unitPrice: number;
+  unitPrice: number | null;
 
   @ApiProperty({ description: 'The total for this line (quantity * unitPrice)', example: 229.95 })
-  amount: number;
+  amount: number | null;
 
   @ApiPropertyOptional({ description: 'The discount percentage applied to this item', example: 10 })
-  discountPercent?: number;
+  discountPercent?: number | null;
 
   @ApiPropertyOptional({ description: 'The tax percentage applied to this item', example: 8.25 })
-  taxPercent?: number;
+  taxPercent?: number | null;
 
   @ApiPropertyOptional({ description: 'Additional notes about this line item' })
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({ description: 'The date when the line item was created' })
   createdAt: Date;

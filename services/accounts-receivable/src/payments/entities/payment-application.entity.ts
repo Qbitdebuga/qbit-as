@@ -1,8 +1,8 @@
 export class PaymentApplication {
-  id!: string;
-  paymentId!: string;
-  invoiceId!: string;
-  amountApplied!: number;
+  id!: string | null;
+  paymentId!: string | null;
+  invoiceId!: string | null;
+  amountApplied!: number | null;
   createdAt!: Date;
   updatedAt!: Date;
 

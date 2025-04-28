@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { formatCurrency, formatDate } from '@/utils/format';
 import { Invoice } from '@qbit/shared-types';
 import { useReactToPrint } from 'react-to-print';

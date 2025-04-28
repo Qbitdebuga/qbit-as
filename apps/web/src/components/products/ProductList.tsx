@@ -45,7 +45,7 @@ import {
   ArrowUp,
   ArrowDown,
 } from 'lucide-react';
-import { IProduct } from '@qbit-accounting/shared-types';
+import { IProduct } from '@qbit/shared-types';
 import { formatCurrency } from '@/utils/format';
 import {
   AlertDialog,

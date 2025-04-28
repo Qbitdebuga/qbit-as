@@ -27,7 +27,7 @@ import {
   Truck 
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
-import { IProduct } from '@qbit-accounting/shared-types';
+import { IProduct } from '@qbit/shared-types';
 import { formatCurrency } from '@/utils/format';
 import { formatDate } from '@/utils/date';
 import { ProductVariants } from './ProductVariants';

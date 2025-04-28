@@ -24,9 +24,9 @@ import { ServiceAuthClient } from '../auth/service-auth-client';
  * Implements the IGeneralLedgerService interface for type safety
  */
 export class GeneralLedgerClient implements IGeneralLedgerService {
-  private readonly apiUrl: string;
+  private readonly apiUrl: string | null;
   private readonly serviceAuthClient?: ServiceAuthClient;
-  private readonly accessToken?: string;
+  private readonly accessToken?: string | null;
 
   /**
    * Create a new GL client either with a service auth client for server-to-server
@@ -36,7 +36,7 @@ export class GeneralLedgerClient implements IGeneralLedgerService {
     apiUrl: string, 
     authOptions?: { 
       serviceAuthClient?: ServiceAuthClient;
-      accessToken?: string;
+      accessToken?: string | null;
     }
   ) {
     this.apiUrl = apiUrl;
@@ -59,7 +59,7 @@ export class GeneralLedgerClient implements IGeneralLedgerService {
     
     // If using service auth client, delegate to it
     if (this.serviceAuthClient) {
-      return this.serviceAuthClient.makeAuthenticatedRequest<T>(url, options, scopes);
+      return this?.serviceAuthClient.makeAuthenticatedRequest<T>(url, options, scopes);
     }
     
     // Otherwise use the access token directly

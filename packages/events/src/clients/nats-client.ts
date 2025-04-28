@@ -34,11 +34,11 @@ export class NatsClient {
         ...options
       });
 
-      console.log(`Connected to NATS server at ${this._client.getServer()}`);
+      console.log(`Connected to NATS server at ${this?._client.getServer()}`);
       
       // Create JetStream client for persistent messaging
-      this._jetstream = this._client.jetstream();
-      this._jsm = await this._client.jetstreamManager();
+      this._jetstream = this?._client.jetstream();
+      this._jsm = await this?._client.jetstreamManager();
       
       // Setup reconnection handling
       (async () => {
@@ -48,7 +48,7 @@ export class NatsClient {
       })().catch(error => console.error('Error monitoring NATS status:', error));
       
       // Setup error handling
-      this._client.closed().then(err => {
+      this?._client.closed().then(err: any => {
         if (err) {
           console.error('NATS connection closed with error:', err);
         } else {
@@ -69,7 +69,7 @@ export class NatsClient {
    */
   public async close(): Promise<void> {
     if (this._client) {
-      await this._client.drain();
+      await this?._client.drain();
       this._client = undefined;
       this._jetstream = undefined;
       this._jsm = undefined;

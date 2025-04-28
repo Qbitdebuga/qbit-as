@@ -6,14 +6,14 @@ export class ConfigService {
   constructor(private configService: NestConfigService) {}
 
   get(key: string): string {
-    return this.configService.get<string>(key);
+    return this?.configService.get<string>(key);
   }
 
   getNumber(key: string): number {
-    return Number(this.configService.get<string>(key));
+    return Number(this?.configService.get<string>(key));
   }
 
   getBoolean(key: string): boolean {
-    return this.configService.get<string>(key) === 'true';
+    return this?.configService.get<string>(key) === 'true';
   }
 } 

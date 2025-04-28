@@ -13,47 +13,47 @@ export enum DepreciationMethod {
  * Depreciation entry interface
  */
 export interface DepreciationEntry {
-  id: string;
-  assetId: string;
-  date: string;
-  amount: number;
-  bookValue: number;
-  createdAt: string;
-  updatedAt: string;
+  id: string | null;
+  assetId: string | null;
+  date: string | null;
+  amount: number | null;
+  bookValue: number | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 /**
  * Interface for depreciation calculation request
  */
 export interface CalculateDepreciationRequest {
-  assetId: string;
+  assetId: string | null;
   depreciationMethod?: DepreciationMethod;
-  asOfDate?: string;
-  includeProjections?: boolean;
-  projectionPeriods?: number;
+  asOfDate?: string | null;
+  includeProjections?: boolean | null;
+  projectionPeriods?: number | null;
 }
 
 /**
  * Interface for depreciation calculation response
  */
 export interface CalculateDepreciationResponse {
-  assetId: string;
-  originalCost: number;
-  residualValue: number;
-  depreciableAmount: number;
-  accumulatedDepreciation: number;
-  currentBookValue: number;
-  isFullyDepreciated: boolean;
+  assetId: string | null;
+  originalCost: number | null;
+  residualValue: number | null;
+  depreciableAmount: number | null;
+  accumulatedDepreciation: number | null;
+  currentBookValue: number | null;
+  isFullyDepreciated: boolean | null;
   depreciationMethod: DepreciationMethod;
   entries: {
-    date: string;
-    amount: number;
-    bookValue: number;
+    date: string | null;
+    amount: number | null;
+    bookValue: number | null;
   }[];
   projectedEntries?: {
-    date: string;
-    amount: number;
-    bookValue: number;
+    date: string | null;
+    amount: number | null;
+    bookValue: number | null;
   }[];
 }
 
@@ -61,18 +61,18 @@ export interface CalculateDepreciationResponse {
  * Interface for a depreciation schedule
  */
 export interface DepreciationSchedule {
-  assetId: string;
-  originalCost: number;
-  residualValue: number;
-  depreciableAmount: number;
-  accumulatedDepreciation: number;
-  currentBookValue: number;
-  isFullyDepreciated: boolean;
+  assetId: string | null;
+  originalCost: number | null;
+  residualValue: number | null;
+  depreciableAmount: number | null;
+  accumulatedDepreciation: number | null;
+  currentBookValue: number | null;
+  isFullyDepreciated: boolean | null;
   entries: DepreciationEntry[];
   projectedEntries: {
-    date: string;
-    amount: number;
-    bookValue: number;
+    date: string | null;
+    amount: number | null;
+    bookValue: number | null;
   }[];
 }
 
@@ -81,6 +81,6 @@ export interface DepreciationSchedule {
  */
 export interface DepreciationMethodDetails {
   method: DepreciationMethod;
-  name: string;
-  description: string;
+  name: string | null;
+  description: string | null;
 } 

@@ -2,19 +2,19 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PaymentApplication {
   @ApiProperty({ description: 'The unique identifier of the payment application' })
-  id: number;
+  id: number | null;
 
   @ApiProperty({ description: 'The ID of the payment this application belongs to' })
-  paymentId: number;
+  paymentId: number | null;
 
   @ApiProperty({ description: 'The ID of the bill being paid' })
-  billId: number;
+  billId: number | null;
 
   @ApiProperty({ 
     description: 'The amount applied to the bill', 
     example: 500.00
   })
-  amount: number;
+  amount: number | null;
 
   @ApiProperty({ description: 'The date when the payment application was created' })
   createdAt: Date;

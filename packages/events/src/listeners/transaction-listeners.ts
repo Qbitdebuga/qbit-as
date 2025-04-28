@@ -13,7 +13,7 @@ import { JsMsg } from 'nats';
  */
 export abstract class TransactionCreatedListener extends Listener<TransactionCreatedEvent> {
   readonly subject = 'transaction.created';
-  abstract readonly queueGroup: string;
+  abstract readonly queueGroup: string | null;
   
   abstract onMessage(data: TransactionCreatedEvent['data'], msg: JsMsg): Promise<void>;
 }
@@ -24,7 +24,7 @@ export abstract class TransactionCreatedListener extends Listener<TransactionCre
  */
 export abstract class TransactionUpdatedListener extends Listener<TransactionUpdatedEvent> {
   readonly subject = 'transaction.updated';
-  abstract readonly queueGroup: string;
+  abstract readonly queueGroup: string | null;
   
   abstract onMessage(data: TransactionUpdatedEvent['data'], msg: JsMsg): Promise<void>;
 }
@@ -35,7 +35,7 @@ export abstract class TransactionUpdatedListener extends Listener<TransactionUpd
  */
 export abstract class TransactionPostedListener extends Listener<TransactionPostedEvent> {
   readonly subject = 'transaction.posted';
-  abstract readonly queueGroup: string;
+  abstract readonly queueGroup: string | null;
   
   abstract onMessage(data: TransactionPostedEvent['data'], msg: JsMsg): Promise<void>;
 }
@@ -46,7 +46,7 @@ export abstract class TransactionPostedListener extends Listener<TransactionPost
  */
 export abstract class TransactionVoidedListener extends Listener<TransactionVoidedEvent> {
   readonly subject = 'transaction.voided';
-  abstract readonly queueGroup: string;
+  abstract readonly queueGroup: string | null;
   
   abstract onMessage(data: TransactionVoidedEvent['data'], msg: JsMsg): Promise<void>;
 } 

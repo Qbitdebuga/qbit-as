@@ -2,14 +2,14 @@ import { Account } from '../../accounts/entities/account.entity';
 import { JournalEntry } from './journal-entry.entity';
 
 export class JournalEntryLine {
-  id!: string;
-  journalEntryId!: string;
+  id!: string | null;
+  journalEntryId!: string | null;
   journalEntry!: JournalEntry;
-  accountId!: string;
+  accountId!: string | null;
   account!: Account;
-  description?: string;
-  debit?: number;
-  credit?: number;
+  description?: string | null;
+  debit?: number | null;
+  credit?: number | null;
   createdAt!: Date;
   updatedAt!: Date;
 

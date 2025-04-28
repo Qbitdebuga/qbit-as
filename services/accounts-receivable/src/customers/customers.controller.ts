@@ -32,7 +32,7 @@ export class CustomersController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input data' })
   @ApiResponse({ status: HttpStatus.CONFLICT, description: 'Customer number already exists' })
   create(@Body() createCustomerDto: CreateCustomerDto): Promise<any> {
-    return this.customersService.create(createCustomerDto);
+    return this?.customersService.create(createCustomerDto);
   }
 
   @Get()
@@ -52,7 +52,7 @@ export class CustomersController {
     @Query('sortBy') sortBy?: string,
     @Query('sortDirection') sortDirection?: 'asc' | 'desc',
   ): Promise<any> {
-    return this.customersService.findAll({
+    return this?.customersService.findAll({
       page: page ? parseInt(page.toString(), 10) : undefined,
       limit: limit ? parseInt(limit.toString(), 10) : undefined,
       search,
@@ -68,7 +68,7 @@ export class CustomersController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Customer not found' })
   @ApiParam({ name: 'id', description: 'Customer ID' })
   findOne(@Param('id') id: string): Promise<any> {
-    return this.customersService.findOne(id);
+    return this?.customersService.findOne(id);
   }
 
   @Get('number/:customerNumber')
@@ -77,7 +77,7 @@ export class CustomersController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Customer not found' })
   @ApiParam({ name: 'customerNumber', description: 'Customer number' })
   findByCustomerNumber(@Param('customerNumber') customerNumber: string): Promise<any> {
-    return this.customersService.findByCustomerNumber(customerNumber);
+    return this?.customersService.findByCustomerNumber(customerNumber);
   }
 
   @Put(':id')
@@ -87,7 +87,7 @@ export class CustomersController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Customer not found' })
   @ApiParam({ name: 'id', description: 'Customer ID' })
   update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto): Promise<any> {
-    return this.customersService.update(id, updateCustomerDto);
+    return this?.customersService.update(id, updateCustomerDto);
   }
 
   @Delete(':id')
@@ -97,7 +97,7 @@ export class CustomersController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Customer not found' })
   @ApiParam({ name: 'id', description: 'Customer ID' })
   remove(@Param('id') id: string): Promise<any> {
-    return this.customersService.remove(id);
+    return this?.customersService.remove(id);
   }
 
   // Contact endpoints
@@ -111,7 +111,7 @@ export class CustomersController {
     @Param('customerId') customerId: string,
     @Body() createContactDto: CreateCustomerContactDto,
   ): Promise<any> {
-    return this.customersService.createContact(customerId, createContactDto);
+    return this?.customersService.createContact(customerId, createContactDto);
   }
 
   @Put('contacts/:id')
@@ -124,7 +124,7 @@ export class CustomersController {
     @Param('id') id: string,
     @Body() updateContactDto: Partial<CreateCustomerContactDto>,
   ): Promise<any> {
-    return this.customersService.updateContact(id, updateContactDto);
+    return this?.customersService.updateContact(id, updateContactDto);
   }
 
   @Delete('contacts/:id')
@@ -134,6 +134,6 @@ export class CustomersController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Contact not found' })
   @ApiParam({ name: 'id', description: 'Contact ID' })
   removeContact(@Param('id') id: string): Promise<any> {
-    return this.customersService.removeContact(id);
+    return this?.customersService.removeContact(id);
   }
 } 

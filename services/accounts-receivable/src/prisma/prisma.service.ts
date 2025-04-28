@@ -23,28 +23,28 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async onModuleInit() {
-    this.logger.log('Connecting to database...');
+    this?.logger.log('Connecting to database...');
     await this.$connect();
-    this.logger.log('Connected to database');
+    this?.logger.log('Connected to database');
 
     // Set up logging (if in development)
-    if (this.configService.get<string>('app.env') === 'development') {
+    if (this?.configService.get<string>('app.env') === 'development') {
       (this as any).$on('query', (event: any) => {
-        this.logger.debug(`Query: ${event.query}`);
-        this.logger.debug(`Duration: ${event.duration}ms`);
+        this?.logger.debug(`Query: ${event.query}`);
+        this?.logger.debug(`Duration: ${event.duration}ms`);
       });
     }
 
     // Always log errors
     (this as any).$on('error', (event: any) => {
-      this.logger.error(`Database error: ${event.message}`);
+      this?.logger.error(`Database error: ${event.message}`);
     });
   }
 
   async onModuleDestroy() {
-    this.logger.log('Disconnecting from database...');
+    this?.logger.log('Disconnecting from database...');
     await this.$disconnect();
-    this.logger.log('Disconnected from database');
+    this?.logger.log('Disconnected from database');
   }
 
   // Type assertion for direct model access

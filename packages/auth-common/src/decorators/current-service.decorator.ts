@@ -17,7 +17,7 @@ import { ServiceInfo } from '../guards/service-auth.guard';
  * ```
  */
 export const GetCurrentService = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): ServiceInfo => {
+  (data: unknown, ctx: ExecutionContext): ServiceInfo: any => {
     const request = ctx.switchToHttp().getRequest();
     return request.service;
   },

@@ -15,7 +15,7 @@ export class CategoriesController {
   @ApiResponse({ status: 201, description: 'The asset category has been successfully created.', type: AssetCategoryEntity })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   create(@Body() createCategoryDto: CreateCategoryDto): Promise<AssetCategoryEntity> {
-    return this.categoriesService.createCategory(createCategoryDto);
+    return this?.categoriesService.createCategory(createCategoryDto);
   }
 
   @Get()
@@ -29,7 +29,7 @@ export class CategoriesController {
     @Query('take', new ParseIntPipe({ optional: true })) take?: number,
     @Query('searchTerm') searchTerm?: string,
   ): Promise<{ categories: AssetCategoryEntity[]; total: number }> {
-    return this.categoriesService.findAllCategories(skip, take, searchTerm);
+    return this?.categoriesService.findAllCategories(skip, take, searchTerm);
   }
 
   @Get(':id')
@@ -38,7 +38,7 @@ export class CategoriesController {
   @ApiResponse({ status: 404, description: 'Asset category not found.' })
   @ApiParam({ name: 'id', description: 'Asset category ID', type: String })
   findOne(@Param('id') id: string): Promise<AssetCategoryEntity> {
-    return this.categoriesService.findOneCategory(id);
+    return this?.categoriesService.findOneCategory(id);
   }
 
   @Patch(':id')
@@ -50,7 +50,7 @@ export class CategoriesController {
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<AssetCategoryEntity> {
-    return this.categoriesService.updateCategory(id, updateCategoryDto);
+    return this?.categoriesService.updateCategory(id, updateCategoryDto);
   }
 
   @Delete(':id')
@@ -59,6 +59,6 @@ export class CategoriesController {
   @ApiResponse({ status: 404, description: 'Asset category not found.' })
   @ApiParam({ name: 'id', description: 'Asset category ID', type: String })
   remove(@Param('id') id: string): Promise<void> {
-    return this.categoriesService.removeCategory(id);
+    return this?.categoriesService.removeCategory(id);
   }
 } 

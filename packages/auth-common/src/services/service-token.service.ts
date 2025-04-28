@@ -8,7 +8,7 @@ export interface ServiceTokenPayload {
   /**
    * Service name
    */
-  service: string;
+  service: string | null;
   
   /**
    * Service-specific permissions
@@ -18,17 +18,17 @@ export interface ServiceTokenPayload {
   /**
    * Issued at
    */
-  iat?: number;
+  iat?: number | null;
   
   /**
    * Expiration time
    */
-  exp?: number;
+  exp?: number | null;
   
   /**
    * Issuer
    */
-  iss?: string;
+  iss?: string | null;
   
   /**
    * Additional claims
@@ -43,18 +43,18 @@ export interface ServiceTokenOptions {
   /**
    * JWT secret key for service tokens
    */
-  secret: string;
+  secret: string | null;
   
   /**
    * JWT expiration time in seconds
    * @default 3600 (1 hour)
    */
-  expiresIn?: number;
+  expiresIn?: number | null;
   
   /**
    * JWT issuer
    */
-  issuer?: string;
+  issuer?: string | null;
 }
 
 /**
@@ -114,14 +114,14 @@ export class ServiceTokenService {
     };
     
     const tokenOptions: jwt.SignOptions = {
-      expiresIn: this.options.expiresIn,
+      expiresIn: this?.options.expiresIn,
     };
     
-    if (this.options.issuer) {
-      tokenOptions.issuer = this.options.issuer;
+    if (this?.options.issuer) {
+      tokenOptions.issuer = this?.options.issuer;
     }
     
-    return jwt.sign(payload, this.options.secret, tokenOptions);
+    return jwt.sign(payload, this?.options.secret, tokenOptions);
   }
 
   /**
@@ -133,8 +133,8 @@ export class ServiceTokenService {
    */
   validateToken(token: string): ServiceTokenPayload {
     try {
-      const payload = jwt.verify(token, this.options.secret, {
-        issuer: this.options.issuer,
+      const payload = jwt.verify(token, this?.options.secret, {
+        issuer: this?.options.issuer,
       }) as ServiceTokenPayload;
       
       if (!payload.service) {

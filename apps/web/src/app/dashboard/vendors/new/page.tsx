@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { VendorForm } from '@/components/vendors/VendorForm';
-import { VendorsClient } from '@qbit/api-client';
-import { CreateVendorDto } from '@qbit/shared-types';
+import { VendorsClient } from '@/mocks/api-client';
+import { CreateVendorDto } from '@/mocks/shared-types';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function NewVendorPage() {

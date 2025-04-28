@@ -15,14 +15,14 @@ export class VendorsController {
   @ApiResponse({ status: 201, description: 'Vendor created successfully', type: VendorDto })
   @ApiResponse({ status: 400, description: 'Bad request' })
   async create(@Body() createVendorDto: CreateVendorDto): Promise<VendorDto> {
-    return this.vendorsService.create(createVendorDto);
+    return this?.vendorsService.create(createVendorDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all vendors' })
   @ApiResponse({ status: 200, description: 'Return all vendors', type: [VendorDto] })
   async findAll(): Promise<VendorDto[]> {
-    return this.vendorsService.findAll();
+    return this?.vendorsService.findAll();
   }
 
   @Get(':id')
@@ -30,7 +30,7 @@ export class VendorsController {
   @ApiResponse({ status: 200, description: 'Return a vendor by id', type: VendorDto })
   @ApiResponse({ status: 404, description: 'Vendor not found' })
   async findOne(@Param('id') id: string): Promise<VendorDto> {
-    return this.vendorsService.findOne(+id);
+    return this?.vendorsService.findOne(+id);
   }
 
   @Patch(':id')
@@ -42,7 +42,7 @@ export class VendorsController {
     @Param('id') id: string,
     @Body() updateVendorDto: UpdateVendorDto,
   ): Promise<VendorDto> {
-    return this.vendorsService.update(+id, updateVendorDto);
+    return this?.vendorsService.update(+id, updateVendorDto);
   }
 
   @Delete(':id')
@@ -50,6 +50,6 @@ export class VendorsController {
   @ApiResponse({ status: 200, description: 'Vendor deleted successfully' })
   @ApiResponse({ status: 404, description: 'Vendor not found' })
   async remove(@Param('id') id: string): Promise<void> {
-    return this.vendorsService.remove(+id);
+    return this?.vendorsService.remove(+id);
   }
 } 

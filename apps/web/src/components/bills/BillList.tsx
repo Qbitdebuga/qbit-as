@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bill, BillStatus } from '@qbit-accounting/shared-types';
-import { billsClient } from '@qbit-accounting/api-client';
+import { Bill, BillStatus } from '@qbit/shared-types';
+import { billsClient } from '@qbit/api-client';
 import { useAuth } from '@/hooks/useAuth';
 import { setupAuthForClient } from '@/utils/auth-helpers';
 import { 

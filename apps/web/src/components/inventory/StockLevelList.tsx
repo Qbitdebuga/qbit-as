@@ -38,7 +38,7 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { IInventoryLevel, IProduct, IProductVariant, IWarehouse } from '@qbit-accounting/shared-types';
+import { IInventoryLevel, IProduct, IProductVariant, IWarehouse } from '@qbit/shared-types';
 import { formatCurrency } from '@/utils/format';
 
 interface StockLevelListProps {

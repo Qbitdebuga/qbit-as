@@ -9,7 +9,8 @@
     "clean": "rimraf dist",
     "dev": "tsc --watch",
     "lint": "eslint --ext .ts src",
-    "test": "jest"
+    "test": "jest",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "auth",

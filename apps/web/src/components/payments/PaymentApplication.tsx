@@ -8,7 +8,7 @@ import {
   CardFooter, 
   CardHeader, 
   CardTitle 
-} from '../ui/card';
+} from '@/components/ui/card';
 import { 
   Table, 
   TableBody, 
@@ -16,13 +16,13 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '../ui/table';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useInvoices } from '@/hooks/useInvoices';
 import { usePayments } from '@/hooks/usePayments';
 import { formatCurrency, formatDate } from '@/utils/formatters';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { CreatePaymentRequest, PaymentMethod } from '@qbit/shared-types';
 
 interface PaymentApplicationProps {

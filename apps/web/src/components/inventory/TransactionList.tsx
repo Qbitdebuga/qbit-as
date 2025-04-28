@@ -49,7 +49,7 @@ import {
   XCircle,
   History,
 } from 'lucide-react';
-import { IInventoryTransaction, IWarehouse } from '@qbit-accounting/shared-types';
+import { IInventoryTransaction, IWarehouse } from '@qbit/shared-types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDate } from '@/utils/format';
 

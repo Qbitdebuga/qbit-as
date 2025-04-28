@@ -8,7 +8,8 @@
     "build": "rimraf dist && npx tsc -p tsconfig.json && echo \"✅ @qbit/events build completed successfully\"",
     "clean": "rm -rf dist",
     "dev": "tsc --watch",
-    "lint": "eslint \"src/**/*.ts*\""
+    "lint": "eslint \"src/**/*.ts*\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@qbit/shared-types": "*",

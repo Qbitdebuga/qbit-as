@@ -8,18 +8,18 @@ interface ServiceTokenOptions {
 
 @Injectable()
 export class AuthService {
-  private authServiceUrl: string;
-  private serviceId: string;
-  private serviceName: string;
-  private serviceSecret: string;
+  private authServiceUrl: string | null;
+  private serviceId: string | null;
+  private serviceName: string | null;
+  private serviceSecret: string | null;
   private token: string | null = null;
   private tokenExpiresAt: number | null = null;
 
   constructor(private configService: ConfigService) {
-    this.authServiceUrl = this.configService.get<string>('AUTH_SERVICE_URL', 'http://localhost:3002');
+    this.authServiceUrl = this?.configService.get<string>('AUTH_SERVICE_URL', 'http://localhost:3002');
     this.serviceId = 'gl';
     this.serviceName = 'General Ledger Service';
-    this.serviceSecret = this.configService.get<string>('SERVICE_GL_SECRET', '');
+    this.serviceSecret = this?.configService.get<string>('SERVICE_GL_SECRET', '');
   }
 
   /**
@@ -43,7 +43,7 @@ export class AuthService {
         },
       });
 
-      this.token = response.data.token;
+      this.token = response?.data.token;
       
       // Set expiration time to slightly less than actual to account for clock skew
       // Default to 1 hour before expiry if we can't determine it

@@ -5,17 +5,17 @@ import { PrismaService } from '../../prisma/prisma.service';
 
 // Sample account event payload structure
 interface AccountEventPayload {
-  serviceSource: string;
-  entityType: string;
-  entityId: string;
-  timestamp: string;
+  serviceSource: string | null;
+  entityType: string | null;
+  entityId: string | null;
+  timestamp: string | null;
   data: {
-    id: string;
-    code: string;
-    name: string;
-    type: string;
-    subtype: string;
-    isActive: boolean;
+    id: string | null;
+    code: string | null;
+    name: string | null;
+    type: string | null;
+    subtype: string | null;
+    isActive: boolean | null;
   };
 }
 
@@ -35,7 +35,7 @@ export class AccountEventConsumer implements OnModuleInit {
    * Setup event connections when the module initializes
    */
   async onModuleInit() {
-    this.logger.log('Account event consumer initialized');
+    this?.logger.log('Account event consumer initialized');
   }
 
   /**
@@ -44,7 +44,7 @@ export class AccountEventConsumer implements OnModuleInit {
   @EventPattern('account.created')
   async handleAccountCreated(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received account.created event from ${payload.serviceSource} for account ${payload.entityId}`);
+      this?.logger.log(`Received account.created event from ${payload.serviceSource} for account ${payload.entityId}`);
       
       // TODO: Implement business logic for account creation
       // Example: Create an account reference in the accounts_receivable database
@@ -54,7 +54,7 @@ export class AccountEventConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling account.created event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling account.created event: ${error.message}`, error.stack);
     }
   }
 
@@ -64,7 +64,7 @@ export class AccountEventConsumer implements OnModuleInit {
   @EventPattern('account.updated')
   async handleAccountUpdated(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received account.updated event from ${payload.serviceSource} for account ${payload.entityId}`);
+      this?.logger.log(`Received account.updated event from ${payload.serviceSource} for account ${payload.entityId}`);
       
       // TODO: Implement business logic for account update
       // Example: Update an account reference in the accounts_receivable database
@@ -74,7 +74,7 @@ export class AccountEventConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling account.updated event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling account.updated event: ${error.message}`, error.stack);
     }
   }
 
@@ -84,7 +84,7 @@ export class AccountEventConsumer implements OnModuleInit {
   @EventPattern('account.deleted')
   async handleAccountDeleted(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
     try {
-      this.logger.log(`Received account.deleted event from ${payload.serviceSource} for account ${payload.entityId}`);
+      this?.logger.log(`Received account.deleted event from ${payload.serviceSource} for account ${payload.entityId}`);
       
       // TODO: Implement business logic for account deletion
       // Example: Mark an account reference as deleted in the accounts_receivable database
@@ -94,7 +94,7 @@ export class AccountEventConsumer implements OnModuleInit {
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
     } catch (error: any) {
-      this.logger.error(`Error handling account.deleted event: ${error.message}`, error.stack);
+      this?.logger.error(`Error handling account.deleted event: ${error.message}`, error.stack);
     }
   }
 } 

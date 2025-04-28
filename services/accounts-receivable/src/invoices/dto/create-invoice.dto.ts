@@ -18,53 +18,53 @@ export class CreateInvoiceItemDto {
   @ApiPropertyOptional({ description: 'Item code or SKU', example: 'SKU-12345' })
   @IsOptional()
   @IsString()
-  itemCode?: string;
+  itemCode?: string | null;
 
   @ApiProperty({ description: 'Item description', example: 'Web Development Services' })
   @IsNotEmpty()
   @IsString()
-  description!: string;
+  description!: string | null;
 
   @ApiProperty({ description: 'Quantity', example: 5 })
   @IsNotEmpty()
   @IsNumber()
   @Min(0.01)
-  quantity!: number;
+  quantity!: number | null;
 
   @ApiProperty({ description: 'Unit price', example: 120.00 })
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  unitPrice!: number;
+  unitPrice!: number | null;
 
   @ApiPropertyOptional({ description: 'Discount percentage', example: 10 })
   @IsOptional()
   @IsNumber()
   @Min(0)
-  discountPercentage?: number;
+  discountPercentage?: number | null;
 
   @ApiPropertyOptional({ description: 'Tax percentage', example: 8.25 })
   @IsOptional()
   @IsNumber()
   @Min(0)
-  taxPercentage?: number;
+  taxPercentage?: number | null;
 
   @ApiPropertyOptional({ description: 'Additional notes for this item' })
   @IsOptional()
   @IsString()
-  notes?: string;
+  notes?: string | null;
 }
 
 export class CreateInvoiceDto {
   @ApiProperty({ description: 'Customer ID', example: 'c7fb7b8a-b35d-4d5f-a766-78364b5ac1ff' })
   @IsNotEmpty()
   @IsUUID()
-  customerId!: string;
+  customerId!: string | null;
 
   @ApiPropertyOptional({ description: 'Customer reference number', example: 'PO-12345' })
   @IsOptional()
   @IsString()
-  customerReference?: string;
+  customerReference?: string | null;
 
   @ApiProperty({ description: 'Invoice date', example: '2023-01-15' })
   @IsNotEmpty()
@@ -91,12 +91,12 @@ export class CreateInvoiceDto {
   @ApiPropertyOptional({ description: 'Notes', example: 'Payment due within 30 days' })
   @IsOptional()
   @IsString()
-  notes?: string;
+  notes?: string | null;
 
   @ApiPropertyOptional({ description: 'Terms and conditions' })
   @IsOptional()
   @IsString()
-  terms?: string;
+  terms?: string | null;
 
   @ApiProperty({ description: 'Invoice items', type: [CreateInvoiceItemDto] })
   @IsArray()

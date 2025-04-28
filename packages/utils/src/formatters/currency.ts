@@ -7,21 +7,21 @@
  */
 export interface CurrencyFormatOptions {
   /** Currency code (default: 'USD') */
-  currency?: string;
+  currency?: string | null;
   /** Locale to use for formatting (default: 'en-US') */
-  locale?: string;
+  locale?: string | null;
   /** Number of decimal places (default: 2) */
-  decimals?: number;
+  decimals?: number | null;
   /** Whether to include the currency symbol (default: true) */
-  symbol?: boolean;
+  symbol?: boolean | null;
   /** Whether to include the currency code (default: false) */
-  code?: boolean;
+  code?: boolean | null;
   /** Whether to use accounting notation (negative numbers in parentheses) (default: false) */
-  accounting?: boolean;
+  accounting?: boolean | null;
   /** Whether to round to the nearest cent (default: true) */
-  round?: boolean;
+  round?: boolean | null;
   /** Custom currency symbol to use */
-  customSymbol?: string;
+  customSymbol?: string | null;
 }
 
 /**
@@ -150,7 +150,7 @@ export function formatCurrency(amount: number, options: CurrencyFormatOptions = 
  */
 export function formatPercentage(
   value: number,
-  options: { decimals?: number; locale?: string } = {}
+  options: { decimals?: number | null; locale?: string } = {}
 ): string {
   const decimals = options.decimals ?? 0;
   const locale = options.locale || 'en-US';
@@ -180,7 +180,7 @@ export function formatPercentage(
  * Calculate compound interest
  * 
  * @param principal - Principal amount
- * @param rate - Interest rate (as a decimal, e.g., 0.05 for 5%)
+ * @param rate - Interest rate (as a decimal, e?.g., 0.05 for 5%)
  * @param time - Time period (in years)
  * @param frequency - Compounding frequency per year (default: 1)
  * @returns Future value
@@ -209,7 +209,7 @@ export function calculateCompoundInterest(
  * Calculate simple interest
  * 
  * @param principal - Principal amount
- * @param rate - Interest rate (as a decimal, e.g., 0.05 for 5%)
+ * @param rate - Interest rate (as a decimal, e?.g., 0.05 for 5%)
  * @param time - Time period (in years)
  * @returns Future value
  * 

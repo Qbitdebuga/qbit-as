@@ -2,10 +2,10 @@ import { PaymentMethod } from '../../invoices/entities/payment-method.enum';
 import { PaymentStatus } from '../../invoices/entities/payment-status.enum';
 
 export class Payment {
-  id!: string;
-  invoiceId!: string;
+  id!: string | null;
+  invoiceId!: string | null;
   paymentDate!: Date;
-  amount!: number;
+  amount!: number | null;
   paymentMethod!: PaymentMethod;
   status!: PaymentStatus;
   referenceNumber?: string | null;

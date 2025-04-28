@@ -29,7 +29,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 409, description: 'Email already in use' })
   async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+    return this?.authService.register(registerDto);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -40,7 +40,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async login(@Request() req: { user: any }) {
-    return this.authService.login(req.user);
+    return this?.authService.login(req.user);
   }
 
   @Post('forgot-password')
@@ -49,7 +49,7 @@ export class AuthController {
   @ApiBody({ type: ForgotPasswordDto })
   @ApiResponse({ status: 200, description: 'Password reset email sent' })
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(forgotPasswordDto.email);
+    return this?.authService.forgotPassword(forgotPasswordDto.email);
   }
 
   @Post('reset-password')
@@ -60,7 +60,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Invalid or expired token' })
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetPassword(
+    return this?.authService.resetPassword(
       resetPasswordDto.token,
       resetPasswordDto.password,
       resetPasswordDto.confirmPassword
@@ -74,7 +74,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Token refresh successful' })
   @ApiResponse({ status: 403, description: 'Invalid refresh token' })
   async refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshTokens(refreshTokenDto);
+    return this?.authService.refreshTokens(refreshTokenDto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -96,18 +96,17 @@ export class AuthController {
   async getServiceToken(@Body() serviceTokenRequestDto: ServiceTokenRequestDto) {
     // Validate API key using the environment variables
     // Convert service name to uppercase and replace hyphens with underscores for env var naming
-    const serviceEnvName = serviceTokenRequestDto.serviceName
-      .toUpperCase()
+    const serviceEnvName = serviceTokenRequestDto?.serviceName.toUpperCase()
       .replace(/-/g, '_');
     
-    const validApiKey = this.configService.get<string>(`SERVICE_API_KEY_${serviceEnvName}`);
+    const validApiKey = this?.configService.get<string>(`SERVICE_API_KEY_${serviceEnvName}`);
     
     if (!validApiKey || validApiKey !== serviceTokenRequestDto.apiKey) {
       throw new UnauthorizedException('Invalid API key for service');
     }
     
     // Generate service token
-    const token = await this.serviceTokenService.generateServiceToken(
+    const token = await this?.serviceTokenService.generateServiceToken(
       serviceTokenRequestDto.serviceName,
       serviceTokenRequestDto.scope,
       serviceTokenRequestDto.expiresIn,

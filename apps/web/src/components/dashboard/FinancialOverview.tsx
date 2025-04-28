@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useAggregatedData } from '../../hooks/useAggregatedData';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { useAggregatedData } from '@/hooks/useAggregatedData';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowUpCircle, ArrowDownCircle, DollarSign, BarChart2, Calendar, TrendingUp, TrendingDown } from 'lucide-react';
-import { formatCurrency } from '../../utils/format';
+import { formatCurrency } from '@/utils/format';
 
 const FinancialOverview: React.FC = () => {
   const { 

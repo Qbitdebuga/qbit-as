@@ -20,31 +20,31 @@ export class PaymentsService {
 
   async createPayment(createPaymentDto: CreatePaymentDto): Promise<Payment> {
     try {
-      return await this.paymentsRepository.createPayment(createPaymentDto);
+      return await this?.paymentsRepository.createPayment(createPaymentDto);
     } catch (error: any) {
-      this.logger.error(`Failed to create payment: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to create payment: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   async findAll(): Promise<Payment[]> {
     try {
-      return await this.paymentsRepository.findAll();
+      return await this?.paymentsRepository.findAll();
     } catch (error: any) {
-      this.logger.error(`Failed to find all payments: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to find all payments: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   async findOne(id: string): Promise<Payment> {
     try {
-      const payment = await this.paymentsRepository.findOne(id);
+      const payment = await this?.paymentsRepository.findOne(id);
       if (!payment) {
         throw new NotFoundException(`Payment with ID "${id}" not found`);
       }
       return payment;
     } catch (error: any) {
-      this.logger.error(`Failed to find payment by id ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to find payment by id ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -55,9 +55,9 @@ export class PaymentsService {
 
   async findByInvoiceId(invoiceId: string): Promise<Payment[]> {
     try {
-      return await this.paymentsRepository.findByInvoiceId(invoiceId);
+      return await this?.paymentsRepository.findByInvoiceId(invoiceId);
     } catch (error: any) {
-      this.logger.error(`Failed to find payments for invoice ${invoiceId}: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to find payments for invoice ${invoiceId}: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -67,9 +67,9 @@ export class PaymentsService {
       if (!updatePaymentDto.status) {
         throw new BadRequestException('Payment status is required');
       }
-      return await this.paymentsRepository.updatePaymentStatus(id, updatePaymentDto.status);
+      return await this?.paymentsRepository.updatePaymentStatus(id, updatePaymentDto.status);
     } catch (error: any) {
-      this.logger.error(`Failed to update payment: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to update payment: ${error.message}`, error.stack);
       throw error;
     }
   }
@@ -89,48 +89,48 @@ export class PaymentsService {
       };
       
       // Apply the payment to the invoice using the repository
-      const updatedPayment = await this.paymentsRepository.applyPayment(dto);
+      const updatedPayment = await this?.paymentsRepository.applyPayment(dto);
       
       // Update the invoice status based on the payment application
       await this.updateInvoiceStatus(applyPaymentDto.invoiceId);
       
       return updatedPayment;
     } catch (error: any) {
-      this.logger.error(`Failed to apply payment: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to apply payment: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   async deletePayment(id: string): Promise<void> {
     try {
-      await this.paymentsRepository.deletePayment(id);
+      await this?.paymentsRepository.deletePayment(id);
     } catch (error: any) {
-      this.logger.error(`Failed to delete payment ${id}: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to delete payment ${id}: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   async getPaymentsByVendorId(vendorId: number): Promise<Payment[]> {
     try {
-      return await this.paymentsRepository.getPaymentsByVendorId(vendorId);
+      return await this?.paymentsRepository.getPaymentsByVendorId(vendorId);
     } catch (error: any) {
-      this.logger.error(`Failed to get payments for vendor ${vendorId}: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get payments for vendor ${vendorId}: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   async getInvoiceWithPayments(invoiceId: string): Promise<any> {
     try {
-      return await this.paymentsRepository.getInvoiceWithPayments(invoiceId);
+      return await this?.paymentsRepository.getInvoiceWithPayments(invoiceId);
     } catch (error: any) {
-      this.logger.error(`Failed to get invoice with payments: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to get invoice with payments: ${error.message}`, error.stack);
       throw error;
     }
   }
 
   private async updateInvoiceStatus(invoiceId: string): Promise<void> {
     try {
-      const invoiceWithPayments = await this.paymentsRepository.getInvoiceWithPayments(invoiceId);
+      const invoiceWithPayments = await this?.paymentsRepository.getInvoiceWithPayments(invoiceId);
       
       if (!invoiceWithPayments) {
         throw new NotFoundException(`Invoice with ID "${invoiceId}" not found`);
@@ -138,7 +138,7 @@ export class PaymentsService {
       
       // Calculate total payments made to this invoice
       const totalPayments = invoiceWithPayments.payments ? 
-        invoiceWithPayments.payments.reduce(
+        invoiceWithPayments?.payments.reduce(
           (sum: number, payment: Payment) => sum + payment.amount, 
           0
         ) : 0;
@@ -154,9 +154,9 @@ export class PaymentsService {
       }
       
       // Update the invoice status
-      await this.paymentsRepository.updateInvoiceStatus(invoiceId, newStatus);
+      await this?.paymentsRepository.updateInvoiceStatus(invoiceId, newStatus);
     } catch (error: any) {
-      this.logger.error(`Failed to update invoice status: ${error.message}`, error.stack);
+      this?.logger.error(`Failed to update invoice status: ${error.message}`, error.stack);
       throw error;
     }
   }

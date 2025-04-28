@@ -60,10 +60,10 @@ export class AccountsService {
   // Bank Methods
   async createBank(createBankDto: CreateBankDto): Promise<BankEntity> {
     try {
-      const bank = await this.prismaWithModels.bank.create({
+      const bank = await this?.prismaWithModels.bank.create({
         data: createBankDto,
       });
-      this.logger.log(`Created bank with ID: ${bank.id}`);
+      this?.logger.log(`Created bank with ID: ${bank.id}`);
       return this.mapToBankEntity(bank);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -77,19 +77,19 @@ export class AccountsService {
 
   async findAllBanks(active?: boolean): Promise<BankEntity[]> {
     const filter = active !== undefined ? { where: { isActive: active } } : {};
-    this.logger.log(`Retrieving all banks${active !== undefined ? ` with active=${active}` : ''}`);
-    const banks = await this.prismaWithModels.bank.findMany(filter);
+    this?.logger.log(`Retrieving all banks${active !== undefined ? ` with active=${active}` : ''}`);
+    const banks = await this?.prismaWithModels.bank.findMany(filter);
     return banks.map(bank => this.mapToBankEntity(bank));
   }
 
   async findActivebanks(): Promise<BankEntity[]> {
-    this.logger.log('Retrieving all active banks');
+    this?.logger.log('Retrieving all active banks');
     return this.findAllBanks(true);
   }
 
   async findBankById(id: string): Promise<BankEntity> {
-    this.logger.log(`Retrieving bank with id: ${id}`);
-    const bank = await this.prismaWithModels.bank.findUnique({
+    this?.logger.log(`Retrieving bank with id: ${id}`);
+    const bank = await this?.prismaWithModels.bank.findUnique({
       where: { id },
       include: { accounts: true },
     });
@@ -106,12 +106,12 @@ export class AccountsService {
       // First check if the bank exists
       await this.findBankById(id);
 
-      const updatedBank = await this.prismaWithModels.bank.update({
+      const updatedBank = await this?.prismaWithModels.bank.update({
         where: { id },
         data: updateBankDto,
       });
 
-      this.logger.log(`Updated bank with ID: ${id}`);
+      this?.logger.log(`Updated bank with ID: ${id}`);
       return this.mapToBankEntity(updatedBank);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -128,7 +128,7 @@ export class AccountsService {
     await this.findBankById(id);
 
     // Check if the bank has any accounts
-    const bankAccounts = await this.prismaWithModels.bankAccount.findMany({
+    const bankAccounts = await this?.prismaWithModels.bankAccount.findMany({
       where: { bankId: id },
       take: 1,
     });
@@ -139,8 +139,8 @@ export class AccountsService {
       );
     }
 
-    await this.prismaWithModels.bank.delete({ where: { id } });
-    this.logger.log(`Deleted bank with ID: ${id}`);
+    await this?.prismaWithModels.bank.delete({ where: { id } });
+    this?.logger.log(`Deleted bank with ID: ${id}`);
   }
 
   // Bank Account Methods
@@ -149,7 +149,7 @@ export class AccountsService {
       // First check if the bank exists
       await this.findBankById(createBankAccountDto.bankId);
 
-      const bankAccount = await this.prismaWithModels.bankAccount.create({
+      const bankAccount = await this?.prismaWithModels.bankAccount.create({
         data: {
           ...createBankAccountDto,
           openingBalance: new Prisma.Decimal(createBankAccountDto.openingBalance || 0),
@@ -158,7 +158,7 @@ export class AccountsService {
         include: { bank: true },
       });
 
-      this.logger.log(`Created bank account with ID: ${bankAccount.id}`);
+      this?.logger.log(`Created bank account with ID: ${bankAccount.id}`);
       return this.mapToBankAccountEntity(bankAccount);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -181,9 +181,9 @@ export class AccountsService {
       where.bankId = bankId;
     }
     
-    this.logger.log(`Retrieving all bank accounts${active !== undefined ? ` with active=${active}` : ''}${bankId ? ` for bank ${bankId}` : ''}`);
+    this?.logger.log(`Retrieving all bank accounts${active !== undefined ? ` with active=${active}` : ''}${bankId ? ` for bank ${bankId}` : ''}`);
     
-    const accounts = await this.prismaWithModels.bankAccount.findMany({
+    const accounts = await this?.prismaWithModels.bankAccount.findMany({
       where,
       include: { bank: true },
     });
@@ -192,18 +192,18 @@ export class AccountsService {
   }
 
   async findBankAccountsByBankId(bankId: string): Promise<BankAccountEntity[]> {
-    this.logger.log(`Retrieving all bank accounts for bank ${bankId}`);
+    this?.logger.log(`Retrieving all bank accounts for bank ${bankId}`);
     return this.findAllBankAccounts(undefined, bankId);
   }
 
   async findActiveBankAccounts(): Promise<BankAccountEntity[]> {
-    this.logger.log('Retrieving all active bank accounts');
+    this?.logger.log('Retrieving all active bank accounts');
     return this.findAllBankAccounts(true);
   }
 
   async findBankAccountById(id: string): Promise<BankAccountEntity> {
-    this.logger.log(`Retrieving bank account with id: ${id}`);
-    const bankAccount = await this.prismaWithModels.bankAccount.findUnique({
+    this?.logger.log(`Retrieving bank account with id: ${id}`);
+    const bankAccount = await this?.prismaWithModels.bankAccount.findUnique({
       where: { id },
       include: { bank: true },
     });
@@ -225,7 +225,7 @@ export class AccountsService {
         await this.findBankById(updateBankAccountDto.bankId);
       }
 
-      const updatedBankAccount = await this.prismaWithModels.bankAccount.update({
+      const updatedBankAccount = await this?.prismaWithModels.bankAccount.update({
         where: { id },
         data: {
           ...updateBankAccountDto,
@@ -236,7 +236,7 @@ export class AccountsService {
         include: { bank: true },
       });
 
-      this.logger.log(`Updated bank account with ID: ${id}`);
+      this?.logger.log(`Updated bank account with ID: ${id}`);
       return this.mapToBankAccountEntity(updatedBankAccount);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -253,7 +253,7 @@ export class AccountsService {
     await this.findBankAccountById(id);
 
     // Check if the bank account has any transactions
-    const transactions = await this.prismaWithModels.bankTransaction.findMany({
+    const transactions = await this?.prismaWithModels.bankTransaction.findMany({
       where: { bankAccountId: id },
       take: 1,
     });
@@ -264,7 +264,7 @@ export class AccountsService {
       );
     }
 
-    await this.prismaWithModels.bankAccount.delete({ where: { id } });
-    this.logger.log(`Deleted bank account with ID: ${id}`);
+    await this?.prismaWithModels.bankAccount.delete({ where: { id } });
+    this?.logger.log(`Deleted bank account with ID: ${id}`);
   }
 } 

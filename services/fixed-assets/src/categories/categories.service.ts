@@ -9,7 +9,7 @@ export class CategoriesService {
   constructor(private readonly assetsService: AssetsService) {}
 
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<AssetCategoryEntity> {
-    return this.assetsService.createCategory(createCategoryDto);
+    return this?.assetsService.createCategory(createCategoryDto);
   }
 
   async findAllCategories(
@@ -17,21 +17,21 @@ export class CategoriesService {
     take?: number,
     searchTerm?: string,
   ): Promise<{ categories: AssetCategoryEntity[]; total: number }> {
-    return this.assetsService.findAllCategories(skip, take, searchTerm);
+    return this?.assetsService.findAllCategories(skip, take, searchTerm);
   }
 
   async findOneCategory(id: string): Promise<AssetCategoryEntity> {
-    return this.assetsService.findOneCategory(id);
+    return this?.assetsService.findOneCategory(id);
   }
 
   async updateCategory(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<AssetCategoryEntity> {
-    return this.assetsService.updateCategory(id, updateCategoryDto);
+    return this?.assetsService.updateCategory(id, updateCategoryDto);
   }
 
   async removeCategory(id: string): Promise<void> {
-    return this.assetsService.removeCategory(id);
+    return this?.assetsService.removeCategory(id);
   }
 } 

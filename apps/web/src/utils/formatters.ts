@@ -11,10 +11,10 @@
  */
 export const formatDate = (
   date: Date | string | number | null | undefined,
-  format: 'short' | 'medium' | 'long' | 'full' = 'medium',
+  format: 'short' | 'medium' | 'long' | 'full' | 'custom' = 'medium',
   locale = 'en-US'
 ): string => {
-  if (date === null || date === undefined) return '';
+  if (date === null || date === undefined) return 'N/A';
   
   let dateObj: Date;
   
@@ -26,7 +26,15 @@ export const formatDate = (
     dateObj = date;
   }
   
-  if (isNaN(dateObj.getTime())) return '';
+  if (isNaN(dateObj.getTime())) return 'N/A';
+  
+  if (format === 'custom') {
+    return new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(dateObj);
+  }
   
   const options: Intl.DateTimeFormatOptions = { dateStyle: format };
   
@@ -115,4 +123,27 @@ export const formatPercentage = (
  */
 export const formatQuantity = (value: number | string | null | undefined): string => {
   return formatNumber(value, 0);
-}; 
+};
+
+/**
+ * Format a date and time string
+ * @param date Date string or Date object
+ * @param locale The locale code (default: en-US)
+ * @returns Formatted date and time string
+ */
+export function formatDateTime(
+  date: string | Date | undefined | null,
+  locale = 'en-US'
+): string {
+  if (!date) return 'N/A';
+  
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(dateObj);
+} 

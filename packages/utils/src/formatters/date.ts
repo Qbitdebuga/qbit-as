@@ -7,15 +7,15 @@
  */
 export interface DateFormatOptions {
   /** Format to use (default: 'YYYY-MM-DD') */
-  format?: string;
+  format?: string | null;
   /** Locale to use for formatting (default: 'en-US') */
-  locale?: string;
+  locale?: string | null;
   /** Whether to include time (default: false) */
-  includeTime?: boolean;
+  includeTime?: boolean | null;
   /** Time format (default: 'HH:mm:ss') */
-  timeFormat?: string;
+  timeFormat?: string | null;
   /** Timezone to use (default: local timezone) */
-  timezone?: string;
+  timezone?: string | null;
 }
 
 /**
@@ -116,7 +116,7 @@ export function formatTime(date: Date | string | number, options: { format?: str
 }
 
 /**
- * Format a relative time string (e.g., "2 days ago")
+ * Format a relative time string (e?.g., "2 days ago")
  * 
  * @param date - Date to format (string, Date, or number)
  * @param relativeTo - Date to compare against (default: now)

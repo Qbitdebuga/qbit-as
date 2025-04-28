@@ -26,13 +26,13 @@ export class UserService {
 
   // Find a user by ID
   async findUserById(id: string) {
-    return this.tracingService.traceDb(
+    return this?.tracingService.traceDb(
       'findFirst',
       'SELECT * FROM users WHERE id = $1',
       async (span) => {
         span.setAttribute('user.id', id);
         
-        const user = await this.prisma.user.findFirst({
+        const user = await this?.prisma.user.findFirst({
           where: { id },
         });
         
@@ -50,12 +50,12 @@ export class UserService {
   }
 
   // Create a new user
-  async createUser(data: { email: string; name: string }) {
-    return this.tracingService.traceDb(
+  async createUser(data: { email: string | null; name: string }) {
+    return this?.tracingService.traceDb(
       'create',
       'INSERT INTO users (email, name) VALUES ($1, $2)',
       async () => {
-        return this.prisma.user.create({
+        return this?.prisma.user.create({
           data,
         });
       }
@@ -64,7 +64,7 @@ export class UserService {
 
   // Fetch user permissions from auth service
   async getUserPermissions(userId: string) {
-    return this.tracingService.traceHttp(
+    return this?.tracingService.traceHttp(
       'GET',
       `http://auth-service/api/v1/users/${userId}/permissions`,
       async (span) => {
@@ -72,11 +72,11 @@ export class UserService {
         
         try {
           const response = await firstValueFrom(
-            this.httpService.get(`/api/v1/users/${userId}/permissions`)
+            this?.httpService.get(`/api/v1/users/${userId}/permissions`)
           );
           
-          span.setAttribute('permissions.count', response.data.permissions.length);
-          return response.data.permissions;
+          span.setAttribute('permissions.count', response?.data.permissions.length);
+          return response?.data.permissions;
         } catch (error) {
           span.setAttribute('error', true);
           span.setAttribute('error.message', error.message);
@@ -88,7 +88,7 @@ export class UserService {
 
   // Publish user created event
   async publishUserCreatedEvent(user: any) {
-    return this.tracingService.traceMessage(
+    return this?.tracingService.traceMessage(
       'publish',
       'user.created',
       async (span) => {
@@ -99,7 +99,7 @@ export class UserService {
         console.log('Publishing user created event', user);
         
         // In a real implementation, you would use NATS or another message broker
-        // await this.natsClient.publish('user.created', user);
+        // await this?.natsClient.publish('user.created', user);
         
         return true;
       }

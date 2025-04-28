@@ -15,10 +15,10 @@ export class CashFlowGenerator {
     endDate: string,
     comparativePeriod?: any
   ): Promise<any> {
-    this.logger.log(`Generating cash flow statement for period: ${startDate} to ${endDate}`);
+    this?.logger.log(`Generating cash flow statement for period: ${startDate} to ${endDate}`);
 
     // Get cash accounts
-    const cashAccounts = await this.prisma.db.account.findMany({
+    const cashAccounts = await this?.prisma.db?.account.findMany({
       where: {
         type: AccountType.ASSET,
         subtype: 'CASH',
@@ -35,7 +35,7 @@ export class CashFlowGenerator {
     const endingCash = await this.getCashBalance(cashAccountIds, endDate, true);
 
     // Get all accounts for aggregations
-    const accounts = await this.prisma.db.account.findMany();
+    const accounts = await this?.prisma.db?.account.findMany();
 
     // Get all account activity for the period
     const accountActivity = await this.getAccountActivity(startDate, endDate);
@@ -72,7 +72,7 @@ export class CashFlowGenerator {
     // Sanity check: netChangeInCash should equal endingCash - beginningCash
     const calculatedChange = endingCash - beginningCash;
     if (Math.abs(netChangeInCash - calculatedChange) > 0.01) {
-      this.logger.warn(`Cash flow reconciliation issue: calculated change (${calculatedChange}) ` +
+      this?.logger.warn(`Cash flow reconciliation issue: calculated change (${calculatedChange}) ` +
         `does not match sum of activities (${netChangeInCash})`);
     }
 
@@ -91,7 +91,7 @@ export class CashFlowGenerator {
 
   private async getCashBalance(cashAccountIds: string[], date: string, inclusive: boolean): Promise<number> {
     // Query to get cash balance as of a specific date
-    const result = await this.prisma.$queryRaw<Array<{balance: Decimal}>>`
+    const result = await this?.prisma.$queryRaw<Array<{balance: Decimal}>>`
       SELECT SUM(COALESCE("debit", 0) - COALESCE("credit", 0)) as balance
       FROM "journal_entry_lines" jel
       JOIN "journal_entries" je ON je.id = jel."journalEntryId"
@@ -106,7 +106,7 @@ export class CashFlowGenerator {
 
   private async getAccountActivity(startDate: string, endDate: string): Promise<Record<string, number>> {
     // Query to get net activity for all accounts during the period
-    const result = await this.prisma.$queryRaw<Array<{accountId: string, activity: Decimal}>>`
+    const result = await this?.prisma.$queryRaw<Array<{accountId: string, activity: Decimal}>>`
       SELECT 
         "accountId",
         SUM(COALESCE("debit", 0) - COALESCE("credit", 0)) as activity
@@ -120,7 +120,7 @@ export class CashFlowGenerator {
     `;
 
     // Get all accounts for reference
-    const accounts = await this.prisma.db.account.findMany();
+    const accounts = await this?.prisma.db?.account.findMany();
     const accountMap = accounts.reduce((map, account) => {
       map[account.id] = account;
       return map;
