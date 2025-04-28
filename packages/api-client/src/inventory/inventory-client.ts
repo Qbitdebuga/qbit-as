@@ -1,12 +1,12 @@
 import { AxiosInstance } from 'axios';
-import { 
+import {
   IInventoryTransaction,
   ITransactionLine,
   IInventoryLevel,
   IWarehouse,
   IInventoryTransactionListResponse,
   IInventoryLevelListResponse,
-  IInventoryFilterParams
+  IInventoryFilterParams,
 } from '@qbit/shared-types';
 
 export class InventoryClient {
@@ -22,7 +22,9 @@ export class InventoryClient {
     return response.data;
   }
 
-  async getTransactions(params?: IInventoryFilterParams): Promise<IInventoryTransactionListResponse> {
+  async getTransactions(
+    params?: IInventoryFilterParams,
+  ): Promise<IInventoryTransactionListResponse> {
     const response = await this?.http.get(this.transactionsPath, { params });
     return response.data;
   }
@@ -32,7 +34,10 @@ export class InventoryClient {
     return response.data;
   }
 
-  async updateTransaction(id: string, data: Partial<IInventoryTransaction>): Promise<IInventoryTransaction> {
+  async updateTransaction(
+    id: string,
+    data: Partial<IInventoryTransaction>,
+  ): Promise<IInventoryTransaction> {
     const response = await this?.http.patch(`${this.transactionsPath}/${id}`, data);
     return response.data;
   }

@@ -27,7 +27,7 @@ export class ExpenseCategoriesRepository {
     orderBy?: Record<string, any>;
   }) {
     const { skip, take, cursor, where, orderBy } = params;
-    
+
     const [data, total] = await Promise.all([
       this?.prisma.expenseCategory.findMany({
         skip,
@@ -44,7 +44,7 @@ export class ExpenseCategoriesRepository {
       }),
       this?.prisma.expenseCategory.count({ where }),
     ]);
-    
+
     return {
       data,
       total,
@@ -104,4 +104,4 @@ export class ExpenseCategoriesRepository {
       orderBy: { name: 'asc' },
     });
   }
-} 
+}

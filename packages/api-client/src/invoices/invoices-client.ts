@@ -1,10 +1,10 @@
-import { 
-  CreateInvoiceDto, 
-  CreateInvoicePaymentDto, 
-  Invoice, 
-  InvoiceListParams, 
-  InvoicePayment, 
-  UpdateInvoiceDto 
+import {
+  CreateInvoiceDto,
+  CreateInvoicePaymentDto,
+  Invoice,
+  InvoiceListParams,
+  InvoicePayment,
+  UpdateInvoiceDto,
 } from '@qbit/shared-types';
 import { ApiClient } from '../lib/api-client';
 
@@ -25,7 +25,9 @@ export class InvoicesClient {
   /**
    * Get a paginated list of invoices
    */
-  async getInvoices(params?: InvoiceListParams): Promise<{ data: Invoice[]; total: number | null; page: number | null; limit: number }> {
+  async getInvoices(
+    params?: InvoiceListParams,
+  ): Promise<{ data: Invoice[]; total: number | null; page: number | null; limit: number }> {
     return this?.client.get(this.basePath, { params: params as unknown as Record<string, string> });
   }
 
@@ -96,9 +98,11 @@ export class InvoicesClient {
    * Get all invoices for a customer
    */
   async getInvoicesByCustomer(
-    customerId: string, 
-    params?: Omit<InvoiceListParams, 'customerId'>
+    customerId: string,
+    params?: Omit<InvoiceListParams, 'customerId'>,
   ): Promise<{ data: Invoice[]; total: number | null; page: number | null; limit: number }> {
-    return this?.client.get(`${this.basePath}/customer/${customerId}`, { params: params as unknown as Record<string, string> });
+    return this?.client.get(`${this.basePath}/customer/${customerId}`, {
+      params: params as unknown as Record<string, string>,
+    });
   }
 }

@@ -1,8 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsNumber, IsBoolean, MaxLength, Min } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsBoolean,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreateVendorDto {
-  @ApiProperty({ description: 'Vendor number (unique identifier for the vendor)', example: 'V-10001' })
+  @ApiProperty({
+    description: 'Vendor number (unique identifier for the vendor)',
+    example: 'V-10001',
+  })
   @IsString()
   @IsOptional()
   vendorNumber?: string | null;
@@ -58,7 +70,10 @@ export class CreateVendorDto {
   @IsOptional()
   website?: string | null;
 
-  @ApiProperty({ description: 'Additional notes about the vendor', example: 'Preferred supplier for office equipment' })
+  @ApiProperty({
+    description: 'Additional notes about the vendor',
+    example: 'Preferred supplier for office equipment',
+  })
   @IsString()
   @IsOptional()
   notes?: string | null;
@@ -84,4 +99,4 @@ export class CreateVendorDto {
   @Min(0)
   @IsOptional()
   creditLimit?: number | null;
-} 
+}

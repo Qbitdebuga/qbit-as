@@ -12,7 +12,7 @@ export enum BillStatus {
   PARTIAL = 'PARTIAL',
   PAID = 'PAID',
   CANCELLED = 'CANCELLED',
-  OVERDUE = 'OVERDUE'
+  OVERDUE = 'OVERDUE',
 }
 
 export interface Bill {
@@ -124,7 +124,7 @@ export enum StatementPeriod {
   WEEKLY = 'WEEKLY',
   MONTHLY = 'MONTHLY',
   QUARTERLY = 'QUARTERLY',
-  YEARLY = 'YEARLY'
+  YEARLY = 'YEARLY',
 }
 
 // Payment status enum
@@ -134,7 +134,7 @@ export enum PaymentStatus {
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
   REFUNDED = 'REFUNDED',
-  VOIDED = 'VOIDED'
+  VOIDED = 'VOIDED',
 }
 
 // DTO types for financial statements
@@ -235,4 +235,4 @@ export interface CashFlowStatementDto {
   netCashFlow: number;
   beginningCashBalance: number;
   endingCashBalance: number;
-} 
+}

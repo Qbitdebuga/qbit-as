@@ -48,4 +48,4 @@ export class ReportSnapshotResponseDto extends ReportResponseDto {
 
   @ApiProperty({ description: 'Original report ID' })
   reportId: string | null;
-} 
+}

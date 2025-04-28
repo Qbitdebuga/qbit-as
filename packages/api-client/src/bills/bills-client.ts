@@ -24,12 +24,15 @@ export class BillsClient extends ApiClientBase {
   /**
    * Fetches bills for a specific vendor
    */
-  async getBillsByVendor(vendorId: string | number, params?: {
-    status?: string | null;
-    search?: string | null;
-    page?: number | null;
-    limit?: number | null;
-  }): Promise<Bill[]> {
+  async getBillsByVendor(
+    vendorId: string | number,
+    params?: {
+      status?: string | null;
+      search?: string | null;
+      page?: number | null;
+      limit?: number | null;
+    },
+  ): Promise<Bill[]> {
     return this.get<Bill[]>(`/accounts-payable/bills/by-vendor/${vendorId}`, { params });
   }
 
@@ -67,4 +70,4 @@ export class BillsClient extends ApiClientBase {
   async voidBill(id: string | number): Promise<Bill> {
     return this.patch<Bill>(`/accounts-payable/bills/${id}/void`, {});
   }
-} 
+}

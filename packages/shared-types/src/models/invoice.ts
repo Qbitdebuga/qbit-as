@@ -6,7 +6,7 @@ export enum InvoiceStatus {
   PAID = 'PAID',
   OVERDUE = 'OVERDUE',
   VOID = 'VOID',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export enum InvoicePaymentMethod {
@@ -18,7 +18,7 @@ export enum InvoicePaymentMethod {
   WIRE_TRANSFER = 'WIRE_TRANSFER',
   PAYPAL = 'PAYPAL',
   STRIPE = 'STRIPE',
-  OTHER = 'OTHER'
+  OTHER = 'OTHER',
 }
 
 export enum InvoicePaymentStatus {
@@ -27,7 +27,7 @@ export enum InvoicePaymentStatus {
   FAILED = 'FAILED',
   REFUNDED = 'REFUNDED',
   PARTIALLY_REFUNDED = 'PARTIALLY_REFUNDED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export interface Invoice {
@@ -129,4 +129,4 @@ export interface InvoiceListParams {
   limit?: number | null;
   sortBy?: string | null;
   sortDirection?: 'asc' | 'desc';
-} 
+}

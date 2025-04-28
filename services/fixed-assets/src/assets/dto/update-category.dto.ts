@@ -11,4 +11,4 @@ export class UpdateCategoryDto {
   @IsString()
   @IsOptional()
   description?: string | null;
-} 
+}

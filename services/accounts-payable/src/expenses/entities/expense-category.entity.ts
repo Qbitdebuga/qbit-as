@@ -8,10 +8,16 @@ export class ExpenseCategory {
   @ApiProperty({ example: 'Office Supplies', description: 'Name of the expense category' })
   name: string | null;
 
-  @ApiPropertyOptional({ example: 'Expenses related to office supplies and stationery', description: 'Description of the expense category' })
+  @ApiPropertyOptional({
+    example: 'Expenses related to office supplies and stationery',
+    description: 'Description of the expense category',
+  })
   description?: string | null;
 
-  @ApiPropertyOptional({ example: 5001, description: 'ID of the accounting system account associated with this category' })
+  @ApiPropertyOptional({
+    example: 5001,
+    description: 'ID of the accounting system account associated with this category',
+  })
   accountId?: number | null;
 
   @ApiProperty({ example: true, description: 'Whether this category is active' })
@@ -23,6 +29,9 @@ export class ExpenseCategory {
   @ApiProperty({ example: '2023-01-15T12:00:00Z', description: 'When the category was created' })
   createdAt: Date;
 
-  @ApiProperty({ example: '2023-01-16T12:00:00Z', description: 'When the category was last updated' })
+  @ApiProperty({
+    example: '2023-01-16T12:00:00Z',
+    description: 'When the category was last updated',
+  })
   updatedAt: Date;
-} 
+}

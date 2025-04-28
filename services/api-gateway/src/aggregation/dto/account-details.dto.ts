@@ -58,4 +58,4 @@ export class AccountDetailsResponseDto {
 
   @ApiProperty({ description: 'Current balance' })
   balance!: number | null;
-} 
+}

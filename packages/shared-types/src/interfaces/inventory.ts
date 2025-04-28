@@ -1,6 +1,6 @@
 /**
  * Inventory Interfaces
- * 
+ *
  * This file contains all interfaces related to inventory management.
  */
 

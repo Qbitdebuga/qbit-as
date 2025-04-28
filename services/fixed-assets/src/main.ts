@@ -7,10 +7,10 @@ import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Set global prefix
   app.setGlobalPrefix('api/v1');
-  
+
   // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,7 +22,7 @@ async function bootstrap() {
 
   // CORS configuration
   app.enableCors();
-  
+
   // Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Fixed Assets API')
@@ -41,9 +41,9 @@ async function bootstrap() {
   // Get port from config service
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3006);
-  
+
   await app.listen(port);
   console.log(`Fixed Assets service running on port ${port}`);
 }
 
-bootstrap(); 
+bootstrap();

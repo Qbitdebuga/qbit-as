@@ -7,11 +7,7 @@ import { ConfigService } from '@nestjs/config';
  * @param defaultValue Optional default value if the configuration is not found
  * @returns The configuration value or default
  */
-export function getConfig<T>(
-  configService: ConfigService,
-  key: string,
-  defaultValue: T
-): T {
+export function getConfig<T>(configService: ConfigService, key: string, defaultValue: T): T {
   const value = configService.get<T>(key);
   return value === undefined ? defaultValue : value;
 }
@@ -23,13 +19,10 @@ export function getConfig<T>(
  * @throws Error if the configuration is not found
  * @returns The configuration value
  */
-export function getRequiredConfig<T>(
-  configService: ConfigService,
-  key: string
-): T {
+export function getRequiredConfig<T>(configService: ConfigService, key: string): T {
   const value = configService.get<T>(key);
   if (value === undefined) {
     throw new Error(`Required configuration "${key}" is missing`);
   }
   return value;
-} 
+}

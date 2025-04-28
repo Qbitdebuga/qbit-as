@@ -60,24 +60,27 @@ export function useSystemStatus() {
   /**
    * Check a specific service's health directly
    */
-  const checkServiceHealth = useCallback(async (serviceId: string): Promise<ServiceHealth | null> => {
-    if (clientLoading) return null;
+  const checkServiceHealth = useCallback(
+    async (serviceId: string): Promise<ServiceHealth | null> => {
+      if (clientLoading) return null;
 
-    try {
-      setLoading(true);
-      setError(null);
+      try {
+        setLoading(true);
+        setError(null);
 
-      return await executeWithAuth(async () => {
-        const response = await client.get(`/admin/service-health/${serviceId}`);
-        return response;
-      });
-    } catch (err: any) {
-      setError(err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, [client, clientLoading, executeWithAuth]);
+        return await executeWithAuth(async () => {
+          const response = await client.get(`/admin/service-health/${serviceId}`);
+          return response;
+        });
+      } catch (err: any) {
+        setError(err);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [client, clientLoading, executeWithAuth],
+  );
 
   /**
    * Refresh all service health data
@@ -129,4 +132,4 @@ export function useSystemStatus() {
     checkServiceHealth,
     refreshSystemStatus,
   };
-} 
+}

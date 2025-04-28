@@ -3,13 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { ClientsModule } from './clients/clients.module';
 import { FinancialReportingModule } from './financial/financial-reporting.module';
-import { 
-  configSchemaValidation, 
-  databaseConfig, 
-  appConfig, 
-  authConfig, 
+import {
+  configSchemaValidation,
+  databaseConfig,
+  appConfig,
+  authConfig,
   rabbitMQConfig,
-  clientsConfig 
+  clientsConfig,
 } from './config/configuration';
 
 @Module({
@@ -26,4 +26,4 @@ import {
   controllers: [],
   providers: [],
 })
-export class AppModule {} 
+export class AppModule {}

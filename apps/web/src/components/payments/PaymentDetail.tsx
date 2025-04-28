@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,7 @@ const paymentStatusColorMap: Record<PaymentStatus, string> = {
   FAILED: 'bg-red-200 text-red-800',
   REFUNDED: 'bg-purple-200 text-purple-800',
   PARTIALLY_REFUNDED: 'bg-blue-200 text-blue-800',
-  CANCELLED: 'bg-gray-200 text-gray-800'
+  CANCELLED: 'bg-gray-200 text-gray-800',
 };
 
 const paymentMethodLabels: Record<PaymentMethod, string> = {
@@ -37,7 +37,7 @@ const paymentMethodLabels: Record<PaymentMethod, string> = {
   WIRE_TRANSFER: 'Wire Transfer',
   PAYPAL: 'PayPal',
   STRIPE: 'Stripe',
-  OTHER: 'Other'
+  OTHER: 'Other',
 };
 
 interface PaymentDetailProps {
@@ -50,76 +50,70 @@ export default function PaymentDetail({ payment, onDelete }: PaymentDetailProps)
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
   const { deletePayment } = usePayments({ autoFetch: false });
-  
+
   const handleDelete = async () => {
     if (payment.status !== 'PENDING') {
       toast({
-        title: "Cannot Delete",
-        description: "Only pending payments can be deleted.",
-        variant: "destructive",
+        title: 'Cannot Delete',
+        description: 'Only pending payments can be deleted.',
+        variant: 'destructive',
       });
       return;
     }
-    
+
     if (!window.confirm('Are you sure you want to delete this payment?')) {
       return;
     }
-    
+
     setIsDeleting(true);
-    
+
     try {
       const success = await deletePayment(payment.id);
-      
+
       if (success) {
         toast({
-          title: "Payment Deleted",
-          description: "The payment has been deleted successfully.",
+          title: 'Payment Deleted',
+          description: 'The payment has been deleted successfully.',
         });
-        
+
         if (onDelete) {
           onDelete();
         } else {
           router.push('/dashboard/payments');
         }
       } else {
-        throw new Error("Failed to delete payment");
+        throw new Error('Failed to delete payment');
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "There was an error deleting the payment. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'There was an error deleting the payment. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsDeleting(false);
     }
   };
-  
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Payment Details</h1>
           <div className="flex items-center mt-2 space-x-2">
-            <Badge className={paymentStatusColorMap[payment.status]}>
-              {payment.status}
-            </Badge>
+            <Badge className={paymentStatusColorMap[payment.status]}>{payment.status}</Badge>
             {payment.referenceNumber && (
               <span className="text-sm text-gray-500">Ref: {payment.referenceNumber}</span>
             )}
           </div>
         </div>
         {payment.status === 'PENDING' && (
-          <Button 
-            variant="destructive" 
-            onClick={handleDelete} 
-            disabled={isDeleting}
-          >
-            {isDeleting ? "Deleting..." : "Delete Payment"}
+          <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+            {isDeleting ? 'Deleting...' : 'Delete Payment'}
           </Button>
         )}
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -147,14 +141,12 @@ export default function PaymentDetail({ payment, onDelete }: PaymentDetailProps)
             <div className="grid grid-cols-2">
               <span className="text-sm font-medium">Status:</span>
               <span>
-                <Badge className={paymentStatusColorMap[payment.status]}>
-                  {payment.status}
-                </Badge>
+                <Badge className={paymentStatusColorMap[payment.status]}>{payment.status}</Badge>
               </span>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Invoice Information</CardTitle>
@@ -163,7 +155,7 @@ export default function PaymentDetail({ payment, onDelete }: PaymentDetailProps)
             <div className="space-y-2">
               <div className="grid grid-cols-2">
                 <span className="text-sm font-medium">Invoice:</span>
-                <Link 
+                <Link
                   href={`/dashboard/invoices/${payment.invoiceId}`}
                   className="text-blue-600 hover:underline"
                 >
@@ -174,7 +166,7 @@ export default function PaymentDetail({ payment, onDelete }: PaymentDetailProps)
           </CardContent>
         </Card>
       </div>
-      
+
       {payment.notes && (
         <Card>
           <CardHeader>
@@ -185,7 +177,7 @@ export default function PaymentDetail({ payment, onDelete }: PaymentDetailProps)
           </CardContent>
         </Card>
       )}
-      
+
       <div className="flex justify-between">
         <Button variant="outline" asChild>
           <Link href="/dashboard/payments">Back to Payments</Link>
@@ -193,4 +185,4 @@ export default function PaymentDetail({ payment, onDelete }: PaymentDetailProps)
       </div>
     </div>
   );
-} 
+}

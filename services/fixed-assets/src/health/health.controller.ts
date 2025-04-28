@@ -1,10 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
-import { 
-  HealthCheck, 
-  HealthCheckService, 
+import {
+  HealthCheck,
+  HealthCheckService,
   PrismaHealthIndicator,
   DiskHealthIndicator,
-  MemoryHealthIndicator
+  MemoryHealthIndicator,
 } from '@nestjs/terminus';
 import { Public } from '../auth/decorators/public.decorator';
 import { PrismaService } from '../prisma/prisma.service';
@@ -29,4 +29,4 @@ export class HealthController {
       () => this?.memoryHealth.checkHeap('memory_heap', 300 * 1024 * 1024),
     ]);
   }
-} 
+}

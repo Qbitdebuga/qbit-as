@@ -5,6 +5,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [],
   providers: [],
-  exports: []
+  exports: [],
 })
-export class BillsModule {} 
+export class BillsModule {}

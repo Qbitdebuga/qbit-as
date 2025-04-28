@@ -6,37 +6,26 @@ import { Bill, BillStatus } from '@qbit/shared-types';
 import { billsClient } from '@qbit/api-client';
 import { useAuth } from '@/hooks/useAuth';
 import { setupAuthForClient } from '@/utils/auth-helpers';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { 
-  Card,
-  CardContent
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Eye, 
-  FileEdit, 
-  Trash2, 
-  ChevronLeft, 
-  ChevronRight,
-  Search,
-  Calendar
-} from 'lucide-react';
+import { Eye, FileEdit, Trash2, ChevronLeft, ChevronRight, Search, Calendar } from 'lucide-react';
 import { DatePicker } from '@/components/ui/date-picker';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/utils/format';
@@ -112,7 +101,10 @@ export default function BillList({ status, vendorId }: BillListProps) {
   };
 
   const getStatusBadge = (status: BillStatus) => {
-    const variants: Record<BillStatus, { variant: 'default' | 'outline' | 'secondary' | 'destructive' | 'success', label: string }> = {
+    const variants: Record<
+      BillStatus,
+      { variant: 'default' | 'outline' | 'secondary' | 'destructive' | 'success'; label: string }
+    > = {
       [BillStatus.DRAFT]: { variant: 'outline', label: 'Draft' },
       [BillStatus.PENDING]: { variant: 'secondary', label: 'Pending' },
       [BillStatus.APPROVED]: { variant: 'default', label: 'Approved' },
@@ -124,12 +116,8 @@ export default function BillList({ status, vendorId }: BillListProps) {
     };
 
     const config = variants[status] || { variant: 'outline', label: status };
-    
-    return (
-      <Badge variant={config.variant}>
-        {config.label}
-      </Badge>
-    );
+
+    return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
   if (error) {
@@ -203,7 +191,7 @@ export default function BillList({ status, vendorId }: BillListProps) {
               </TableHeader>
               <TableBody>
                 {bills.map((bill) => (
-                  <TableRow 
+                  <TableRow
                     key={bill.id}
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleBillClick(bill.id.toString())}
@@ -216,12 +204,19 @@ export default function BillList({ status, vendorId }: BillListProps) {
                     <TableCell className="text-right">{formatCurrency(bill.totalAmount)}</TableCell>
                     <TableCell className="text-right">{formatCurrency(bill.balanceDue)}</TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
-                        <Button variant="ghost" size="icon" onClick={() => handleBillClick(bill.id.toString())}>
+                      <div
+                        className="flex justify-end space-x-2"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleBillClick(bill.id.toString())}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="icon"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -240,7 +235,8 @@ export default function BillList({ status, vendorId }: BillListProps) {
 
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-muted-foreground">
-              Showing {Math.min((page - 1) * limit + 1, total)} to {Math.min(page * limit, total)} of {total} entries
+              Showing {Math.min((page - 1) * limit + 1, total)} to {Math.min(page * limit, total)}{' '}
+              of {total} entries
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -265,4 +261,4 @@ export default function BillList({ status, vendorId }: BillListProps) {
       )}
     </div>
   );
-} 
+}

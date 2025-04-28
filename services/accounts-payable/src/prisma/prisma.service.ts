@@ -21,38 +21,38 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async onModuleDestroy() {
     await this.$disconnect();
   }
-  
+
   // TODO: Remove these properties once Prisma properly recognizes the models
-  
+
   get vendor() {
     return this.vendor || {};
   }
-  
+
   get bill() {
     return this.bill || {};
   }
-  
+
   get payment() {
     return this.payment || {};
   }
-  
+
   get expense() {
     return this.expense || {};
   }
-  
+
   get expenseCategory() {
     return this.expenseCategory || {};
   }
-  
+
   get expenseAttachment() {
     return this.expenseAttachment || {};
   }
-  
+
   get expenseTag() {
     return this.expenseTag || {};
   }
-  
+
   get paymentApplication() {
     return this.paymentApplication || {};
   }
-} 
+}

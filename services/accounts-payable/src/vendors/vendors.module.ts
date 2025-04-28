@@ -10,4 +10,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   providers: [VendorsService, VendorsRepository],
   exports: [VendorsService],
 })
-export class VendorsModule {} 
+export class VendorsModule {}

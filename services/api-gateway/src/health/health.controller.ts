@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-import { 
-  HealthCheckService, 
-  HealthCheck, 
+import {
+  HealthCheckService,
+  HealthCheck,
   MemoryHealthIndicator,
   DiskHealthIndicator,
   HttpHealthIndicator,
-  HealthIndicatorResult
+  HealthIndicatorResult,
 } from '@nestjs/terminus';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -29,14 +29,15 @@ export class HealthController {
   check() {
     return this?.health.check([
       // Check if the disk has enough space
-      () => this?.diskHealth.checkStorage('storage', { 
-        path: '/', 
-        thresholdPercent: 0.9 
-      }),
-      
+      () =>
+        this?.diskHealth.checkStorage('storage', {
+          path: '/',
+          thresholdPercent: 0.9,
+        }),
+
       // Check if there's enough memory
       () => this?.memoryHealth.checkHeap('memory_heap', 300 * 1024 * 1024), // 300MB
-      () => this?.memoryHealth.checkRSS('memory_rss', 300 * 1024 * 1024),   // 300MB
+      () => this?.memoryHealth.checkRSS('memory_rss', 300 * 1024 * 1024), // 300MB
     ]);
   }
 
@@ -83,7 +84,7 @@ export class HealthController {
         }
         return { 'auth-service': { status: 'up', message: 'skipped - not configured' } };
       },
-      
+
       // Check General Ledger Service
       async (): Promise<HealthIndicatorResult> => {
         const glServiceUrl = this?.configService.get('GENERAL_LEDGER_SERVICE_URL');
@@ -92,25 +93,32 @@ export class HealthController {
         }
         return { 'general-ledger-service': { status: 'up', message: 'skipped - not configured' } };
       },
-      
+
       // Check Accounts Payable Service
       async (): Promise<HealthIndicatorResult> => {
         const apServiceUrl = this?.configService.get('ACCOUNTS_PAYABLE_SERVICE_URL');
         if (apServiceUrl) {
           return this?.httpHealth.pingCheck('accounts-payable-service', `${apServiceUrl}/health`);
         }
-        return { 'accounts-payable-service': { status: 'up', message: 'skipped - not configured' } };
+        return {
+          'accounts-payable-service': { status: 'up', message: 'skipped - not configured' },
+        };
       },
-      
+
       // Check Accounts Receivable Service
       async (): Promise<HealthIndicatorResult> => {
         const arServiceUrl = this?.configService.get('ACCOUNTS_RECEIVABLE_SERVICE_URL');
         if (arServiceUrl) {
-          return this?.httpHealth.pingCheck('accounts-receivable-service', `${arServiceUrl}/health`);
+          return this?.httpHealth.pingCheck(
+            'accounts-receivable-service',
+            `${arServiceUrl}/health`,
+          );
         }
-        return { 'accounts-receivable-service': { status: 'up', message: 'skipped - not configured' } };
+        return {
+          'accounts-receivable-service': { status: 'up', message: 'skipped - not configured' },
+        };
       },
-      
+
       // Check RabbitMQ
       async (): Promise<HealthIndicatorResult> => {
         const rabbitMQHost = this?.configService.get('RABBITMQ_HOST');
@@ -123,4 +131,4 @@ export class HealthController {
       },
     ]);
   }
-} 
+}

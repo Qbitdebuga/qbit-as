@@ -75,4 +75,4 @@ export const clientsConfig = () => ({
       maxRedirects: parseInt(process?.env.HTTP_MAX_REDIRECTS || '5', 10),
     },
   },
-}); 
+});

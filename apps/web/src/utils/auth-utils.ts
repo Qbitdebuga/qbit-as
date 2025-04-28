@@ -20,7 +20,7 @@ export function hasRole(user: User | null, role: string): boolean {
  */
 export function hasAnyRole(user: User | null, roles: string[]): boolean {
   if (!user || !user.roles) return false;
-  return roles.some(role => user.roles.includes(role));
+  return roles.some((role) => user.roles.includes(role));
 }
 
 /**
@@ -28,7 +28,7 @@ export function hasAnyRole(user: User | null, roles: string[]): boolean {
  */
 export function hasAllRoles(user: User | null, roles: string[]): boolean {
   if (!user || !user.roles) return false;
-  return roles.every(role => user.roles.includes(role));
+  return roles.every((role) => user.roles.includes(role));
 }
 
 /**
@@ -44,7 +44,7 @@ export function getUserDisplayName(user: User | null): string {
  */
 export function getUserInitials(user: User | null): string {
   if (!user) return '?';
-  
+
   if (user.name) {
     // Extract initials from name (first letter of first name + first letter of last name)
     const nameParts = user.name.split(' ');
@@ -58,7 +58,7 @@ export function getUserInitials(user: User | null): string {
     // Handle single name or empty name parts
     return user.name[0]?.toUpperCase() || '?';
   }
-  
+
   // Fallback to first letter of email
   return user.email && user.email[0] ? user.email[0].toUpperCase() : '?';
 }
@@ -69,7 +69,7 @@ export function getUserInitials(user: User | null): string {
  */
 export async function handleAuthError(error: any): Promise<void> {
   console.error('Authentication error:', error);
-  
+
   // If we're running in the browser
   if (typeof window !== 'undefined') {
     try {
@@ -86,42 +86,42 @@ export async function handleAuthError(error: any): Promise<void> {
 /**
  * Get navigation menu items based on user roles
  */
-export function getAuthorizedMenuItems(user: User | null): Array<{ title: string; href: string; icon?: string }> {
-  const baseMenuItems = [
-    { title: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-  ];
-  
+export function getAuthorizedMenuItems(
+  user: User | null,
+): Array<{ title: string; href: string; icon?: string }> {
+  const baseMenuItems = [{ title: 'Dashboard', href: '/dashboard', icon: 'dashboard' }];
+
   if (!user) return baseMenuItems;
-  
+
   // Add role-specific menu items
   if (hasRole(user, 'admin')) {
     baseMenuItems.push(
       { title: 'Users', href: '/dashboard/users', icon: 'users' },
-      { title: 'Settings', href: '/dashboard/settings', icon: 'settings' }
+      { title: 'Settings', href: '/dashboard/settings', icon: 'settings' },
     );
   }
-  
+
   if (hasAnyRole(user, ['accountant', 'admin'])) {
     baseMenuItems.push(
       { title: 'Chart of Accounts', href: '/dashboard/accounts', icon: 'accounts' },
       { title: 'Journal Entries', href: '/dashboard/journal-entries', icon: 'journal' },
-      { title: 'Financial Reports', href: '/dashboard/reports', icon: 'reports' }
+      { title: 'Financial Reports', href: '/dashboard/reports', icon: 'reports' },
     );
   }
-  
+
   if (hasAnyRole(user, ['sales', 'admin'])) {
     baseMenuItems.push(
       { title: 'Customers', href: '/dashboard/customers', icon: 'customers' },
-      { title: 'Invoices', href: '/dashboard/invoices', icon: 'invoices' }
+      { title: 'Invoices', href: '/dashboard/invoices', icon: 'invoices' },
     );
   }
-  
+
   if (hasAnyRole(user, ['purchasing', 'admin'])) {
     baseMenuItems.push(
       { title: 'Vendors', href: '/dashboard/vendors', icon: 'vendors' },
-      { title: 'Bills', href: '/dashboard/bills', icon: 'bills' }
+      { title: 'Bills', href: '/dashboard/bills', icon: 'bills' },
     );
   }
-  
+
   return baseMenuItems;
-} 
+}

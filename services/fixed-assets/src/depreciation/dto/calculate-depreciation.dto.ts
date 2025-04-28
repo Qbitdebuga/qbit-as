@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { 
-  IsString, 
-  IsNotEmpty, 
-  IsOptional, 
-  IsDateString, 
-  IsEnum, 
-  IsNumber, 
-  IsUUID, 
-  IsBoolean 
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsUUID,
+  IsBoolean,
 } from 'class-validator';
 import { DepreciationMethod } from '../enums/depreciation-method.enum';
 
@@ -18,36 +18,36 @@ export class CalculateDepreciationDto {
   @IsNotEmpty()
   assetId: string | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Method to use for depreciation calculation',
     enum: DepreciationMethod,
-    required: false 
+    required: false,
   })
   @IsEnum(DepreciationMethod)
   @IsOptional()
   depreciationMethod?: DepreciationMethod;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'End date for the depreciation calculation period',
-    required: false
+    required: false,
   })
   @IsDateString()
   @IsOptional()
   asOfDate?: string | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Whether to include projected future depreciation',
     required: false,
-    default: false 
+    default: false,
   })
   @IsBoolean()
   @IsOptional()
   includeProjections?: boolean = false;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Number of future periods to project (months)',
     required: false,
-    default: 12 
+    default: 12,
   })
   @IsNumber()
   @IsOptional()
@@ -93,4 +93,4 @@ export class CalculateDepreciationResponseDto {
     amount: number | null;
     bookValue: number | null;
   }[];
-} 
+}

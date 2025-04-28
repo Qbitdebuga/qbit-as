@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { 
-  IsString, 
-  IsOptional, 
-  IsDateString, 
-  IsNumber, 
-  IsEnum, 
-  IsUUID, 
-  Min, 
+import {
+  IsString,
+  IsOptional,
+  IsDateString,
+  IsNumber,
+  IsEnum,
+  IsUUID,
+  Min,
   IsPositive,
-  ValidateIf
+  ValidateIf,
 } from 'class-validator';
 import { AssetStatus } from '../enums/asset-status.enum';
 import { DepreciationMethod } from '../../depreciation/enums/depreciation-method.enum';
@@ -41,9 +41,12 @@ export class UpdateAssetDto {
   @IsOptional()
   purchaseCost?: number | null;
 
-  @ApiProperty({ description: 'Estimated residual value at the end of useful life', required: false })
+  @ApiProperty({
+    description: 'Estimated residual value at the end of useful life',
+    required: false,
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
-  @ValidateIf(o => o.residualValue !== undefined)
+  @ValidateIf((o) => o.residualValue !== undefined)
   @Min(0)
   @IsOptional()
   residualValue?: number | null;
@@ -55,10 +58,10 @@ export class UpdateAssetDto {
   @IsOptional()
   assetLifeYears?: number | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Current status of the asset',
     enum: AssetStatus,
-    required: false
+    required: false,
   })
   @IsEnum(AssetStatus)
   @IsOptional()
@@ -84,12 +87,12 @@ export class UpdateAssetDto {
   @IsOptional()
   categoryId?: string | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Method used to calculate depreciation',
     enum: DepreciationMethod,
-    required: false
+    required: false,
   })
   @IsEnum(DepreciationMethod)
   @IsOptional()
   depreciationMethod?: DepreciationMethod;
-} 
+}

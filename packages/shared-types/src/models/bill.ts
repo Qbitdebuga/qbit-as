@@ -6,7 +6,7 @@ export enum BillStatus {
   PAID = 'PAID',
   OVERDUE = 'OVERDUE',
   VOID = 'VOID',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export interface BillLineItem {
@@ -117,4 +117,4 @@ export interface BillListParams {
   search?: string | null;
   sortBy?: string | null;
   sortDirection?: 'asc' | 'desc';
-} 
+}

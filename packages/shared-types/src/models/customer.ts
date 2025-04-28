@@ -91,4 +91,4 @@ export interface CustomerListParams {
   limit?: number | null;
   sortBy?: string | null;
   sortDirection?: 'asc' | 'desc';
-} 
+}

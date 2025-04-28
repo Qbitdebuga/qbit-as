@@ -24,13 +24,7 @@ import { GeneralLedgerClientService } from './general-ledger-client';
       inject: [ConfigService],
     }),
   ],
-  providers: [
-    AuthClientService,
-    GeneralLedgerClientService,
-  ],
-  exports: [
-    AuthClientService,
-    GeneralLedgerClientService,
-  ],
+  providers: [AuthClientService, GeneralLedgerClientService],
+  exports: [AuthClientService, GeneralLedgerClientService],
 })
-export class ClientsModule {} 
+export class ClientsModule {}

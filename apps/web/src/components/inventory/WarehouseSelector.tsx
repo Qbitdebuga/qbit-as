@@ -8,13 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Warehouse } from 'lucide-react';
 import { IWarehouse } from '@qbit/shared-types';
 
@@ -31,7 +25,7 @@ export function WarehouseSelector({
   selectedWarehouseId,
   onWarehouseChange,
   title = 'Select Warehouse',
-  description = 'Choose a warehouse to view inventory'
+  description = 'Choose a warehouse to view inventory',
 }: WarehouseSelectorProps) {
   return (
     <Card>
@@ -43,10 +37,7 @@ export function WarehouseSelector({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Select
-          value={selectedWarehouseId || ''}
-          onValueChange={onWarehouseChange}
-        >
+        <Select value={selectedWarehouseId || ''} onValueChange={onWarehouseChange}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select a warehouse" />
           </SelectTrigger>
@@ -62,4 +53,4 @@ export function WarehouseSelector({
       </CardContent>
     </Card>
   );
-} 
+}

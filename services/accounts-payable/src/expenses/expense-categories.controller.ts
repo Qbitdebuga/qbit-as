@@ -1,14 +1,14 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  Query, 
-  ParseIntPipe, 
-  ParseBoolPipe
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  ParseIntPipe,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { ExpenseCategoriesService } from './expense-categories.service';
@@ -23,7 +23,11 @@ export class ExpenseCategoriesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new expense category' })
-  @ApiResponse({ status: 201, description: 'The expense category has been successfully created.', type: ExpenseCategory })
+  @ApiResponse({
+    status: 201,
+    description: 'The expense category has been successfully created.',
+    type: ExpenseCategory,
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   create(@Body() createExpenseCategoryDto: CreateExpenseCategoryDto) {
     return this?.expenseCategoriesService.create(createExpenseCategoryDto);
@@ -31,7 +35,11 @@ export class ExpenseCategoriesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all expense categories' })
-  @ApiResponse({ status: 200, description: 'Return all expense categories.', type: [ExpenseCategory] })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all expense categories.',
+    type: [ExpenseCategory],
+  })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'isActive', required: false, type: Boolean })
@@ -52,7 +60,11 @@ export class ExpenseCategoriesController {
 
   @Get('active')
   @ApiOperation({ summary: 'Get all active expense categories' })
-  @ApiResponse({ status: 200, description: 'Return all active expense categories.', type: [ExpenseCategory] })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all active expense categories.',
+    type: [ExpenseCategory],
+  })
   findActive() {
     return this?.expenseCategoriesService.findActive();
   }
@@ -68,7 +80,11 @@ export class ExpenseCategoriesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a expense category' })
-  @ApiResponse({ status: 200, description: 'The expense category has been successfully updated.', type: ExpenseCategory })
+  @ApiResponse({
+    status: 200,
+    description: 'The expense category has been successfully updated.',
+    type: ExpenseCategory,
+  })
   @ApiResponse({ status: 404, description: 'Expense category not found.' })
   @ApiParam({ name: 'id', type: 'number' })
   update(
@@ -82,9 +98,12 @@ export class ExpenseCategoriesController {
   @ApiOperation({ summary: 'Delete a expense category' })
   @ApiResponse({ status: 200, description: 'The expense category has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Expense category not found.' })
-  @ApiResponse({ status: 409, description: 'This category has expenses associated with it and cannot be deleted.' })
+  @ApiResponse({
+    status: 409,
+    description: 'This category has expenses associated with it and cannot be deleted.',
+  })
   @ApiParam({ name: 'id', type: 'number' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this?.expenseCategoriesService.remove(id);
   }
-} 
+}

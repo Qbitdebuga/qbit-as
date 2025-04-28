@@ -9,4 +9,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   providers: [DepreciationService],
   exports: [DepreciationService],
 })
-export class DepreciationModule {} 
+export class DepreciationModule {}

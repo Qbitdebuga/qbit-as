@@ -1,1 +1,1 @@
-export * from './invoices-client'; 
+export * from './invoices-client';

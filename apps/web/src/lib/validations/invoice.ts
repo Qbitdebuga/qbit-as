@@ -9,17 +9,32 @@ const lineItemSchema = z.object({
   quantity: z
     .number()
     .min(0.01, { message: 'Quantity must be greater than 0' })
-    .or(z.string().regex(/^\d*\.?\d+$/).transform(Number))
+    .or(
+      z
+        .string()
+        .regex(/^\d*\.?\d+$/)
+        .transform(Number),
+    )
     .refine((val) => val > 0, { message: 'Quantity must be greater than 0' }),
   unitPrice: z
     .number()
     .min(0, { message: 'Unit price must be 0 or greater' })
-    .or(z.string().regex(/^\d*\.?\d+$/).transform(Number)),
+    .or(
+      z
+        .string()
+        .regex(/^\d*\.?\d+$/)
+        .transform(Number),
+    ),
   taxRate: z
     .number()
     .min(0, { message: 'Tax rate must be 0 or greater' })
     .max(100, { message: 'Tax rate must be 100 or less' })
-    .or(z.string().regex(/^\d*\.?\d+$/).transform(Number))
+    .or(
+      z
+        .string()
+        .regex(/^\d*\.?\d+$/)
+        .transform(Number),
+    )
     .optional()
     .nullable(),
   accountId: z.string().min(1, { message: 'Account is required' }),
@@ -47,9 +62,7 @@ export const invoiceSchema = z.object({
   subtotal: z.number().optional(), // This will be calculated
   taxAmount: z.number().optional(), // This will be calculated
   totalAmount: z.number().optional(), // This will be calculated
-  lineItems: z
-    .array(lineItemSchema)
-    .min(1, { message: 'At least one line item is required' }),
+  lineItems: z.array(lineItemSchema).min(1, { message: 'At least one line item is required' }),
   paymentTerms: z.string().optional(),
   currency: z.string().min(1, { message: 'Currency is required' }).default('USD'),
   accountId: z.string().min(1, { message: 'Account is required' }),
@@ -70,17 +83,15 @@ export const invoiceFilterSchema = z.object({
   minAmount: z
     .string()
     .optional()
-    .refine(
-      (val) => !val || /^\d+(\.\d{1,2})?$/.test(val), 
-      { message: 'Min amount must be a valid number with up to 2 decimal places' }
-    ),
+    .refine((val) => !val || /^\d+(\.\d{1,2})?$/.test(val), {
+      message: 'Min amount must be a valid number with up to 2 decimal places',
+    }),
   maxAmount: z
     .string()
     .optional()
-    .refine(
-      (val) => !val || /^\d+(\.\d{1,2})?$/.test(val), 
-      { message: 'Max amount must be a valid number with up to 2 decimal places' }
-    ),
+    .refine((val) => !val || /^\d+(\.\d{1,2})?$/.test(val), {
+      message: 'Max amount must be a valid number with up to 2 decimal places',
+    }),
 });
 
-export type InvoiceFilterValues = z.infer<typeof invoiceFilterSchema>; 
+export type InvoiceFilterValues = z.infer<typeof invoiceFilterSchema>;

@@ -1,13 +1,13 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  Query, 
-  UseGuards 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
@@ -34,7 +34,11 @@ export class AssetsController {
   @UseGuards(RolesGuard)
   @Roles('admin', 'finance', 'asset-manager')
   @ApiOperation({ summary: 'Create a new asset' })
-  @ApiResponse({ status: 201, description: 'The asset has been successfully created.', type: AssetEntity })
+  @ApiResponse({
+    status: 201,
+    description: 'The asset has been successfully created.',
+    type: AssetEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -48,10 +52,30 @@ export class AssetsController {
   @ApiOperation({ summary: 'Get all assets with pagination' })
   @ApiResponse({ status: 200, description: 'Return the list of assets.', type: [AssetEntity] })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiQuery({ name: 'skip', required: false, type: Number, description: 'Number of records to skip' })
-  @ApiQuery({ name: 'take', required: false, type: Number, description: 'Number of records to take' })
-  @ApiQuery({ name: 'status', required: false, enum: AssetStatus, description: 'Filter by asset status' })
-  @ApiQuery({ name: 'categoryId', required: false, type: String, description: 'Filter by category ID' })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    type: Number,
+    description: 'Number of records to skip',
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    type: Number,
+    description: 'Number of records to take',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: AssetStatus,
+    description: 'Filter by asset status',
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    required: false,
+    type: String,
+    description: 'Filter by category ID',
+  })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Search term' })
   async findAll(
     @Query('skip') skip?: number,
@@ -82,7 +106,11 @@ export class AssetsController {
   @UseGuards(RolesGuard)
   @Roles('admin', 'finance', 'asset-manager')
   @ApiOperation({ summary: 'Update an asset' })
-  @ApiResponse({ status: 200, description: 'The asset has been successfully updated.', type: AssetEntity })
+  @ApiResponse({
+    status: 200,
+    description: 'The asset has been successfully updated.',
+    type: AssetEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -112,7 +140,11 @@ export class AssetsController {
   @UseGuards(RolesGuard)
   @Roles('admin', 'finance', 'asset-manager')
   @ApiOperation({ summary: 'Create a new asset category' })
-  @ApiResponse({ status: 201, description: 'The asset category has been successfully created.', type: AssetCategoryEntity })
+  @ApiResponse({
+    status: 201,
+    description: 'The asset category has been successfully created.',
+    type: AssetCategoryEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -122,26 +154,40 @@ export class AssetsController {
 
   @Get('categories')
   @ApiOperation({ summary: 'Get all asset categories with pagination' })
-  @ApiResponse({ status: 200, description: 'Return the list of asset categories.', type: [AssetCategoryEntity] })
+  @ApiResponse({
+    status: 200,
+    description: 'Return the list of asset categories.',
+    type: [AssetCategoryEntity],
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiQuery({ name: 'skip', required: false, type: Number, description: 'Number of records to skip' })
-  @ApiQuery({ name: 'take', required: false, type: Number, description: 'Number of records to take' })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    type: Number,
+    description: 'Number of records to skip',
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    type: Number,
+    description: 'Number of records to take',
+  })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Search term' })
   async findAllCategories(
     @Query('skip') skip?: number,
     @Query('take') take?: number,
     @Query('search') search?: string,
   ): Promise<{ categories: AssetCategoryEntity[]; total: number }> {
-    return this?.assetsService.findAllCategories(
-      skip ? +skip : 0,
-      take ? +take : 10,
-      search,
-    );
+    return this?.assetsService.findAllCategories(skip ? +skip : 0, take ? +take : 10, search);
   }
 
   @Get('categories/:id')
   @ApiOperation({ summary: 'Get an asset category by ID' })
-  @ApiResponse({ status: 200, description: 'Return the asset category.', type: AssetCategoryEntity })
+  @ApiResponse({
+    status: 200,
+    description: 'Return the asset category.',
+    type: AssetCategoryEntity,
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Asset category not found.' })
   async findOneCategory(@Param('id') id: string): Promise<AssetCategoryEntity> {
@@ -152,7 +198,11 @@ export class AssetsController {
   @UseGuards(RolesGuard)
   @Roles('admin', 'finance', 'asset-manager')
   @ApiOperation({ summary: 'Update an asset category' })
-  @ApiResponse({ status: 200, description: 'The asset category has been successfully updated.', type: AssetCategoryEntity })
+  @ApiResponse({
+    status: 200,
+    description: 'The asset category has been successfully updated.',
+    type: AssetCategoryEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -176,4 +226,4 @@ export class AssetsController {
   async removeCategory(@Param('id') id: string): Promise<void> {
     return this?.assetsService.removeCategory(id);
   }
-} 
+}

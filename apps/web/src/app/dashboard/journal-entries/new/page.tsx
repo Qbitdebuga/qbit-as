@@ -2,73 +2,69 @@
 
 import React from 'react';
 import { JournalEntryForm } from '@/components/journal-entries/JournalEntryForm';
-import { 
-  PageHeader, 
-  PageHeaderDescription, 
-  PageHeaderHeading 
-} from '@/components/page-header';
+import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { ArrowLeft } from 'lucide-react';
 
 // In a real app, we would fetch this from the API
 const accounts = [
-  { 
-    id: '1000', 
+  {
+    id: '1000',
     code: '1000',
     name: 'Cash',
     type: 'ASSET',
     subtype: 'CASH',
-    isActive: true
+    isActive: true,
   },
-  { 
-    id: '1200', 
+  {
+    id: '1200',
     code: '1200',
     name: 'Accounts Receivable',
     type: 'ASSET',
     subtype: 'ACCOUNTS_RECEIVABLE',
-    isActive: true
+    isActive: true,
   },
-  { 
-    id: '2000', 
+  {
+    id: '2000',
     code: '2000',
     name: 'Accounts Payable',
     type: 'LIABILITY',
     subtype: 'ACCOUNTS_PAYABLE',
-    isActive: true
+    isActive: true,
   },
-  { 
-    id: '3000', 
+  {
+    id: '3000',
     code: '3000',
     name: 'Common Stock',
     type: 'EQUITY',
     subtype: 'CAPITAL_STOCK',
-    isActive: true
+    isActive: true,
   },
-  { 
-    id: '4000', 
+  {
+    id: '4000',
     code: '4000',
     name: 'Revenue',
     type: 'REVENUE',
     subtype: 'OPERATING_REVENUE',
-    isActive: true
+    isActive: true,
   },
-  { 
-    id: '5000', 
+  {
+    id: '5000',
     code: '5000',
     name: 'Rent Expense',
     type: 'EXPENSE',
     subtype: 'OPERATING_EXPENSE',
-    isActive: true
+    isActive: true,
   },
-  { 
-    id: '5100', 
+  {
+    id: '5100',
     code: '5100',
     name: 'Utilities Expense',
     type: 'EXPENSE',
     subtype: 'OPERATING_EXPENSE',
-    isActive: true
-  }
+    isActive: true,
+  },
 ];
 
 export default function NewJournalEntryPage() {
@@ -89,14 +85,10 @@ export default function NewJournalEntryPage() {
           </Button>
         </Link>
       </div>
-      
+
       <PageHeader title="New Journal Entry" description="Create a new journal entry transaction" />
 
-      <JournalEntryForm 
-        accounts={accounts} 
-        onSubmit={handleSubmit}
-        isSubmitting={false}
-      />
+      <JournalEntryForm accounts={accounts} onSubmit={handleSubmit} isSubmitting={false} />
     </div>
   );
-} 
+}

@@ -8,13 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,10 +26,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  MoreHorizontal, 
-  Plus, 
-  Search, 
+import {
+  MoreHorizontal,
+  Plus,
+  Search,
   Trash2,
   Loader2,
   SortAsc,
@@ -78,18 +72,18 @@ export function VendorList({
 }: VendorListProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const totalPages = Math.ceil(total / limit);
-  
+
   const handleSearch = () => {
     onSearch(searchTerm);
   };
-  
+
   const handleSort = (field: string) => {
     const direction = field === sortBy && sortDirection === 'asc' ? 'desc' : 'asc';
     onSort(field, direction);
   };
-  
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
@@ -98,7 +92,11 @@ export function VendorList({
 
   const getSortIcon = (field: string) => {
     if (field !== sortBy) return null;
-    return sortDirection === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />;
+    return sortDirection === 'asc' ? (
+      <SortAsc className="h-4 w-4" />
+    ) : (
+      <SortDesc className="h-4 w-4" />
+    );
   };
 
   return (
@@ -187,37 +185,27 @@ export function VendorList({
                 ) : (
                   vendors.map((vendor) => (
                     <TableRow key={vendor.id} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell 
+                      <TableCell
                         className="font-medium"
                         onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}
                       >
                         {vendor.vendorNumber}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}>
                         {vendor.name}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}>
                         {vendor.email || '-'}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}>
                         {vendor.phone || '-'}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}
-                      >
-                        <Badge variant={vendor.isActive ? "success" : "secondary"}>
+                      <TableCell onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}>
+                        <Badge variant={vendor.isActive ? 'success' : 'secondary'}>
                           {vendor.isActive ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/vendors/${vendor.id}`)}>
                         {formatDate(vendor.createdAt)}
                       </TableCell>
                       <TableCell className="text-right">
@@ -229,14 +217,14 @@ export function VendorList({
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               onClick={() => onEdit(vendor.id)}
                               className="cursor-pointer"
                             >
                               <FileEdit className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               onClick={() => onDelete(vendor.id)}
                               className="cursor-pointer text-destructive focus:text-destructive"
                             >
@@ -252,21 +240,21 @@ export function VendorList({
               </TableBody>
             </Table>
           </div>
-          
+
           {vendors.length > 0 && totalPages > 1 && (
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious 
+                  <PaginationPrevious
                     onClick={() => page > 1 && onPageChange(page - 1)}
-                    className={page <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    className={page <= 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
                   />
                 </PaginationItem>
-                
+
                 {[...Array(totalPages)].map((_, i) => (
                   <PaginationItem key={i}>
                     <PaginationLink
-                      onClick={() => onPageChange(i + 1)} 
+                      onClick={() => onPageChange(i + 1)}
                       isActive={page === i + 1}
                       className="cursor-pointer"
                     >
@@ -274,11 +262,13 @@ export function VendorList({
                     </PaginationLink>
                   </PaginationItem>
                 ))}
-                
+
                 <PaginationItem>
-                  <PaginationNext 
+                  <PaginationNext
                     onClick={() => page < totalPages && onPageChange(page + 1)}
-                    className={page >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    className={
+                      page >= totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -288,4 +278,4 @@ export function VendorList({
       </CardContent>
     </Card>
   );
-} 
+}

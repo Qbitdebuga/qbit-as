@@ -89,4 +89,4 @@ export class VendorContact {
 
   @ApiProperty({ description: 'The date when the contact was last updated' })
   updatedAt: Date;
-} 
+}

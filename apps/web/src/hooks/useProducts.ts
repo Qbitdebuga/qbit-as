@@ -21,7 +21,7 @@ export function useProducts() {
     try {
       setLoading(true);
       setError(null);
-      
+
       // TODO: Replace with actual API call
       // Mock data for now
       const mockProducts: Product[] = [
@@ -48,10 +48,10 @@ export function useProducts() {
           updatedAt: new Date().toISOString(),
         },
       ];
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       setProducts(mockProducts);
     } catch (err) {
       setError('Failed to fetch products');
@@ -68,7 +68,7 @@ export function useProducts() {
   const addProduct = async (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
       setLoading(true);
-      
+
       // TODO: Replace with actual API call
       // Mock implementation
       const newProduct: Product = {
@@ -77,11 +77,11 @@ export function useProducts() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setProducts(prevProducts => [...prevProducts, newProduct]);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setProducts((prevProducts) => [...prevProducts, newProduct]);
       return newProduct;
     } catch (err) {
       setError('Failed to add product');
@@ -93,4 +93,4 @@ export function useProducts() {
   };
 
   return { products, loading, error, addProduct, refetch: fetchProducts };
-} 
+}

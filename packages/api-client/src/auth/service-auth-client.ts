@@ -1,7 +1,7 @@
-import { 
-  ServiceTokenRequestDto, 
+import {
+  ServiceTokenRequestDto,
   ServiceTokenResponseDto,
-  ValidateTokenResponseDto
+  ValidateTokenResponseDto,
 } from '@qbit/shared-types';
 
 /**
@@ -15,11 +15,7 @@ export class ServiceAuthClient {
   private serviceToken: string | null = null;
   private tokenExpiry: number | null = null;
 
-  constructor(
-    apiUrl: string, 
-    serviceId: string, 
-    serviceName: string
-  ) {
+  constructor(apiUrl: string, serviceId: string, serviceName: string) {
     this.apiUrl = apiUrl;
     this.serviceId = serviceId;
     this.serviceName = serviceName;
@@ -39,16 +35,16 @@ export class ServiceAuthClient {
     const tokenRequest: ServiceTokenRequestDto = {
       serviceId: this.serviceId,
       serviceName: this.serviceName,
-      scopes
+      scopes,
     };
 
     try {
       const response = await fetch(`${this.apiUrl}/auth/service-token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(tokenRequest)
+        body: JSON.stringify(tokenRequest),
       });
 
       if (!response.ok) {
@@ -56,15 +52,17 @@ export class ServiceAuthClient {
       }
 
       const tokenData: ServiceTokenResponseDto = await response.json();
-      
+
       // Store token and set expiry (subtract 1 minute for safety margin)
       this.serviceToken = tokenData.accessToken;
-      this.tokenExpiry = Date.now() + (tokenData.expiresIn * 1000) - 60000;
-      
+      this.tokenExpiry = Date.now() + tokenData.expiresIn * 1000 - 60000;
+
       return tokenData.accessToken;
     } catch (error) {
       console.error('Service token acquisition failed:', error);
-      throw new Error(`Service authentication failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Service authentication failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -76,9 +74,9 @@ export class ServiceAuthClient {
       const response = await fetch(`${this.apiUrl}/auth/validate-service-token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token })
+        body: JSON.stringify({ token }),
       });
 
       if (!response.ok) {
@@ -96,9 +94,9 @@ export class ServiceAuthClient {
    * Make an authenticated request to another service
    */
   async makeAuthenticatedRequest<T>(
-    url: string, 
-    options: RequestInit = {}, 
-    scopes: string[] = []
+    url: string,
+    options: RequestInit = {},
+    scopes: string[] = [],
   ): Promise<T> {
     // Get a token with the appropriate scopes
     const token = await this.getServiceToken(scopes);
@@ -106,13 +104,13 @@ export class ServiceAuthClient {
     // Add the token to the request headers
     const headers = {
       ...options.headers,
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     };
 
     // Make the request
     const response = await fetch(url, {
       ...options,
-      headers
+      headers,
     });
 
     if (!response.ok) {

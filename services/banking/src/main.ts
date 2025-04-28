@@ -38,18 +38,18 @@ async function bootstrap() {
 
   // Get the configuration service
   const configService = app.get(ConfigService);
-  
+
   // Get the port from configuration or use default
   const port = configService.get<number>('PORT') || 3007;
-  
+
   // Simple health check endpoint for Kubernetes probes
   app.use('/health', (req, res) => {
     res.status(200).send('OK');
   });
-  
+
   // Start the server
   await app.listen(port);
   console.log(`Banking service is running on: http://localhost:${port}`);
 }
 
-bootstrap(); 
+bootstrap();

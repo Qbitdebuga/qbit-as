@@ -6,4 +6,4 @@ export const authConfigSchema = Joi.object({
   SERVICE_NAME: Joi.string().required(),
   SERVICE_JWT_SECRET: Joi.string().required(),
   SERVICE_TOKEN_EXPIRATION: Joi.string().default('1h'),
-}); 
+});

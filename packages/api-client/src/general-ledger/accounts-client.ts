@@ -1,9 +1,9 @@
-import { 
-  Account, 
-  CreateAccountDto, 
-  UpdateAccountDto, 
+import {
+  Account,
+  CreateAccountDto,
+  UpdateAccountDto,
   AccountWithHierarchy,
-  AccountTransactionsDto
+  AccountTransactionsDto,
 } from '@qbit/shared-types';
 
 import { GeneralLedgerClient } from './general-ledger-client';
@@ -65,10 +65,10 @@ export class AccountsClient {
    * Get transactions for a specific account
    */
   async getAccountTransactions(
-    accountId: string, 
-    startDate?: string, 
-    endDate?: string
+    accountId: string,
+    startDate?: string,
+    endDate?: string,
   ): Promise<AccountTransactionsDto> {
     return this?.glClient.getAccountTransactions(accountId, startDate, endDate);
   }
-} 
+}

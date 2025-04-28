@@ -9,4 +9,4 @@ import { ClientsModule } from '../clients/clients.module';
   providers: [AggregationService],
   exports: [AggregationService],
 })
-export class AggregationModule {} 
+export class AggregationModule {}

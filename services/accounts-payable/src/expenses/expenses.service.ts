@@ -24,46 +24,46 @@ export class ExpensesService {
     sortBy?: string | null;
     sortDirection?: 'asc' | 'desc';
   }) {
-    const { 
-      page = 1, 
-      limit = 10, 
-      status, 
-      vendorId, 
-      categoryId, 
-      fromDate, 
-      toDate, 
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      vendorId,
+      categoryId,
+      fromDate,
+      toDate,
       search,
       sortBy = 'expenseDate',
-      sortDirection = 'desc'
+      sortDirection = 'desc',
     } = query;
 
     // Build the where clause
     const where: any = {};
-    
+
     if (status) {
       where.status = status;
     }
-    
+
     if (vendorId) {
       where.vendorId = parseInt(vendorId.toString());
     }
-    
+
     if (categoryId) {
       where.categoryId = parseInt(categoryId.toString());
     }
-    
+
     if (fromDate || toDate) {
       where.expenseDate = {};
-      
+
       if (fromDate) {
         where?.expenseDate.gte = new Date(fromDate);
       }
-      
+
       if (toDate) {
         where?.expenseDate.lte = new Date(toDate);
       }
     }
-    
+
     if (search) {
       where.OR = [
         { description: { contains: search, mode: 'insensitive' } },
@@ -86,11 +86,11 @@ export class ExpensesService {
 
   async findOne(id: number) {
     const expense = await this?.expensesRepository.findOne(id);
-    
+
     if (!expense) {
       throw new NotFoundException(`Expense with ID ${id} not found`);
     }
-    
+
     return expense;
   }
 
@@ -117,12 +117,15 @@ export class ExpensesService {
     return this?.expensesRepository.findByCategory(categoryId);
   }
 
-  async addAttachment(expenseId: number, attachment: {
-    fileName: string | null;
-    fileType: string | null;
-    fileSize: number | null;
-    filePath: string | null;
-  }) {
+  async addAttachment(
+    expenseId: number,
+    attachment: {
+      fileName: string | null;
+      fileType: string | null;
+      fileSize: number | null;
+      filePath: string | null;
+    },
+  ) {
     await this.findOne(expenseId); // Ensure expense exists
     return this?.expensesRepository.addAttachment(expenseId, attachment);
   }
@@ -130,4 +133,4 @@ export class ExpensesService {
   async removeAttachment(id: number) {
     return this?.expensesRepository.removeAttachment(id);
   }
-} 
+}

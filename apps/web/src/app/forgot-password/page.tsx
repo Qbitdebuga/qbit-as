@@ -12,7 +12,8 @@ export default function ForgotPasswordPage() {
           <div className="inline-block border-[1px] justify-center w-20 border-blue-600 border-solid"></div>
           <ForgotPasswordForm />
           <div className="text-gray-500 mt-4 mb-4">
-            <p>Remember your password?{' '}
+            <p>
+              Remember your password?{' '}
               <Link href="/login" className="text-blue-600 hover:underline">
                 Back to Login
               </Link>
@@ -22,4 +23,4 @@ export default function ForgotPasswordPage() {
       </main>
     </div>
   );
-} 
+}

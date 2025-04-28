@@ -7,5 +7,5 @@ export enum CurrencyCode {
   JPY = 'JPY',
   CNY = 'CNY',
   INR = 'INR',
-  OTHER = 'OTHER'
-} 
+  OTHER = 'OTHER',
+}

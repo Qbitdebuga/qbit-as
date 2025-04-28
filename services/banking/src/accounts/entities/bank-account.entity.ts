@@ -46,7 +46,7 @@ export class BankAccountEntity {
 
   @ApiProperty({
     description: 'Initial opening balance of the account',
-    example: 10000.00,
+    example: 10000.0,
   })
   openingBalance: Decimal;
 
@@ -82,9 +82,9 @@ export class BankAccountEntity {
   updatedAt: Date;
 
   // Relations not directly part of the interface
-  @ApiProperty({ 
+  @ApiProperty({
     type: () => BankEntity,
-    description: 'The bank where this account is held'
+    description: 'The bank where this account is held',
   })
   bank?: BankEntity;
-} 
+}

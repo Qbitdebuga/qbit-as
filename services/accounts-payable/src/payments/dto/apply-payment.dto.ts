@@ -1,19 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { 
-  IsArray, 
-  IsNotEmpty, 
-  IsNumber, 
-  IsPositive, 
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
   ValidateNested,
-  ArrayMinSize
+  ArrayMinSize,
 } from 'class-validator';
 import { CreatePaymentApplicationDto } from './create-payment.dto';
 
 export class ApplyPaymentDto {
   @ApiProperty({
     description: 'ID of the payment to apply',
-    example: 1
+    example: 1,
   })
   @IsNumber()
   @IsNotEmpty()
@@ -21,11 +21,11 @@ export class ApplyPaymentDto {
 
   @ApiProperty({
     description: 'List of bill applications',
-    type: [CreatePaymentApplicationDto]
+    type: [CreatePaymentApplicationDto],
   })
   @ValidateNested({ each: true })
   @Type(() => CreatePaymentApplicationDto)
   @IsArray()
   @ArrayMinSize(1)
   applications: CreatePaymentApplicationDto[];
-} 
+}

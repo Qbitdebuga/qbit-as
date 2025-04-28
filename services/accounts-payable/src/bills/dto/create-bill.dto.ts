@@ -1,8 +1,21 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { 
-  IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, 
-  IsPositive, IsString, MaxLength, ValidateNested, IsUUID, IsDateString, ArrayMinSize, Min, MinLength 
+import {
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
+  ValidateNested,
+  IsUUID,
+  IsDateString,
+  ArrayMinSize,
+  Min,
+  MinLength,
 } from 'class-validator';
 import { BillStatus } from './bill-status.enum';
 import { CreateBillLineItemDto } from './create-bill-line-item.dto';
@@ -72,4 +85,4 @@ export class CreateBillDto {
   @IsOptional()
   @MaxLength(1000)
   notes?: string | null;
-} 
+}

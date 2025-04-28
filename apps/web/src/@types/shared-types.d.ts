@@ -42,7 +42,7 @@ declare module '@qbit/shared-types' {
     PAID = 'PAID',
     OVERDUE = 'OVERDUE',
     VOID = 'VOID',
-    CANCELLED = 'CANCELLED'
+    CANCELLED = 'CANCELLED',
   }
 
   export interface BillLineItem {
@@ -105,7 +105,7 @@ declare module '@qbit/shared-types' {
     ACH = 'ACH',
     PAYPAL = 'PAYPAL',
     STRIPE = 'STRIPE',
-    OTHER = 'OTHER'
+    OTHER = 'OTHER',
   }
 
   export enum PaymentStatus {
@@ -115,7 +115,7 @@ declare module '@qbit/shared-types' {
     VOIDED = 'VOIDED',
     REFUNDED = 'REFUNDED',
     PARTIALLY_REFUNDED = 'PARTIALLY_REFUNDED',
-    CANCELLED = 'CANCELLED'
+    CANCELLED = 'CANCELLED',
   }
 
   export interface PaymentApplication {
@@ -191,7 +191,7 @@ declare module '@qbit/shared-types' {
     LIABILITY = 'LIABILITY',
     EQUITY = 'EQUITY',
     REVENUE = 'REVENUE',
-    EXPENSE = 'EXPENSE'
+    EXPENSE = 'EXPENSE',
   }
 
   // Balance Sheet types
@@ -299,4 +299,4 @@ declare module '@qbit/shared-types' {
     meta: ReportMeta;
     data: CashFlowData;
   }
-} 
+}

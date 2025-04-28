@@ -51,7 +51,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </div>
-      
+
       {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Top navbar */}
@@ -66,14 +66,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </div>
         </div>
-        
+
         {/* Content area */}
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <div className="py-6 px-4 sm:px-6 md:px-8">
-            {children}
-          </div>
+          <div className="py-6 px-4 sm:px-6 md:px-8">{children}</div>
         </main>
       </div>
     </div>
   );
-} 
+}

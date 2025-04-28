@@ -30,7 +30,11 @@ export class AuthClientService {
    */
   private async getServiceToken(): Promise<string> {
     // Check if token exists and is still valid (with 5 minute buffer)
-    if (this.serviceToken && this.tokenExpiration && this.tokenExpiration > new Date(Date.now() + 5 * 60 * 1000)) {
+    if (
+      this.serviceToken &&
+      this.tokenExpiration &&
+      this.tokenExpiration > new Date(Date.now() + 5 * 60 * 1000)
+    ) {
       return this.serviceToken;
     }
 
@@ -88,21 +92,13 @@ export class AuthClientService {
 
       let response;
       if (method === 'GET') {
-        response = await firstValueFrom(
-          this?.httpService.get(url, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.get(url, requestConfig));
       } else if (method === 'POST') {
-        response = await firstValueFrom(
-          this?.httpService.post(url, data, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.post(url, data, requestConfig));
       } else if (method === 'PUT') {
-        response = await firstValueFrom(
-          this?.httpService.put(url, data, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.put(url, data, requestConfig));
       } else if (method === 'DELETE') {
-        response = await firstValueFrom(
-          this?.httpService.delete(url, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.delete(url, requestConfig));
       } else {
         throw new Error(`Unsupported HTTP method: ${method}`);
       }
@@ -160,7 +156,7 @@ export class AuthClientService {
       throw error;
     }
   }
-  
+
   /**
    * Returns a valid token for internal service-to-service communication.
    * Only intended for trusted internal service use.
@@ -168,4 +164,4 @@ export class AuthClientService {
   public async fetchServiceToken(): Promise<string> {
     return this.getServiceToken();
   }
-} 
+}

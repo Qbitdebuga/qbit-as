@@ -11,7 +11,7 @@ export default function NewVendorPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const vendorsClient = new VendorsClient('/api/accounts-payable');
 
   const handleSubmit = async (data: CreateVendorDto) => {
@@ -40,11 +40,8 @@ export default function NewVendorPage() {
         <h1 className="text-3xl font-bold">New Vendor</h1>
         <p className="text-muted-foreground">Create a new vendor in your accounting system</p>
       </div>
-      
-      <VendorForm 
-        onSubmit={handleSubmit}
-        isLoading={isSubmitting}
-      />
+
+      <VendorForm onSubmit={handleSubmit} isLoading={isSubmitting} />
     </div>
   );
-} 
+}

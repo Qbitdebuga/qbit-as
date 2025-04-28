@@ -29,9 +29,9 @@ export class AssetEntity {
   @ApiProperty({ description: 'Expected useful life in years' })
   assetLifeYears: number | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Current status of the asset',
-    enum: AssetStatus
+    enum: AssetStatus,
   })
   status: AssetStatus;
 
@@ -53,9 +53,9 @@ export class AssetEntity {
   @ApiProperty({ description: 'ID of the category this asset belongs to' })
   categoryId: string | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Method used to calculate depreciation',
-    enum: DepreciationMethod
+    enum: DepreciationMethod,
   })
   depreciationMethod: DepreciationMethod;
 
@@ -72,4 +72,4 @@ export class AssetEntity {
   constructor(partial: Partial<AssetEntity>) {
     Object.assign(this, partial);
   }
-} 
+}

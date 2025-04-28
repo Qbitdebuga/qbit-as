@@ -164,7 +164,7 @@ export class BaseApiClient {
     method: string,
     path: string,
     data?: any,
-    options: RequestOptions = {}
+    options: RequestOptions = {},
   ): Promise<T> {
     let config = {
       method,
@@ -182,7 +182,7 @@ export class BaseApiClient {
       }
 
       const url = new URL(config.url, this.baseUrl);
-      
+
       // Add query parameters if any
       if (config?.options.params) {
         Object.entries(config?.options.params).forEach(([key, value]) => {
@@ -230,9 +230,11 @@ export class BaseApiClient {
 
       if (!response.ok) {
         // Try to parse error response
-        const errorData = await response.json().catch(() => ({})) as ApiErrorResponse;
-        const error = new Error(errorData.message || `Request failed with status ${response.status}`);
-        
+        const errorData = (await response.json().catch(() => ({}))) as ApiErrorResponse;
+        const error = new Error(
+          errorData.message || `Request failed with status ${response.status}`,
+        );
+
         // Add additional error information
         Object.assign(error, {
           status: response.status,
@@ -251,7 +253,7 @@ export class BaseApiClient {
 
       // Parse response based on responseType
       let result: any;
-      switch(config?.options.responseType) {
+      switch (config?.options.responseType) {
         case 'text':
           result = await response.text();
           break;
@@ -287,8 +289,8 @@ export class BaseApiClient {
         }
         throw processedError;
       }
-      
+
       throw error;
     }
   }
-} 
+}

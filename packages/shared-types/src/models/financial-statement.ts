@@ -2,7 +2,7 @@ export enum StatementPeriod {
   MONTH = 'MONTH',
   QUARTER = 'QUARTER',
   YEAR = 'YEAR',
-  CUSTOM = 'CUSTOM'
+  CUSTOM = 'CUSTOM',
 }
 
 export interface StatementRequestDto {
@@ -112,4 +112,4 @@ export interface CashFlowItem {
   accountId?: string | null;
   accountCode?: string | null;
   accountName?: string | null;
-} 
+}

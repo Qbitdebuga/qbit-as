@@ -47,31 +47,31 @@ export class BillDto {
   status: BillStatus;
 
   @ApiProperty({
-    example: 1000.00,
+    example: 1000.0,
     description: 'Subtotal amount before taxes',
   })
   subtotal: number | null;
 
   @ApiProperty({
-    example: 100.00,
+    example: 100.0,
     description: 'Total tax amount',
   })
   taxTotal: number | null;
 
   @ApiProperty({
-    example: 1100.00,
+    example: 1100.0,
     description: 'Total amount including taxes',
   })
   total: number | null;
 
   @ApiProperty({
-    example: 500.00,
+    example: 500.0,
     description: 'Amount paid so far',
   })
   amountPaid: number | null;
 
   @ApiProperty({
-    example: 600.00,
+    example: 600.0,
     description: 'Remaining balance due',
   })
   balanceDue: number | null;
@@ -99,4 +99,4 @@ export class BillDto {
     description: 'Date and time when the bill was last updated',
   })
   updatedAt: string | null;
-} 
+}

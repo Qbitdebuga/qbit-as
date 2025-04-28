@@ -7,18 +7,18 @@
  */
 export const formatCurrency = (
   value: number | undefined | null,
-  locale = 'en-US', 
-  currency = 'USD'
+  locale = 'en-US',
+  currency = 'USD',
 ): string => {
   if (value === undefined || value === null) {
     return '$0.00';
   }
-  
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(value);
 };
 
@@ -28,20 +28,17 @@ export const formatCurrency = (
  * @param locale Locale to use for formatting (default: 'en-US')
  * @returns Formatted date string in short format (MMM D, YYYY)
  */
-export const formatDate = (
-  date: string | Date | undefined | null,
-  locale = 'en-US'
-): string => {
+export const formatDate = (date: string | Date | undefined | null, locale = 'en-US'): string => {
   if (!date) {
     return 'N/A';
   }
-  
+
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
+
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   }).format(dateObj);
 };
 
@@ -53,7 +50,7 @@ export const formatDate = (
  */
 export const formatDateTime = (
   date: Date | string | undefined | null,
-  locale = 'en-US'
+  locale = 'en-US',
 ): string => {
   if (!date) {
     return 'N/A';
@@ -73,15 +70,15 @@ export const formatDateTime = (
 export const formatNumber = (
   value: number | undefined | null,
   decimals = 0,
-  locale = 'en-US'
+  locale = 'en-US',
 ): string => {
   if (value === undefined || value === null) {
     return '0';
   }
-  
+
   return new Intl.NumberFormat(locale, {
     minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
+    maximumFractionDigits: decimals,
   }).format(value);
 };
 
@@ -95,16 +92,16 @@ export const formatNumber = (
 export const formatPercentage = (
   value: number | undefined | null,
   decimals = 2,
-  locale = 'en-US'
+  locale = 'en-US',
 ): string => {
   if (value === undefined || value === null) {
     return '0%';
   }
-  
+
   return new Intl.NumberFormat(locale, {
     style: 'percent',
     minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
+    maximumFractionDigits: decimals,
   }).format(value / 100);
 };
 
@@ -114,10 +111,7 @@ export const formatPercentage = (
  * @param locale The locale to use for formatting (default: en-US)
  * @returns Formatted date string
  */
-export function formatDateShort(
-  date: Date | string | undefined | null,
-  locale = 'en-US',
-): string {
+export function formatDateShort(date: Date | string | undefined | null, locale = 'en-US'): string {
   if (!date) {
     return '';
   }
@@ -132,10 +126,7 @@ export function formatDateShort(
  * @param maxLength Maximum length before truncation (default: 50)
  * @returns Truncated string with ellipsis if necessary
  */
-export function truncateText(
-  text: string | undefined | null,
-  maxLength = 50,
-): string {
+export function truncateText(text: string | undefined | null, maxLength = 50): string {
   if (!text) {
     return '';
   }
@@ -145,4 +136,4 @@ export function truncateText(
   }
 
   return `${text.slice(0, maxLength - 3)}...`;
-} 
+}

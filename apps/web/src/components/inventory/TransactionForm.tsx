@@ -37,23 +37,23 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { 
-  ArrowRightLeft, 
-  Trash2, 
-  Plus, 
-  Package, 
-  Loader2, 
+import {
+  ArrowRightLeft,
+  Trash2,
+  Plus,
+  Package,
+  Loader2,
   CheckCircle,
   ArrowLeft,
-  CalendarIcon
+  CalendarIcon,
 } from 'lucide-react';
-import { 
-  IInventoryTransaction, 
-  IProduct, 
-  IProductVariant, 
-  IWarehouse, 
+import {
+  IInventoryTransaction,
+  IProduct,
+  IProductVariant,
+  IWarehouse,
   IWarehouseLocation,
-  ITransactionLine 
+  ITransactionLine,
 } from '@qbit/shared-types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -82,21 +82,23 @@ const transactionSchema = z.object({
   targetWarehouseId: z.string().min(1, { message: 'Target warehouse is required' }),
   transactionDate: z.date({ required_error: 'Transaction date is required' }),
   notes: z.string().optional(),
-  lines: z.array(
-    z.object({
-      id: z.string().optional(),
-      productId: z.number().optional(),
-      variantId: z.number().optional(),
-      sourceLocationId: z.number().optional(),
-      targetLocationId: z.number().optional(),
-      expectedQuantity: z.number().min(0.01, { message: 'Quantity must be greater than 0' }),
-      lotNumber: z.string().optional(),
-      serialNumber: z.string().optional(),
-      expirationDate: z.date().optional(),
-      unitCost: z.number().optional(),
-      notes: z.string().optional(),
-    })
-  ).min(1, { message: 'At least one item is required' }),
+  lines: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        productId: z.number().optional(),
+        variantId: z.number().optional(),
+        sourceLocationId: z.number().optional(),
+        targetLocationId: z.number().optional(),
+        expectedQuantity: z.number().min(0.01, { message: 'Quantity must be greater than 0' }),
+        lotNumber: z.string().optional(),
+        serialNumber: z.string().optional(),
+        expirationDate: z.date().optional(),
+        unitCost: z.number().optional(),
+        notes: z.string().optional(),
+      }),
+    )
+    .min(1, { message: 'At least one item is required' }),
 });
 
 type TransactionFormValues = z.infer<typeof transactionSchema>;
@@ -123,65 +125,68 @@ export function TransactionForm({
   onCancel,
 }: TransactionFormProps) {
   const [selectedTransactionType, setSelectedTransactionType] = useState(
-    transaction?.transactionType || 'receipt'
+    transaction?.transactionType || 'receipt',
   );
-  
+
   // Initialize form with default values or existing transaction
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionSchema),
-    defaultValues: transaction ? {
-      transactionType: transaction.transactionType,
-      referenceNumber: transaction.referenceNumber || '',
-      referenceType: transaction.referenceType || '',
-      referenceId: transaction.referenceId || '',
-      sourceWarehouseId: transaction.sourceWarehouseId || '',
-      targetWarehouseId: transaction.targetWarehouseId || '',
-      transactionDate: new Date(transaction.transactionDate),
-      notes: transaction.notes || '',
-      lines: transaction.lines?.map(line => ({
-        id: line.id,
-        productId: line.productId || undefined,
-        variantId: line.variantId || undefined,
-        sourceLocationId: line.sourceLocationId || undefined,
-        targetLocationId: line.targetLocationId || undefined,
-        expectedQuantity: Number(line.expectedQuantity),
-        lotNumber: line.lotNumber || '',
-        serialNumber: line.serialNumber || '',
-        expirationDate: line.expirationDate ? new Date(line.expirationDate) : undefined,
-        unitCost: line.unitCost ? Number(line.unitCost) : undefined,
-        notes: line.notes || '',
-      })) || []
-    } : {
-      transactionType: 'receipt',
-      referenceNumber: '',
-      referenceType: '',
-      referenceId: '',
-      sourceWarehouseId: '',
-      targetWarehouseId: '',
-      transactionDate: new Date(),
-      notes: '',
-      lines: [
-        {
-          productId: undefined,
-          variantId: undefined,
-          sourceLocationId: undefined,
-          targetLocationId: undefined,
-          expectedQuantity: 1,
-          lotNumber: '',
-          serialNumber: '',
-          expirationDate: undefined,
-          unitCost: undefined,
-          notes: '',
+    defaultValues: transaction
+      ? {
+          transactionType: transaction.transactionType,
+          referenceNumber: transaction.referenceNumber || '',
+          referenceType: transaction.referenceType || '',
+          referenceId: transaction.referenceId || '',
+          sourceWarehouseId: transaction.sourceWarehouseId || '',
+          targetWarehouseId: transaction.targetWarehouseId || '',
+          transactionDate: new Date(transaction.transactionDate),
+          notes: transaction.notes || '',
+          lines:
+            transaction.lines?.map((line) => ({
+              id: line.id,
+              productId: line.productId || undefined,
+              variantId: line.variantId || undefined,
+              sourceLocationId: line.sourceLocationId || undefined,
+              targetLocationId: line.targetLocationId || undefined,
+              expectedQuantity: Number(line.expectedQuantity),
+              lotNumber: line.lotNumber || '',
+              serialNumber: line.serialNumber || '',
+              expirationDate: line.expirationDate ? new Date(line.expirationDate) : undefined,
+              unitCost: line.unitCost ? Number(line.unitCost) : undefined,
+              notes: line.notes || '',
+            })) || [],
         }
-      ],
-    },
+      : {
+          transactionType: 'receipt',
+          referenceNumber: '',
+          referenceType: '',
+          referenceId: '',
+          sourceWarehouseId: '',
+          targetWarehouseId: '',
+          transactionDate: new Date(),
+          notes: '',
+          lines: [
+            {
+              productId: undefined,
+              variantId: undefined,
+              sourceLocationId: undefined,
+              targetLocationId: undefined,
+              expectedQuantity: 1,
+              lotNumber: '',
+              serialNumber: '',
+              expirationDate: undefined,
+              unitCost: undefined,
+              notes: '',
+            },
+          ],
+        },
   });
 
   // Update form when transaction type changes
   useEffect(() => {
     if (selectedTransactionType !== form.getValues().transactionType) {
       form.setValue('transactionType', selectedTransactionType);
-      
+
       // Adjust warehouse requirements based on transaction type
       if (selectedTransactionType === 'transfer') {
         form.clearErrors('sourceWarehouseId');
@@ -207,7 +212,7 @@ export function TransactionForm({
         expirationDate: undefined,
         unitCost: undefined,
         notes: '',
-      }
+      },
     ]);
   };
 
@@ -215,7 +220,10 @@ export function TransactionForm({
   const removeLineItem = (index: number) => {
     const currentLines = form.getValues().lines || [];
     if (currentLines.length > 1) {
-      form.setValue('lines', currentLines.filter((_, i) => i !== index));
+      form.setValue(
+        'lines',
+        currentLines.filter((_, i) => i !== index),
+      );
     }
   };
 
@@ -233,10 +241,12 @@ export function TransactionForm({
               {transaction ? 'Edit Inventory Transaction' : 'New Inventory Transaction'}
             </CardTitle>
             <CardDescription>
-              {transaction ? 'Update this inventory transaction' : 'Create a new inventory movement, transfer, or adjustment'}
+              {transaction
+                ? 'Update this inventory transaction'
+                : 'Create a new inventory movement, transfer, or adjustment'}
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="space-y-6">
             {/* Transaction Type */}
             <FormField
@@ -266,17 +276,22 @@ export function TransactionForm({
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    {selectedTransactionType === 'receipt' && 'Receive inventory into the warehouse'}
-                    {selectedTransactionType === 'shipment' && 'Ship inventory out from the warehouse'}
-                    {selectedTransactionType === 'transfer' && 'Move inventory between warehouses or locations'}
-                    {selectedTransactionType === 'adjustment' && 'Adjust inventory levels (write-off, correction)'}
-                    {selectedTransactionType === 'count' && 'Set inventory levels based on physical count'}
+                    {selectedTransactionType === 'receipt' &&
+                      'Receive inventory into the warehouse'}
+                    {selectedTransactionType === 'shipment' &&
+                      'Ship inventory out from the warehouse'}
+                    {selectedTransactionType === 'transfer' &&
+                      'Move inventory between warehouses or locations'}
+                    {selectedTransactionType === 'adjustment' &&
+                      'Adjust inventory levels (write-off, correction)'}
+                    {selectedTransactionType === 'count' &&
+                      'Set inventory levels based on physical count'}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Reference Number */}
               <FormField
@@ -295,7 +310,7 @@ export function TransactionForm({
                   </FormItem>
                 )}
               />
-              
+
               {/* Transaction Date */}
               <FormField
                 control={form.control}
@@ -309,15 +324,11 @@ export function TransactionForm({
                           <Button
                             variant="outline"
                             className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
+                              'w-full pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground',
                             )}
                           >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
+                            {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
@@ -331,28 +342,23 @@ export function TransactionForm({
                         />
                       </PopoverContent>
                     </Popover>
-                    <FormDescription>
-                      When this transaction occurred
-                    </FormDescription>
+                    <FormDescription>When this transaction occurred</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Source Warehouse - For transfers */}
-              {(selectedTransactionType === 'transfer') && (
+              {selectedTransactionType === 'transfer' && (
                 <FormField
                   control={form.control}
                   name="sourceWarehouseId"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Source Warehouse</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select source warehouse" />
@@ -366,15 +372,13 @@ export function TransactionForm({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription>
-                        Warehouse to transfer items from
-                      </FormDescription>
+                      <FormDescription>Warehouse to transfer items from</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               )}
-              
+
               {/* Target Warehouse */}
               <FormField
                 control={form.control}
@@ -384,10 +388,7 @@ export function TransactionForm({
                     <FormLabel>
                       {selectedTransactionType === 'transfer' ? 'Target Warehouse' : 'Warehouse'}
                     </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select warehouse" />
@@ -402,8 +403,8 @@ export function TransactionForm({
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      {selectedTransactionType === 'transfer' 
-                        ? 'Warehouse to transfer items to' 
+                      {selectedTransactionType === 'transfer'
+                        ? 'Warehouse to transfer items to'
                         : 'Warehouse for this transaction'}
                     </FormDescription>
                     <FormMessage />
@@ -411,7 +412,7 @@ export function TransactionForm({
                 )}
               />
             </div>
-            
+
             {/* Notes */}
             <FormField
               control={form.control}
@@ -420,8 +421,8 @@ export function TransactionForm({
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Add any additional details about this transaction" 
+                    <Textarea
+                      placeholder="Add any additional details about this transaction"
                       {...field}
                     />
                   </FormControl>
@@ -429,13 +430,13 @@ export function TransactionForm({
                 </FormItem>
               )}
             />
-            
+
             <Separator className="my-6" />
-            
+
             {/* Line Items */}
             <div>
               <h3 className="text-lg font-medium mb-4">Transaction Items</h3>
-              
+
               <div className="rounded-md border">
                 <Table>
                   <TableHeader>
@@ -448,9 +449,7 @@ export function TransactionForm({
                           <TableHead>Target Location</TableHead>
                         </>
                       )}
-                      {selectedTransactionType !== 'transfer' && (
-                        <TableHead>Location</TableHead>
-                      )}
+                      {selectedTransactionType !== 'transfer' && <TableHead>Location</TableHead>}
                       <TableHead>Quantity</TableHead>
                       <TableHead className="w-[60px]"></TableHead>
                     </TableRow>
@@ -487,7 +486,7 @@ export function TransactionForm({
                             )}
                           />
                         </TableCell>
-                        
+
                         {/* Variant */}
                         <TableCell>
                           <FormField
@@ -506,13 +505,20 @@ export function TransactionForm({
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {form.getValues().lines[index].productId && 
-                                     variants.has(form.getValues().lines[index].productId as number) && 
-                                     variants.get(form.getValues().lines[index].productId as number)?.map((variant) => (
-                                      <SelectItem key={variant.id} value={variant.id.toString()}>
-                                        {variant.name}
-                                      </SelectItem>
-                                    ))}
+                                    {form.getValues().lines[index].productId &&
+                                      variants.has(
+                                        form.getValues().lines[index].productId as number,
+                                      ) &&
+                                      variants
+                                        .get(form.getValues().lines[index].productId as number)
+                                        ?.map((variant) => (
+                                          <SelectItem
+                                            key={variant.id}
+                                            value={variant.id.toString()}
+                                          >
+                                            {variant.name}
+                                          </SelectItem>
+                                        ))}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -520,7 +526,7 @@ export function TransactionForm({
                             )}
                           />
                         </TableCell>
-                        
+
                         {/* Source Location - For transfers */}
                         {selectedTransactionType === 'transfer' && (
                           <TableCell>
@@ -540,13 +546,18 @@ export function TransactionForm({
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      {form.getValues().sourceWarehouseId && 
-                                       locations.has(form.getValues().sourceWarehouseId) &&
-                                       locations.get(form.getValues().sourceWarehouseId)?.map((location) => (
-                                        <SelectItem key={location.id} value={location.id.toString()}>
-                                          {location.name}
-                                        </SelectItem>
-                                      ))}
+                                      {form.getValues().sourceWarehouseId &&
+                                        locations.has(form.getValues().sourceWarehouseId) &&
+                                        locations
+                                          .get(form.getValues().sourceWarehouseId)
+                                          ?.map((location) => (
+                                            <SelectItem
+                                              key={location.id}
+                                              value={location.id.toString()}
+                                            >
+                                              {location.name}
+                                            </SelectItem>
+                                          ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -555,7 +566,7 @@ export function TransactionForm({
                             />
                           </TableCell>
                         )}
-                        
+
                         {/* Target Location */}
                         <TableCell>
                           <FormField
@@ -574,13 +585,18 @@ export function TransactionForm({
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {form.getValues().targetWarehouseId && 
-                                     locations.has(form.getValues().targetWarehouseId) &&
-                                     locations.get(form.getValues().targetWarehouseId)?.map((location) => (
-                                      <SelectItem key={location.id} value={location.id.toString()}>
-                                        {location.name}
-                                      </SelectItem>
-                                    ))}
+                                    {form.getValues().targetWarehouseId &&
+                                      locations.has(form.getValues().targetWarehouseId) &&
+                                      locations
+                                        .get(form.getValues().targetWarehouseId)
+                                        ?.map((location) => (
+                                          <SelectItem
+                                            key={location.id}
+                                            value={location.id.toString()}
+                                          >
+                                            {location.name}
+                                          </SelectItem>
+                                        ))}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -588,7 +604,7 @@ export function TransactionForm({
                             )}
                           />
                         </TableCell>
-                        
+
                         {/* Quantity */}
                         <TableCell>
                           <FormField
@@ -597,9 +613,9 @@ export function TransactionForm({
                             render={({ field }) => (
                               <FormItem className="space-y-0 mb-0">
                                 <FormControl>
-                                  <Input 
-                                    type="number" 
-                                    min="0.01" 
+                                  <Input
+                                    type="number"
+                                    min="0.01"
                                     step="0.01"
                                     className="w-24"
                                     {...field}
@@ -611,7 +627,7 @@ export function TransactionForm({
                             )}
                           />
                         </TableCell>
-                        
+
                         {/* Remove Line */}
                         <TableCell>
                           <Button
@@ -629,7 +645,7 @@ export function TransactionForm({
                   </TableBody>
                 </Table>
               </div>
-              
+
               <Button
                 type="button"
                 variant="outline"
@@ -642,21 +658,18 @@ export function TransactionForm({
               </Button>
             </div>
           </CardContent>
-          
+
           <CardFooter className="flex justify-between">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={onCancel}
-            >
+            <Button type="button" variant="ghost" onClick={onCancel}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <CheckCircle className="h-4 w-4 mr-2" />}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-2" />
+              )}
               {transaction ? 'Update Transaction' : 'Create Transaction'}
             </Button>
           </CardFooter>
@@ -664,4 +677,4 @@ export function TransactionForm({
       </form>
     </Form>
   );
-} 
+}

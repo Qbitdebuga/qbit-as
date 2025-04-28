@@ -31,4 +31,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   providers: [AccountConsumer],
   exports: [],
 })
-export class EventsModule {} 
+export class EventsModule {}

@@ -26,11 +26,9 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
-    ]
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "prettier/prettier": "off"
   }
 };

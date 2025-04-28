@@ -4,14 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { 
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Skeleton
-} from '@/components/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle, Skeleton } from '@/components/ui';
 
 export default function EditInvoicePage() {
   const params = useParams();
@@ -53,9 +46,7 @@ export default function EditInvoicePage() {
         </div>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-center py-8 text-red-500">
-              {error}
-            </div>
+            <div className="text-center py-8 text-red-500">{error}</div>
           </CardContent>
         </Card>
       </div>
@@ -73,7 +64,7 @@ export default function EditInvoicePage() {
         </Link>
         <h1 className="text-3xl font-bold ml-4">Edit Invoice</h1>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Invoice Details</CardTitle>
@@ -84,4 +75,4 @@ export default function EditInvoicePage() {
       </Card>
     </div>
   );
-} 
+}

@@ -28,9 +28,9 @@ export class PaymentApplication {
   @ApiProperty({ example: 1, description: 'ID of the bill this payment is applied to' })
   billId: number | null;
 
-  @ApiProperty({ example: 500.00, description: 'Amount applied to the bill from this payment' })
+  @ApiProperty({ example: 500.0, description: 'Amount applied to the bill from this payment' })
   amount: number | null;
-  
+
   @ApiProperty({ description: 'The bill this payment is applied to' })
   bill?: Bill;
 
@@ -57,22 +57,42 @@ export class Payment {
   @ApiProperty({ example: '2023-01-15', description: 'Date the payment was made' })
   paymentDate: Date;
 
-  @ApiProperty({ example: 1000.00, description: 'Total amount of the payment' })
+  @ApiProperty({ example: 1000.0, description: 'Total amount of the payment' })
   amount: number | null;
 
-  @ApiProperty({ enum: PaymentMethod, example: PaymentMethod.BANK_TRANSFER, description: 'Method of payment' })
+  @ApiProperty({
+    enum: PaymentMethod,
+    example: PaymentMethod.BANK_TRANSFER,
+    description: 'Method of payment',
+  })
   paymentMethod: PaymentMethod;
 
-  @ApiProperty({ example: 'REF123456', description: 'Reference number or identifier for the payment', required: false })
+  @ApiProperty({
+    example: 'REF123456',
+    description: 'Reference number or identifier for the payment',
+    required: false,
+  })
   reference?: string | null;
 
-  @ApiProperty({ example: 'Payment for January invoices', description: 'Optional memo or notes about the payment', required: false })
+  @ApiProperty({
+    example: 'Payment for January invoices',
+    description: 'Optional memo or notes about the payment',
+    required: false,
+  })
   memo?: string | null;
 
-  @ApiProperty({ enum: PaymentStatus, example: PaymentStatus.COMPLETED, description: 'Current status of the payment' })
+  @ApiProperty({
+    enum: PaymentStatus,
+    example: PaymentStatus.COMPLETED,
+    description: 'Current status of the payment',
+  })
   status: PaymentStatus;
 
-  @ApiProperty({ example: 1, description: 'ID of the bank account from which the payment was made', required: false })
+  @ApiProperty({
+    example: 1,
+    description: 'ID of the bank account from which the payment was made',
+    required: false,
+  })
   bankAccountId?: number | null;
 
   @ApiProperty({ type: [PaymentApplication], description: 'Applications of this payment to bills' })
@@ -83,4 +103,4 @@ export class Payment {
 
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

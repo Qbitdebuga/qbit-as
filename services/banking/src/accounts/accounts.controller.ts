@@ -18,7 +18,14 @@ import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { BankEntity } from './entities/bank.entity';
 import { BankAccountEntity } from './entities/bank-account.entity';
@@ -29,13 +36,17 @@ import { BankAccountEntity } from './entities/bank-account.entity';
 @Controller('accounts')
 export class AccountsController {
   private readonly logger = new Logger(AccountsController.name);
-  
+
   constructor(private readonly accountsService: AccountsService) {}
 
   // Bank Endpoints
   @Post('banks')
   @ApiOperation({ summary: 'Create a new bank' })
-  @ApiResponse({ status: 201, description: 'The bank has been successfully created.', type: BankEntity })
+  @ApiResponse({
+    status: 201,
+    description: 'The bank has been successfully created.',
+    type: BankEntity,
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 409, description: 'Conflict. Bank with this code already exists.' })
   createBank(@Body() createBankDto: CreateBankDto): Promise<BankEntity> {
@@ -46,7 +57,12 @@ export class AccountsController {
   @Get('banks')
   @ApiOperation({ summary: 'Get all banks' })
   @ApiResponse({ status: 200, description: 'Return all banks.', type: [BankEntity] })
-  @ApiQuery({ name: 'active', required: false, type: Boolean, description: 'Filter by active status' })
+  @ApiQuery({
+    name: 'active',
+    required: false,
+    type: Boolean,
+    description: 'Filter by active status',
+  })
   findAllBanks(@Query('active') active?: string): Promise<BankEntity[]> {
     this?.logger.log('Finding all banks');
     if (active === 'true') {
@@ -67,7 +83,11 @@ export class AccountsController {
 
   @Patch('banks/:id')
   @ApiOperation({ summary: 'Update a bank' })
-  @ApiResponse({ status: 200, description: 'The bank has been successfully updated.', type: BankEntity })
+  @ApiResponse({
+    status: 200,
+    description: 'The bank has been successfully updated.',
+    type: BankEntity,
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 404, description: 'Bank not found.' })
   @ApiResponse({ status: 409, description: 'Conflict. Bank with this code already exists.' })
@@ -84,7 +104,10 @@ export class AccountsController {
   @ApiOperation({ summary: 'Delete a bank' })
   @ApiResponse({ status: 204, description: 'The bank has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Bank not found.' })
-  @ApiResponse({ status: 409, description: 'Conflict. Cannot delete bank with associated accounts.' })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict. Cannot delete bank with associated accounts.',
+  })
   @ApiParam({ name: 'id', description: 'Bank ID' })
   @HttpCode(HttpStatus.NO_CONTENT)
   removeBank(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
@@ -95,11 +118,20 @@ export class AccountsController {
   // Bank Account Endpoints
   @Post('bank-accounts')
   @ApiOperation({ summary: 'Create a new bank account' })
-  @ApiResponse({ status: 201, description: 'The bank account has been successfully created.', type: BankAccountEntity })
+  @ApiResponse({
+    status: 201,
+    description: 'The bank account has been successfully created.',
+    type: BankAccountEntity,
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 404, description: 'Bank not found.' })
-  @ApiResponse({ status: 409, description: 'Conflict. Bank account with this account number already exists at this bank.' })
-  createBankAccount(@Body() createBankAccountDto: CreateBankAccountDto): Promise<BankAccountEntity> {
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict. Bank account with this account number already exists at this bank.',
+  })
+  createBankAccount(
+    @Body() createBankAccountDto: CreateBankAccountDto,
+  ): Promise<BankAccountEntity> {
     this?.logger.log('Creating a new bank account');
     return this?.accountsService.createBankAccount(createBankAccountDto);
   }
@@ -107,22 +139,27 @@ export class AccountsController {
   @Get('bank-accounts')
   @ApiOperation({ summary: 'Get all bank accounts' })
   @ApiResponse({ status: 200, description: 'Return all bank accounts.', type: [BankAccountEntity] })
-  @ApiQuery({ name: 'active', required: false, type: Boolean, description: 'Filter by active status' })
+  @ApiQuery({
+    name: 'active',
+    required: false,
+    type: Boolean,
+    description: 'Filter by active status',
+  })
   @ApiQuery({ name: 'bankId', required: false, type: String, description: 'Filter by bank ID' })
   findAllBankAccounts(
     @Query('active') active?: string,
     @Query('bankId') bankId?: string,
   ): Promise<BankAccountEntity[]> {
     this?.logger.log('Finding all bank accounts');
-    
+
     if (bankId) {
       return this?.accountsService.findBankAccountsByBankId(bankId);
     }
-    
+
     if (active === 'true') {
       return this?.accountsService.findActiveBankAccounts();
     }
-    
+
     return this?.accountsService.findAllBankAccounts();
   }
 
@@ -138,10 +175,17 @@ export class AccountsController {
 
   @Patch('bank-accounts/:id')
   @ApiOperation({ summary: 'Update a bank account' })
-  @ApiResponse({ status: 200, description: 'The bank account has been successfully updated.', type: BankAccountEntity })
+  @ApiResponse({
+    status: 200,
+    description: 'The bank account has been successfully updated.',
+    type: BankAccountEntity,
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 404, description: 'Bank account not found.' })
-  @ApiResponse({ status: 409, description: 'Conflict. Bank account with this account number already exists at this bank.' })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict. Bank account with this account number already exists at this bank.',
+  })
   @ApiParam({ name: 'id', description: 'Bank account ID' })
   updateBankAccount(
     @Param('id', ParseUUIDPipe) id: string,
@@ -155,11 +199,14 @@ export class AccountsController {
   @ApiOperation({ summary: 'Delete a bank account' })
   @ApiResponse({ status: 204, description: 'The bank account has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Bank account not found.' })
-  @ApiResponse({ status: 409, description: 'Conflict. Cannot delete bank account with associated transactions.' })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict. Cannot delete bank account with associated transactions.',
+  })
   @ApiParam({ name: 'id', description: 'Bank account ID' })
   @HttpCode(HttpStatus.NO_CONTENT)
   removeBankAccount(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     this?.logger.log(`Deleting bank account with ID: ${id}`);
     return this?.accountsService.removeBankAccount(id);
   }
-} 
+}

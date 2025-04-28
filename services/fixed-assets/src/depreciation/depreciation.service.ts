@@ -1,7 +1,11 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DepreciationMethod } from './enums/depreciation-method.enum';
-import { CalculateDepreciationDto, CalculateDepreciationResponseDto } from './dto/calculate-depreciation.dto';
+import {
+  CalculateDepreciationDto,
+  CalculateDepreciationResponseDto,
+} from './dto/calculate-depreciation.dto';
+import { DepreciationEntryResponseDto } from './dto/create-depreciation-entry.dto';
 import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity';
 import { Decimal } from '@prisma/client/runtime/library';
 
@@ -22,7 +26,8 @@ export class DepreciationService {
   async calculateDepreciation(
     calculateDto: CalculateDepreciationDto,
   ): Promise<CalculateDepreciationResponseDto> {
-    const { assetId, depreciationMethod, asOfDate, includeProjections, projectionPeriods } = calculateDto;
+    const { assetId, depreciationMethod, asOfDate, includeProjections, projectionPeriods } =
+      calculateDto;
 
     // Get the asset with its latest depreciation entry
     const asset = await this?.db.asset.findUnique({
@@ -41,7 +46,7 @@ export class DepreciationService {
 
     // Determine which depreciation method to use
     const methodToUse = depreciationMethod || asset.depreciationMethod;
-    
+
     // Get the calculation date (default to today)
     const calculationDate = asOfDate ? new Date(asOfDate) : new Date();
 
@@ -53,15 +58,16 @@ export class DepreciationService {
 
     // Calculate current depreciation values
     const { currentBookValue, accumulatedDepreciation, entries } = this.calculateDepreciationValues(
-      asset, 
-      methodToUse, 
+      asset,
+      methodToUse,
       calculationDate,
-      historicalEntries
+      historicalEntries,
     );
 
     // Check if asset is fully depreciated
-    const isFullyDepreciated = currentBookValue.equals(asset.residualValue) || 
-      (calculationDate > this.calculateFullDepreciationDate(asset, methodToUse));
+    const isFullyDepreciated =
+      currentBookValue.equals(asset.residualValue) ||
+      calculationDate > this.calculateFullDepreciationDate(asset, methodToUse);
 
     // Prepare response
     const response: CalculateDepreciationResponseDto = {
@@ -73,11 +79,11 @@ export class DepreciationService {
       currentBookValue: this.decimalToNumber(currentBookValue),
       isFullyDepreciated,
       depreciationMethod: methodToUse,
-      entries: entries.map(entry => ({
+      entries: entries.map((entry) => ({
         date: entry?.date.toISOString(),
         amount: this.decimalToNumber(entry.amount),
-        bookValue: this.decimalToNumber(entry.bookValue)
-      }))
+        bookValue: this.decimalToNumber(entry.bookValue),
+      })),
     };
 
     // Calculate projected depreciation if requested
@@ -87,7 +93,7 @@ export class DepreciationService {
         methodToUse,
         currentBookValue,
         calculationDate,
-        projectionPeriods || 12
+        projectionPeriods || 12,
       );
     }
 
@@ -112,18 +118,19 @@ export class DepreciationService {
     }
 
     // Calculate current depreciation
-    const { currentBookValue, accumulatedDepreciation } = await this.getCurrentDepreciation(assetId);
-    
+    const { currentBookValue, accumulatedDepreciation } =
+      await this.getCurrentDepreciation(assetId);
+
     // Generate projected entries for the remaining life of the asset
     const currentDate = new Date();
     const remainingMonths = this.calculateRemainingLifeInMonths(asset, currentDate);
-    
+
     const projectedEntries = await this.calculateProjectedDepreciation(
       asset,
       asset.depreciationMethod,
       currentBookValue,
       currentDate,
-      remainingMonths
+      remainingMonths,
     );
 
     return {
@@ -135,18 +142,23 @@ export class DepreciationService {
       currentBookValue,
       isFullyDepreciated: currentBookValue.equals(asset.residualValue),
       entries: asset.depreciationEntries,
-      projectedEntries: projectedEntries.map(entry => ({
+      projectedEntries: projectedEntries.map((entry) => ({
         date: new Date(entry.date),
         amount: new Decimal(entry.amount),
-        bookValue: new Decimal(entry.bookValue)
-      }))
+        bookValue: new Decimal(entry.bookValue),
+      })),
     };
   }
 
   /**
    * Record a depreciation entry for an asset
    */
-  async recordDepreciation(assetId: string, date: Date, amount: number): Promise<void> {
+  async recordDepreciation(
+    assetId: string, 
+    date: Date, 
+    amount: number,
+    note?: string
+  ): Promise<DepreciationEntryResponseDto> {
     const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
     });
@@ -162,25 +174,28 @@ export class DepreciationService {
     });
 
     // Calculate current book value
-    const currentBookValue = latestEntry
-      ? latestEntry.bookValue
-      : asset.purchaseCost;
+    const currentBookValue = latestEntry ? latestEntry.bookValue : asset.purchaseCost;
 
     // Ensure we don't depreciate below residual value
     const depreciationAmount = new Decimal(amount);
     const newBookValue = currentBookValue.sub(depreciationAmount);
-    
+
+    let entry;
+
     if (newBookValue.lessThan(asset.residualValue)) {
-      this?.logger.warn(`Depreciation amount ${amount} would reduce book value below residual value for asset ${assetId}`);
+      this?.logger.warn(
+        `Depreciation amount ${amount} would reduce book value below residual value for asset ${assetId}`,
+      );
       // Adjust the amount to not go below residual value
       const adjustedAmount = currentBookValue.sub(asset.residualValue);
-      
-      await this?.db.depreciationEntry.create({
+
+      entry = await this?.db.depreciationEntry.create({
         data: {
           assetId,
           date,
           amount: adjustedAmount,
           bookValue: asset.residualValue,
+          note: note || 'Adjusted to residual value',
         },
       });
 
@@ -191,21 +206,37 @@ export class DepreciationService {
       });
     } else {
       // Record the depreciation entry
-      await this?.db.depreciationEntry.create({
+      entry = await this?.db.depreciationEntry.create({
         data: {
           assetId,
           date,
           amount: depreciationAmount,
           bookValue: newBookValue,
+          note,
         },
       });
     }
+
+    // Convert and return as DTO
+    const response: DepreciationEntryResponseDto = {
+      id: entry.id,
+      assetId: entry.assetId,
+      date: entry.date instanceof Date ? entry.date : new Date(),
+      amount: this.decimalToNumber(entry.amount),
+      bookValue: this.decimalToNumber(entry.bookValue),
+      note: entry.note || undefined,
+      createdAt: entry.createdAt instanceof Date ? entry.createdAt : new Date()
+    };
+
+    return response;
   }
 
   /**
    * Get the current depreciation status for an asset
    */
-  async getCurrentDepreciation(assetId: string): Promise<{ currentBookValue: Decimal; accumulatedDepreciation: Decimal }> {
+  async getCurrentDepreciation(
+    assetId: string,
+  ): Promise<{ currentBookValue: Decimal; accumulatedDepreciation: Decimal }> {
     const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
     });
@@ -232,7 +263,7 @@ export class DepreciationService {
     const { accumulatedDepreciation, currentBookValue } = this.calculateCurrentDepreciation(
       asset,
       asset.depreciationMethod,
-      currentDate
+      currentDate,
     );
 
     return { currentBookValue, accumulatedDepreciation };
@@ -245,7 +276,7 @@ export class DepreciationService {
     asset: any,
     method: DepreciationMethod,
     asOfDate: Date,
-    historicalEntries: any[]
+    historicalEntries: any[],
   ): { currentBookValue: Decimal; accumulatedDepreciation: Decimal; entries: any[] } {
     // If there are historical entries, use the latest one as the starting point
     if (historicalEntries.length > 0) {
@@ -253,28 +284,28 @@ export class DepreciationService {
       return {
         currentBookValue: latestEntry.bookValue,
         accumulatedDepreciation: asset?.purchaseCost.sub(latestEntry.bookValue),
-        entries: historicalEntries
+        entries: historicalEntries,
       };
     }
 
     // Otherwise calculate from scratch
     const { accumulatedDepreciation, currentBookValue } = this.calculateCurrentDepreciation(
-      asset, 
+      asset,
       method,
-      asOfDate
+      asOfDate,
     );
 
     // Create a synthetic entry for the current calculation
     const syntheticEntry = {
       date: asOfDate,
       amount: accumulatedDepreciation,
-      bookValue: currentBookValue
+      bookValue: currentBookValue,
     };
 
     return {
       currentBookValue,
       accumulatedDepreciation,
-      entries: [syntheticEntry]
+      entries: [syntheticEntry],
     };
   }
 
@@ -284,21 +315,21 @@ export class DepreciationService {
   private calculateCurrentDepreciation(
     asset: any,
     method: DepreciationMethod,
-    currentDate: Date
+    currentDate: Date,
   ): { accumulatedDepreciation: Decimal; currentBookValue: Decimal } {
     const purchaseDate = asset.purchaseDate;
     const purchaseCost = asset.purchaseCost;
     const residualValue = asset.residualValue;
     const assetLifeYears = asset.assetLifeYears;
-    
+
     const depreciableAmount = purchaseCost.sub(residualValue);
     const lifetimeInMonths = assetLifeYears * 12;
-    
+
     let accumulatedDepreciation = new Decimal(0);
-    
+
     // Calculate months since purchase
     const monthsSincePurchase = this.calculateMonthsElapsed(purchaseDate, currentDate);
-    
+
     switch (method) {
       case DepreciationMethod.STRAIGHT_LINE:
         // Simple straight-line calculation
@@ -306,7 +337,7 @@ export class DepreciationService {
         const calculatedMonths = Math.min(monthsSincePurchase, lifetimeInMonths);
         accumulatedDepreciation = monthlyDepreciation.mul(calculatedMonths);
         break;
-        
+
       case DepreciationMethod.DECLINING_BALANCE:
         // Declining balance calculation (rate = 1.5 / assetLifeYears)
         const rate = 1.5 / assetLifeYears;
@@ -314,10 +345,10 @@ export class DepreciationService {
           purchaseCost,
           residualValue,
           rate,
-          monthsSincePurchase / 12
+          monthsSincePurchase / 12,
         );
         break;
-        
+
       case DepreciationMethod.DOUBLE_DECLINING_BALANCE:
         // Double declining balance (rate = 2 / assetLifeYears)
         const doubleRate = 2.0 / assetLifeYears;
@@ -325,43 +356,49 @@ export class DepreciationService {
           purchaseCost,
           residualValue,
           doubleRate,
-          monthsSincePurchase / 12
+          monthsSincePurchase / 12,
         );
         break;
-        
+
       case DepreciationMethod.SUM_OF_YEARS_DIGITS:
         // Sum of years digits calculation
         accumulatedDepreciation = this.calculateSumOfYearsDigits(
           depreciableAmount,
           assetLifeYears,
-          monthsSincePurchase / 12
+          monthsSincePurchase / 12,
         );
         break;
-        
+
       case DepreciationMethod.UNITS_OF_PRODUCTION:
         // For units of production, we would need actual usage data
         // As a fallback, use straight-line method
-        this?.logger.warn(`Units of production method requires usage data, using straight-line as fallback for asset ${asset.id}`);
+        this?.logger.warn(
+          `Units of production method requires usage data, using straight-line as fallback for asset ${asset.id}`,
+        );
         const fallbackMonthlyDepreciation = depreciableAmount.div(lifetimeInMonths);
-        accumulatedDepreciation = fallbackMonthlyDepreciation.mul(Math.min(monthsSincePurchase, lifetimeInMonths));
+        accumulatedDepreciation = fallbackMonthlyDepreciation.mul(
+          Math.min(monthsSincePurchase, lifetimeInMonths),
+        );
         break;
-        
+
       default:
         // Default to straight-line
         const defaultMonthlyDepreciation = depreciableAmount.div(lifetimeInMonths);
-        accumulatedDepreciation = defaultMonthlyDepreciation.mul(Math.min(monthsSincePurchase, lifetimeInMonths));
+        accumulatedDepreciation = defaultMonthlyDepreciation.mul(
+          Math.min(monthsSincePurchase, lifetimeInMonths),
+        );
     }
-    
+
     // Ensure depreciation doesn't exceed depreciable amount
     if (accumulatedDepreciation.greaterThan(depreciableAmount)) {
       accumulatedDepreciation = depreciableAmount;
     }
-    
+
     const currentBookValue = purchaseCost.sub(accumulatedDepreciation);
-    
+
     return {
       accumulatedDepreciation,
-      currentBookValue
+      currentBookValue,
     };
   }
 
@@ -373,77 +410,78 @@ export class DepreciationService {
     method: DepreciationMethod,
     currentBookValue: Decimal,
     startDate: Date,
-    periods: number
+    periods: number,
   ): Promise<{ date: string | null; amount: number | null; bookValue: number }[]> {
     const projections = [];
     const depreciableAmount = asset?.purchaseCost.sub(asset.residualValue);
     const lifetimeInMonths = asset.assetLifeYears * 12;
     const purchaseDate = asset.purchaseDate;
-    
+
     // Calculate months since purchase
     const monthsSincePurchase = this.calculateMonthsElapsed(purchaseDate, startDate);
-    
+
     // If asset is already fully depreciated, return empty projections
     if (currentBookValue.equals(asset.residualValue) || monthsSincePurchase >= lifetimeInMonths) {
       return [];
     }
-    
+
     // Determine remaining months and cap projection periods accordingly
     const remainingMonths = lifetimeInMonths - monthsSincePurchase;
     const projectionMonths = Math.min(periods, remainingMonths);
-    
+
     let projectedBookValue = currentBookValue;
-    
+
     for (let i = 1; i <= projectionMonths; i++) {
       const projectionDate = new Date(startDate);
       projectionDate.setMonth(projectionDate.getMonth() + i);
-      
+
       let depreciationAmount;
-      
+
       switch (method) {
         case DepreciationMethod.STRAIGHT_LINE:
           // Monthly straight-line amount
           depreciationAmount = depreciableAmount.div(lifetimeInMonths);
           break;
-          
+
         case DepreciationMethod.DECLINING_BALANCE:
         case DepreciationMethod.DOUBLE_DECLINING_BALANCE:
           // Monthly declining balance amount
-          const annualRate = method === DepreciationMethod.DECLINING_BALANCE 
-            ? 1.5 / asset.assetLifeYears
-            : 2.0 / asset.assetLifeYears;
+          const annualRate =
+            method === DepreciationMethod.DECLINING_BALANCE
+              ? 1.5 / asset.assetLifeYears
+              : 2.0 / asset.assetLifeYears;
           depreciationAmount = projectedBookValue.mul(annualRate).div(12);
           break;
-          
+
         case DepreciationMethod.SUM_OF_YEARS_DIGITS:
           // Get annual depreciation based on remaining years
-          const yearsElapsed = Math.floor(monthsSincePurchase / 12) + (i / 12);
-          const nextYearElapsed = yearsElapsed + (1/12);
-          
+          const yearsElapsed = Math.floor(monthsSincePurchase / 12) + i / 12;
+          const nextYearElapsed = yearsElapsed + 1 / 12;
+
           const currentYearDepreciation = this.calculateSumOfYearsDigits(
             depreciableAmount,
             asset.assetLifeYears,
-            yearsElapsed
+            yearsElapsed,
           );
-          
+
           const nextYearDepreciation = this.calculateSumOfYearsDigits(
             depreciableAmount,
             asset.assetLifeYears,
-            nextYearElapsed
+            nextYearElapsed,
           );
-          
+
           depreciationAmount = nextYearDepreciation.sub(currentYearDepreciation);
           break;
-          
+
         case DepreciationMethod.UNITS_OF_PRODUCTION:
           // For simplicity, use straight-line for projection
           depreciationAmount = depreciableAmount.div(lifetimeInMonths);
           break;
-          
+
         default:
           depreciationAmount = depreciableAmount.div(lifetimeInMonths);
       }
-      
+
       // Ensure we don't depreciate below residual value
       if (projectedBookValue.sub(depreciationAmount).lessThan(asset.residualValue)) {
         depreciationAmount = projectedBookValue.sub(asset.residualValue);
@@ -451,19 +489,19 @@ export class DepreciationService {
       } else {
         projectedBookValue = projectedBookValue.sub(depreciationAmount);
       }
-      
+
       projections.push({
         date: projectionDate.toISOString(),
         amount: this.decimalToNumber(depreciationAmount),
-        bookValue: this.decimalToNumber(projectedBookValue)
+        bookValue: this.decimalToNumber(projectedBookValue),
       });
-      
+
       // Stop if we've reached the residual value
       if (projectedBookValue.equals(asset.residualValue)) {
         break;
       }
     }
-    
+
     return projections;
   }
 
@@ -474,18 +512,21 @@ export class DepreciationService {
     purchaseCost: Decimal,
     residualValue: Decimal,
     annualRate: number,
-    yearsElapsed: number
+    yearsElapsed: number,
   ): Decimal {
     // Declining balance formula: BookValue = Cost * (1 - rate)^years
-    const yearsToUse = Math.min(yearsElapsed, Math.ceil(Math.log(residualValue.div(purchaseCost).toNumber()) / Math.log(1 - annualRate)));
-    
+    const yearsToUse = Math.min(
+      yearsElapsed,
+      Math.ceil(Math.log(residualValue.div(purchaseCost).toNumber()) / Math.log(1 - annualRate)),
+    );
+
     const remainingValue = purchaseCost.mul(Math.pow(1 - annualRate, yearsToUse));
-    
+
     // Don't go below residual value
     if (remainingValue.lessThan(residualValue)) {
       return purchaseCost.sub(residualValue);
     }
-    
+
     return purchaseCost.sub(remainingValue);
   }
 
@@ -495,29 +536,31 @@ export class DepreciationService {
   private calculateSumOfYearsDigits(
     depreciableAmount: Decimal,
     assetLifeYears: number,
-    yearsElapsed: number
+    yearsElapsed: number,
   ): Decimal {
     // Calculate sum of years: n(n+1)/2
     const sumOfYears = (assetLifeYears * (assetLifeYears + 1)) / 2;
-    
+
     // Handle fractional years
     const fullYears = Math.floor(yearsElapsed);
     const fraction = yearsElapsed - fullYears;
-    
+
     let accumulatedDepreciation = new Decimal(0);
-    
+
     // Calculate depreciation for full years
     for (let year = 1; year <= fullYears; year++) {
       const yearFactor = (assetLifeYears - year + 1) / sumOfYears;
       accumulatedDepreciation = accumulatedDepreciation.add(depreciableAmount.mul(yearFactor));
     }
-    
+
     // Add partial year depreciation if needed
     if (fraction > 0 && fullYears < assetLifeYears) {
       const yearFactor = (assetLifeYears - fullYears - 1 + 1) / sumOfYears;
-      accumulatedDepreciation = accumulatedDepreciation.add(depreciableAmount.mul(yearFactor).mul(fraction));
+      accumulatedDepreciation = accumulatedDepreciation.add(
+        depreciableAmount.mul(yearFactor).mul(fraction),
+      );
     }
-    
+
     return accumulatedDepreciation;
   }
 
@@ -527,34 +570,36 @@ export class DepreciationService {
   private calculateFullDepreciationDate(asset: any, method: DepreciationMethod): Date {
     const { purchaseDate, assetLifeYears } = asset;
     const fullDepreciationDate = new Date(purchaseDate);
-    
+
     switch (method) {
       case DepreciationMethod.STRAIGHT_LINE:
         // Simply add the asset life in years
         fullDepreciationDate.setFullYear(fullDepreciationDate.getFullYear() + assetLifeYears);
         break;
-        
+
       case DepreciationMethod.DECLINING_BALANCE:
       case DepreciationMethod.DOUBLE_DECLINING_BALANCE:
         // These methods approach but never reach zero, so use a threshold
         // For simplicity, use 1.2x the straight-line period as an approximation
-        fullDepreciationDate.setFullYear(fullDepreciationDate.getFullYear() + Math.ceil(assetLifeYears * 1.2));
+        fullDepreciationDate.setFullYear(
+          fullDepreciationDate.getFullYear() + Math.ceil(assetLifeYears * 1.2),
+        );
         break;
-        
+
       case DepreciationMethod.SUM_OF_YEARS_DIGITS:
         // This method fully depreciates exactly at the end of the asset life
         fullDepreciationDate.setFullYear(fullDepreciationDate.getFullYear() + assetLifeYears);
         break;
-        
+
       case DepreciationMethod.UNITS_OF_PRODUCTION:
         // Cannot predict without usage data, use straight-line as fallback
         fullDepreciationDate.setFullYear(fullDepreciationDate.getFullYear() + assetLifeYears);
         break;
-        
+
       default:
         fullDepreciationDate.setFullYear(fullDepreciationDate.getFullYear() + assetLifeYears);
     }
-    
+
     return fullDepreciationDate;
   }
 
@@ -576,7 +621,7 @@ export class DepreciationService {
     const { purchaseDate, assetLifeYears } = asset;
     const totalMonths = assetLifeYears * 12;
     const elapsedMonths = this.calculateMonthsElapsed(purchaseDate, currentDate);
-    
+
     return Math.max(0, totalMonths - elapsedMonths);
   }
 
@@ -586,4 +631,4 @@ export class DepreciationService {
   private decimalToNumber(decimal: Decimal): number {
     return parseFloat(decimal.toString());
   }
-} 
+}

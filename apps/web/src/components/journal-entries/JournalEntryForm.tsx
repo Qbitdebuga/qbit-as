@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
+import {
   Form,
   FormControl,
   FormField,
@@ -30,72 +30,78 @@ import { Account, JournalEntry, JournalEntryCreate } from '@qbit/shared-types';
 import { PlusCircle, Trash2, Calculator } from 'lucide-react';
 
 // Schema for form validation
-const journalEntryLineSchema = z.object({
-  accountId: z.string().min(1, 'Account is required'),
-  description: z.string().optional(),
-  debit: z.union([
-    z.number().min(0, 'Debit must be a positive number or zero'),
-    z.string().transform((val, ctx) => {
-      const parsed = parseFloat(val);
-      if (isNaN(parsed)) {
-        ctx.addIssue({ code: 'custom', message: 'Invalid number' });
-        return z.NEVER;
-      }
-      return parsed;
-    }),
-    z.literal('').transform(() => undefined),
-    z.undefined(),
-  ]),
-  credit: z.union([
-    z.number().min(0, 'Credit must be a positive number or zero'),
-    z.string().transform((val, ctx) => {
-      const parsed = parseFloat(val);
-      if (isNaN(parsed)) {
-        ctx.addIssue({ code: 'custom', message: 'Invalid number' });
-        return z.NEVER;
-      }
-      return parsed;
-    }),
-    z.literal('').transform(() => undefined),
-    z.undefined(),
-  ]),
-}).refine(
-  (data) => {
-    // Either debit or credit should be set, but not both
-    return (data.debit !== undefined && data.credit === undefined) || 
-           (data.credit !== undefined && data.debit === undefined);
-  },
-  {
-    message: "Either debit or credit must be set, but not both",
-    path: ["debit"],
-  }
-);
+const journalEntryLineSchema = z
+  .object({
+    accountId: z.string().min(1, 'Account is required'),
+    description: z.string().optional(),
+    debit: z.union([
+      z.number().min(0, 'Debit must be a positive number or zero'),
+      z.string().transform((val, ctx) => {
+        const parsed = parseFloat(val);
+        if (isNaN(parsed)) {
+          ctx.addIssue({ code: 'custom', message: 'Invalid number' });
+          return z.NEVER;
+        }
+        return parsed;
+      }),
+      z.literal('').transform(() => undefined),
+      z.undefined(),
+    ]),
+    credit: z.union([
+      z.number().min(0, 'Credit must be a positive number or zero'),
+      z.string().transform((val, ctx) => {
+        const parsed = parseFloat(val);
+        if (isNaN(parsed)) {
+          ctx.addIssue({ code: 'custom', message: 'Invalid number' });
+          return z.NEVER;
+        }
+        return parsed;
+      }),
+      z.literal('').transform(() => undefined),
+      z.undefined(),
+    ]),
+  })
+  .refine(
+    (data) => {
+      // Either debit or credit should be set, but not both
+      return (
+        (data.debit !== undefined && data.credit === undefined) ||
+        (data.credit !== undefined && data.debit === undefined)
+      );
+    },
+    {
+      message: 'Either debit or credit must be set, but not both',
+      path: ['debit'],
+    },
+  );
 
-const journalEntrySchema = z.object({
-  date: z.string().min(1, 'Date is required'),
-  description: z.string().min(1, 'Description is required'),
-  reference: z.string().optional(),
-  isAdjustment: z.boolean().default(false),
-  lines: z.array(journalEntryLineSchema).min(2, 'At least two lines are required'),
-}).refine(
-  (data) => {
-    // Calculate total debits and credits
-    let totalDebits = 0;
-    let totalCredits = 0;
-    
-    data.lines.forEach(line => {
-      if (line.debit) totalDebits += parseFloat(line.debit.toString());
-      if (line.credit) totalCredits += parseFloat(line.credit.toString());
-    });
-    
-    // Allow for small rounding errors
-    return Math.abs(totalDebits - totalCredits) < 0.01;
-  },
-  {
-    message: "Total debits must equal total credits",
-    path: ["lines"],
-  }
-);
+const journalEntrySchema = z
+  .object({
+    date: z.string().min(1, 'Date is required'),
+    description: z.string().min(1, 'Description is required'),
+    reference: z.string().optional(),
+    isAdjustment: z.boolean().default(false),
+    lines: z.array(journalEntryLineSchema).min(2, 'At least two lines are required'),
+  })
+  .refine(
+    (data) => {
+      // Calculate total debits and credits
+      let totalDebits = 0;
+      let totalCredits = 0;
+
+      data.lines.forEach((line) => {
+        if (line.debit) totalDebits += parseFloat(line.debit.toString());
+        if (line.credit) totalCredits += parseFloat(line.credit.toString());
+      });
+
+      // Allow for small rounding errors
+      return Math.abs(totalDebits - totalCredits) < 0.01;
+    },
+    {
+      message: 'Total debits must equal total credits',
+      path: ['lines'],
+    },
+  );
 
 type JournalEntryFormValues = z.infer<typeof journalEntrySchema>;
 
@@ -113,7 +119,7 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
   onSubmit,
 }) => {
   const today = new Date().toISOString().split('T')[0];
-  
+
   // Initialize form with default values or existing entry values
   const form = useForm<JournalEntryFormValues>({
     resolver: zodResolver(journalEntrySchema),
@@ -122,7 +128,7 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
       description: entry?.description || '',
       reference: entry?.reference || '',
       isAdjustment: entry?.isAdjustment || false,
-      lines: entry?.lines?.map(line => ({
+      lines: entry?.lines?.map((line) => ({
         accountId: line.accountId,
         description: line.description || '',
         debit: line.debit,
@@ -137,7 +143,7 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
   // Use field array for dynamic line items
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "lines",
+    name: 'lines',
   });
 
   const [totals, setTotals] = useState({ debits: 0, credits: 0 });
@@ -150,16 +156,16 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
         const values = form.getValues();
         let totalDebits = 0;
         let totalCredits = 0;
-        
-        values.lines?.forEach(line => {
+
+        values.lines?.forEach((line) => {
           if (line.debit) totalDebits += parseFloat(line.debit.toString());
           if (line.credit) totalCredits += parseFloat(line.credit.toString());
         });
-        
+
         setTotals({ debits: totalDebits, credits: totalCredits });
       }
     });
-    
+
     return () => subscription.unsubscribe();
   }, [form.watch, form]);
 
@@ -168,7 +174,7 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 2
+      minimumFractionDigits: 2,
     }).format(amount);
   };
 
@@ -183,8 +189,8 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
   };
 
   // Sort accounts by code for better display
-  const sortedAccounts = [...accounts].sort((a, b) => 
-    a.code.localeCompare(b.code, undefined, { numeric: true })
+  const sortedAccounts = [...accounts].sort((a, b) =>
+    a.code.localeCompare(b.code, undefined, { numeric: true }),
   );
 
   return (
@@ -213,7 +219,11 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                 <FormItem>
                   <FormLabel>Reference (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Invoice #, Check #, etc." {...field} value={field.value || ''} />
+                    <Input
+                      placeholder="Invoice #, Check #, etc."
+                      {...field}
+                      value={field.value || ''}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -227,15 +237,10 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                   <div className="space-y-0.5">
                     <FormLabel>Adjustment Entry</FormLabel>
-                    <div className="text-sm text-gray-500">
-                      Mark as an adjustment entry
-                    </div>
+                    <div className="text-sm text-gray-500">Mark as an adjustment entry</div>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                 </FormItem>
               )}
@@ -249,10 +254,10 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea 
-                    placeholder="Enter description for this journal entry" 
-                    className="resize-none" 
-                    {...field} 
+                  <Textarea
+                    placeholder="Enter description for this journal entry"
+                    className="resize-none"
+                    {...field}
                     value={field.value || ''}
                   />
                 </FormControl>
@@ -264,12 +269,7 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
           <div>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium">Journal Entry Lines</h3>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addLine}
-              >
+              <Button type="button" variant="outline" size="sm" onClick={addLine}>
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Add Line
               </Button>
@@ -284,10 +284,7 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Account</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select account" />
@@ -313,10 +310,10 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                       <FormItem>
                         <FormLabel>Line Description (Optional)</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="Line description" 
-                            {...field} 
-                            value={field.value || ''} 
+                          <Input
+                            placeholder="Line description"
+                            {...field}
+                            value={field.value || ''}
                           />
                         </FormControl>
                         <FormMessage />
@@ -331,9 +328,9 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                       <FormItem>
                         <FormLabel>Debit</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01" 
+                          <Input
+                            type="number"
+                            step="0.01"
                             min="0"
                             placeholder="0.00"
                             {...field}
@@ -359,9 +356,9 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                       <FormItem>
                         <FormLabel>Credit</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01" 
+                          <Input
+                            type="number"
+                            step="0.01"
                             min="0"
                             placeholder="0.00"
                             {...field}
@@ -380,7 +377,7 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                     )}
                   />
                 </div>
-                
+
                 {fields.length > 2 && (
                   <Button
                     type="button"
@@ -419,7 +416,9 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
               </div>
               <div className="mt-4">
                 <p className="text-sm text-gray-500">Difference</p>
-                <p className={`text-lg font-medium ${Math.abs(totals.debits - totals.credits) < 0.01 ? 'text-green-600' : 'text-red-600'}`}>
+                <p
+                  className={`text-lg font-medium ${Math.abs(totals.debits - totals.credits) < 0.01 ? 'text-green-600' : 'text-red-600'}`}
+                >
                   {formatCurrency(Math.abs(totals.debits - totals.credits))}
                 </p>
               </div>
@@ -427,9 +426,9 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
             <CardFooter>
               <p className="text-sm text-gray-500 flex items-center">
                 <Calculator className="h-4 w-4 mr-2" />
-                {Math.abs(totals.debits - totals.credits) < 0.01 
-                  ? "Journal entry is balanced" 
-                  : "Journal entry must be balanced (debits = credits)"}
+                {Math.abs(totals.debits - totals.credits) < 0.01
+                  ? 'Journal entry is balanced'
+                  : 'Journal entry must be balanced (debits = credits)'}
               </p>
             </CardFooter>
           </Card>
@@ -441,4 +440,4 @@ export const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
       </form>
     </Form>
   );
-}; 
+};

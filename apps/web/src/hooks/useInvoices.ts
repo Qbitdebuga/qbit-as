@@ -26,24 +26,24 @@ export function useInvoices(options: UseInvoicesOptions = {}): UseInvoicesResult
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  
+
   const apiClient = useApiClient();
 
   const fetchInvoices = useCallback(async () => {
     if (!apiClient) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       let result;
-      
+
       if (customerId) {
         result = await apiClient.invoices.getInvoicesByCustomer(customerId, params);
       } else {
         result = await apiClient.invoices.getInvoices(params);
       }
-      
+
       setInvoices(result.data);
       setTotal(result.total);
       setPage(result.page);
@@ -56,16 +56,19 @@ export function useInvoices(options: UseInvoicesOptions = {}): UseInvoicesResult
     }
   }, [apiClient, customerId, params]);
 
-  const fetchById = useCallback(async (id: string): Promise<Invoice | null> => {
-    if (!apiClient) return null;
-    
-    try {
-      return await apiClient.invoices.getInvoiceById(id);
-    } catch (err) {
-      console.error(`Error fetching invoice ${id}:`, err);
-      return null;
-    }
-  }, [apiClient]);
+  const fetchById = useCallback(
+    async (id: string): Promise<Invoice | null> => {
+      if (!apiClient) return null;
+
+      try {
+        return await apiClient.invoices.getInvoiceById(id);
+      } catch (err) {
+        console.error(`Error fetching invoice ${id}:`, err);
+        return null;
+      }
+    },
+    [apiClient],
+  );
 
   useEffect(() => {
     if (autoFetch) {
@@ -81,6 +84,6 @@ export function useInvoices(options: UseInvoicesOptions = {}): UseInvoicesResult
     page,
     limit,
     refetch: fetchInvoices,
-    fetchById
+    fetchById,
   };
-} 
+}

@@ -19,14 +19,14 @@ export function useCustomers() {
         // This is a placeholder - in a real app, you would fetch from your API
         // const response = await fetch('/api/customers');
         // const data = await response.json();
-        
+
         // For now, we'll use mock data
         const mockCustomers = [
           { id: '1', name: 'Acme Corp', email: 'contact@acmecorp.com', phone: '555-123-4567' },
           { id: '2', name: 'Globex Industries', email: 'info@globex.com', phone: '555-765-4321' },
-          { id: '3', name: 'ABC Enterprises', email: 'sales@abcent.com', phone: '555-987-6543' }
+          { id: '3', name: 'ABC Enterprises', email: 'sales@abcent.com', phone: '555-987-6543' },
         ];
-        
+
         setCustomers(mockCustomers);
         setLoading(false);
       } catch (err) {
@@ -46,16 +46,16 @@ export function useCustomers() {
     //   body: JSON.stringify(customer)
     // });
     // const newCustomer = await response.json();
-    
+
     // Mock implementation
     const newCustomer = {
       id: String(Date.now()),
-      ...customer
+      ...customer,
     };
-    
-    setCustomers(prev => [...prev, newCustomer]);
+
+    setCustomers((prev) => [...prev, newCustomer]);
     return newCustomer;
   };
 
   return { customers, loading, error, addCustomer };
-} 
+}

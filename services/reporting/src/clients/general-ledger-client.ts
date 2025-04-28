@@ -4,11 +4,11 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { AxiosRequestConfig } from 'axios';
 import { AuthClientService } from './auth-client';
-import { 
-  AccountDto, 
-  JournalEntryDto, 
+import {
+  AccountDto,
+  JournalEntryDto,
   FinancialStatementDto,
-  StatementRequestDto
+  StatementRequestDto,
 } from '../dto/general-ledger.dto';
 
 @Injectable()
@@ -41,7 +41,7 @@ export class GeneralLedgerClientService {
     try {
       // Get a service token from the Auth service
       const token = await this?.authClientService.fetchServiceToken();
-      
+
       const requestConfig: AxiosRequestConfig = {
         ...config,
         headers: {
@@ -52,21 +52,13 @@ export class GeneralLedgerClientService {
 
       let response;
       if (method === 'GET') {
-        response = await firstValueFrom(
-          this?.httpService.get(url, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.get(url, requestConfig));
       } else if (method === 'POST') {
-        response = await firstValueFrom(
-          this?.httpService.post(url, data, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.post(url, data, requestConfig));
       } else if (method === 'PUT') {
-        response = await firstValueFrom(
-          this?.httpService.put(url, data, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.put(url, data, requestConfig));
       } else if (method === 'DELETE') {
-        response = await firstValueFrom(
-          this?.httpService.delete(url, requestConfig),
-        );
+        response = await firstValueFrom(this?.httpService.delete(url, requestConfig));
       } else {
         throw new Error(`Unsupported HTTP method: ${method}`);
       }
@@ -111,9 +103,9 @@ export class GeneralLedgerClientService {
   /**
    * Get journal entries with pagination
    */
-  async getJournalEntries(page = 1, limit = 20): Promise<{ data: JournalEntryDto[], meta: any }> {
+  async getJournalEntries(page = 1, limit = 20): Promise<{ data: JournalEntryDto[]; meta: any }> {
     try {
-      return this.makeAuthenticatedRequest<{ data: JournalEntryDto[], meta: any }>(
+      return this.makeAuthenticatedRequest<{ data: JournalEntryDto[]; meta: any }>(
         `${this.generalLedgerServiceUrl}/journal-entries?page=${page}&limit=${limit}`,
         'GET',
       );
@@ -141,7 +133,10 @@ export class GeneralLedgerClientService {
   /**
    * Get financial statement
    */
-  async getFinancialStatement(type: string, request: StatementRequestDto): Promise<FinancialStatementDto> {
+  async getFinancialStatement(
+    type: string,
+    request: StatementRequestDto,
+  ): Promise<FinancialStatementDto> {
     try {
       return this.makeAuthenticatedRequest<FinancialStatementDto>(
         `${this.generalLedgerServiceUrl}/financial-statements/${type}`,
@@ -159,14 +154,14 @@ export class GeneralLedgerClientService {
    */
   async getTrialBalance(asOfDate?: string): Promise<any> {
     try {
-      const url = asOfDate 
+      const url = asOfDate
         ? `${this.generalLedgerServiceUrl}/financial-statements/trial-balance?asOfDate=${asOfDate}`
         : `${this.generalLedgerServiceUrl}/financial-statements/trial-balance`;
-      
+
       return this.makeAuthenticatedRequest<any>(url, 'GET');
     } catch (error) {
       this?.logger.error(`Failed to get trial balance: ${error.message}`, error.stack);
       throw error;
     }
   }
-} 
+}

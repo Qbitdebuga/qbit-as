@@ -19,7 +19,7 @@ function LoginForm() {
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Get redirectTo path from URL query params
   const redirectTo = searchParams?.get('redirectTo') || '/dashboard';
 
@@ -39,7 +39,7 @@ function LoginForm() {
     try {
       console.log('Attempting to login with email:', email);
       const success = await login(email, password);
-      
+
       if (success) {
         console.log('Login successful, redirecting to:', redirectTo);
         router.push(redirectTo);
@@ -58,7 +58,9 @@ function LoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
         <CardTitle className="text-3xl font-bold text-center">QBit Accounting</CardTitle>
-        <div className="text-center text-sm text-gray-500">Enter your credentials to access your account</div>
+        <div className="text-center text-sm text-gray-500">
+          Enter your credentials to access your account
+        </div>
       </CardHeader>
       <CardContent>
         {error && (
@@ -82,10 +84,7 @@ function LoginForm() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-sm text-primary hover:underline"
-                >
+                <Link href="/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot Password?
                 </Link>
               </div>
@@ -97,11 +96,7 @@ function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button
-              className="w-full"
-              type="submit"
-              disabled={loading}
-            >
+            <Button className="w-full" type="submit" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </div>
@@ -123,20 +118,22 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div className="container flex items-center justify-center min-h-screen py-12">
-      <Suspense fallback={
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold text-center">QBit Accounting</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-center">
-              <div className="animate-pulse">Loading...</div>
-            </div>
-          </CardContent>
-        </Card>
-      }>
+      <Suspense
+        fallback={
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold text-center">QBit Accounting</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <div className="animate-pulse">Loading...</div>
+              </div>
+            </CardContent>
+          </Card>
+        }
+      >
         <LoginForm />
       </Suspense>
     </div>
   );
-} 
+}

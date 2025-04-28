@@ -26,7 +26,7 @@ export class FinancialReportingService {
    */
   async generateReport(request: ReportRequestDto): Promise<ReportResponseDto> {
     this?.logger.log(`Generating financial report of type ${request.type}`);
-    
+
     try {
       // Get the financial statement from the General Ledger service
       const statement = await this?.generalLedgerClient.getFinancialStatement(
@@ -39,7 +39,7 @@ export class FinancialReportingService {
           includeZeroBalances: request.includeZeroBalances,
         },
       );
-      
+
       // Create a report response
       const report: ReportResponseDto = {
         id: undefined, // Will be filled when saved
@@ -55,13 +55,13 @@ export class FinancialReportingService {
         },
         generatedAt: new Date(),
       };
-      
+
       // If requested, save the report
       if (request.saveReport) {
         const savedReport = await this.saveReport(report, request.userId);
         report.id = savedReport.id;
       }
-      
+
       return report;
     } catch (error) {
       this?.logger.error(`Error generating financial report: ${error.message}`, error.stack);
@@ -72,10 +72,7 @@ export class FinancialReportingService {
   /**
    * Save a report to the database
    */
-  private async saveReport(
-    report: ReportResponseDto, 
-    userId?: string
-  ): Promise<{ id: string }> {
+  private async saveReport(report: ReportResponseDto, userId?: string): Promise<{ id: string }> {
     try {
       // Create the report record
       const savedReport = await this?.db.report.create({
@@ -92,11 +89,11 @@ export class FinancialReportingService {
               data: report.data as Prisma.InputJsonValue,
               parameters: report.parameters as Prisma.InputJsonValue,
               generatedBy: userId,
-            }
-          }
+            },
+          },
         },
       });
-      
+
       return { id: savedReport.id };
     } catch (error) {
       this?.logger.error(`Error saving report: ${error.message}`, error.stack);
@@ -108,30 +105,27 @@ export class FinancialReportingService {
    * Get all reports with optional filtering
    */
   async getReports(
-    userId?: string, 
+    userId?: string,
     type?: string,
     page = 1,
-    limit = 20
-  ): Promise<{ data: any[], meta: any }> {
+    limit = 20,
+  ): Promise<{ data: any[]; meta: any }> {
     try {
       const skip = (page - 1) * limit;
-      
+
       // Build the where condition
       const where: any = {};
-      
+
       if (type) {
         where.type = this.getReportTypeEnum(type);
       }
-      
+
       if (userId) {
-        where.OR = [
-          { ownerId: userId },
-          { isPublic: true },
-        ];
+        where.OR = [{ ownerId: userId }, { isPublic: true }];
       } else {
         where.isPublic = true;
       }
-      
+
       // Get reports with pagination
       const [reports, total] = await Promise.all([
         this?.db.report.findMany({
@@ -153,7 +147,7 @@ export class FinancialReportingService {
         }),
         this?.db.report.count({ where }),
       ]);
-      
+
       return {
         data: reports,
         meta: {
@@ -172,31 +166,29 @@ export class FinancialReportingService {
   /**
    * Get a report by ID
    */
-  async getReportById(
-    id: string,
-    includeLatestSnapshot = true,
-    userId?: string
-  ): Promise<any> {
+  async getReportById(id: string, includeLatestSnapshot = true, userId?: string): Promise<any> {
     try {
       const report = await this?.db.report.findUnique({
         where: { id },
         include: {
-          snapshots: includeLatestSnapshot ? {
-            orderBy: { createdAt: 'desc' },
-            take: 1,
-          } : false,
+          snapshots: includeLatestSnapshot
+            ? {
+                orderBy: { createdAt: 'desc' },
+                take: 1,
+              }
+            : false,
         },
       });
-      
+
       if (!report) {
         throw new NotFoundException(`Report with ID ${id} not found`);
       }
-      
+
       // Check permissions
       if (!report.isPublic && report.ownerId !== userId) {
         throw new NotFoundException(`Report with ID ${id} not found`);
       }
-      
+
       return report;
     } catch (error) {
       this?.logger.error(`Error getting report by ID: ${error.message}`, error.stack);
@@ -215,16 +207,16 @@ export class FinancialReportingService {
           report: true,
         },
       });
-      
+
       if (!snapshot) {
         throw new NotFoundException(`Report snapshot with ID ${id} not found`);
       }
-      
+
       // Check permissions
       if (!snapshot?.report.isPublic && snapshot?.report.ownerId !== userId) {
         throw new NotFoundException(`Report snapshot with ID ${id} not found`);
       }
-      
+
       return snapshot;
     } catch (error) {
       this?.logger.error(`Error getting snapshot by ID: ${error.message}`, error.stack);
@@ -235,20 +227,16 @@ export class FinancialReportingService {
   /**
    * Create a snapshot of a report with current data
    */
-  async createReportSnapshot(
-    reportId: string,
-    name?: string,
-    userId?: string
-  ): Promise<any> {
+  async createReportSnapshot(reportId: string, name?: string, userId?: string): Promise<any> {
     try {
       // Get the report
       const report = await this.getReportById(reportId, false, userId);
-      
+
       // Check if user is owner
       if (report.ownerId !== userId) {
         throw new Error(`Only the report owner can create snapshots`);
       }
-      
+
       // Generate fresh data
       const newReport = await this.generateReport({
         type: this.getReportTypeString(report.type),
@@ -256,7 +244,7 @@ export class FinancialReportingService {
         ...report.parameters,
         saveReport: false,
       });
-      
+
       // Create a new snapshot
       const snapshot = await this?.db.reportSnapshot.create({
         data: {
@@ -267,14 +255,14 @@ export class FinancialReportingService {
           generatedBy: userId,
         },
       });
-      
+
       return snapshot;
     } catch (error) {
       this?.logger.error(`Error creating report snapshot: ${error.message}`, error.stack);
       throw error;
     }
   }
-  
+
   /**
    * Convert report type string to enum
    */
@@ -291,7 +279,7 @@ export class FinancialReportingService {
         return 'CUSTOM';
     }
   }
-  
+
   /**
    * Convert report type enum to string
    */
@@ -307,4 +295,4 @@ export class FinancialReportingService {
         return 'BALANCE_SHEET';
     }
   }
-} 
+}

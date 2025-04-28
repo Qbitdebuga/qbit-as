@@ -2,13 +2,7 @@
 
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { 
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from '@/components/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 
 export default function InventoryPage() {
   return (
@@ -30,7 +24,7 @@ export default function InventoryPage() {
           </Link>
         </div>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Inventory Status</CardTitle>
@@ -41,4 +35,4 @@ export default function InventoryPage() {
       </Card>
     </div>
   );
-} 
+}

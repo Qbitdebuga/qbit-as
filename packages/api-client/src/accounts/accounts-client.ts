@@ -68,7 +68,7 @@ export class AccountsClient {
    */
   async getAccounts(filter: AccountsFilter = {}): Promise<AccountsResponse> {
     return this?.client.get<AccountsResponse>(this.basePath, {
-      params: filter as any
+      params: filter as any,
     });
   }
 
@@ -84,7 +84,7 @@ export class AccountsClient {
    */
   async createAccount(account: CreateAccountDto): Promise<Account> {
     return this?.client.post<Account>(this.basePath, account, {
-      withCredentials: true // Include cookies for CSRF protection
+      withCredentials: true, // Include cookies for CSRF protection
     });
   }
 
@@ -93,7 +93,7 @@ export class AccountsClient {
    */
   async updateAccount(id: string, account: UpdateAccountDto): Promise<Account> {
     return this?.client.patch<Account>(`${this.basePath}/${id}`, account, {
-      withCredentials: true // Include cookies for CSRF protection
+      withCredentials: true, // Include cookies for CSRF protection
     });
   }
 
@@ -102,7 +102,7 @@ export class AccountsClient {
    */
   async deleteAccount(id: string): Promise<void> {
     return this?.client.delete<void>(`${this.basePath}/${id}`, {
-      withCredentials: true // Include cookies for CSRF protection
+      withCredentials: true, // Include cookies for CSRF protection
     });
   }
 
@@ -120,8 +120,8 @@ export class AccountsClient {
     return this?.client.get<any>(`${this.basePath}/${id}/balance-history`, {
       params: {
         startDate,
-        endDate
-      }
+        endDate,
+      },
     });
   }
-} 
+}

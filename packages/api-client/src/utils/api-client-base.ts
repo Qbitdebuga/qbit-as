@@ -11,7 +11,7 @@ export interface RequestOptions {
  */
 export class ApiClientBase {
   protected apiClient: ApiClient;
-  
+
   constructor(apiClient: ApiClient) {
     this.apiClient = apiClient;
   }
@@ -50,4 +50,4 @@ export class ApiClientBase {
   protected async delete<T>(path: string, options: RequestOptions = {}): Promise<T> {
     return this?.apiClient.delete<T>(path, options);
   }
-} 
+}

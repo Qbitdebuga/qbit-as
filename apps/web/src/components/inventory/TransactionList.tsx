@@ -10,13 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,7 +86,7 @@ export function TransactionList({
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState('transactionDate');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  
+
   const totalPages = Math.ceil(total / limit);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,15 +136,35 @@ export function TransactionList({
   const getTypeBadge = (type: string) => {
     switch (type.toLowerCase()) {
       case 'receipt':
-        return <Badge variant="outline" className="border-green-500 text-green-500">Receipt</Badge>;
+        return (
+          <Badge variant="outline" className="border-green-500 text-green-500">
+            Receipt
+          </Badge>
+        );
       case 'shipment':
-        return <Badge variant="outline" className="border-blue-500 text-blue-500">Shipment</Badge>;
+        return (
+          <Badge variant="outline" className="border-blue-500 text-blue-500">
+            Shipment
+          </Badge>
+        );
       case 'transfer':
-        return <Badge variant="outline" className="border-purple-500 text-purple-500">Transfer</Badge>;
+        return (
+          <Badge variant="outline" className="border-purple-500 text-purple-500">
+            Transfer
+          </Badge>
+        );
       case 'adjustment':
-        return <Badge variant="outline" className="border-orange-500 text-orange-500">Adjustment</Badge>;
+        return (
+          <Badge variant="outline" className="border-orange-500 text-orange-500">
+            Adjustment
+          </Badge>
+        );
       case 'count':
-        return <Badge variant="outline" className="border-gray-500 text-gray-500">Count</Badge>;
+        return (
+          <Badge variant="outline" className="border-gray-500 text-gray-500">
+            Count
+          </Badge>
+        );
       default:
         return <Badge variant="outline">{type}</Badge>;
     }
@@ -158,21 +172,21 @@ export function TransactionList({
 
   const getWarehouseNames = (transaction: IInventoryTransaction) => {
     let result = '';
-    
+
     if (transaction.sourceWarehouseId && warehouses.has(transaction.sourceWarehouseId)) {
       const sourceName = warehouses.get(transaction.sourceWarehouseId)?.name || 'Unknown';
       result += sourceName;
     }
-    
+
     if (transaction.sourceWarehouseId && transaction.targetWarehouseId) {
       result += ' → ';
     }
-    
+
     if (transaction.targetWarehouseId && warehouses.has(transaction.targetWarehouseId)) {
       const targetName = warehouses.get(transaction.targetWarehouseId)?.name || 'Unknown';
       result += targetName;
     }
-    
+
     return result || 'N/A';
   };
 
@@ -227,15 +241,13 @@ export function TransactionList({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer"
                     onClick={() => handleSort('transactionType')}
                   >
-                    <div className="flex items-center">
-                      Type {getSortIcon('transactionType')}
-                    </div>
+                    <div className="flex items-center">Type {getSortIcon('transactionType')}</div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer"
                     onClick={() => handleSort('referenceNumber')}
                   >
@@ -243,21 +255,16 @@ export function TransactionList({
                       Reference {getSortIcon('referenceNumber')}
                     </div>
                   </TableHead>
-                  <TableHead 
-                    className="cursor-pointer"
-                    onClick={() => handleSort('warehouses')}
-                  >
+                  <TableHead className="cursor-pointer" onClick={() => handleSort('warehouses')}>
                     <div className="flex items-center">
                       Warehouse(s) {getSortIcon('warehouses')}
                     </div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer"
                     onClick={() => handleSort('transactionDate')}
                   >
-                    <div className="flex items-center">
-                      Date {getSortIcon('transactionDate')}
-                    </div>
+                    <div className="flex items-center">Date {getSortIcon('transactionDate')}</div>
                   </TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -267,12 +274,24 @@ export function TransactionList({
                 {isLoading ? (
                   Array.from({ length: limit }).map((_, index) => (
                     <TableRow key={`skeleton-${index}`}>
-                      <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-40" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                      <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-32" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-40" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-20" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-8 w-8 ml-auto" />
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : transactions.length === 0 ? (
@@ -290,10 +309,8 @@ export function TransactionList({
                 ) : (
                   transactions.map((transaction) => (
                     <TableRow key={transaction.id} className="hover:bg-muted/50">
-                      <TableCell>
-                        {getTypeBadge(transaction.transactionType)}
-                      </TableCell>
-                      <TableCell 
+                      <TableCell>{getTypeBadge(transaction.transactionType)}</TableCell>
+                      <TableCell
                         className="font-medium cursor-pointer"
                         onClick={() => onView(transaction.id)}
                       >
@@ -302,20 +319,14 @@ export function TransactionList({
                       <TableCell>
                         <div className="flex items-center gap-1">
                           {transaction.transactionType.toLowerCase() === 'transfer' ? (
-                            <>
-                              {getWarehouseNames(transaction)}
-                            </>
+                            <>{getWarehouseNames(transaction)}</>
                           ) : (
                             getWarehouseNames(transaction)
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        {formatDate(new Date(transaction.transactionDate))}
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(transaction.status)}
-                      </TableCell>
+                      <TableCell>{formatDate(new Date(transaction.transactionDate))}</TableCell>
+                      <TableCell>{getStatusBadge(transaction.status)}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -332,7 +343,7 @@ export function TransactionList({
                               <ClipboardList className="mr-2 h-4 w-4" />
                               View
                             </DropdownMenuItem>
-                            
+
                             {canProcessTransaction(transaction) && (
                               <DropdownMenuItem
                                 onClick={() => onProcess(transaction.id)}
@@ -342,7 +353,7 @@ export function TransactionList({
                                 Process
                               </DropdownMenuItem>
                             )}
-                            
+
                             {canEditTransaction(transaction) && (
                               <DropdownMenuItem
                                 onClick={() => onEdit(transaction.id)}
@@ -352,7 +363,7 @@ export function TransactionList({
                                 Edit
                               </DropdownMenuItem>
                             )}
-                            
+
                             {canDeleteTransaction(transaction) && (
                               <DropdownMenuItem
                                 onClick={() => onDelete(transaction.id)}
@@ -376,13 +387,13 @@ export function TransactionList({
             <Pagination className="mt-4">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious 
-                    href="#" 
+                  <PaginationPrevious
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       if (page > 1) onPageChange(page - 1);
                     }}
-                    className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+                    className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
                   />
                 </PaginationItem>
                 {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
@@ -390,8 +401,8 @@ export function TransactionList({
                   if (pageNumber <= totalPages) {
                     return (
                       <PaginationItem key={pageNumber}>
-                        <PaginationLink 
-                          href="#" 
+                        <PaginationLink
+                          href="#"
                           onClick={(e) => {
                             e.preventDefault();
                             onPageChange(pageNumber);
@@ -406,13 +417,13 @@ export function TransactionList({
                   return null;
                 })}
                 <PaginationItem>
-                  <PaginationNext 
-                    href="#" 
+                  <PaginationNext
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       if (page < totalPages) onPageChange(page + 1);
                     }}
-                    className={page >= totalPages ? "pointer-events-none opacity-50" : ""}
+                    className={page >= totalPages ? 'pointer-events-none opacity-50' : ''}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -422,4 +433,4 @@ export function TransactionList({
       </CardContent>
     </Card>
   );
-} 
+}

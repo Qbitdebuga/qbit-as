@@ -23,12 +23,13 @@ export class DepreciationMethodEntity {
 
   constructor(method: DepreciationMethod) {
     this.method = method;
-    
+
     // Set name and description based on method
     switch (method) {
       case DepreciationMethod.STRAIGHT_LINE:
         this.name = 'Straight Line';
-        this.description = 'Depreciates the asset by an equal amount each year over its useful life';
+        this.description =
+          'Depreciates the asset by an equal amount each year over its useful life';
         break;
       case DepreciationMethod.DECLINING_BALANCE:
         this.name = 'Declining Balance';
@@ -36,7 +37,8 @@ export class DepreciationMethodEntity {
         break;
       case DepreciationMethod.DOUBLE_DECLINING_BALANCE:
         this.name = 'Double Declining Balance';
-        this.description = 'Accelerated method that applies twice the straight-line rate to the declining book value';
+        this.description =
+          'Accelerated method that applies twice the straight-line rate to the declining book value';
         break;
       case DepreciationMethod.UNITS_OF_PRODUCTION:
         this.name = 'Units of Production';
@@ -51,4 +53,4 @@ export class DepreciationMethodEntity {
         this.description = 'Depreciation method not recognized';
     }
   }
-} 
+}

@@ -6,5 +6,5 @@ export enum BillStatus {
   PARTIALLY_PAID = 'PARTIALLY_PAID',
   OVERDUE = 'OVERDUE',
   CANCELLED = 'CANCELLED',
-  VOID = 'VOID'
-} 
+  VOID = 'VOID',
+}

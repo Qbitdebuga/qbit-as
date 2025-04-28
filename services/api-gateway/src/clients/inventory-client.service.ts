@@ -13,7 +13,8 @@ export class InventoryClientService {
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {
-    this.baseUrl = this?.configService.get<string>('INVENTORY_SERVICE_URL') || 'http://localhost:3003';
+    this.baseUrl =
+      this?.configService.get<string>('INVENTORY_SERVICE_URL') || 'http://localhost:3003';
   }
 
   async getProducts(query: any = {}) {
@@ -175,4 +176,4 @@ export class InventoryClientService {
       throw error;
     }
   }
-} 
+}

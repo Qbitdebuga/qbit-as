@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsString,
-  IsOptional,
-  IsBoolean,
-  IsEmail,
-  Matches,
-} from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsEmail, Matches } from 'class-validator';
 
 export class UpdateBankDto {
   @ApiProperty({
@@ -107,4 +101,4 @@ export class UpdateBankDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean | null;
-} 
+}

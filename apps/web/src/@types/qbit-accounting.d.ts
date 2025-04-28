@@ -1,13 +1,13 @@
 declare module '@qbit-accounting/api-client' {
-  import { 
-    Bill, 
-    CreateBillDto, 
+  import {
+    Bill,
+    CreateBillDto,
     Vendor,
     Payment,
     CreatePaymentDto,
     UpdatePaymentDto,
     PaymentStatus,
-    PaymentListParams
+    PaymentListParams,
   } from '@qbit/shared-types';
 
   // Class definitions
@@ -27,9 +27,11 @@ declare module '@qbit-accounting/api-client' {
     getVendors(): Promise<{ data: Vendor[]; total: number }>;
     getVendorById(id: string): Promise<Vendor>;
   }
-  
+
   export class PaymentsClient {
-    getPayments(params?: PaymentListParams): Promise<{ data: Payment[]; total: number; page: number; limit: number }>;
+    getPayments(
+      params?: PaymentListParams,
+    ): Promise<{ data: Payment[]; total: number; page: number; limit: number }>;
     getPaymentById(id: string): Promise<Payment>;
     createPayment(payment: CreatePaymentDto): Promise<Payment>;
     updatePayment(id: string, updates: UpdatePaymentDto): Promise<Payment>;
@@ -37,7 +39,10 @@ declare module '@qbit-accounting/api-client' {
     deletePayment(id: string): Promise<void>;
     applyPayment(id: string, applications: { billId: string; amount: number }[]): Promise<Payment>;
     getPaymentsByInvoiceId(invoiceId: string): Promise<Payment[]>;
-    getPaymentsByVendorId(vendorId: string, params?: Omit<PaymentListParams, 'vendorId'>): Promise<{ data: Payment[]; total: number; page: number; limit: number }>;
+    getPaymentsByVendorId(
+      vendorId: string,
+      params?: Omit<PaymentListParams, 'vendorId'>,
+    ): Promise<{ data: Payment[]; total: number; page: number; limit: number }>;
     createInvoicePayment(invoiceId: string, payment: any): Promise<any>;
   }
 
@@ -50,4 +55,4 @@ declare module '@qbit-accounting/api-client' {
     bills: BillsClient;
     payments: PaymentsClient;
   };
-} 
+}

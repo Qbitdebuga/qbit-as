@@ -18,10 +18,10 @@ export class ApiClient {
     method: string,
     path: string,
     data?: any,
-    options: RequestOptions = {}
+    options: RequestOptions = {},
   ): Promise<T> {
     const url = new URL(path, this.baseUrl);
-    
+
     // Add query parameters if any
     if (options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
@@ -47,9 +47,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.message || `Request failed with status ${response.status}`
-      );
+      throw new Error(errorData.message || `Request failed with status ${response.status}`);
     }
 
     // For 204 No Content

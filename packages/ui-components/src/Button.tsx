@@ -17,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   // Base classes
   let className = 'font-medium rounded focus:outline-none';
-  
+
   // Size classes
   if (size === 'small') {
     className += ' px-3 py-1 text-sm';
@@ -26,7 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
   } else {
     className += ' px-6 py-3 text-lg';
   }
-  
+
   // Variant classes
   if (variant === 'primary') {
     className += ' bg-blue-600 hover:bg-blue-700 text-white';
@@ -35,18 +35,14 @@ export const Button: React.FC<ButtonProps> = ({
   } else {
     className += ' bg-transparent hover:bg-gray-100 text-gray-800';
   }
-  
+
   if (disabled) {
     className += ' opacity-50 cursor-not-allowed';
   }
-  
+
   return (
-    <button
-      className={className}
-      onClick={onClick}
-      disabled={disabled}
-    >
+    <button className={className} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );
-}; 
+};

@@ -14,7 +14,7 @@ export class GeneralLedgerClientService {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly authClient: AuthClientService
+    private readonly authClient: AuthClientService,
   ) {
     // These are required config values that will throw if missing
     this.serviceUrl = getRequiredConfig<string>(configService, 'GENERAL_LEDGER_SERVICE_URL');
@@ -38,11 +38,11 @@ export class GeneralLedgerClientService {
     try {
       // Get a service token with the right scope for GL access
       const serviceToken = await this?.authClient.getServiceToken(['gl:read']);
-      
+
       const response = await this?.httpClient.get('/accounts', {
         headers: {
-          'Authorization': `Bearer ${serviceToken}`
-        }
+          Authorization: `Bearer ${serviceToken}`,
+        },
       });
       return response.data;
     } catch (error: unknown) {
@@ -58,11 +58,11 @@ export class GeneralLedgerClientService {
   async getAccountById(accountId: string): Promise<any> {
     try {
       const serviceToken = await this?.authClient.getServiceToken(['gl:read']);
-      
+
       const response = await this?.httpClient.get(`/accounts/${accountId}`, {
         headers: {
-          'Authorization': `Bearer ${serviceToken}`
-        }
+          Authorization: `Bearer ${serviceToken}`,
+        },
       });
       return response.data;
     } catch (error: unknown) {
@@ -78,12 +78,12 @@ export class GeneralLedgerClientService {
   async getJournalEntries(page = 1, limit = 20): Promise<any> {
     try {
       const serviceToken = await this?.authClient.getServiceToken(['gl:read']);
-      
+
       const response = await this?.httpClient.get('/journal-entries', {
         params: { page, limit },
         headers: {
-          'Authorization': `Bearer ${serviceToken}`
-        }
+          Authorization: `Bearer ${serviceToken}`,
+        },
       });
       return response.data;
     } catch (error: unknown) {
@@ -99,11 +99,11 @@ export class GeneralLedgerClientService {
   async getJournalEntryById(journalEntryId: string): Promise<any> {
     try {
       const serviceToken = await this?.authClient.getServiceToken(['gl:read']);
-      
+
       const response = await this?.httpClient.get(`/journal-entries/${journalEntryId}`, {
         headers: {
-          'Authorization': `Bearer ${serviceToken}`
-        }
+          Authorization: `Bearer ${serviceToken}`,
+        },
       });
       return response.data;
     } catch (error: unknown) {
@@ -119,11 +119,11 @@ export class GeneralLedgerClientService {
   async createJournalEntry(journalEntryData: any): Promise<any> {
     try {
       const serviceToken = await this?.authClient.getServiceToken(['gl:write']);
-      
+
       const response = await this?.httpClient.post('/journal-entries', journalEntryData, {
         headers: {
-          'Authorization': `Bearer ${serviceToken}`
-        }
+          Authorization: `Bearer ${serviceToken}`,
+        },
       });
       return response.data;
     } catch (error: unknown) {
@@ -136,15 +136,18 @@ export class GeneralLedgerClientService {
   /**
    * Get a financial statement
    */
-  async getFinancialStatement(type: 'balance-sheet' | 'income-statement' | 'cash-flow', params: any): Promise<any> {
+  async getFinancialStatement(
+    type: 'balance-sheet' | 'income-statement' | 'cash-flow',
+    params: any,
+  ): Promise<any> {
     try {
       const serviceToken = await this?.authClient.getServiceToken(['gl:read']);
-      
+
       const response = await this?.httpClient.get(`/financial-statements/${type}`, {
         params,
         headers: {
-          'Authorization': `Bearer ${serviceToken}`
-        }
+          Authorization: `Bearer ${serviceToken}`,
+        },
       });
       return response.data;
     } catch (error: unknown) {
@@ -153,4 +156,4 @@ export class GeneralLedgerClientService {
       throw new Error(`Failed to get ${type}: ${message}`);
     }
   }
-} 
+}

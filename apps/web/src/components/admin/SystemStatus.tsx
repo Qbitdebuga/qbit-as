@@ -1,24 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  useSystemStatus, 
-  ServiceHealth, 
+import {
+  useSystemStatus,
+  ServiceHealth,
   HealthCheck,
-  SystemStatusData 
+  SystemStatusData,
 } from '@/hooks/useSystemStatus';
 import { formatDate } from '@/utils/format';
 
 export const SystemStatus: React.FC = () => {
-  const { 
-    loading, 
-    error, 
-    data, 
-    getServicesHealth, 
-    checkServiceHealth,
-    refreshSystemStatus 
-  } = useSystemStatus();
-  
+  const { loading, error, data, getServicesHealth, checkServiceHealth, refreshSystemStatus } =
+    useSystemStatus();
+
   const [refreshing, setRefreshing] = useState(false);
   const [expandedService, setExpandedService] = useState<string | null>(null);
 
@@ -55,7 +49,7 @@ export const SystemStatus: React.FC = () => {
         <div className="text-red-500 font-medium mb-4">
           Failed to load system status: {error.message}
         </div>
-        <button 
+        <button
           onClick={handleRefresh}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
         >
@@ -73,7 +67,7 @@ export const SystemStatus: React.FC = () => {
           <div className="text-sm text-gray-500">
             Last updated: {data?.lastUpdated ? formatDate(new Date(data.lastUpdated)) : 'Never'}
           </div>
-          <button 
+          <button
             onClick={handleRefresh}
             disabled={refreshing}
             className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
@@ -84,18 +78,21 @@ export const SystemStatus: React.FC = () => {
       </div>
 
       <div className="mb-4 flex items-center gap-2">
-        <div 
-          className={`w-4 h-4 rounded-full ${getStatusColor(data?.overall || 'down')}`}
-        ></div>
+        <div className={`w-4 h-4 rounded-full ${getStatusColor(data?.overall || 'down')}`}></div>
         <span className="font-medium">
-          Overall System Status: {data?.overall === 'up' ? 'Operational' : data?.overall === 'degraded' ? 'Partially Degraded' : 'Down'}
+          Overall System Status:{' '}
+          {data?.overall === 'up'
+            ? 'Operational'
+            : data?.overall === 'degraded'
+              ? 'Partially Degraded'
+              : 'Down'}
         </span>
       </div>
 
       <div className="space-y-4 mt-6">
         {data?.services.map((service) => (
           <div key={service.name} className="border rounded-lg overflow-hidden">
-            <div 
+            <div
               className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50"
               onClick={() => toggleServiceDetails(service.name)}
             >
@@ -107,12 +104,12 @@ export const SystemStatus: React.FC = () => {
                 <span className={`text-sm ${getStatusTextColor(service.status)}`}>
                   {getStatusLabel(service.status)}
                 </span>
-                <svg 
-                  className={`w-5 h-5 transition-transform ${expandedService === service.name ? 'transform rotate-180' : ''}`} 
-                  fill="none" 
-                  strokeWidth="2" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  className={`w-5 h-5 transition-transform ${expandedService === service.name ? 'transform rotate-180' : ''}`}
+                  fill="none"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -151,7 +148,9 @@ export const SystemStatus: React.FC = () => {
                     <div key={index} className="bg-white p-3 rounded border">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${getStatusColor(check.status)}`}></div>
+                          <div
+                            className={`w-2 h-2 rounded-full ${getStatusColor(check.status)}`}
+                          ></div>
                           <span className="font-medium">{check.name}</span>
                         </div>
                         <span className={`text-xs ${getStatusTextColor(check.status)}`}>
@@ -180,11 +179,9 @@ export const SystemStatus: React.FC = () => {
           </div>
         ))}
       </div>
-      
+
       {(!data || data.services.length === 0) && !loading && (
-        <div className="text-center p-8 text-gray-500">
-          No services data available
-        </div>
+        <div className="text-center p-8 text-gray-500">No services data available</div>
       )}
     </div>
   );
@@ -231,7 +228,7 @@ function formatUptime(seconds: number): string {
   const days = Math.floor(seconds / 86400);
   const hours = Math.floor((seconds % 86400) / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  
+
   if (days > 0) {
     return `${days}d ${hours}h ${minutes}m`;
   } else if (hours > 0) {
@@ -241,4 +238,4 @@ function formatUptime(seconds: number): string {
   }
 }
 
-export default SystemStatus; 
+export default SystemStatus;

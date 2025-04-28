@@ -1,10 +1,16 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+  Logger,
+} from '@nestjs/common';
 import { AuthClientService } from '../clients/auth-client.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   private readonly logger = new Logger(JwtAuthGuard.name);
-  
+
   constructor(private readonly authClient: AuthClientService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -27,7 +33,7 @@ export class JwtAuthGuard implements CanActivate {
     try {
       // Validate the token using the auth service
       const userData = await this?.authClient.validateToken(token);
-      
+
       // Add user data to request object
       request.user = userData;
       return true;
@@ -36,4 +42,4 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token');
     }
   }
-} 
+}

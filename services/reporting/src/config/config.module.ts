@@ -1,6 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
-import { configSchemaValidation, databaseConfig, appConfig, authConfig, rabbitMQConfig } from './configuration';
+import {
+  configSchemaValidation,
+  databaseConfig,
+  appConfig,
+  authConfig,
+  rabbitMQConfig,
+} from './configuration';
 
 @Module({
   imports: [
@@ -11,4 +17,4 @@ import { configSchemaValidation, databaseConfig, appConfig, authConfig, rabbitMQ
     }),
   ],
 })
-export class ConfigModule {} 
+export class ConfigModule {}

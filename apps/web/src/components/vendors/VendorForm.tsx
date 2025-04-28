@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
+import {
   Form,
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage 
+  FormMessage,
 } from '@/components/ui/form';
 import {
   Card,
@@ -45,7 +45,10 @@ const vendorFormSchema = z.object({
   isActive: z.boolean().default(true),
   paymentTerms: z.string().optional(),
   defaultAccountId: z.string().optional(),
-  creditLimit: z.number().optional().or(z.string().transform(val => val === '' ? undefined : Number(val))),
+  creditLimit: z
+    .number()
+    .optional()
+    .or(z.string().transform((val) => (val === '' ? undefined : Number(val)))),
 });
 
 type VendorFormValues = z.infer<typeof vendorFormSchema>;
@@ -57,25 +60,27 @@ interface VendorFormProps {
   isEditMode?: boolean;
 }
 
-export function VendorForm({ 
-  initialData, 
-  onSubmit, 
+export function VendorForm({
+  initialData,
+  onSubmit,
   isLoading = false,
-  isEditMode = false
+  isEditMode = false,
 }: VendorFormProps) {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Define form with react-hook-form
   const form = useForm<VendorFormValues>({
     resolver: zodResolver(vendorFormSchema),
-    defaultValues: initialData ? {
-      ...initialData,
-      defaultAccountId: initialData.defaultAccountId?.toString(),
-      creditLimit: initialData.creditLimit,
-    } : {
-      isActive: true,
-      paymentTerms: 'net30',
-    }
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          defaultAccountId: initialData.defaultAccountId?.toString(),
+          creditLimit: initialData.creditLimit,
+        }
+      : {
+          isActive: true,
+          paymentTerms: 'net30',
+        },
   });
 
   const handleSubmit = async (values: VendorFormValues) => {
@@ -88,8 +93,8 @@ export function VendorForm({
       <CardHeader>
         <CardTitle>{isEditMode ? 'Edit Vendor' : 'Add New Vendor'}</CardTitle>
         <CardDescription>
-          {isEditMode 
-            ? 'Update vendor information in your accounting system.' 
+          {isEditMode
+            ? 'Update vendor information in your accounting system.'
             : 'Add a new vendor to your accounting system.'}
         </CardDescription>
       </CardHeader>
@@ -100,7 +105,7 @@ export function VendorForm({
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Basic Information</h3>
               <Separator />
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -109,15 +114,13 @@ export function VendorForm({
                     <FormItem>
                       <FormLabel>Vendor Number</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder={isEditMode ? '' : "Auto-generated if left blank"} 
-                          {...field} 
+                        <Input
+                          placeholder={isEditMode ? '' : 'Auto-generated if left blank'}
+                          {...field}
                           value={field.value || ''}
                         />
                       </FormControl>
-                      <FormDescription>
-                        A unique identifier for this vendor
-                      </FormDescription>
+                      <FormDescription>A unique identifier for this vendor</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -146,7 +149,12 @@ export function VendorForm({
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="contact@example.com" {...field} value={field.value || ''} />
+                        <Input
+                          type="email"
+                          placeholder="contact@example.com"
+                          {...field}
+                          value={field.value || ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -160,7 +168,11 @@ export function VendorForm({
                     <FormItem>
                       <FormLabel>Phone</FormLabel>
                       <FormControl>
-                        <Input placeholder="+1 (555) 123-4567" {...field} value={field.value || ''} />
+                        <Input
+                          placeholder="+1 (555) 123-4567"
+                          {...field}
+                          value={field.value || ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -175,13 +187,17 @@ export function VendorForm({
                   <FormItem>
                     <FormLabel>Website</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://example.com" {...field} value={field.value || ''} />
+                      <Input
+                        placeholder="https://example.com"
+                        {...field}
+                        value={field.value || ''}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="isActive"
@@ -194,10 +210,7 @@ export function VendorForm({
                       </FormDescription>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -209,7 +222,7 @@ export function VendorForm({
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Address</h3>
               <Separator />
-              
+
               <FormField
                 control={form.control}
                 name="address"
@@ -287,7 +300,7 @@ export function VendorForm({
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Business Details</h3>
               <Separator />
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -312,9 +325,7 @@ export function VendorForm({
                       <FormControl>
                         <Input placeholder="net30" {...field} value={field.value || ''} />
                       </FormControl>
-                      <FormDescription>
-                        E.g., net30, net60, etc.
-                      </FormDescription>
+                      <FormDescription>E.g., net30, net60, etc.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -331,9 +342,7 @@ export function VendorForm({
                       <FormControl>
                         <Input placeholder="Account ID" {...field} value={field.value || ''} />
                       </FormControl>
-                      <FormDescription>
-                        Default GL account for this vendor
-                      </FormDescription>
+                      <FormDescription>Default GL account for this vendor</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -342,13 +351,13 @@ export function VendorForm({
                 <FormField
                   control={form.control}
                   name="creditLimit"
-                  render={({ field: { onChange, ...rest }}) => (
+                  render={({ field: { onChange, ...rest } }) => (
                     <FormItem>
                       <FormLabel>Credit Limit</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          placeholder="0.00" 
+                        <Input
+                          type="number"
+                          placeholder="0.00"
                           onChange={(e) => {
                             const value = e.target.value === '' ? '' : Number(e.target.value);
                             onChange(value);
@@ -368,7 +377,7 @@ export function VendorForm({
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Additional Information</h3>
               <Separator />
-              
+
               <FormField
                 control={form.control}
                 name="notes"
@@ -376,8 +385,8 @@ export function VendorForm({
                   <FormItem>
                     <FormLabel>Notes</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Additional notes about this vendor" 
+                      <Textarea
+                        placeholder="Additional notes about this vendor"
                         className="resize-none h-32"
                         {...field}
                         value={field.value || ''}
@@ -390,9 +399,9 @@ export function VendorForm({
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => window.history.back()}
               disabled={isLoading}
             >
@@ -407,4 +416,4 @@ export function VendorForm({
       </Form>
     </Card>
   );
-} 
+}

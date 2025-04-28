@@ -1,18 +1,12 @@
 import { Vendor } from '@qbit/shared-types';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,24 +29,24 @@ export function VendorDetail({ vendor, onEdit, onDelete }: VendorDetailProps) {
           <div>
             <CardTitle className="text-2xl font-bold">
               {vendor.name}
-              <Badge className="ml-2" variant={vendor.isActive ? "outline" : "secondary"}>
+              <Badge className="ml-2" variant={vendor.isActive ? 'outline' : 'secondary'}>
                 {vendor.isActive ? 'Active' : 'Inactive'}
               </Badge>
             </CardTitle>
             <CardDescription>Vendor #{vendor.vendorNumber}</CardDescription>
           </div>
           <div className="flex items-center space-x-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center gap-1" 
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1"
               onClick={onEdit}
             >
               <FileEdit className="h-4 w-4" /> Edit
             </Button>
-            <Button 
-              variant="destructive" 
-              size="sm" 
+            <Button
+              variant="destructive"
+              size="sm"
               className="flex items-center gap-1"
               onClick={onDelete}
             >
@@ -82,9 +76,13 @@ export function VendorDetail({ vendor, onEdit, onDelete }: VendorDetailProps) {
                   <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground">Website</span>
                     <span>
-                      <a 
-                        href={vendor.website.startsWith('http') ? vendor.website : `https://${vendor.website}`} 
-                        target="_blank" 
+                      <a
+                        href={
+                          vendor.website.startsWith('http')
+                            ? vendor.website
+                            : `https://${vendor.website}`
+                        }
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
                       >
@@ -95,7 +93,7 @@ export function VendorDetail({ vendor, onEdit, onDelete }: VendorDetailProps) {
                 )}
               </div>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold mb-2">Address</h3>
               <Separator className="my-2" />
@@ -111,7 +109,7 @@ export function VendorDetail({ vendor, onEdit, onDelete }: VendorDetailProps) {
                 {vendor.country && <p>{vendor.country}</p>}
               </div>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold mb-2">Business Details</h3>
               <Separator className="my-2" />
@@ -138,7 +136,7 @@ export function VendorDetail({ vendor, onEdit, onDelete }: VendorDetailProps) {
                 </div>
               </div>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold mb-2">Additional Information</h3>
               <Separator className="my-2" />
@@ -164,4 +162,4 @@ export function VendorDetail({ vendor, onEdit, onDelete }: VendorDetailProps) {
       </Card>
     </div>
   );
-} 
+}

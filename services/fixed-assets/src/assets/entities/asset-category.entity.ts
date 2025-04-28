@@ -19,4 +19,4 @@ export class AssetCategoryEntity {
   constructor(partial: Partial<AssetCategoryEntity>) {
     Object.assign(this, partial);
   }
-} 
+}

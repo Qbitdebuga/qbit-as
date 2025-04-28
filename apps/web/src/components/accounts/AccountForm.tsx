@@ -1,26 +1,13 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useForm, SubmitHandler, FieldValues, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui';
 import { Input } from '@/components/ui';
 import { Textarea } from '@/components/ui';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
 import { Button } from '@/components/ui';
 import { Switch } from '@/components/ui';
 
@@ -136,9 +123,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
     },
   });
 
-  const [selectedType, setSelectedType] = useState<AccountType>(
-    account?.type || AccountType.ASSET
-  );
+  const [selectedType, setSelectedType] = useState<AccountType>(account?.type || AccountType.ASSET);
 
   // Get available subtypes based on the selected account type
   const getAvailableSubtypes = (type: AccountType): AccountSubType[] => {
@@ -165,11 +150,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
           AccountSubType.OTHER,
         ];
       case AccountType.REVENUE:
-        return [
-          AccountSubType.SALES,
-          AccountSubType.OTHER_INCOME,
-          AccountSubType.OTHER,
-        ];
+        return [AccountSubType.SALES, AccountSubType.OTHER_INCOME, AccountSubType.OTHER];
       case AccountType.EXPENSE:
         return [
           AccountSubType.COST_OF_GOODS_SOLD,
@@ -188,14 +169,17 @@ export const AccountForm: React.FC<AccountFormProps> = ({
 
   // Format enum values for display
   const formatEnumValue = (value: string): string => {
-    return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    return value
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   // Update subtypes when type changes
   useEffect(() => {
     const currentSubtype = form.getValues('subtype');
     const availableSubtypes = getAvailableSubtypes(selectedType);
-    
+
     // Reset subtype if the current one is not available for selected type
     if (!currentSubtype || !availableSubtypes.includes(currentSubtype as AccountSubType)) {
       // Use type assertion to convert AccountSubType to string
@@ -214,7 +198,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
       isActive: data.isActive ?? true,
       parentId: data.parentId?.length ? data.parentId : undefined,
     };
-    
+
     onSubmit(accountData);
   };
 
@@ -258,10 +242,10 @@ export const AccountForm: React.FC<AccountFormProps> = ({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea 
-                  placeholder="Enter account description" 
-                  className="resize-none" 
-                  {...field} 
+                <Textarea
+                  placeholder="Enter account description"
+                  className="resize-none"
+                  {...field}
                   value={field.value || ''}
                 />
               </FormControl>
@@ -308,10 +292,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
             render={({ field }: FieldProps) => (
               <FormItem>
                 <FormLabel>Account Subtype</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value || ""}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select account subtype" />
@@ -338,10 +319,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({
             render={({ field }: FieldProps) => (
               <FormItem>
                 <FormLabel>Parent Account</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value || ""}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select parent account (optional)" />
@@ -369,15 +347,10 @@ export const AccountForm: React.FC<AccountFormProps> = ({
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Active Status</FormLabel>
-                <div className="text-sm text-gray-500">
-                  Activate or deactivate this account
-                </div>
+                <div className="text-sm text-gray-500">Activate or deactivate this account</div>
               </div>
               <FormControl>
-                <Switch
-                  checked={field.value ?? true}
-                  onCheckedChange={field.onChange}
-                />
+                <Switch checked={field.value ?? true} onCheckedChange={field.onChange} />
               </FormControl>
             </FormItem>
           )}

@@ -38,13 +38,16 @@ export class AccountConsumer implements OnModuleInit {
    * Handle account.created events
    */
   @EventPattern('account.created')
-  async handleAccountCreated(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
+  async handleAccountCreated(
+    @Payload() payload: AccountEventPayload,
+    @Ctx() context: RmqContext,
+  ): Promise<void> {
     try {
       this?.logger.log(`Received account.created event for account ${payload.id}`);
-      
+
       // TODO: Implement account creation logic for Accounts Payable
       // Example: Create a local reference to the account for vendors and expenses
-      
+
       // Acknowledge the message
       const channel = context.getChannelRef();
       const originalMsg = context.getMessage();
@@ -58,12 +61,15 @@ export class AccountConsumer implements OnModuleInit {
    * Handle account.updated events
    */
   @EventPattern('account.updated')
-  async handleAccountUpdated(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
+  async handleAccountUpdated(
+    @Payload() payload: AccountEventPayload,
+    @Ctx() context: RmqContext,
+  ): Promise<void> {
     try {
       this?.logger.log(`Received account.updated event for account ${payload.id}`);
-      
+
       // TODO: Implement account update logic for Accounts Payable
-      
+
       // Acknowledge the message
       const channel = context.getChannelRef();
       const originalMsg = context.getMessage();
@@ -77,12 +83,15 @@ export class AccountConsumer implements OnModuleInit {
    * Handle account.deleted events
    */
   @EventPattern('account.deleted')
-  async handleAccountDeleted(@Payload() payload: AccountEventPayload, @Ctx() context: RmqContext): Promise<void> {
+  async handleAccountDeleted(
+    @Payload() payload: AccountEventPayload,
+    @Ctx() context: RmqContext,
+  ): Promise<void> {
     try {
       this?.logger.log(`Received account.deleted event for account ${payload.id}`);
-      
+
       // TODO: Implement account deletion logic for Accounts Payable
-      
+
       // Acknowledge the message
       const channel = context.getChannelRef();
       const originalMsg = context.getMessage();
@@ -91,4 +100,4 @@ export class AccountConsumer implements OnModuleInit {
       this?.logger.error(`Error handling account.deleted event: ${error.message}`, error.stack);
     }
   }
-} 
+}

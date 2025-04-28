@@ -1,18 +1,13 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
-import { 
-  IncomeStatementDto, 
+import {
+  IncomeStatementDto,
   IncomeStatementSection,
-  IncomeStatementAccount 
+  IncomeStatementAccount,
 } from '@qbit/shared-types';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -32,59 +27,59 @@ interface IncomeStatementReportProps {
 
 export function IncomeStatementReport({ report }: IncomeStatementReportProps) {
   const [activeView, setActiveView] = useState<'structured' | 'detailed'>('structured');
-  
+
   const handleExportToCsv = () => {
     exportToCsv(report);
   };
-  
+
   const handleExportToExcel = () => {
     exportToExcel(report);
   };
-  
+
   const handleExportToPdf = () => {
     exportToPdf(report);
   };
-  
+
   const handlePrint = () => {
     window.print();
   };
-  
+
   return (
     <Card className="w-full print:shadow-none">
       <CardHeader className="pb-3 print:hidden">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <CardTitle>Income Statement</CardTitle>
           <div className="flex flex-wrap gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleExportToCsv}
               className="flex items-center gap-1"
             >
               <Download className="h-4 w-4" />
               CSV
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleExportToExcel}
               className="flex items-center gap-1"
             >
               <Download className="h-4 w-4" />
               Excel
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleExportToPdf}
               className="flex items-center gap-1"
             >
               <Download className="h-4 w-4" />
               PDF
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handlePrint}
               className="flex items-center gap-1"
             >
@@ -93,9 +88,9 @@ export function IncomeStatementReport({ report }: IncomeStatementReportProps) {
             </Button>
           </div>
         </div>
-        
+
         <Tabs
-          value={activeView} 
+          value={activeView}
           onValueChange={(v: string) => setActiveView(v as 'structured' | 'detailed')}
           className="w-full"
         >
@@ -108,9 +103,11 @@ export function IncomeStatementReport({ report }: IncomeStatementReportProps) {
       <CardContent>
         <div className="mb-6 text-center print:mb-4">
           <h2 className="text-2xl font-bold print:text-xl">{report.meta.title}</h2>
-          <p className="text-muted-foreground">For the period {report.meta.startDate} to {report.meta.endDate}</p>
+          <p className="text-muted-foreground">
+            For the period {report.meta.startDate} to {report.meta.endDate}
+          </p>
         </div>
-        
+
         <Tabs value={activeView} className="w-full">
           <TabsContent value="structured" className="mt-0">
             <StructuredView report={report} />
@@ -127,7 +124,7 @@ export function IncomeStatementReport({ report }: IncomeStatementReportProps) {
 function StructuredView({ report }: { report: IncomeStatementDto }) {
   const { data, meta } = report;
   const hasComparative = meta.comparativePeriod;
-  
+
   return (
     <div className="space-y-8 print:space-y-4">
       {/* Revenue */}
@@ -157,9 +154,15 @@ function StructuredView({ report }: { report: IncomeStatementDto }) {
                     <TableCell>{account.accountName}</TableCell>
                     {hasComparative ? (
                       <>
-                        <TableCell className="text-right">{formatCurrency(account.amount)}</TableCell>
-                        <TableCell className="text-right">{formatCurrency(account.previousAmount || 0)}</TableCell>
-                        <TableCell className={`text-right ${(account.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <TableCell className="text-right">
+                          {formatCurrency(account.amount)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(account.previousAmount || 0)}
+                        </TableCell>
+                        <TableCell
+                          className={`text-right ${(account.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                        >
                           {formatCurrency(account.change || 0)}
                         </TableCell>
                       </>
@@ -182,7 +185,7 @@ function StructuredView({ report }: { report: IncomeStatementDto }) {
           Total Revenue: {formatCurrency(data.totalRevenue)}
         </div>
       </div>
-      
+
       {/* Expenses */}
       <div>
         <h3 className="text-lg font-semibold mb-2 print:text-base">Expenses</h3>
@@ -210,9 +213,15 @@ function StructuredView({ report }: { report: IncomeStatementDto }) {
                     <TableCell>{account.accountName}</TableCell>
                     {hasComparative ? (
                       <>
-                        <TableCell className="text-right">{formatCurrency(account.amount)}</TableCell>
-                        <TableCell className="text-right">{formatCurrency(account.previousAmount || 0)}</TableCell>
-                        <TableCell className={`text-right ${(account.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <TableCell className="text-right">
+                          {formatCurrency(account.amount)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(account.previousAmount || 0)}
+                        </TableCell>
+                        <TableCell
+                          className={`text-right ${(account.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                        >
                           {formatCurrency(account.change || 0)}
                         </TableCell>
                       </>
@@ -235,12 +244,12 @@ function StructuredView({ report }: { report: IncomeStatementDto }) {
           Total Expenses: {formatCurrency(data.totalExpenses)}
         </div>
       </div>
-      
+
       {/* Net Income */}
       <div className="text-right font-bold p-3 bg-muted/80">
         Net Income: {formatCurrency(data.netIncome)}
       </div>
-      
+
       {/* Comparative data if available */}
       {hasComparative && data.previousNetIncome !== undefined && (
         <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
@@ -248,17 +257,21 @@ function StructuredView({ report }: { report: IncomeStatementDto }) {
             <p className="font-medium">Previous Net Income:</p>
             <p className="text-lg font-semibold">{formatCurrency(data.previousNetIncome)}</p>
           </div>
-          
+
           {data.netIncomeChange !== undefined && (
-            <div className={`p-2 rounded-md ${data.netIncomeChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
+            <div
+              className={`p-2 rounded-md ${data.netIncomeChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}
+            >
               <p className="font-medium">Net Income Change:</p>
               <p className="text-lg font-semibold">
                 {formatCurrency(data.netIncomeChange)}
-                {data.netIncomeChangePercentage !== undefined && data.netIncomeChangePercentage !== null && (
-                  <span className="text-sm ml-2">
-                    ({data.netIncomeChangePercentage >= 0 ? '+' : ''}{data.netIncomeChangePercentage.toFixed(2)}%)
-                  </span>
-                )}
+                {data.netIncomeChangePercentage !== undefined &&
+                  data.netIncomeChangePercentage !== null && (
+                    <span className="text-sm ml-2">
+                      ({data.netIncomeChangePercentage >= 0 ? '+' : ''}
+                      {data.netIncomeChangePercentage.toFixed(2)}%)
+                    </span>
+                  )}
               </p>
             </div>
           )}
@@ -271,34 +284,34 @@ function StructuredView({ report }: { report: IncomeStatementDto }) {
 function DetailedView({ report }: { report: IncomeStatementDto }) {
   const { data, meta } = report;
   const hasComparative = meta.comparativePeriod;
-  
+
   // Flatten all accounts for detailed view
-  const allAccounts: Array<{ 
-    section: string, 
-    category: 'Revenue' | 'Expenses', 
-    account: IncomeStatementAccount 
+  const allAccounts: Array<{
+    section: string;
+    category: 'Revenue' | 'Expenses';
+    account: IncomeStatementAccount;
   }> = [];
-  
-  data.revenue.forEach(section => {
-    section.accounts.forEach(account => {
-      allAccounts.push({ 
-        section: section.title, 
-        category: 'Revenue', 
-        account 
+
+  data.revenue.forEach((section) => {
+    section.accounts.forEach((account) => {
+      allAccounts.push({
+        section: section.title,
+        category: 'Revenue',
+        account,
       });
     });
   });
-  
-  data.expenses.forEach(section => {
-    section.accounts.forEach(account => {
-      allAccounts.push({ 
-        section: section.title, 
-        category: 'Expenses', 
-        account 
+
+  data.expenses.forEach((section) => {
+    section.accounts.forEach((account) => {
+      allAccounts.push({
+        section: section.title,
+        category: 'Expenses',
+        account,
       });
     });
   });
-  
+
   return (
     <div>
       <Table>
@@ -329,14 +342,21 @@ function DetailedView({ report }: { report: IncomeStatementDto }) {
               <TableCell>{item.account.accountName}</TableCell>
               {hasComparative ? (
                 <>
-                  <TableCell className="text-right">{formatCurrency(item.account.amount)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(item.account.previousAmount || 0)}</TableCell>
-                  <TableCell className={`text-right ${(item.account.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <TableCell className="text-right">
+                    {formatCurrency(item.account.amount)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(item.account.previousAmount || 0)}
+                  </TableCell>
+                  <TableCell
+                    className={`text-right ${(item.account.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                  >
                     {formatCurrency(item.account.change || 0)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {item.account.changePercentage !== undefined && item.account.changePercentage !== null
-                      ? `${item.account.changePercentage.toFixed(2)}%` 
+                    {item.account.changePercentage !== undefined &&
+                    item.account.changePercentage !== null
+                      ? `${item.account.changePercentage.toFixed(2)}%`
                       : '-'}
                   </TableCell>
                 </>
@@ -347,7 +367,7 @@ function DetailedView({ report }: { report: IncomeStatementDto }) {
           ))}
         </TableBody>
       </Table>
-      
+
       <div className="mt-6 space-y-2">
         <div className="flex justify-between p-2 bg-muted">
           <span className="font-semibold">Total Revenue:</span>
@@ -361,7 +381,7 @@ function DetailedView({ report }: { report: IncomeStatementDto }) {
           <span>Net Income:</span>
           <span>{formatCurrency(data.netIncome)}</span>
         </div>
-        
+
         {hasComparative && data.previousNetIncome !== undefined && (
           <>
             <div className="flex justify-between p-2 bg-muted">
@@ -373,11 +393,13 @@ function DetailedView({ report }: { report: IncomeStatementDto }) {
                 <span className="font-semibold">Net Income Change:</span>
                 <span className={data.netIncomeChange >= 0 ? 'text-green-600' : 'text-red-600'}>
                   {formatCurrency(data.netIncomeChange)}
-                  {data.netIncomeChangePercentage !== undefined && data.netIncomeChangePercentage !== null && (
-                    <span className="ml-2">
-                      ({data.netIncomeChangePercentage >= 0 ? '+' : ''}{data.netIncomeChangePercentage.toFixed(2)}%)
-                    </span>
-                  )}
+                  {data.netIncomeChangePercentage !== undefined &&
+                    data.netIncomeChangePercentage !== null && (
+                      <span className="ml-2">
+                        ({data.netIncomeChangePercentage >= 0 ? '+' : ''}
+                        {data.netIncomeChangePercentage.toFixed(2)}%)
+                      </span>
+                    )}
                 </span>
               </div>
             )}
@@ -386,4 +408,4 @@ function DetailedView({ report }: { report: IncomeStatementDto }) {
       </div>
     </div>
   );
-} 
+}

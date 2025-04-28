@@ -35,8 +35,8 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
     try {
       // In a real implementation, this would connect to the auth service
       // For now, we'll just simulate a successful request
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       setMessage('Your password has been successfully reset.');
       setTimeout(() => {
         router.push('/login');
@@ -55,20 +55,14 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
         <div className="bg-white rounded-2xl shadow-2xl flex flex-col w-full md:w-1/3 items-center max-w-4xl transition duration-1000 ease-out">
           <h2 className="p-3 text-3xl font-bold text-blue-600">Reset Your Password</h2>
           <div className="inline-block border-[1px] justify-center w-20 border-blue-600 border-solid"></div>
-          
+
           <form className="p-5 w-full" onSubmit={handleSubmit}>
-            {error && (
-              <div className="mb-4 p-2 bg-red-100 text-red-700 rounded-md">
-                {error}
-              </div>
-            )}
-            
+            {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded-md">{error}</div>}
+
             {message && (
-              <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-md">
-                {message}
-              </div>
+              <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-md">{message}</div>
             )}
-            
+
             <div className="mb-4">
               <input
                 type="password"
@@ -79,7 +73,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
                 required
               />
             </div>
-            
+
             <div className="mb-4">
               <input
                 type="password"
@@ -90,7 +84,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
                 required
               />
             </div>
-            
+
             <button
               type="submit"
               disabled={isLoading}
@@ -99,7 +93,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
               {isLoading ? 'Resetting...' : 'Reset Password'}
             </button>
           </form>
-          
+
           <div className="text-gray-500 mt-4 mb-4">
             <p>
               <Link href="/login" className="text-blue-600 hover:underline">
@@ -111,4 +105,4 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
       </main>
     </div>
   );
-} 
+}

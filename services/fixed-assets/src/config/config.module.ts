@@ -8,9 +8,7 @@ import * as Joi from 'joi';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
       validationSchema: Joi.object({
-        NODE_ENV: Joi.string()
-          .valid('development', 'production', 'test')
-          .default('development'),
+        NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
         PORT: Joi.number().default(3006),
         DATABASE_URL: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
@@ -19,4 +17,4 @@ import * as Joi from 'joi';
     }),
   ],
 })
-export class ConfigModule {} 
+export class ConfigModule {}

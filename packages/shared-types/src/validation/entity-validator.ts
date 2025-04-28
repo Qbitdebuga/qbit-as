@@ -1,6 +1,6 @@
 /**
  * Entity Validator Utilities
- * 
+ *
  * These utilities help validate data consistency across microservices
  * by providing functions to check entity references and validate
  * business rules.
@@ -17,7 +17,7 @@ export class ValidationError extends Error {
     message: string,
     public code: string,
     public field?: string,
-    public details?: any
+    public details?: any,
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -53,40 +53,46 @@ export class EntityValidator {
   /**
    * Validate a journal entry for balanced debits and credits
    */
-  static validateJournalEntryBalance(entry: JournalEntry | { lines: JournalEntryLine[] }): ValidationResult {
+  static validateJournalEntryBalance(
+    entry: JournalEntry | { lines: JournalEntryLine[] },
+  ): ValidationResult {
     const errors: ValidationError[] = [];
-    
+
     // Calculate total debits and credits
     let totalDebits = 0;
     let totalCredits = 0;
-    
+
     entry?.lines.forEach((line: any) => {
       totalDebits += line.debit || 0;
       totalCredits += line.credit || 0;
     });
-    
+
     // Ensure the entry is balanced
-    if (Math.abs(totalDebits - totalCredits) > 0.001) { // Allow small rounding differences
-      errors.push(new ValidationError(
-        'Journal entry is not balanced',
-        'UNBALANCED_ENTRY',
-        'lines',
-        { totalDebits, totalCredits, difference: totalDebits - totalCredits }
-      ));
+    if (Math.abs(totalDebits - totalCredits) > 0.001) {
+      // Allow small rounding differences
+      errors.push(
+        new ValidationError('Journal entry is not balanced', 'UNBALANCED_ENTRY', 'lines', {
+          totalDebits,
+          totalCredits,
+          difference: totalDebits - totalCredits,
+        }),
+      );
     }
-    
+
     // Ensure each line has either a debit or credit, but not both
     entry?.lines.forEach((line, index) => {
       if ((line.debit && line.credit) || (!line.debit && !line.credit)) {
-        errors.push(new ValidationError(
-          'Journal entry line must have either a debit or a credit, but not both',
-          'INVALID_LINE',
-          `lines[${index}]`,
-          { lineId: line.id }
-        ));
+        errors.push(
+          new ValidationError(
+            'Journal entry line must have either a debit or a credit, but not both',
+            'INVALID_LINE',
+            `lines[${index}]`,
+            { lineId: line.id },
+          ),
+        );
       }
     });
-    
+
     return errors.length ? EntityValidator.failure(errors) : EntityValidator.success();
   }
 
@@ -95,32 +101,32 @@ export class EntityValidator {
    */
   static validateAccountHierarchy(account: Account, parentAccount?: Account): ValidationResult {
     const errors: ValidationError[] = [];
-    
+
     // If parent account is provided, check that it's a valid parent
     if (parentAccount) {
       // Parent account should be of the same type
       if (account.type !== parentAccount.type) {
-        errors.push(new ValidationError(
-          'Parent account must be of the same type',
-          'INVALID_PARENT',
-          'parentId',
-          { 
-            accountType: account.type, 
-            parentType: parentAccount.type 
-          }
-        ));
+        errors.push(
+          new ValidationError(
+            'Parent account must be of the same type',
+            'INVALID_PARENT',
+            'parentId',
+            {
+              accountType: account.type,
+              parentType: parentAccount.type,
+            },
+          ),
+        );
       }
-      
+
       // Prevent circular references
       if (account.id === parentAccount.id) {
-        errors.push(new ValidationError(
-          'Account cannot be its own parent',
-          'CIRCULAR_REFERENCE',
-          'parentId'
-        ));
+        errors.push(
+          new ValidationError('Account cannot be its own parent', 'CIRCULAR_REFERENCE', 'parentId'),
+        );
       }
     }
-    
+
     return errors.length ? EntityValidator.failure(errors) : EntityValidator.success();
   }
 
@@ -129,38 +135,44 @@ export class EntityValidator {
    */
   static validateJournalEntryAccounts(
     entry: JournalEntry | { lines: { accountId: string | null }[] },
-    accountsMap: Map<string, Account>
+    accountsMap: Map<string, Account>,
   ): ValidationResult {
     const errors: ValidationError[] = [];
-    
+
     entry?.lines.forEach((line, index) => {
       if (line.accountId === null) {
-        errors.push(new ValidationError(
-          `Account ID cannot be null`,
-          'ACCOUNT_ID_NULL',
-          `lines[${index}].accountId`
-        ));
+        errors.push(
+          new ValidationError(
+            `Account ID cannot be null`,
+            'ACCOUNT_ID_NULL',
+            `lines[${index}].accountId`,
+          ),
+        );
         return;
       }
-      
+
       const account = accountsMap.get(line.accountId!);
-      
+
       if (!account) {
-        errors.push(new ValidationError(
-          `Account with ID ${line.accountId} does not exist`,
-          'ACCOUNT_NOT_FOUND',
-          `lines[${index}].accountId`
-        ));
+        errors.push(
+          new ValidationError(
+            `Account with ID ${line.accountId} does not exist`,
+            'ACCOUNT_NOT_FOUND',
+            `lines[${index}].accountId`,
+          ),
+        );
       } else if (!account.isActive) {
-        errors.push(new ValidationError(
-          `Account ${account.code} - ${account.name} is inactive`,
-          'INACTIVE_ACCOUNT',
-          `lines[${index}].accountId`,
-          { accountCode: account.code, accountName: account.name }
-        ));
+        errors.push(
+          new ValidationError(
+            `Account ${account.code} - ${account.name} is inactive`,
+            'INACTIVE_ACCOUNT',
+            `lines[${index}].accountId`,
+            { accountCode: account.code, accountName: account.name },
+          ),
+        );
       }
     });
-    
+
     return errors.length ? EntityValidator.failure(errors) : EntityValidator.success();
   }
 
@@ -170,67 +182,71 @@ export class EntityValidator {
    */
   static validateAccountNormalBalances(
     entry: { lines: { accountId: string | null; debit?: number | null; credit?: number }[] },
-    accountsMap: Map<string, Account>
+    accountsMap: Map<string, Account>,
   ): ValidationResult {
     const errors: ValidationError[] = [];
-    
+
     // This is just a warning, not an error, so we'll return success even if there are anomalies
-    const warnings: { 
-      lineIndex: number | null; 
-      accountId: string | null; 
-      accountType: AccountType; 
-      hasDebit: boolean 
+    const warnings: {
+      lineIndex: number | null;
+      accountId: string | null;
+      accountType: AccountType;
+      hasDebit: boolean;
     }[] = [];
-    
+
     entry?.lines.forEach((line, index) => {
       if (!line.accountId) return; // Skip if accountId is null
-      
+
       const account = accountsMap.get(line.accountId!);
       if (!account) return; // Skip if account not found (other validation will catch this)
-      
+
       const hasDebit = !!line.debit;
-      const isNormalBalance = (
+      const isNormalBalance =
         // Assets and expenses normally have debit balances
-        ((account.type === AccountType.ASSET || account.type === AccountType.EXPENSE) && hasDebit) ||
+        ((account.type === AccountType.ASSET || account.type === AccountType.EXPENSE) &&
+          hasDebit) ||
         // Liabilities, equity, and revenue normally have credit balances
-        ((account.type === AccountType.LIABILITY || account.type === AccountType.EQUITY || 
-          account.type === AccountType.REVENUE) && !hasDebit)
-      );
-      
+        ((account.type === AccountType.LIABILITY ||
+          account.type === AccountType.EQUITY ||
+          account.type === AccountType.REVENUE) &&
+          !hasDebit);
+
       if (!isNormalBalance) {
         warnings.push({
           lineIndex: index,
           accountId: account.id,
           accountType: account.type,
-          hasDebit
+          hasDebit,
         });
       }
     });
-    
+
     // Add as a non-blocking warning if there are any anomalies
     if (warnings.length > 0) {
-      errors.push(new ValidationError(
-        'Some account entries have opposite-to-normal balances',
-        'ABNORMAL_BALANCE_WARNING',
-        undefined,
-        { warnings }
-      ));
+      errors.push(
+        new ValidationError(
+          'Some account entries have opposite-to-normal balances',
+          'ABNORMAL_BALANCE_WARNING',
+          undefined,
+          { warnings },
+        ),
+      );
     }
-    
+
     // This is just a warning, so we still return success
     return EntityValidator.success();
   }
-  
+
   /**
    * Combine multiple validation results into one
    */
   static combineResults(...results: ValidationResult[]): ValidationResult {
-    const allErrors = results.flatMap(result => result.errors);
-    const valid = results.every(result => result.valid);
-    
+    const allErrors = results.flatMap((result) => result.errors);
+    const valid = results.every((result) => result.valid);
+
     return {
       valid,
-      errors: allErrors
+      errors: allErrors,
     };
   }
-} 
+}

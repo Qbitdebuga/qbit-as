@@ -68,7 +68,7 @@ export class CreateBankAccountDto {
 
   @ApiProperty({
     description: 'Initial opening balance of the account',
-    example: 10000.00,
+    example: 10000.0,
     required: false,
     default: 0,
   })
@@ -96,4 +96,4 @@ export class CreateBankAccountDto {
   @IsString()
   @IsOptional()
   notes?: string | null;
-} 
+}

@@ -3,7 +3,7 @@ export enum AccountType {
   LIABILITY = 'LIABILITY',
   EQUITY = 'EQUITY',
   REVENUE = 'REVENUE',
-  EXPENSE = 'EXPENSE'
+  EXPENSE = 'EXPENSE',
 }
 
 export enum AccountSubType {
@@ -26,7 +26,7 @@ export enum AccountSubType {
   OTHER_EXPENSE = 'OTHER_EXPENSE',
   OTHER_INCOME = 'OTHER_INCOME',
   TAX_EXPENSE = 'TAX_EXPENSE',
-  OTHER = 'OTHER'
+  OTHER = 'OTHER',
 }
 
 export interface Account {
@@ -62,4 +62,4 @@ export interface AccountUpdate {
   subtype?: AccountSubType;
   isActive?: boolean | null;
   parentId?: string | null;
-} 
+}

@@ -28,4 +28,4 @@ export class ConfigService {
   get logstashUrl(): string {
     return this?.configService.get<string>('LOGSTASH_URL', 'localhost:5000');
   }
-} 
+}

@@ -88,4 +88,4 @@ export interface UpdateVendorContactDto {
   phone?: string | null;
   position?: string | null;
   isPrimary?: boolean | null;
-} 
+}

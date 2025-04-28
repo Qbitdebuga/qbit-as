@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import { format } from 'date-fns';
@@ -8,7 +8,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { CalendarIcon, FilterIcon, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -29,7 +35,7 @@ export interface StatementFilterValues {
 export function StatementFilters({ onApplyFilters, isLoading = false }: StatementFiltersProps) {
   const today = new Date();
   const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
-  
+
   const [startDate, setStartDate] = useState<Date>(firstDayOfYear);
   const [endDate, setEndDate] = useState<Date>(today);
   const [period, setPeriod] = useState<StatementPeriod>(StatementPeriod.MONTHLY);
@@ -44,7 +50,7 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
       endDate: format(endDate, 'yyyy-MM-dd'),
       period,
       comparativePeriod,
-      includeZeroBalances
+      includeZeroBalances,
     });
   };
 
@@ -54,7 +60,7 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
         <FilterIcon className="h-5 w-5 mr-2" />
         <h3 className="text-lg font-medium">Report Filters</h3>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div className="space-y-2">
           <Label htmlFor="startDate">Start Date</Label>
@@ -82,7 +88,7 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
             </PopoverContent>
           </Popover>
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="endDate">End Date</Label>
           <Popover open={isEndDateOpen} onOpenChange={setIsEndDateOpen}>
@@ -109,13 +115,10 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
             </PopoverContent>
           </Popover>
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="period">Period</Label>
-          <Select
-            value={period}
-            onValueChange={(value) => setPeriod(value as StatementPeriod)}
-          >
+          <Select value={period} onValueChange={(value) => setPeriod(value as StatementPeriod)}>
             <SelectTrigger id="period" className="w-full">
               <SelectValue placeholder="Select period" />
             </SelectTrigger>
@@ -129,7 +132,7 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
           </Select>
         </div>
       </div>
-      
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
         <div className="flex items-center space-x-2">
           <Switch
@@ -139,7 +142,7 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
           />
           <Label htmlFor="comparativePeriod">Show Comparative Period</Label>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <Switch
             id="includeZeroBalances"
@@ -149,12 +152,8 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
           <Label htmlFor="includeZeroBalances">Include Zero Balances</Label>
         </div>
       </div>
-      
-      <Button 
-        onClick={handleApplyFilters}
-        disabled={isLoading}
-        className="w-full sm:w-auto"
-      >
+
+      <Button onClick={handleApplyFilters} disabled={isLoading} className="w-full sm:w-auto">
         {isLoading ? (
           <>
             <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -166,4 +165,4 @@ export function StatementFilters({ onApplyFilters, isLoading = false }: Statemen
       </Button>
     </div>
   );
-} 
+}

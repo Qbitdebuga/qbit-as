@@ -32,8 +32,8 @@ interface InvoicePrintProps {
   };
 }
 
-export default function InvoicePrint({ 
-  invoice, 
+export default function InvoicePrint({
+  invoice,
   companyInfo = {
     name: 'Qbit Accounting',
     address: '123 Accounting Ave',
@@ -45,10 +45,10 @@ export default function InvoicePrint({
     website: 'www.qbitaccounting.com',
     taxId: '12-3456789',
   },
-  customerInfo
+  customerInfo,
 }: InvoicePrintProps) {
   const printRef = useRef<HTMLDivElement>(null);
-  
+
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
     documentTitle: `Invoice-${invoice.invoiceNumber}`,
@@ -56,14 +56,10 @@ export default function InvoicePrint({
 
   return (
     <div>
-      <Button 
-        variant="outline" 
-        onClick={handlePrint}
-        className="print:hidden mb-4"
-      >
+      <Button variant="outline" onClick={handlePrint} className="print:hidden mb-4">
         Print Invoice
       </Button>
-      
+
       <div ref={printRef} className="p-8 max-w-4xl mx-auto bg-white">
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
@@ -71,27 +67,37 @@ export default function InvoicePrint({
             <h1 className="text-2xl font-bold">{companyInfo.name}</h1>
             <div className="text-gray-500">
               <p>{companyInfo.address}</p>
-              <p>{companyInfo.city}, {companyInfo.state} {companyInfo.zipCode}</p>
+              <p>
+                {companyInfo.city}, {companyInfo.state} {companyInfo.zipCode}
+              </p>
               <p>Phone: {companyInfo.phone}</p>
               <p>Email: {companyInfo.email}</p>
               {companyInfo.website && <p>Web: {companyInfo.website}</p>}
               {companyInfo.taxId && <p>Tax ID: {companyInfo.taxId}</p>}
             </div>
           </div>
-          
+
           <div className="text-right">
             <h2 className="text-3xl font-bold mb-2">INVOICE</h2>
             <div className="text-gray-600">
-              <p><span className="font-bold">Invoice #:</span> {invoice.invoiceNumber}</p>
-              <p><span className="font-bold">Date:</span> {formatDate(invoice.invoiceDate)}</p>
-              <p><span className="font-bold">Due Date:</span> {formatDate(invoice.dueDate)}</p>
+              <p>
+                <span className="font-bold">Invoice #:</span> {invoice.invoiceNumber}
+              </p>
+              <p>
+                <span className="font-bold">Date:</span> {formatDate(invoice.invoiceDate)}
+              </p>
+              <p>
+                <span className="font-bold">Due Date:</span> {formatDate(invoice.dueDate)}
+              </p>
               {invoice.customerReference && (
-                <p><span className="font-bold">Reference:</span> {invoice.customerReference}</p>
+                <p>
+                  <span className="font-bold">Reference:</span> {invoice.customerReference}
+                </p>
               )}
             </div>
           </div>
         </div>
-        
+
         {/* Customer Info */}
         <div className="mb-8">
           <h3 className="font-bold text-gray-600 mb-2">Bill To:</h3>
@@ -114,7 +120,7 @@ export default function InvoicePrint({
             <p className="italic text-gray-500">Customer information not available</p>
           )}
         </div>
-        
+
         {/* Invoice Items */}
         <table className="w-full mb-8">
           <thead>
@@ -122,51 +128,50 @@ export default function InvoicePrint({
               <th className="py-2 text-left">Description</th>
               <th className="py-2 text-right">Quantity</th>
               <th className="py-2 text-right">Unit Price</th>
-              {invoice.items?.some(item => item.discountPercentage) && (
+              {invoice.items?.some((item) => item.discountPercentage) && (
                 <th className="py-2 text-right">Discount</th>
               )}
-              {invoice.items?.some(item => item.taxPercentage) && (
+              {invoice.items?.some((item) => item.taxPercentage) && (
                 <th className="py-2 text-right">Tax</th>
               )}
               <th className="py-2 text-right">Amount</th>
             </tr>
           </thead>
           <tbody>
-            {invoice.items && invoice.items.map((item, index) => {
-              const lineTotal = item.quantity * item.unitPrice;
-              const discountAmount = item.discountPercentage 
-                ? lineTotal * (item.discountPercentage / 100) 
-                : 0;
-              const netAmount = lineTotal - discountAmount;
-              
-              return (
-                <tr key={item.id || index} className="border-b border-gray-200">
-                  <td className="py-2">
-                    {item.description}
-                    {item.itemCode && (
-                      <div className="text-xs text-gray-500">Item Code: {item.itemCode}</div>
-                    )}
-                    {item.notes && (
-                      <div className="text-xs text-gray-500">{item.notes}</div>
-                    )}
-                  </td>
-                  <td className="py-2 text-right">{item.quantity.toFixed(2)}</td>
-                  <td className="py-2 text-right">{formatCurrency(item.unitPrice)}</td>
-                  {invoice.items?.some(item => item.discountPercentage) && (
-                    <td className="py-2 text-right">
-                      {item.discountPercentage ? `${item.discountPercentage}%` : '-'}
+            {invoice.items &&
+              invoice.items.map((item, index) => {
+                const lineTotal = item.quantity * item.unitPrice;
+                const discountAmount = item.discountPercentage
+                  ? lineTotal * (item.discountPercentage / 100)
+                  : 0;
+                const netAmount = lineTotal - discountAmount;
+
+                return (
+                  <tr key={item.id || index} className="border-b border-gray-200">
+                    <td className="py-2">
+                      {item.description}
+                      {item.itemCode && (
+                        <div className="text-xs text-gray-500">Item Code: {item.itemCode}</div>
+                      )}
+                      {item.notes && <div className="text-xs text-gray-500">{item.notes}</div>}
                     </td>
-                  )}
-                  {invoice.items?.some(item => item.taxPercentage) && (
-                    <td className="py-2 text-right">
-                      {item.taxPercentage ? `${item.taxPercentage}%` : '-'}
-                    </td>
-                  )}
-                  <td className="py-2 text-right">{formatCurrency(netAmount)}</td>
-                </tr>
-              );
-            })}
-            
+                    <td className="py-2 text-right">{item.quantity.toFixed(2)}</td>
+                    <td className="py-2 text-right">{formatCurrency(item.unitPrice)}</td>
+                    {invoice.items?.some((item) => item.discountPercentage) && (
+                      <td className="py-2 text-right">
+                        {item.discountPercentage ? `${item.discountPercentage}%` : '-'}
+                      </td>
+                    )}
+                    {invoice.items?.some((item) => item.taxPercentage) && (
+                      <td className="py-2 text-right">
+                        {item.taxPercentage ? `${item.taxPercentage}%` : '-'}
+                      </td>
+                    )}
+                    <td className="py-2 text-right">{formatCurrency(netAmount)}</td>
+                  </tr>
+                );
+              })}
+
             {/* Totals */}
             <tr>
               <td colSpan={6} className="py-2">
@@ -212,7 +217,7 @@ export default function InvoicePrint({
             </tr>
           </tbody>
         </table>
-        
+
         {/* Notes */}
         {invoice.notes && (
           <div className="mb-4">
@@ -220,7 +225,7 @@ export default function InvoicePrint({
             <p className="whitespace-pre-line">{invoice.notes}</p>
           </div>
         )}
-        
+
         {/* Terms */}
         {invoice.terms && (
           <div className="mb-4">
@@ -228,7 +233,7 @@ export default function InvoicePrint({
             <p className="whitespace-pre-line">{invoice.terms}</p>
           </div>
         )}
-        
+
         {/* Payment Information */}
         <div className="mt-8 text-center text-gray-600">
           <p>Thank you for your business!</p>
@@ -241,4 +246,4 @@ export default function InvoicePrint({
       </div>
     </div>
   );
-} 
+}

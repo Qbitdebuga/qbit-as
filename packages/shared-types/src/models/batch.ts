@@ -5,7 +5,7 @@ export enum BatchStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
   COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED'
+  FAILED = 'FAILED',
 }
 
 export interface BatchProcess {
@@ -56,4 +56,4 @@ export interface BatchProcessError {
   itemId: string | null;
   message: string | null;
   details?: any;
-} 
+}

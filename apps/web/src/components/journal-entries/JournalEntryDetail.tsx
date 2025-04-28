@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
   CardTitle,
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import {
   TableRow,
   Button,
   Badge,
-  Separator
+  Separator,
 } from '@/components/ui';
 import { JournalEntry } from '@qbit/shared-types';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -40,17 +40,17 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({ 
+export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
   entry,
   onPost,
-  onReverse
+  onReverse,
 }) => {
   const formatCurrency = (amount: number | undefined) => {
     if (amount === undefined) return '';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 2
+      minimumFractionDigits: 2,
     }).format(amount);
   };
 
@@ -68,9 +68,7 @@ export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
     <Card>
       <CardHeader className="relative">
         <div className="flex justify-between items-center mb-2">
-          <CardTitle className="text-2xl">
-            Journal Entry: {entry.entryNumber}
-          </CardTitle>
+          <CardTitle className="text-2xl">Journal Entry: {entry.entryNumber}</CardTitle>
           <div className="flex gap-2">
             {entry.status === 'DRAFT' && (
               <>
@@ -80,11 +78,11 @@ export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
                     Edit
                   </Button>
                 </Link>
-                
+
                 {onPost && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => onPost(entry.id)}
                     className="text-green-600"
                   >
@@ -94,11 +92,11 @@ export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
                 )}
               </>
             )}
-            
+
             {entry.status === 'POSTED' && onReverse && (
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => onReverse(entry.id)}
                 className="text-orange-600"
               >
@@ -133,14 +131,14 @@ export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
                 {format(new Date(entry.date), 'MMMM dd, yyyy')}
               </p>
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium">Reference</h3>
               <p className="text-sm text-gray-500 mt-1">
                 {entry.reference || 'No reference provided'}
               </p>
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium">Created</h3>
               <p className="text-sm text-gray-500 mt-1">
@@ -148,16 +146,16 @@ export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
               </p>
             </div>
           </div>
-          
+
           <div>
             <h3 className="text-sm font-medium">Description</h3>
             <p className="text-sm text-gray-500 mt-1">
               {entry.description || 'No description provided'}
             </p>
           </div>
-          
+
           <Separator />
-          
+
           <div>
             <h3 className="text-lg font-medium mb-3">Journal Entry Lines</h3>
             <Table>
@@ -185,17 +183,19 @@ export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
                   </TableRow>
                 ))}
                 <TableRow className="font-medium">
-                  <TableCell colSpan={3} className="text-right">Totals</TableCell>
+                  <TableCell colSpan={3} className="text-right">
+                    Totals
+                  </TableCell>
                   <TableCell className="text-right">{formatCurrency(totalDebits)}</TableCell>
                   <TableCell className="text-right">{formatCurrency(totalCredits)}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
-            
+
             <div className="mt-4 flex justify-end">
-              <Badge variant={isBalanced ? "success" : "destructive"}>
-                {isBalanced 
-                  ? "Balanced" 
+              <Badge variant={isBalanced ? 'success' : 'destructive'}>
+                {isBalanced
+                  ? 'Balanced'
                   : `Unbalanced: ${formatCurrency(Math.abs(totalDebits - totalCredits))}`}
               </Badge>
             </div>
@@ -212,4 +212,4 @@ export const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({
       </CardFooter>
     </Card>
   );
-}; 
+};

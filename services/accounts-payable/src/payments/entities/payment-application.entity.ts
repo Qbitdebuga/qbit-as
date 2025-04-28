@@ -10,9 +10,9 @@ export class PaymentApplication {
   @ApiProperty({ description: 'The ID of the bill being paid' })
   billId: number | null;
 
-  @ApiProperty({ 
-    description: 'The amount applied to the bill', 
-    example: 500.00
+  @ApiProperty({
+    description: 'The amount applied to the bill',
+    example: 500.0,
   })
   amount: number | null;
 
@@ -21,4 +21,4 @@ export class PaymentApplication {
 
   @ApiProperty({ description: 'The date when the payment application was last updated' })
   updatedAt: Date;
-} 
+}

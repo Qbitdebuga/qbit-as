@@ -8,11 +8,7 @@ interface ProductCardProps {
   onDelete?: (productId: string) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onEdit,
-  onDelete,
-}) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) => {
   return (
     <div className="bg-white p-4 rounded-md shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-2">
@@ -38,9 +34,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
       </div>
-      
+
       <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description}</p>
-      
+
       <div className="flex flex-col space-y-1 mt-4">
         <div className="flex justify-between">
           <span className="text-gray-500 text-sm">Price:</span>
@@ -56,11 +52,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
         <div className="flex justify-between">
           <span className="text-gray-500 text-sm">Quantity:</span>
-          <span className={`font-medium ${product.quantity > 10 ? 'text-green-600' : product.quantity > 0 ? 'text-orange-500' : 'text-red-600'}`}>
+          <span
+            className={`font-medium ${product.quantity > 10 ? 'text-green-600' : product.quantity > 0 ? 'text-orange-500' : 'text-red-600'}`}
+          >
             {product.quantity} in stock
           </span>
         </div>
       </div>
     </div>
   );
-}; 
+};

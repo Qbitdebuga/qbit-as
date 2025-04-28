@@ -7,8 +7,8 @@ export interface TestType {
 export const testFunction = (): TestType => {
   return {
     id: '123',
-    name: 'Test'
+    name: 'Test',
   };
 };
 
-console.log('Test file loaded'); 
+console.log('Test file loaded');

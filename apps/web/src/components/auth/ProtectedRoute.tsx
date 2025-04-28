@@ -15,7 +15,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     setIsMounted(true);
-    
+
     // If not loading and not authenticated, redirect to login
     if (!isLoading && !isAuthenticated && isMounted) {
       router.push('/login');
@@ -33,4 +33,4 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   // Only render children if authenticated
   return isAuthenticated ? <>{children}</> : null;
-} 
+}

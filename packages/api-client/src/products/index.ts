@@ -1,1 +1,1 @@
-export * from './products-client'; 
+export * from './products-client';

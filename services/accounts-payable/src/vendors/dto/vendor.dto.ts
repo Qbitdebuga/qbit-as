@@ -57,4 +57,4 @@ export class VendorDto {
 
   @ApiProperty({ description: 'Date and time when the vendor was last updated' })
   updatedAt: Date;
-} 
+}

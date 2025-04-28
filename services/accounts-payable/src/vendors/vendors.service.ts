@@ -39,4 +39,4 @@ export class VendorsService {
     }
     return this?.vendorsRepository.remove(id);
   }
-} 
+}

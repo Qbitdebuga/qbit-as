@@ -1,1 +1,1 @@
-export * from './accounts-client'; 
+export * from './accounts-client';

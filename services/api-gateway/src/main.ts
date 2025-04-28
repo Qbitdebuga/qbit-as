@@ -21,16 +21,16 @@ async function bootstrap() {
     logger,
     bufferLogs: true,
   });
-  
+
   // Set global prefix
   app.setGlobalPrefix('api/v1');
-  
+
   // Enable CORS
   app.enableCors();
-  
+
   // Use Helmet for security headers
   app.use(helmet());
-  
+
   // Use validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
@@ -39,10 +39,10 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  
+
   // Add global exception filter
   app.useGlobalFilters(new GlobalExceptionFilter());
-  
+
   // Setup Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Qbit Accounting API')
@@ -52,16 +52,16 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
-  
+
   // Simple health check endpoint for Kubernetes probes
   app.use('/health', (req: Request, res: Response) => {
     (res as any).status(200).send('OK');
   });
-  
+
   // Start the server
   const port = process?.env.PORT || 3001;
   await app.listen(port);
   logger.log(`Application is running on: http://localhost:${port}/api`);
 }
 
-bootstrap(); 
+bootstrap();

@@ -1,7 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { 
-  IsNotEmpty, IsNumber, IsOptional, 
-  IsPositive, IsString, IsUUID, MaxLength, Min
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUUID,
+  MaxLength,
+  Min,
 } from 'class-validator';
 
 export class CreateBillLineItemDto {
@@ -24,7 +30,7 @@ export class CreateBillLineItemDto {
   quantity: number | null;
 
   @ApiProperty({
-    example: 500.00,
+    example: 500.0,
     description: 'Unit price of the item',
   })
   @IsNumber()
@@ -50,11 +56,11 @@ export class CreateBillLineItemDto {
   accountCode?: string | null;
 
   @ApiPropertyOptional({
-    example: 10.00,
+    example: 10.0,
     description: 'Tax rate applied to this line item (percentage)',
   })
   @IsNumber()
   @IsOptional()
   @Min(0)
   taxRate?: number | null;
-} 
+}

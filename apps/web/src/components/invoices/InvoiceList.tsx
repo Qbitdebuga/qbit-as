@@ -1,30 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Invoice, InvoiceStatus } from '@qbit/shared-types';
 import { useInvoices } from '@/hooks/useInvoices';
@@ -40,22 +34,25 @@ const statusColorMap: Record<InvoiceStatus, string> = {
   PAID: 'bg-green-200 text-green-800',
   OVERDUE: 'bg-red-200 text-red-800',
   VOID: 'bg-gray-200 text-gray-800 line-through',
-  CANCELLED: 'bg-gray-200 text-gray-800 line-through'
+  CANCELLED: 'bg-gray-200 text-gray-800 line-through',
 };
 
 export default function InvoiceList() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
-  
+
   const { invoices, isLoading, error, refetch } = useInvoices({
-    status: statusFilter !== 'ALL' ? statusFilter as InvoiceStatus : undefined
+    status: statusFilter !== 'ALL' ? (statusFilter as InvoiceStatus) : undefined,
   });
-  
-  const filteredInvoices = invoices?.filter(invoice => 
-    invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (invoice.customerReference && invoice.customerReference.toLowerCase().includes(searchTerm.toLowerCase()))
-  ) || [];
+
+  const filteredInvoices =
+    invoices?.filter(
+      (invoice) =>
+        invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (invoice.customerReference &&
+          invoice.customerReference.toLowerCase().includes(searchTerm.toLowerCase())),
+    ) || [];
 
   const handleCreateNew = () => {
     router.push('/dashboard/invoices/new');
@@ -81,10 +78,7 @@ export default function InvoiceList() {
             />
           </div>
           <div className="w-1/4">
-            <Select
-              value={statusFilter}
-              onValueChange={setStatusFilter}
-            >
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -100,7 +94,7 @@ export default function InvoiceList() {
             </Select>
           </div>
         </div>
-        
+
         {isLoading ? (
           <div className="text-center py-4">Loading invoices...</div>
         ) : error ? (
@@ -132,7 +126,10 @@ export default function InvoiceList() {
                 filteredInvoices.map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell>
-                      <Link href={`/dashboard/invoices/${invoice.id}`} className="text-blue-600 hover:underline">
+                      <Link
+                        href={`/dashboard/invoices/${invoice.id}`}
+                        className="text-blue-600 hover:underline"
+                      >
                         {invoice.invoiceNumber}
                       </Link>
                     </TableCell>
@@ -140,17 +137,17 @@ export default function InvoiceList() {
                     <TableCell>{formatDate(invoice.invoiceDate)}</TableCell>
                     <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                     <TableCell>
-                      <Badge className={statusColorMap[invoice.status]}>
-                        {invoice.status}
-                      </Badge>
+                      <Badge className={statusColorMap[invoice.status]}>{invoice.status}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">{formatCurrency(invoice.totalAmount)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(invoice.balanceDue)}</TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(invoice.totalAmount)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(invoice.balanceDue)}
+                    </TableCell>
                     <TableCell>
                       <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/dashboard/invoices/${invoice.id}`}>
-                          View
-                        </Link>
+                        <Link href={`/dashboard/invoices/${invoice.id}`}>View</Link>
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -162,4 +159,4 @@ export default function InvoiceList() {
       </CardContent>
     </Card>
   );
-} 
+}

@@ -30,7 +30,9 @@ export class AssetsService {
       });
 
       if (!category) {
-        throw new NotFoundException(`Asset category with ID ${createAssetDto.categoryId} not found`);
+        throw new NotFoundException(
+          `Asset category with ID ${createAssetDto.categoryId} not found`,
+        );
       }
 
       // Check if asset number already exists
@@ -39,15 +41,18 @@ export class AssetsService {
       });
 
       if (existingAsset) {
-        throw new ConflictException(`Asset with asset number ${createAssetDto.assetNumber} already exists`);
+        throw new ConflictException(
+          `Asset with asset number ${createAssetDto.assetNumber} already exists`,
+        );
       }
 
       // Get the status value or default to ACTIVE
       const statusValue = createAssetDto.status || AssetStatus.ACTIVE;
-      
+
       // Get the depreciation method value or default to STRAIGHT_LINE
-      const depreciationMethodValue = createAssetDto.depreciationMethod || DepreciationMethod.STRAIGHT_LINE;
-      
+      const depreciationMethodValue =
+        createAssetDto.depreciationMethod || DepreciationMethod.STRAIGHT_LINE;
+
       const asset = await this?.db.asset.create({
         data: {
           name: createAssetDto.name,
@@ -92,7 +97,7 @@ export class AssetsService {
   ): Promise<{ assets: AssetEntity[]; total: number }> {
     try {
       const where: any = {};
-      
+
       if (status) {
         // Map our enum status to Prisma's enum string
         const statusMap = {
@@ -104,11 +109,11 @@ export class AssetsService {
         };
         where.status = statusMap[status];
       }
-      
+
       if (categoryId) {
         where.categoryId = categoryId;
       }
-      
+
       if (searchTerm) {
         where.OR = [
           { name: { contains: searchTerm, mode: 'insensitive' } },
@@ -145,11 +150,11 @@ export class AssetsService {
             currentBookValue: depreciation.currentBookValue,
             accumulatedDepreciation: depreciation.accumulatedDepreciation,
           };
-        })
+        }),
       );
 
       return {
-        assets: assetsWithCalculatedValues.map(asset => new AssetEntity(asset)),
+        assets: assetsWithCalculatedValues.map((asset) => new AssetEntity(asset)),
         total,
       };
     } catch (error) {
@@ -212,7 +217,9 @@ export class AssetsService {
         });
 
         if (!category) {
-          throw new NotFoundException(`Asset category with ID ${updateAssetDto.categoryId} not found`);
+          throw new NotFoundException(
+            `Asset category with ID ${updateAssetDto.categoryId} not found`,
+          );
         }
       }
 
@@ -223,7 +230,9 @@ export class AssetsService {
         });
 
         if (assetWithSameNumber) {
-          throw new ConflictException(`Asset with asset number ${updateAssetDto.assetNumber} already exists`);
+          throw new ConflictException(
+            `Asset with asset number ${updateAssetDto.assetNumber} already exists`,
+          );
         }
       }
 
@@ -314,7 +323,9 @@ export class AssetsService {
   }
 
   // Calculate current depreciation for an asset
-  private async calculateDepreciation(assetId: string): Promise<{ currentBookValue: Prisma.Decimal; accumulatedDepreciation: Prisma.Decimal }> {
+  private async calculateDepreciation(
+    assetId: string,
+  ): Promise<{ currentBookValue: Prisma.Decimal; accumulatedDepreciation: Prisma.Decimal }> {
     const asset = await this?.db.asset.findUnique({
       where: { id: assetId },
     });
@@ -339,24 +350,25 @@ export class AssetsService {
     // If no depreciation entries exist, calculate based on purchase date
     const purchaseDate = asset.purchaseDate;
     const currentDate = new Date();
-    const monthsSincePurchase = (
+    const monthsSincePurchase =
       (currentDate.getFullYear() - purchaseDate.getFullYear()) * 12 +
-      (currentDate.getMonth() - purchaseDate.getMonth())
-    );
+      (currentDate.getMonth() - purchaseDate.getMonth());
 
     // Simple straight-line depreciation calculation
     const lifetimeInMonths = asset.assetLifeYears * 12;
     const depreciableAmount = asset?.purchaseCost.sub(asset.residualValue);
     const monthlyDepreciation = depreciableAmount.div(lifetimeInMonths);
-    
+
     // Calculate accumulated depreciation (capped at depreciable amount)
-    const calculatedDepreciation = monthlyDepreciation.mul(Math.min(monthsSincePurchase, lifetimeInMonths));
-    const accumulatedDepreciation = calculatedDepreciation.gt(depreciableAmount) 
-      ? depreciableAmount 
+    const calculatedDepreciation = monthlyDepreciation.mul(
+      Math.min(monthsSincePurchase, lifetimeInMonths),
+    );
+    const accumulatedDepreciation = calculatedDepreciation.gt(depreciableAmount)
+      ? depreciableAmount
       : calculatedDepreciation;
-    
+
     const currentBookValue = asset?.purchaseCost.sub(accumulatedDepreciation);
-    
+
     return {
       currentBookValue,
       accumulatedDepreciation,
@@ -377,10 +389,14 @@ export class AssetsService {
     }
   }
 
-  async findAllCategories(skip = 0, take = 10, searchTerm?: string): Promise<{ categories: AssetCategoryEntity[]; total: number }> {
+  async findAllCategories(
+    skip = 0,
+    take = 10,
+    searchTerm?: string,
+  ): Promise<{ categories: AssetCategoryEntity[]; total: number }> {
     try {
       const where: any = {};
-      
+
       if (searchTerm) {
         where.OR = [
           { name: { contains: searchTerm, mode: 'insensitive' } },
@@ -401,7 +417,7 @@ export class AssetsService {
       ]);
 
       return {
-        categories: categories.map(category => new AssetCategoryEntity(category)),
+        categories: categories.map((category) => new AssetCategoryEntity(category)),
         total,
       };
     } catch (error) {
@@ -438,7 +454,10 @@ export class AssetsService {
     }
   }
 
-  async updateCategory(id: string, updateCategoryDto: UpdateCategoryDto): Promise<AssetCategoryEntity> {
+  async updateCategory(
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<AssetCategoryEntity> {
     try {
       // Check if category exists
       const category = await this?.db.assetCategory.findUnique({
@@ -479,7 +498,9 @@ export class AssetsService {
 
       // Check if category has assets
       if (category?._count.assets > 0) {
-        throw new ConflictException(`Cannot delete category with ${category?._count.assets} assets. Please reassign or delete the assets first.`);
+        throw new ConflictException(
+          `Cannot delete category with ${category?._count.assets} assets. Please reassign or delete the assets first.`,
+        );
       }
 
       await this?.db.assetCategory.delete({
@@ -490,4 +511,4 @@ export class AssetsService {
       throw error;
     }
   }
-} 
+}

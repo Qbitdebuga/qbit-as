@@ -8,7 +8,7 @@ export enum PaymentMethod {
   ACH = 'ACH',
   PAYPAL = 'PAYPAL',
   STRIPE = 'STRIPE',
-  OTHER = 'OTHER'
+  OTHER = 'OTHER',
 }
 
 export enum PaymentStatus {
@@ -18,7 +18,7 @@ export enum PaymentStatus {
   VOIDED = 'VOIDED',
   REFUNDED = 'REFUNDED',
   PARTIALLY_REFUNDED = 'PARTIALLY_REFUNDED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export interface PaymentApplication {
@@ -117,4 +117,4 @@ export interface PaymentResponse {
   notes?: string | null;
   createdAt: string | null;
   updatedAt: string | null;
-} 
+}

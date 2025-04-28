@@ -8,7 +8,7 @@ export enum ExpenseStatus {
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
   PAID = 'PAID',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export enum PaymentMethod {
@@ -20,7 +20,7 @@ export enum PaymentMethod {
   WIRE = 'WIRE',
   ACH = 'ACH',
   PAYPAL = 'PAYPAL',
-  OTHER = 'OTHER'
+  OTHER = 'OTHER',
 }
 
 export class ExpenseAttachment {
@@ -91,22 +91,36 @@ export class Expense {
   @ApiProperty({ example: 100.0, description: 'Total amount including tax' })
   totalAmount: number | null;
 
-  @ApiPropertyOptional({ example: 'https://storage?.example.com/receipts/receipt-123.jpg', description: 'URL to the receipt image or file' })
+  @ApiPropertyOptional({
+    example: 'https://storage?.example.com/receipts/receipt-123.jpg',
+    description: 'URL to the receipt image or file',
+  })
   receiptUrl?: string | null;
 
   @ApiProperty({ example: '2023-01-15', description: 'Date the expense was incurred' })
   expenseDate: Date;
 
-  @ApiProperty({ enum: PaymentMethod, example: PaymentMethod.CREDIT_CARD, description: 'Method of payment used for the expense' })
+  @ApiProperty({
+    enum: PaymentMethod,
+    example: PaymentMethod.CREDIT_CARD,
+    description: 'Method of payment used for the expense',
+  })
   paymentMethod: PaymentMethod;
 
   @ApiPropertyOptional({ example: 'CARD-4567', description: 'Reference to payment details' })
   paymentReference?: string | null;
 
-  @ApiProperty({ enum: ExpenseStatus, example: ExpenseStatus.PENDING, description: 'Current status of the expense' })
+  @ApiProperty({
+    enum: ExpenseStatus,
+    example: ExpenseStatus.PENDING,
+    description: 'Current status of the expense',
+  })
   status: ExpenseStatus;
 
-  @ApiPropertyOptional({ example: 'Monthly team lunch', description: 'Additional notes about the expense' })
+  @ApiPropertyOptional({
+    example: 'Monthly team lunch',
+    description: 'Additional notes about the expense',
+  })
   notes?: string | null;
 
   @ApiProperty({ example: false, description: 'Whether this expense is reimbursable' })
@@ -115,7 +129,10 @@ export class Expense {
   @ApiProperty({ example: false, description: 'Whether this expense has been reconciled' })
   isReconciled: boolean | null;
 
-  @ApiPropertyOptional({ type: [ExpenseAttachment], description: 'Attachments related to this expense' })
+  @ApiPropertyOptional({
+    type: [ExpenseAttachment],
+    description: 'Attachments related to this expense',
+  })
   attachments?: ExpenseAttachment[];
 
   @ApiPropertyOptional({ type: [ExpenseTag], description: 'Tags associated with this expense' })
@@ -124,6 +141,9 @@ export class Expense {
   @ApiProperty({ example: '2023-01-15T12:00:00Z', description: 'When the expense was created' })
   createdAt: Date;
 
-  @ApiProperty({ example: '2023-01-16T12:00:00Z', description: 'When the expense was last updated' })
+  @ApiProperty({
+    example: '2023-01-16T12:00:00Z',
+    description: 'When the expense was last updated',
+  })
   updatedAt: Date;
-} 
+}

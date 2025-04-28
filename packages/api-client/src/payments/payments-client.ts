@@ -1,12 +1,12 @@
-import { 
+import {
   ApplyPaymentDto,
   CreatePaymentDto,
-  Payment, 
+  Payment,
   PaymentListParams,
   UpdatePaymentDto,
   PaymentStatus,
   CreatePaymentRequest,
-  PaymentResponse 
+  PaymentResponse,
 } from '@qbit/shared-types';
 import { ApiClientBase } from '../utils/api-client-base';
 import { ApiClient } from '../api-client';
@@ -28,7 +28,12 @@ export class PaymentsClient extends ApiClientBase {
   /**
    * Get a paginated list of payments (accounts receivable)
    */
-  async getPayments(params?: PaymentListParams): Promise<{ data: PaymentResponse[]; total: number | null; page: number | null; limit: number }> {
+  async getPayments(params?: PaymentListParams): Promise<{
+    data: PaymentResponse[];
+    total: number | null;
+    page: number | null;
+    limit: number;
+  }> {
     return this.get(this.arBasePath, { params: params as Record<string, any> });
   }
 
@@ -63,7 +68,10 @@ export class PaymentsClient extends ApiClientBase {
   /**
    * Apply a payment to invoices (accounts receivable)
    */
-  async applyPayment(paymentId: string, applyPaymentDto: ApplyPaymentDto): Promise<PaymentResponse> {
+  async applyPayment(
+    paymentId: string,
+    applyPaymentDto: ApplyPaymentDto,
+  ): Promise<PaymentResponse> {
     return this.post(`${this.arBasePath}/${paymentId}/apply`, applyPaymentDto);
   }
 
@@ -84,7 +92,9 @@ export class PaymentsClient extends ApiClientBase {
   /**
    * Get a paginated list of payments (accounts payable)
    */
-  async getVendorPayments(params?: PaymentListParams): Promise<{ data: Payment[]; total: number | null; page: number | null; limit: number }> {
+  async getVendorPayments(
+    params?: PaymentListParams,
+  ): Promise<{ data: Payment[]; total: number | null; page: number | null; limit: number }> {
     return this.get(this.apBasePath, { params: params as Record<string, any> });
   }
 
@@ -115,4 +125,4 @@ export class PaymentsClient extends ApiClientBase {
   async deleteVendorPayment(id: string): Promise<void> {
     return this.delete(`${this.apBasePath}/${id}`);
   }
-} 
+}

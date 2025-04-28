@@ -1,30 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Payment, PaymentMethod, PaymentStatus } from '@qbit/shared-types';
 import { usePayments } from '@/hooks/usePayments';
@@ -39,7 +33,7 @@ const paymentStatusColorMap: Record<PaymentStatus, string> = {
   FAILED: 'bg-red-200 text-red-800',
   REFUNDED: 'bg-purple-200 text-purple-800',
   PARTIALLY_REFUNDED: 'bg-blue-200 text-blue-800',
-  CANCELLED: 'bg-gray-200 text-gray-800'
+  CANCELLED: 'bg-gray-200 text-gray-800',
 };
 
 const paymentMethodLabels: Record<PaymentMethod, string> = {
@@ -51,7 +45,7 @@ const paymentMethodLabels: Record<PaymentMethod, string> = {
   WIRE_TRANSFER: 'Wire Transfer',
   PAYPAL: 'PayPal',
   STRIPE: 'Stripe',
-  OTHER: 'Other'
+  OTHER: 'Other',
 };
 
 interface PaymentListProps {
@@ -63,19 +57,19 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
-  
+
   const { payments, isLoading, error, refetch, deletePayment } = usePayments({
     invoiceId,
-    autoFetch: true
+    autoFetch: true,
   });
-  
+
   const handleDeletePayment = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this payment?')) {
       return;
     }
-    
+
     const success = await deletePayment(id);
-    
+
     if (success) {
       toast({
         title: 'Payment Deleted',
@@ -89,24 +83,25 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
       });
     }
   };
-  
+
   // Filter payments based on search term and status
-  const filteredPayments = payments
-    .filter(payment => {
-      // Filter by status if not "ALL"
-      if (statusFilter !== 'ALL' && payment.status !== statusFilter) {
-        return false;
-      }
-      
-      // Search by reference number
-      if (payment.referenceNumber && 
-          payment.referenceNumber.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return true;
-      }
-      
-      // Default to true if no search term
-      return searchTerm === '';
-    });
+  const filteredPayments = payments.filter((payment) => {
+    // Filter by status if not "ALL"
+    if (statusFilter !== 'ALL' && payment.status !== statusFilter) {
+      return false;
+    }
+
+    // Search by reference number
+    if (
+      payment.referenceNumber &&
+      payment.referenceNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
+      return true;
+    }
+
+    // Default to true if no search term
+    return searchTerm === '';
+  });
 
   const handleCreateNew = () => {
     if (invoiceId) {
@@ -125,9 +120,7 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
             {invoiceId ? 'Payments for this invoice' : 'Manage customer payments'}
           </CardDescription>
         </div>
-        {!invoiceId && (
-          <Button onClick={handleCreateNew}>Record New Payment</Button>
-        )}
+        {!invoiceId && <Button onClick={handleCreateNew}>Record New Payment</Button>}
       </CardHeader>
       <CardContent>
         <div className="flex justify-between mb-4">
@@ -140,10 +133,7 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
             />
           </div>
           <div className="w-1/4">
-            <Select
-              value={statusFilter}
-              onValueChange={setStatusFilter}
-            >
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -159,7 +149,7 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
             </Select>
           </div>
         </div>
-        
+
         {isLoading ? (
           <div className="text-center py-4">Loading payments...</div>
         ) : error ? (
@@ -191,7 +181,10 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
                   <TableRow key={payment.id}>
                     <TableCell>{formatDate(payment.paymentDate)}</TableCell>
                     <TableCell>
-                      <Link href={`/dashboard/invoices/${payment.invoiceId}`} className="text-blue-600 hover:underline">
+                      <Link
+                        href={`/dashboard/invoices/${payment.invoiceId}`}
+                        className="text-blue-600 hover:underline"
+                      >
                         View Invoice
                       </Link>
                     </TableCell>
@@ -209,9 +202,9 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
                           <Link href={`/dashboard/payments/${payment.id}`}>View</Link>
                         </Button>
                         {payment.status === 'PENDING' && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => handleDeletePayment(payment.id)}
                           >
                             Delete
@@ -228,4 +221,4 @@ export default function PaymentList({ invoiceId }: PaymentListProps) {
       </CardContent>
     </Card>
   );
-} 
+}

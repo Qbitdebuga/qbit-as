@@ -11,4 +11,4 @@ export * from './vendor';
 export * from './bill';
 export * from './payment';
 export * from './depreciation';
-export * from './user'; 
+export * from './user';

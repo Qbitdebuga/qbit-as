@@ -1,15 +1,15 @@
 import React from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
   TableRow,
   Button,
-  Badge
-} from "@/components/ui";
+  Badge,
+} from '@/components/ui';
 import { JournalEntry } from '@qbit/shared-types';
 import Link from 'next/link';
 import { Edit, Eye, Trash2, Check, RotateCcw } from 'lucide-react';
@@ -35,18 +35,18 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export const JournalEntryList: React.FC<JournalEntryListProps> = ({ 
-  entries, 
-  onDelete, 
-  onPost, 
-  onReverse 
+export const JournalEntryList: React.FC<JournalEntryListProps> = ({
+  entries,
+  onDelete,
+  onPost,
+  onReverse,
 }) => {
   const formatCurrency = (amount: number | undefined) => {
     if (amount === undefined) return '';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 2
+      minimumFractionDigits: 2,
     }).format(amount);
   };
 
@@ -91,7 +91,7 @@ export const JournalEntryList: React.FC<JournalEntryListProps> = ({
                       <Eye className="h-4 w-4" />
                     </Button>
                   </Link>
-                  
+
                   {entry.status === 'DRAFT' && (
                     <>
                       <Link href={`/dashboard/journal-entries/${entry.id}/edit`} passHref>
@@ -99,22 +99,22 @@ export const JournalEntryList: React.FC<JournalEntryListProps> = ({
                           <Edit className="h-4 w-4" />
                         </Button>
                       </Link>
-                      
+
                       {onPost && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => onPost(entry.id)}
                           className="text-green-500 hover:text-green-700"
                         >
                           <Check className="h-4 w-4" />
                         </Button>
                       )}
-                      
+
                       {onDelete && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => onDelete(entry.id)}
                           className="text-red-500 hover:text-red-700"
                         >
@@ -123,11 +123,11 @@ export const JournalEntryList: React.FC<JournalEntryListProps> = ({
                       )}
                     </>
                   )}
-                  
+
                   {entry.status === 'POSTED' && onReverse && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => onReverse(entry.id)}
                       className="text-orange-500 hover:text-orange-700"
                     >
@@ -142,4 +142,4 @@ export const JournalEntryList: React.FC<JournalEntryListProps> = ({
       </Table>
     </div>
   );
-}; 
+};

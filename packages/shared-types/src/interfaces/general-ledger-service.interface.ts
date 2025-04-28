@@ -3,24 +3,20 @@
  * Define the contracts for General Ledger Service communication
  */
 
-import { 
-  Account, 
-  CreateAccountDto, 
-  UpdateAccountDto, 
-  AccountWithHierarchy 
+import {
+  Account,
+  CreateAccountDto,
+  UpdateAccountDto,
+  AccountWithHierarchy,
 } from '../models/account';
 
-import { 
-  JournalEntry, 
-  JournalEntryCreate, 
-  JournalEntryUpdate 
-} from '../models/journal-entry';
+import { JournalEntry, JournalEntryCreate, JournalEntryUpdate } from '../models/journal-entry';
 
 import {
   StatementRequestDto,
   BalanceSheetStatementDto,
   IncomeStatementDto,
-  CashFlowStatementDto
+  CashFlowStatementDto,
 } from '../models/financial-statement';
 
 export interface PaginatedResponseDto<T> {
@@ -74,28 +70,38 @@ export interface IGeneralLedgerService {
   createAccount(createAccountDto: CreateAccountDto): Promise<Account>;
   updateAccount(accountId: string, updateAccountDto: UpdateAccountDto): Promise<Account>;
   deleteAccount(accountId: string): Promise<void>;
-  
+
   // Journal entry management
   getJournalEntries(page?: number, limit?: number): Promise<PaginatedResponseDto<JournalEntry>>;
   getJournalEntryById(journalEntryId: string): Promise<JournalEntry>;
   createJournalEntry(journalEntryCreate: JournalEntryCreate): Promise<JournalEntry>;
-  updateJournalEntry(journalEntryId: string, journalEntryUpdate: JournalEntryUpdate): Promise<JournalEntry>;
+  updateJournalEntry(
+    journalEntryId: string,
+    journalEntryUpdate: JournalEntryUpdate,
+  ): Promise<JournalEntry>;
   deleteJournalEntry(journalEntryId: string): Promise<void>;
   postJournalEntry(journalEntryId: string): Promise<JournalEntry>;
   reverseJournalEntry(journalEntryId: string): Promise<JournalEntry>;
-  
+
   // Financial statement generation
   getBalanceSheet(request: StatementRequestDto): Promise<BalanceSheetStatementDto>;
   getIncomeStatement(request: StatementRequestDto): Promise<IncomeStatementDto>;
   getCashFlowStatement(request: StatementRequestDto): Promise<CashFlowStatementDto>;
-  
+
   // Summary data
   getBalanceSheetSummary(asOfDate?: string): Promise<BalanceSheetSummaryDto>;
-  getIncomeStatementSummary(startDate?: string, endDate?: string): Promise<IncomeStatementSummaryDto>;
-  
+  getIncomeStatementSummary(
+    startDate?: string,
+    endDate?: string,
+  ): Promise<IncomeStatementSummaryDto>;
+
   // Account transactions
-  getAccountTransactions(accountId: string, startDate?: string, endDate?: string): Promise<AccountTransactionsDto>;
-  
+  getAccountTransactions(
+    accountId: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<AccountTransactionsDto>;
+
   // Trial balance
   getTrialBalance(asOfDate?: string): Promise<any>; // Trial balance is not yet defined in shared models
-} 
+}

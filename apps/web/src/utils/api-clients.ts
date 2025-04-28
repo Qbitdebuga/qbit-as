@@ -40,16 +40,19 @@ interface AuthClientType extends ApiClient {
 
 // Create mock implementations
 const mockClient = (name: string): ApiClient => ({
-  baseUrl: `http://localhost:3000/api/${name}`
+  baseUrl: `http://localhost:3000/api/${name}`,
 });
 
 export const authClient: AuthClientType = {
   ...mockClient('auth'),
-  login: async () => ({ token: 'mock-token', user: { id: '1', name: 'Mock User', email: 'user@example.com' } }),
+  login: async () => ({
+    token: 'mock-token',
+    user: { id: '1', name: 'Mock User', email: 'user@example.com' },
+  }),
   register: async () => ({ message: 'Success' }),
   forgotPassword: async () => ({ message: 'Success' }),
   resetPassword: async () => ({ message: 'Success' }),
-  logout: async () => {}
+  logout: async () => {},
 };
 
 export const invoicesClient: InvoiceClient = {
@@ -58,7 +61,7 @@ export const invoicesClient: InvoiceClient = {
   getInvoiceById: async () => ({}),
   createInvoice: async () => ({}),
   updateInvoice: async () => ({}),
-  deleteInvoice: async () => {}
+  deleteInvoice: async () => {},
 };
 
 export const customersClient: CustomerClient = {
@@ -67,7 +70,7 @@ export const customersClient: CustomerClient = {
   getCustomerById: async () => ({}),
   createCustomer: async () => ({}),
   updateCustomer: async () => ({}),
-  deleteCustomer: async () => {}
+  deleteCustomer: async () => {},
 };
 
 export const paymentsClient: PaymentClient = {
@@ -76,5 +79,5 @@ export const paymentsClient: PaymentClient = {
   getPaymentById: async () => ({}),
   createPayment: async () => ({}),
   updatePayment: async () => ({}),
-  deletePayment: async () => {}
+  deletePayment: async () => {},
 };

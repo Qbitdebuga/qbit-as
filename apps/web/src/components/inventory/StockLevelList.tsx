@@ -10,13 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Pagination,
   PaginationContent,
@@ -77,7 +71,7 @@ export function StockLevelList({
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState('quantity');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  
+
   const totalPages = Math.ceil(total / limit);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,10 +136,8 @@ export function StockLevelList({
   const getStockStatus = (level: IInventoryLevel) => {
     const product = level.productId ? products.get(level.productId) : null;
     const variant = level.variantId ? variants.get(level.variantId) : null;
-    const reorderPoint = level.reorderPoint || 
-                         variant?.reorderPoint || 
-                         product?.reorderPoint || 0;
-    
+    const reorderPoint = level.reorderPoint || variant?.reorderPoint || product?.reorderPoint || 0;
+
     if (Number(level.quantity) <= 0) {
       return <Badge variant="destructive">Out of Stock</Badge>;
     } else if (Number(level.quantity) < Number(reorderPoint)) {
@@ -190,31 +182,16 @@ export function StockLevelList({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead 
-                    className="w-[100px] cursor-pointer"
-                    onClick={() => handleSort('sku')}
-                  >
-                    <div className="flex items-center">
-                      SKU {getSortIcon('sku')}
-                    </div>
+                  <TableHead className="w-[100px] cursor-pointer" onClick={() => handleSort('sku')}>
+                    <div className="flex items-center">SKU {getSortIcon('sku')}</div>
                   </TableHead>
-                  <TableHead 
-                    className="cursor-pointer"
-                    onClick={() => handleSort('name')}
-                  >
-                    <div className="flex items-center">
-                      Product {getSortIcon('name')}
-                    </div>
+                  <TableHead className="cursor-pointer" onClick={() => handleSort('name')}>
+                    <div className="flex items-center">Product {getSortIcon('name')}</div>
                   </TableHead>
-                  <TableHead 
-                    className="cursor-pointer"
-                    onClick={() => handleSort('warehouse')}
-                  >
-                    <div className="flex items-center">
-                      Warehouse {getSortIcon('warehouse')}
-                    </div>
+                  <TableHead className="cursor-pointer" onClick={() => handleSort('warehouse')}>
+                    <div className="flex items-center">Warehouse {getSortIcon('warehouse')}</div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer text-right"
                     onClick={() => handleSort('quantity')}
                   >
@@ -229,11 +206,21 @@ export function StockLevelList({
                 {isLoading ? (
                   Array.from({ length: limit }).map((_, index) => (
                     <TableRow key={`skeleton-${index}`}>
-                      <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-48" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-36" /></TableCell>
-                      <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-20" /></TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-16" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-48" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-36" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-5 w-16 ml-auto" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-20" />
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : stockLevels.length === 0 ? (
@@ -247,16 +234,15 @@ export function StockLevelList({
                   </TableRow>
                 ) : (
                   stockLevels.map((level) => (
-                    <TableRow key={`${level.productId || ''}-${level.variantId || ''}-${level.warehouseId}`} 
+                    <TableRow
+                      key={`${level.productId || ''}-${level.variantId || ''}-${level.warehouseId}`}
                       className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => level.productId && router.push(`/dashboard/products/${level.productId}`)}
+                      onClick={() =>
+                        level.productId && router.push(`/dashboard/products/${level.productId}`)
+                      }
                     >
-                      <TableCell className="font-medium">
-                        {getItemSku(level)}
-                      </TableCell>
-                      <TableCell>
-                        {getItemName(level)}
-                      </TableCell>
+                      <TableCell className="font-medium">{getItemSku(level)}</TableCell>
+                      <TableCell>{getItemName(level)}</TableCell>
                       <TableCell>
                         <div className="flex items-center">
                           <Warehouse className="h-4 w-4 mr-2" />
@@ -266,9 +252,7 @@ export function StockLevelList({
                       <TableCell className="text-right">
                         {Number(level.quantity).toFixed(2)}
                       </TableCell>
-                      <TableCell>
-                        {getStockStatus(level)}
-                      </TableCell>
+                      <TableCell>{getStockStatus(level)}</TableCell>
                     </TableRow>
                   ))
                 )}
@@ -280,13 +264,13 @@ export function StockLevelList({
             <Pagination className="mt-4">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious 
-                    href="#" 
+                  <PaginationPrevious
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       if (page > 1) onPageChange(page - 1);
                     }}
-                    className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+                    className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
                   />
                 </PaginationItem>
                 {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
@@ -294,8 +278,8 @@ export function StockLevelList({
                   if (pageNumber <= totalPages) {
                     return (
                       <PaginationItem key={pageNumber}>
-                        <PaginationLink 
-                          href="#" 
+                        <PaginationLink
+                          href="#"
                           onClick={(e) => {
                             e.preventDefault();
                             onPageChange(pageNumber);
@@ -310,13 +294,13 @@ export function StockLevelList({
                   return null;
                 })}
                 <PaginationItem>
-                  <PaginationNext 
-                    href="#" 
+                  <PaginationNext
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       if (page < totalPages) onPageChange(page + 1);
                     }}
-                    className={page >= totalPages ? "pointer-events-none opacity-50" : ""}
+                    className={page >= totalPages ? 'pointer-events-none opacity-50' : ''}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -326,4 +310,4 @@ export function StockLevelList({
       </CardContent>
     </Card>
   );
-} 
+}

@@ -53,7 +53,7 @@ export class AccountsService {
       ...bankAccount,
       type: bankAccount.type as unknown as AccountType,
       currencyCode: bankAccount.currencyCode as unknown as CurrencyCode,
-      bank: bankAccount.bank ? this.mapToBankEntity(bankAccount.bank) : undefined
+      bank: bankAccount.bank ? this.mapToBankEntity(bankAccount.bank) : undefined,
     } as BankAccountEntity;
   }
 
@@ -79,7 +79,7 @@ export class AccountsService {
     const filter = active !== undefined ? { where: { isActive: active } } : {};
     this?.logger.log(`Retrieving all banks${active !== undefined ? ` with active=${active}` : ''}`);
     const banks = await this?.prismaWithModels.bank.findMany(filter);
-    return banks.map(bank => this.mapToBankEntity(bank));
+    return banks.map((bank) => this.mapToBankEntity(bank));
   }
 
   async findActivebanks(): Promise<BankEntity[]> {
@@ -163,7 +163,9 @@ export class AccountsService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ConflictException('Bank account with this account number already exists at this bank');
+          throw new ConflictException(
+            'Bank account with this account number already exists at this bank',
+          );
         }
       }
       throw error;
@@ -172,23 +174,25 @@ export class AccountsService {
 
   async findAllBankAccounts(active?: boolean, bankId?: string): Promise<BankAccountEntity[]> {
     const where: any = {};
-    
+
     if (active !== undefined) {
       where.isActive = active;
     }
-    
+
     if (bankId) {
       where.bankId = bankId;
     }
-    
-    this?.logger.log(`Retrieving all bank accounts${active !== undefined ? ` with active=${active}` : ''}${bankId ? ` for bank ${bankId}` : ''}`);
-    
+
+    this?.logger.log(
+      `Retrieving all bank accounts${active !== undefined ? ` with active=${active}` : ''}${bankId ? ` for bank ${bankId}` : ''}`,
+    );
+
     const accounts = await this?.prismaWithModels.bankAccount.findMany({
       where,
       include: { bank: true },
     });
 
-    return accounts.map(account => this.mapToBankAccountEntity(account));
+    return accounts.map((account) => this.mapToBankAccountEntity(account));
   }
 
   async findBankAccountsByBankId(bankId: string): Promise<BankAccountEntity[]> {
@@ -215,7 +219,10 @@ export class AccountsService {
     return this.mapToBankAccountEntity(bankAccount);
   }
 
-  async updateBankAccount(id: string, updateBankAccountDto: UpdateBankAccountDto): Promise<BankAccountEntity> {
+  async updateBankAccount(
+    id: string,
+    updateBankAccountDto: UpdateBankAccountDto,
+  ): Promise<BankAccountEntity> {
     try {
       // First check if the bank account exists
       await this.findBankAccountById(id);
@@ -229,7 +236,7 @@ export class AccountsService {
         where: { id },
         data: {
           ...updateBankAccountDto,
-          currentBalance: updateBankAccountDto.currentBalance 
+          currentBalance: updateBankAccountDto.currentBalance
             ? new Prisma.Decimal(updateBankAccountDto.currentBalance)
             : undefined,
         },
@@ -241,7 +248,9 @@ export class AccountsService {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ConflictException('Bank account with this account number already exists at this bank');
+          throw new ConflictException(
+            'Bank account with this account number already exists at this bank',
+          );
         }
       }
       throw error;
@@ -267,4 +276,4 @@ export class AccountsService {
     await this?.prismaWithModels.bankAccount.delete({ where: { id } });
     this?.logger.log(`Deleted bank account with ID: ${id}`);
   }
-} 
+}

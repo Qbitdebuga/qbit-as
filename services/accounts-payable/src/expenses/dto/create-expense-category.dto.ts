@@ -36,4 +36,4 @@ export class CreateExpenseCategoryDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean | null;
-} 
+}

@@ -83,4 +83,4 @@ export interface DepreciationMethodDetails {
   method: DepreciationMethod;
   name: string | null;
   description: string | null;
-} 
+}

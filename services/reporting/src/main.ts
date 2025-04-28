@@ -53,4 +53,4 @@ async function bootstrap() {
   console.log(`Reporting service is running on: http://localhost:${port}`);
 }
 
-bootstrap(); 
+bootstrap();

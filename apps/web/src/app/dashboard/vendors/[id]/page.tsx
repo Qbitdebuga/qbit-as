@@ -36,7 +36,7 @@ export default function VendorDetailPage({ params }: VendorDetailPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('details');
-  
+
   const vendorsClient = new VendorsClient('/api/accounts-payable');
 
   const loadVendor = async () => {
@@ -139,11 +139,7 @@ export default function VendorDetailPage({ params }: VendorDetailPageProps) {
   return (
     <div className="container mx-auto py-6">
       <div className="mb-6">
-        <Button
-          variant="ghost"
-          className="mb-4"
-          onClick={() => router.push('/dashboard/vendors')}
-        >
+        <Button variant="ghost" className="mb-4" onClick={() => router.push('/dashboard/vendors')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Vendors
         </Button>
@@ -155,14 +151,10 @@ export default function VendorDetailPage({ params }: VendorDetailPageProps) {
           <TabsTrigger value="edit">Edit</TabsTrigger>
         </TabsList>
         <TabsContent value="details" className="mt-6">
-          <VendorDetail 
-            vendor={vendor} 
-            onEdit={handleEdit} 
-            onDelete={confirmDelete}
-          />
+          <VendorDetail vendor={vendor} onEdit={handleEdit} onDelete={confirmDelete} />
         </TabsContent>
         <TabsContent value="edit" className="mt-6">
-          <VendorForm 
+          <VendorForm
             initialData={vendor}
             onSubmit={handleUpdate}
             isLoading={isSubmitting}
@@ -176,8 +168,8 @@ export default function VendorDetailPage({ params }: VendorDetailPageProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the vendor
-              and all associated data.
+              This action cannot be undone. This will permanently delete the vendor and all
+              associated data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -188,4 +180,4 @@ export default function VendorDetailPage({ params }: VendorDetailPageProps) {
       </AlertDialog>
     </div>
   );
-} 
+}

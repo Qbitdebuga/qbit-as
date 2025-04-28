@@ -3,15 +3,15 @@
  * These are temporary mocks to allow the build to complete successfully
  */
 
-import { 
-  StatementPeriod, 
-  BalanceSheetStatementDto, 
-  IncomeStatementDto, 
+import {
+  StatementPeriod,
+  BalanceSheetStatementDto,
+  IncomeStatementDto,
   CashFlowStatementDto,
   Bill,
   BillCreate,
   BillUpdate,
-  BillStatus
+  BillStatus,
 } from './shared-types';
 
 // Common base client
@@ -79,7 +79,7 @@ export class BillsClient extends BaseApiClient {
         balanceDue: 220,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      }
+      },
     ];
   }
 
@@ -106,7 +106,9 @@ export class BillsClient extends BaseApiClient {
   async createBill(billData: BillCreate): Promise<Bill> {
     return {
       id: Math.random().toString(36).substring(2, 9),
-      billNumber: `BILL-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
+      billNumber: `BILL-${Math.floor(Math.random() * 1000)
+        .toString()
+        .padStart(3, '0')}`,
       status: BillStatus.DRAFT,
       vendor: {
         id: billData.vendorId,
@@ -213,18 +215,18 @@ export class ReportsClient extends BaseApiClient {
             total: 75000,
             accounts: [
               { code: '1000', name: 'Cash', balance: 50000 },
-              { code: '1100', name: 'Accounts Receivable', balance: 25000 }
-            ]
+              { code: '1100', name: 'Accounts Receivable', balance: 25000 },
+            ],
           },
           {
             name: 'Fixed Assets',
             total: 25000,
             accounts: [
               { code: '1500', name: 'Equipment', balance: 30000 },
-              { code: '1600', name: 'Accumulated Depreciation', balance: -5000 }
-            ]
-          }
-        ]
+              { code: '1600', name: 'Accumulated Depreciation', balance: -5000 },
+            ],
+          },
+        ],
       },
       liabilities: {
         total: 40000,
@@ -234,17 +236,15 @@ export class ReportsClient extends BaseApiClient {
             total: 30000,
             accounts: [
               { code: '2000', name: 'Accounts Payable', balance: 20000 },
-              { code: '2100', name: 'Accrued Expenses', balance: 10000 }
-            ]
+              { code: '2100', name: 'Accrued Expenses', balance: 10000 },
+            ],
           },
           {
             name: 'Long Term Liabilities',
             total: 10000,
-            accounts: [
-              { code: '2500', name: 'Bank Loan', balance: 10000 }
-            ]
-          }
-        ]
+            accounts: [{ code: '2500', name: 'Bank Loan', balance: 10000 }],
+          },
+        ],
       },
       equity: {
         total: 60000,
@@ -254,11 +254,11 @@ export class ReportsClient extends BaseApiClient {
             total: 60000,
             accounts: [
               { code: '3000', name: 'Common Stock', balance: 30000 },
-              { code: '3900', name: 'Retained Earnings', balance: 30000 }
-            ]
-          }
-        ]
-      }
+              { code: '3900', name: 'Retained Earnings', balance: 30000 },
+            ],
+          },
+        ],
+      },
     };
   }
 
@@ -278,11 +278,9 @@ export class ReportsClient extends BaseApiClient {
           {
             name: 'Operating Revenue',
             total: 50000,
-            accounts: [
-              { code: '4000', name: 'Sales Revenue', amount: 50000 }
-            ]
-          }
-        ]
+            accounts: [{ code: '4000', name: 'Sales Revenue', amount: 50000 }],
+          },
+        ],
       },
       expenses: {
         total: 30000,
@@ -292,20 +290,20 @@ export class ReportsClient extends BaseApiClient {
             total: 25000,
             accounts: [
               { code: '5000', name: 'Cost of Goods Sold', amount: 15000 },
-              { code: '5100', name: 'Salaries', amount: 10000 }
-            ]
+              { code: '5100', name: 'Salaries', amount: 10000 },
+            ],
           },
           {
             name: 'Other Expenses',
             total: 5000,
             accounts: [
               { code: '5500', name: 'Rent', amount: 3000 },
-              { code: '5600', name: 'Utilities', amount: 2000 }
-            ]
-          }
-        ]
+              { code: '5600', name: 'Utilities', amount: 2000 },
+            ],
+          },
+        ],
       },
-      netIncome: 20000
+      netIncome: 20000,
     };
   }
 
@@ -324,24 +322,20 @@ export class ReportsClient extends BaseApiClient {
         items: [
           { description: 'Net Income', amount: 20000 },
           { description: 'Depreciation', amount: 5000 },
-          { description: 'Increase in Accounts Receivable', amount: -10000 }
-        ]
+          { description: 'Increase in Accounts Receivable', amount: -10000 },
+        ],
       },
       investingActivities: {
         total: -5000,
-        items: [
-          { description: 'Purchase of Equipment', amount: -5000 }
-        ]
+        items: [{ description: 'Purchase of Equipment', amount: -5000 }],
       },
       financingActivities: {
         total: -2000,
-        items: [
-          { description: 'Loan Repayment', amount: -2000 }
-        ]
+        items: [{ description: 'Loan Repayment', amount: -2000 }],
       },
       netCashFlow: 8000,
       beginningCashBalance: 42000,
-      endingCashBalance: 50000
+      endingCashBalance: 50000,
     };
   }
 }
@@ -354,9 +348,9 @@ export class VendorsClient extends BaseApiClient {
 
   async getVendors(): Promise<any[]> {
     return [
-      { 
-        id: '1', 
-        name: 'Acme Corp', 
+      {
+        id: '1',
+        name: 'Acme Corp',
         email: 'contact@acme.com',
         phone: '555-123-4567',
         address: '123 Main St',
@@ -365,11 +359,11 @@ export class VendorsClient extends BaseApiClient {
         zipCode: '10001',
         country: 'USA',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
-      { 
-        id: '2', 
-        name: 'Globex', 
+      {
+        id: '2',
+        name: 'Globex',
         email: 'info@globex.com',
         phone: '555-987-6543',
         address: '456 Market St',
@@ -378,15 +372,15 @@ export class VendorsClient extends BaseApiClient {
         zipCode: '94105',
         country: 'USA',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+      },
     ];
   }
 
   async getVendorById(id: string): Promise<any> {
-    return { 
-      id, 
-      name: id === '1' ? 'Acme Corp' : 'Globex', 
+    return {
+      id,
+      name: id === '1' ? 'Acme Corp' : 'Globex',
       email: id === '1' ? 'contact@acme.com' : 'info@globex.com',
       phone: id === '1' ? '555-123-4567' : '555-987-6543',
       address: id === '1' ? '123 Main St' : '456 Market St',
@@ -395,7 +389,7 @@ export class VendorsClient extends BaseApiClient {
       zipCode: id === '1' ? '10001' : '94105',
       country: 'USA',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
   }
 
@@ -404,7 +398,7 @@ export class VendorsClient extends BaseApiClient {
       id: Math.random().toString(36).substring(2, 9),
       ...data,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
   }
 
@@ -412,7 +406,7 @@ export class VendorsClient extends BaseApiClient {
     return {
       id,
       ...data,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
   }
 
@@ -422,4 +416,4 @@ export class VendorsClient extends BaseApiClient {
 }
 
 // Create instances of clients
-export const billsClient = new BillsClient(); 
+export const billsClient = new BillsClient();

@@ -1,12 +1,12 @@
-import { 
-  UserDto, 
-  CreateUserDto, 
+import {
+  UserDto,
+  CreateUserDto,
   LoginDto as LoginDtoShared,
   TokenResponseDto,
   RefreshTokenDto,
   ServiceTokenRequestDto,
   ServiceTokenResponseDto,
-  ValidateTokenResponseDto
+  ValidateTokenResponseDto,
 } from '@qbit/shared-types';
 
 // Re-export types for backward compatibility
@@ -23,4 +23,4 @@ export interface TokenResponse {
   accessToken: string | null;
   refreshToken: string | null;
   expiresIn: number | null;
-} 
+}

@@ -15,7 +15,7 @@ export class ExpensesRepository {
       const lastExpense = await this?.prisma.expense.findFirst({
         orderBy: { id: 'desc' },
       });
-      
+
       const nextNumber = lastExpense ? parseInt(lastExpense?.expenseNumber.split('-')[1]) + 1 : 1;
       data.expenseNumber = `EXP-${nextNumber.toString().padStart(5, '0')}`;
     }
@@ -30,11 +30,13 @@ export class ExpensesRepository {
         status: data.status || ExpenseStatus.PENDING,
         isReimbursable: data.isReimbursable ?? false,
         isReconciled: data.isReconciled ?? false,
-        tags: tags ? {
-          create: tags.map(tag => ({
-            name: tag.name,
-          }))
-        } : undefined,
+        tags: tags
+          ? {
+              create: tags.map((tag) => ({
+                name: tag.name,
+              })),
+            }
+          : undefined,
       },
       include: {
         category: true,
@@ -53,7 +55,7 @@ export class ExpensesRepository {
     orderBy?: Record<string, any>;
   }) {
     const { skip, take, cursor, where, orderBy } = params;
-    
+
     const [data, total] = await Promise.all([
       this?.prisma.expense.findMany({
         skip,
@@ -70,7 +72,7 @@ export class ExpensesRepository {
       }),
       this?.prisma.expense.count({ where }),
     ]);
-    
+
     return {
       data,
       total,
@@ -116,7 +118,7 @@ export class ExpensesRepository {
       // Create new tags
       if (tags.length > 0) {
         await this?.prisma.expenseTag.createMany({
-          data: tags.map(tag => ({
+          data: tags.map((tag) => ({
             expenseId: id,
             name: tag.name,
           })),
@@ -186,12 +188,15 @@ export class ExpensesRepository {
     });
   }
 
-  async addAttachment(expenseId: number, attachment: {
-    fileName: string | null;
-    fileType: string | null;
-    fileSize: number | null;
-    filePath: string | null;
-  }) {
+  async addAttachment(
+    expenseId: number,
+    attachment: {
+      fileName: string | null;
+      fileType: string | null;
+      fileSize: number | null;
+      filePath: string | null;
+    },
+  ) {
     return this?.prisma.expenseAttachment.create({
       data: {
         expenseId,
@@ -205,4 +210,4 @@ export class ExpensesRepository {
       where: { id },
     });
   }
-} 
+}

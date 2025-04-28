@@ -10,13 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,7 +86,7 @@ export function ProductList({
   const [sortField, setSortField] = useState('updatedAt');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [productToDelete, setProductToDelete] = useState<IProduct | null>(null);
-  
+
   const totalPages = Math.ceil(total / limit);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,23 +172,13 @@ export function ProductList({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead 
-                    className="w-[100px] cursor-pointer"
-                    onClick={() => handleSort('sku')}
-                  >
-                    <div className="flex items-center">
-                      SKU {getSortIcon('sku')}
-                    </div>
+                  <TableHead className="w-[100px] cursor-pointer" onClick={() => handleSort('sku')}>
+                    <div className="flex items-center">SKU {getSortIcon('sku')}</div>
                   </TableHead>
-                  <TableHead 
-                    className="cursor-pointer"
-                    onClick={() => handleSort('name')}
-                  >
-                    <div className="flex items-center">
-                      Product Name {getSortIcon('name')}
-                    </div>
+                  <TableHead className="cursor-pointer" onClick={() => handleSort('name')}>
+                    <div className="flex items-center">Product Name {getSortIcon('name')}</div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer text-right"
                     onClick={() => handleSort('price')}
                   >
@@ -202,7 +186,7 @@ export function ProductList({
                       Price {getSortIcon('price')}
                     </div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer text-right"
                     onClick={() => handleSort('quantityOnHand')}
                   >
@@ -218,12 +202,24 @@ export function ProductList({
                 {isLoading ? (
                   Array.from({ length: limit }).map((_, index) => (
                     <TableRow key={`skeleton-${index}`}>
-                      <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-48" /></TableCell>
-                      <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
-                      <TableCell className="text-right"><Skeleton className="h-5 w-12 ml-auto" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                      <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-16" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-48" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-5 w-16 ml-auto" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-5 w-12 ml-auto" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-20" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-8 w-8 ml-auto" />
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : products.length === 0 ? (
@@ -241,33 +237,28 @@ export function ProductList({
                 ) : (
                   products.map((product) => (
                     <TableRow key={product.id} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell 
+                      <TableCell
                         className="font-medium"
                         onClick={() => router.push(`/dashboard/products/${product.id}`)}
                       >
                         {product.sku}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/products/${product.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/products/${product.id}`)}>
                         {product.name}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/products/${product.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/products/${product.id}`)}>
                         {formatCurrency(product.price)}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/products/${product.id}`)}
-                      >
-                        {product.quantityOnHand} {product.quantityOnHand <= (product.reorderPoint || 0) ? (
-                          <Badge variant="destructive" className="ml-2">Low</Badge>
+                      <TableCell onClick={() => router.push(`/dashboard/products/${product.id}`)}>
+                        {product.quantityOnHand}{' '}
+                        {product.quantityOnHand <= (product.reorderPoint || 0) ? (
+                          <Badge variant="destructive" className="ml-2">
+                            Low
+                          </Badge>
                         ) : null}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/products/${product.id}`)}
-                      >
-                        <Badge variant={product.isActive ? "default" : "outline"}>
+                      <TableCell onClick={() => router.push(`/dashboard/products/${product.id}`)}>
+                        <Badge variant={product.isActive ? 'default' : 'outline'}>
                           {product.isActive ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
@@ -284,7 +275,7 @@ export function ProductList({
                               <FileEdit className="h-4 w-4 mr-2" />
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               onClick={() => setProductToDelete(product)}
                               className="text-destructive focus:text-destructive"
                             >
@@ -305,20 +296,20 @@ export function ProductList({
             <Pagination className="mt-4">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious 
-                    href="#" 
+                  <PaginationPrevious
+                    href="#"
                     onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.preventDefault();
                       if (page > 1) onPageChange(page - 1);
                     }}
-                    className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+                    className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
                   />
                 </PaginationItem>
-                
+
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                   <PaginationItem key={pageNum}>
-                    <PaginationLink 
-                      href="#" 
+                    <PaginationLink
+                      href="#"
                       onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                         e.preventDefault();
                         onPageChange(pageNum);
@@ -329,15 +320,15 @@ export function ProductList({
                     </PaginationLink>
                   </PaginationItem>
                 ))}
-                
+
                 <PaginationItem>
-                  <PaginationNext 
-                    href="#" 
+                  <PaginationNext
+                    href="#"
                     onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.preventDefault();
                       if (page < totalPages) onPageChange(page + 1);
                     }}
-                    className={page >= totalPages ? "pointer-events-none opacity-50" : ""}
+                    className={page >= totalPages ? 'pointer-events-none opacity-50' : ''}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -346,19 +337,22 @@ export function ProductList({
         </div>
       </CardContent>
 
-      <AlertDialog open={!!productToDelete} onOpenChange={(open) => !open && setProductToDelete(null)}>
+      <AlertDialog
+        open={!!productToDelete}
+        onOpenChange={(open) => !open && setProductToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This will permanently delete the product{' '}
-              <span className="font-semibold">{productToDelete?.name}</span>. This action
-              cannot be undone.
+              <span className="font-semibold">{productToDelete?.name}</span>. This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancelDelete}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-red-600 hover:bg-red-700"
             >
@@ -369,4 +363,4 @@ export function ProductList({
       </AlertDialog>
     </Card>
   );
-}; 
+}

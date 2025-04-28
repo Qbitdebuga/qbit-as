@@ -1,9 +1,5 @@
 import { ApiClient } from '../api-client';
-import { 
-  JournalEntry, 
-  JournalEntryCreate, 
-  JournalEntryUpdate 
-} from '@qbit/shared-types';
+import { JournalEntry, JournalEntryCreate, JournalEntryUpdate } from '@qbit/shared-types';
 
 export class JournalEntriesClient {
   private client: ApiClient;
@@ -62,4 +58,4 @@ export class JournalEntriesClient {
   async reverseJournalEntry(id: string, reason: string): Promise<JournalEntry> {
     return this?.client.post<JournalEntry>(`${this.baseUrl}/${id}/reverse`, { reason });
   }
-} 
+}

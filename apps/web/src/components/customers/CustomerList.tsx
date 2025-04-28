@@ -8,13 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,13 +27,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { 
-  ChevronDown, 
-  ChevronUp, 
-  FileEdit, 
-  MoreHorizontal, 
-  Plus, 
-  Search, 
+import {
+  ChevronDown,
+  ChevronUp,
+  FileEdit,
+  MoreHorizontal,
+  Plus,
+  Search,
   Trash2,
   Loader2,
   SortAsc,
@@ -81,18 +75,18 @@ export function CustomerList({
 }: CustomerListProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const totalPages = Math.ceil(total / limit);
-  
+
   const handleSearch = () => {
     onSearch(searchTerm);
   };
-  
+
   const handleSort = (field: string) => {
     const direction = field === sortBy && sortDirection === 'asc' ? 'desc' : 'asc';
     onSort(field, direction);
   };
-  
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
@@ -101,7 +95,11 @@ export function CustomerList({
 
   const getSortIcon = (field: string) => {
     if (field !== sortBy) return null;
-    return sortDirection === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />;
+    return sortDirection === 'asc' ? (
+      <SortAsc className="h-4 w-4" />
+    ) : (
+      <SortDesc className="h-4 w-4" />
+    );
   };
 
   return (
@@ -139,7 +137,10 @@ export function CustomerList({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead onClick={() => handleSort('customerNumber')} className="cursor-pointer">
+                  <TableHead
+                    onClick={() => handleSort('customerNumber')}
+                    className="cursor-pointer"
+                  >
                     <div className="flex items-center space-x-1">
                       <span>Customer #</span>
                       {getSortIcon('customerNumber')}
@@ -190,37 +191,27 @@ export function CustomerList({
                 ) : (
                   customers.map((customer) => (
                     <TableRow key={customer.id} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell 
+                      <TableCell
                         className="font-medium"
                         onClick={() => router.push(`/dashboard/customers/${customer.id}`)}
                       >
                         {customer.customerNumber}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/customers/${customer.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/customers/${customer.id}`)}>
                         {customer.name}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/customers/${customer.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/customers/${customer.id}`)}>
                         {customer.email}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/customers/${customer.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/customers/${customer.id}`)}>
                         {customer.phone}
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/customers/${customer.id}`)}
-                      >
-                        <Badge variant={customer.isActive ? "default" : "outline"}>
+                      <TableCell onClick={() => router.push(`/dashboard/customers/${customer.id}`)}>
+                        <Badge variant={customer.isActive ? 'default' : 'outline'}>
                           {customer.isActive ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
-                      <TableCell 
-                        onClick={() => router.push(`/dashboard/customers/${customer.id}`)}
-                      >
+                      <TableCell onClick={() => router.push(`/dashboard/customers/${customer.id}`)}>
                         {formatDate(customer.createdAt)}
                       </TableCell>
                       <TableCell className="text-right">
@@ -236,7 +227,7 @@ export function CustomerList({
                               <FileEdit className="h-4 w-4 mr-2" />
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               onClick={() => onDelete(customer.id)}
                               className="text-destructive focus:text-destructive"
                             >
@@ -262,7 +253,7 @@ export function CustomerList({
                     disabled={page === 1 || isLoading}
                   />
                 </PaginationItem>
-                
+
                 {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
                   // Show pages around the current page
                   let pageNum;
@@ -292,9 +283,9 @@ export function CustomerList({
                     </PaginationItem>
                   );
                 })}
-                
+
                 <PaginationItem>
-                  <PaginationNext 
+                  <PaginationNext
                     onClick={() => onPageChange(Math.min(totalPages, page + 1))}
                     disabled={page === totalPages || isLoading}
                   />
@@ -306,4 +297,4 @@ export function CustomerList({
       </CardContent>
     </Card>
   );
-} 
+}

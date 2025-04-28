@@ -86,4 +86,4 @@ export interface AuthResponseDto {
 export interface TokenVerificationResponse {
   isValid: boolean | null;
   user?: UserDto;
-} 
+}

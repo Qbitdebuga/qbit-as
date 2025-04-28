@@ -26,13 +26,13 @@ export class BillLineItemDto {
   quantity: number | null;
 
   @ApiProperty({
-    example: 500.00,
+    example: 500.0,
     description: 'Unit price of the item',
   })
   unitPrice: number | null;
 
   @ApiProperty({
-    example: 500.00,
+    example: 500.0,
     description: 'Total amount for this line item',
   })
   amount: number | null;
@@ -50,13 +50,13 @@ export class BillLineItemDto {
   accountCode?: string | null;
 
   @ApiPropertyOptional({
-    example: 10.00,
+    example: 10.0,
     description: 'Tax rate applied to this line item (percentage)',
   })
   taxRate?: number | null;
 
   @ApiPropertyOptional({
-    example: 50.00,
+    example: 50.0,
     description: 'Tax amount for this line item',
   })
   taxAmount?: number | null;
@@ -72,4 +72,4 @@ export class BillLineItemDto {
     description: 'Date and time when the line item was last updated',
   })
   updatedAt: string | null;
-} 
+}

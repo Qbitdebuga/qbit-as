@@ -1,24 +1,24 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { 
-  IsArray, 
-  IsDateString, 
-  IsEnum, 
-  IsNotEmpty, 
-  IsNumber, 
-  IsOptional, 
-  IsPositive, 
-  IsString, 
-  IsUUID, 
-  ValidateNested, 
-  ArrayMinSize 
+import {
+  IsArray,
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUUID,
+  ValidateNested,
+  ArrayMinSize,
 } from 'class-validator';
 import { PaymentMethod, PaymentStatus } from '../entities/payment.entity';
 
 export class CreatePaymentApplicationDto {
   @ApiProperty({
     description: 'ID of the bill to apply payment to',
-    example: 1
+    example: 1,
   })
   @IsNumber()
   @IsNotEmpty()
@@ -26,7 +26,7 @@ export class CreatePaymentApplicationDto {
 
   @ApiProperty({
     description: 'Amount to apply to this bill',
-    example: 500.00
+    example: 500.0,
   })
   @IsNumber()
   @IsPositive()
@@ -36,7 +36,7 @@ export class CreatePaymentApplicationDto {
 export class CreatePaymentDto {
   @ApiPropertyOptional({
     description: 'Payment number (will be auto-generated if not provided)',
-    example: 'PAY-00001'
+    example: 'PAY-00001',
   })
   @IsString()
   @IsOptional()
@@ -44,7 +44,7 @@ export class CreatePaymentDto {
 
   @ApiProperty({
     description: 'ID of the vendor receiving payment',
-    example: 1
+    example: 1,
   })
   @IsNumber()
   @IsNotEmpty()
@@ -52,7 +52,7 @@ export class CreatePaymentDto {
 
   @ApiProperty({
     description: 'Date of payment',
-    example: '2023-06-15'
+    example: '2023-06-15',
   })
   @IsDateString()
   @IsNotEmpty()
@@ -60,7 +60,7 @@ export class CreatePaymentDto {
 
   @ApiProperty({
     description: 'Total payment amount',
-    example: 1000.00
+    example: 1000.0,
   })
   @IsNumber()
   @IsPositive()
@@ -69,7 +69,7 @@ export class CreatePaymentDto {
   @ApiProperty({
     description: 'Payment method',
     enum: PaymentMethod,
-    example: PaymentMethod.BANK_TRANSFER
+    example: PaymentMethod.BANK_TRANSFER,
   })
   @IsEnum(PaymentMethod)
   @IsNotEmpty()
@@ -77,7 +77,7 @@ export class CreatePaymentDto {
 
   @ApiPropertyOptional({
     description: 'Reference number (check number, transaction ID, etc.)',
-    example: 'CHK-12345'
+    example: 'CHK-12345',
   })
   @IsString()
   @IsOptional()
@@ -85,7 +85,7 @@ export class CreatePaymentDto {
 
   @ApiPropertyOptional({
     description: 'Memo or notes about the payment',
-    example: 'Payment for June invoices'
+    example: 'Payment for June invoices',
   })
   @IsString()
   @IsOptional()
@@ -94,7 +94,7 @@ export class CreatePaymentDto {
   @ApiPropertyOptional({
     description: 'Status of the payment',
     enum: PaymentStatus,
-    default: PaymentStatus.PENDING
+    default: PaymentStatus.PENDING,
   })
   @IsEnum(PaymentStatus)
   @IsOptional()
@@ -102,7 +102,7 @@ export class CreatePaymentDto {
 
   @ApiPropertyOptional({
     description: 'ID of the bank account used for the payment',
-    example: 1
+    example: 1,
   })
   @IsNumber()
   @IsOptional()
@@ -110,11 +110,11 @@ export class CreatePaymentDto {
 
   @ApiProperty({
     description: 'Bill payment applications',
-    type: [CreatePaymentApplicationDto]
+    type: [CreatePaymentApplicationDto],
   })
   @ValidateNested({ each: true })
   @Type(() => CreatePaymentApplicationDto)
   @ArrayMinSize(1)
   @IsArray()
   applications: CreatePaymentApplicationDto[];
-} 
+}

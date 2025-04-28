@@ -8,11 +8,7 @@ interface ProductListProps {
   onDeleteProduct?: (productId: string) => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({
-  products,
-  onEditProduct,
-  onDeleteProduct,
-}) => {
+const ProductList: React.FC<ProductListProps> = ({ products, onEditProduct, onDeleteProduct }) => {
   if (!products.length) {
     return (
       <div className="py-8 text-center text-gray-500">
@@ -35,4 +31,4 @@ const ProductList: React.FC<ProductListProps> = ({
   );
 };
 
-export default ProductList; 
+export default ProductList;

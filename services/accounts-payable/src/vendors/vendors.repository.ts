@@ -10,19 +10,19 @@ export class VendorsRepository {
 
   async create(createVendorDto: CreateVendorDto): Promise<VendorDto> {
     const vendorData = this.preparePrismaVendorData(createVendorDto);
-    
+
     // Use any type to bypass type checking issues
     const vendor = await (this.prisma as any).vendor.create({
       data: vendorData,
     });
-    
+
     return this.mapToDto(vendor);
   }
 
   async findAll(): Promise<VendorDto[]> {
     // Use any type to bypass type checking issues
     const vendors = await (this.prisma as any).vendor.findMany();
-    return vendors.map(vendor => this.mapToDto(vendor));
+    return vendors.map((vendor) => this.mapToDto(vendor));
   }
 
   async findOne(id: number): Promise<VendorDto | null> {
@@ -30,23 +30,23 @@ export class VendorsRepository {
     const vendor = await (this.prisma as any).vendor.findUnique({
       where: { id },
     });
-    
+
     if (!vendor) {
       return null;
     }
-    
+
     return this.mapToDto(vendor);
   }
 
   async update(id: number, updateVendorDto: UpdateVendorDto): Promise<VendorDto> {
     const updateData = this.prepareUpdateVendorData(updateVendorDto);
-    
+
     // Use any type to bypass type checking issues
     const vendor = await (this.prisma as any).vendor.update({
       where: { id },
       data: updateData,
     });
-    
+
     return this.mapToDto(vendor);
   }
 
@@ -59,48 +59,48 @@ export class VendorsRepository {
 
   private preparePrismaVendorData(dto: CreateVendorDto) {
     const result: any = { ...dto };
-    
+
     // Generate vendor number if not provided
     if (!result.vendorNumber) {
       result.vendorNumber = `V-${Math.floor(10000 + Math.random() * 90000)}`;
     }
-    
+
     // Convert paymentTerms to string if it exists
     if (result.paymentTerms !== undefined) {
       result.paymentTerms = String(result.paymentTerms);
     }
-    
+
     // Convert credit limit to Decimal compatible value
     if (result.creditLimit !== undefined) {
       result.creditLimit = result?.creditLimit.toString();
     }
-    
+
     // Convert defaultAccountId from string to number if needed
     if (result.defaultAccountId && typeof result.defaultAccountId === 'string') {
       result.defaultAccountId = parseInt(result.defaultAccountId, 10);
     }
-    
+
     return result;
   }
-  
+
   private prepareUpdateVendorData(dto: UpdateVendorDto) {
     const result: any = { ...dto };
-    
+
     // Convert paymentTerms to string if it exists
     if (result.paymentTerms !== undefined) {
       result.paymentTerms = String(result.paymentTerms);
     }
-    
+
     // Convert credit limit to Decimal compatible value
     if (result.creditLimit !== undefined) {
       result.creditLimit = result?.creditLimit.toString();
     }
-    
+
     // Convert defaultAccountId from string to number if needed
     if (result.defaultAccountId && typeof result.defaultAccountId === 'string') {
       result.defaultAccountId = parseInt(result.defaultAccountId, 10);
     }
-    
+
     return result;
   }
 
@@ -127,4 +127,4 @@ export class VendorsRepository {
       updatedAt: vendor.updatedAt,
     };
   }
-} 
+}

@@ -5,32 +5,32 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
-import { 
-  Form, 
-  FormControl, 
-  FormDescription, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { DatePicker } from '@/components/ui/date-picker';
 import { useToast } from '@/components/ui/use-toast';
@@ -57,17 +57,17 @@ export default function PaymentForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
-  
+
   // Get invoice ID from query parameters if available
   const initialInvoiceId = searchParams.get('invoiceId');
-  
+
   const { invoices, isLoading: isLoadingInvoices } = useInvoices({
     status: 'SENT',
-    autoFetch: true
+    autoFetch: true,
   });
-  
+
   const { createPayment } = usePayments({ autoFetch: false });
-  
+
   // Default form values
   const defaultValues: Partial<PaymentFormValues> = {
     paymentDate: new Date(),
@@ -79,7 +79,7 @@ export default function PaymentForm() {
   if (initialInvoiceId) {
     defaultValues.invoiceId = initialInvoiceId;
   }
-  
+
   const form = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentSchema),
     defaultValues,
@@ -89,7 +89,7 @@ export default function PaymentForm() {
   useEffect(() => {
     const invoiceId = form.getValues('invoiceId');
     if (invoiceId && invoices.length > 0) {
-      const invoice = invoices.find(inv => inv.id === invoiceId);
+      const invoice = invoices.find((inv) => inv.id === invoiceId);
       if (invoice) {
         setSelectedInvoice(invoice);
         // Set default amount to balance due
@@ -100,7 +100,7 @@ export default function PaymentForm() {
 
   // When invoice selection changes, update amount
   const handleInvoiceChange = (invoiceId: string) => {
-    const invoice = invoices.find(inv => inv.id === invoiceId);
+    const invoice = invoices.find((inv) => inv.id === invoiceId);
     if (invoice) {
       setSelectedInvoice(invoice);
       form.setValue('amount', invoice.balanceDue);
@@ -111,30 +111,30 @@ export default function PaymentForm() {
 
   const onSubmit = async (data: PaymentFormValues) => {
     setIsSubmitting(true);
-    
+
     try {
       const payment = await createPayment(data as CreatePaymentRequest);
-      
+
       if (payment) {
         toast({
-          title: "Payment Recorded",
+          title: 'Payment Recorded',
           description: `Payment of ${formatCurrency(data.amount)} has been recorded successfully.`,
         });
-        
+
         router.push('/dashboard/payments');
       } else {
         toast({
-          title: "Error",
-          description: "Failed to record payment. Please try again.",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Failed to record payment. Please try again.',
+          variant: 'destructive',
         });
       }
     } catch (error) {
       console.error('Error saving payment:', error);
       toast({
-        title: "Error",
-        description: "There was an error recording the payment. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'There was an error recording the payment. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -147,9 +147,7 @@ export default function PaymentForm() {
         <Card>
           <CardHeader>
             <CardTitle>Record New Payment</CardTitle>
-            <CardDescription>
-              Enter payment details to record a customer payment
-            </CardDescription>
+            <CardDescription>Enter payment details to record a customer payment</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Invoice Selection */}
@@ -159,11 +157,11 @@ export default function PaymentForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Invoice</FormLabel>
-                  <Select 
+                  <Select
                     onValueChange={(value) => {
                       field.onChange(value);
                       handleInvoiceChange(value);
-                    }} 
+                    }}
                     defaultValue={field.value}
                     disabled={isLoadingInvoices || !!initialInvoiceId}
                   >
@@ -174,28 +172,31 @@ export default function PaymentForm() {
                     </FormControl>
                     <SelectContent>
                       {isLoadingInvoices ? (
-                        <SelectItem value="loading" disabled>Loading invoices...</SelectItem>
+                        <SelectItem value="loading" disabled>
+                          Loading invoices...
+                        </SelectItem>
                       ) : invoices.length === 0 ? (
-                        <SelectItem value="none" disabled>No unpaid invoices found</SelectItem>
+                        <SelectItem value="none" disabled>
+                          No unpaid invoices found
+                        </SelectItem>
                       ) : (
                         invoices
-                          .filter(invoice => invoice.balanceDue > 0)
-                          .map(invoice => (
+                          .filter((invoice) => invoice.balanceDue > 0)
+                          .map((invoice) => (
                             <SelectItem key={invoice.id} value={invoice.id}>
-                              {invoice.invoiceNumber} - Balance: {formatCurrency(invoice.balanceDue)}
+                              {invoice.invoiceNumber} - Balance:{' '}
+                              {formatCurrency(invoice.balanceDue)}
                             </SelectItem>
                           ))
                       )}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Select the invoice this payment applies to
-                  </FormDescription>
+                  <FormDescription>Select the invoice this payment applies to</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             {/* Invoice Summary - only show when an invoice is selected */}
             {selectedInvoice && (
               <div className="bg-gray-50 p-4 rounded-lg">
@@ -212,7 +213,7 @@ export default function PaymentForm() {
                 </div>
               </div>
             )}
-            
+
             {/* Payment Date */}
             <FormField
               control={form.control}
@@ -220,15 +221,12 @@ export default function PaymentForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Payment Date</FormLabel>
-                  <DatePicker
-                    selected={field.value}
-                    onSelect={field.onChange}
-                  />
+                  <DatePicker selected={field.value} onSelect={field.onChange} />
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             {/* Amount */}
             <FormField
               control={form.control}
@@ -237,9 +235,9 @@ export default function PaymentForm() {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="number" 
-                      step="0.01" 
+                    <Input
+                      type="number"
+                      step="0.01"
                       min="0.01"
                       {...field}
                       onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
@@ -254,7 +252,7 @@ export default function PaymentForm() {
                 </FormItem>
               )}
             />
-            
+
             {/* Payment Method */}
             <FormField
               control={form.control}
@@ -262,10 +260,7 @@ export default function PaymentForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Payment Method</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select payment method" />
@@ -287,7 +282,7 @@ export default function PaymentForm() {
                 </FormItem>
               )}
             />
-            
+
             {/* Reference Number */}
             <FormField
               control={form.control}
@@ -305,7 +300,7 @@ export default function PaymentForm() {
                 </FormItem>
               )}
             />
-            
+
             {/* Notes */}
             <FormField
               control={form.control}
@@ -314,7 +309,7 @@ export default function PaymentForm() {
                 <FormItem>
                   <FormLabel>Notes (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Any additional notes about this payment"
                       rows={3}
                       {...field}
@@ -341,4 +336,4 @@ export default function PaymentForm() {
       </form>
     </Form>
   );
-} 
+}

@@ -109,4 +109,4 @@ export interface IProductVariantFilterParams {
   isActive?: boolean | null;
   orderBy?: string | null;
   order?: 'asc' | 'desc';
-} 
+}

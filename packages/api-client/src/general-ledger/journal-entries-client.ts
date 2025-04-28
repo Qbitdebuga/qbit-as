@@ -1,8 +1,8 @@
-import { 
+import {
   JournalEntry,
   JournalEntryCreate,
   JournalEntryUpdate,
-  PaginatedResponseDto
+  PaginatedResponseDto,
 } from '@qbit/shared-types';
 
 import { GeneralLedgerClient } from './general-ledger-client';
@@ -44,8 +44,8 @@ export class JournalEntriesClient {
    * Only possible for entries in DRAFT status
    */
   async updateJournalEntry(
-    journalEntryId: string, 
-    journalEntryData: JournalEntryUpdate
+    journalEntryId: string,
+    journalEntryData: JournalEntryUpdate,
   ): Promise<JournalEntry> {
     return this?.glClient.updateJournalEntry(journalEntryId, journalEntryData);
   }
@@ -73,4 +73,4 @@ export class JournalEntriesClient {
   async reverseJournalEntry(journalEntryId: string): Promise<JournalEntry> {
     return this?.glClient.reverseJournalEntry(journalEntryId);
   }
-} 
+}

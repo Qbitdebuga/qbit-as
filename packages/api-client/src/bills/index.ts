@@ -12,11 +12,7 @@ class BillsClient {
     this.token = token;
   }
 
-  private async request<T>(
-    endpoint: string, 
-    method: string = 'GET', 
-    data?: any
-  ): Promise<T> {
+  private async request<T>(endpoint: string, method: string = 'GET', data?: any): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
@@ -75,4 +71,4 @@ class BillsClient {
   }
 }
 
-export const billsClient = new BillsClient(); 
+export const billsClient = new BillsClient();

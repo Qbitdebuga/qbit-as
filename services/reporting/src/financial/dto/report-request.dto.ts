@@ -52,4 +52,4 @@ export class ReportRequestDto {
   @IsUUID()
   @IsOptional()
   userId?: string | null;
-} 
+}

@@ -5,26 +5,26 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
-import { 
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -75,24 +75,26 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
   // Initialize form with default values
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerSchema),
-    defaultValues: initialData ? {
-      ...initialData,
-      creditLimit: initialData.creditLimit ? Number(initialData.creditLimit) : undefined,
-    } : {
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      country: '',
-      taxId: '',
-      website: '',
-      notes: '',
-      isActive: true,
-      contacts: [],
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          creditLimit: initialData.creditLimit ? Number(initialData.creditLimit) : undefined,
+        }
+      : {
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: '',
+          taxId: '',
+          website: '',
+          notes: '',
+          isActive: true,
+          contacts: [],
+        },
   });
 
   // Field array for contacts
@@ -121,7 +123,7 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
         ...values,
         creditLimit: values.creditLimit === '' ? undefined : Number(values.creditLimit),
       };
-      
+
       await onSubmit(formattedValues);
       if (!initialData) {
         form.reset(); // Reset form after successful creation
@@ -143,9 +145,7 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
           <Card>
             <CardHeader>
               <CardTitle>Customer Information</CardTitle>
-              <CardDescription>
-                Enter the basic information about the customer.
-              </CardDescription>
+              <CardDescription>Enter the basic information about the customer.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -219,8 +219,8 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
                     <FormItem>
                       <FormLabel>Credit Limit</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           placeholder="10000"
                           {...field}
                           onChange={(e) => {
@@ -248,10 +248,7 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -263,9 +260,7 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
           <Card>
             <CardHeader>
               <CardTitle>Address Information</CardTitle>
-              <CardDescription>
-                Enter the address and location details.
-              </CardDescription>
+              <CardDescription>Enter the address and location details.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -350,9 +345,7 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
           <Card>
             <CardHeader>
               <CardTitle>Additional Information</CardTitle>
-              <CardDescription>
-                Additional details about the customer.
-              </CardDescription>
+              <CardDescription>Additional details about the customer.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -379,7 +372,11 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
                     <FormItem>
                       <FormLabel>Website</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://www.acme.com" {...field} value={field.value || ''} />
+                        <Input
+                          placeholder="https://www.acme.com"
+                          {...field}
+                          value={field.value || ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -395,11 +392,11 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
                       <FormItem>
                         <FormLabel>Notes</FormLabel>
                         <FormControl>
-                          <Textarea 
-                            placeholder="Additional notes about the customer..." 
+                          <Textarea
+                            placeholder="Additional notes about the customer..."
                             className="min-h-[100px]"
-                            {...field} 
-                            value={field.value || ''} 
+                            {...field}
+                            value={field.value || ''}
                           />
                         </FormControl>
                         <FormMessage />
@@ -415,9 +412,7 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div>
                 <CardTitle>Contacts</CardTitle>
-                <CardDescription>
-                  Add contact persons for this customer.
-                </CardDescription>
+                <CardDescription>Add contact persons for this customer.</CardDescription>
               </div>
               <Button
                 variant="outline"
@@ -438,11 +433,16 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
               ) : (
                 <Accordion type="multiple" className="space-y-4">
                   {fields.map((field, index) => (
-                    <AccordionItem key={field.id} value={`contact-${index}`} className="border rounded-lg">
+                    <AccordionItem
+                      key={field.id}
+                      value={`contact-${index}`}
+                      className="border rounded-lg"
+                    >
                       <AccordionTrigger className="px-4">
                         <span className="text-left">
-                          {form.watch(`contacts.${index}.firstName`) || form.watch(`contacts.${index}.lastName`) 
-                            ? `${form.watch(`contacts.${index}.firstName`)} ${form.watch(`contacts.${index}.lastName`)}` 
+                          {form.watch(`contacts.${index}.firstName`) ||
+                          form.watch(`contacts.${index}.lastName`)
+                            ? `${form.watch(`contacts.${index}.firstName`)} ${form.watch(`contacts.${index}.lastName`)}`
                             : `Contact #${index + 1}`}
                         </span>
                       </AccordionTrigger>
@@ -486,7 +486,11 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
                               <FormItem>
                                 <FormLabel>Email</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="john.doe@acme.com" {...field} value={field.value || ''} />
+                                  <Input
+                                    placeholder="john.doe@acme.com"
+                                    {...field}
+                                    value={field.value || ''}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -501,7 +505,11 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
                               <FormItem>
                                 <FormLabel>Phone</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="555-987-6543" {...field} value={field.value || ''} />
+                                  <Input
+                                    placeholder="555-987-6543"
+                                    {...field}
+                                    value={field.value || ''}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -516,7 +524,11 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
                               <FormItem>
                                 <FormLabel>Position</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Purchasing Manager" {...field} value={field.value || ''} />
+                                  <Input
+                                    placeholder="Purchasing Manager"
+                                    {...field}
+                                    value={field.value || ''}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -585,4 +597,4 @@ export function CustomerForm({ initialData, onSubmit, isLoading = false }: Custo
 // Missing function for FormDescription - adding it for completeness
 function FormDescription({ children }: { children: React.ReactNode }) {
   return <p className="text-sm text-muted-foreground">{children}</p>;
-} 
+}

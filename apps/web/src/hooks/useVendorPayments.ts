@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  Payment, 
-  CreatePaymentDto, 
+import {
+  Payment,
+  CreatePaymentDto,
   UpdatePaymentDto,
   ApplyPaymentDto,
-  PaymentStatus
+  PaymentStatus,
 } from '@qbit/shared-types';
 import { accountsPayableClient } from '@/lib/api-client';
 import { useAuth } from '@/contexts/auth-context';
@@ -15,10 +15,10 @@ interface UseVendorPaymentsProps {
   autoFetch?: boolean;
 }
 
-export function useVendorPayments({ 
-  billId, 
-  vendorId, 
-  autoFetch = true 
+export function useVendorPayments({
+  billId,
+  vendorId,
+  autoFetch = true,
 }: UseVendorPaymentsProps = {}) {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +27,7 @@ export function useVendorPayments({
 
   const fetchPayments = useCallback(async () => {
     if (!isAuthenticated) return;
-    
+
     setIsLoading(true);
     setError(null);
 
@@ -57,13 +57,13 @@ export function useVendorPayments({
 
   const createPayment = async (paymentData: CreatePaymentDto): Promise<Payment | null> => {
     if (!isAuthenticated) return null;
-    
+
     setIsLoading(true);
     setError(null);
 
     try {
       const newPayment = await accountsPayableClient.payments.createPayment(paymentData);
-      setPayments(prev => [...prev, newPayment]);
+      setPayments((prev) => [...prev, newPayment]);
       return newPayment;
     } catch (err) {
       console.error('Error creating payment:', err);
@@ -74,17 +74,20 @@ export function useVendorPayments({
     }
   };
 
-  const updatePayment = async (id: string | number, data: UpdatePaymentDto): Promise<Payment | null> => {
+  const updatePayment = async (
+    id: string | number,
+    data: UpdatePaymentDto,
+  ): Promise<Payment | null> => {
     if (!isAuthenticated) return null;
-    
+
     setIsLoading(true);
     setError(null);
 
     try {
       const updatedPayment = await accountsPayableClient.payments.updatePayment(id, data);
-      setPayments(prev => prev.map(payment => 
-        payment.id === updatedPayment.id ? updatedPayment : payment
-      ));
+      setPayments((prev) =>
+        prev.map((payment) => (payment.id === updatedPayment.id ? updatedPayment : payment)),
+      );
       return updatedPayment;
     } catch (err) {
       console.error('Error updating payment:', err);
@@ -97,13 +100,13 @@ export function useVendorPayments({
 
   const deletePayment = async (id: string | number): Promise<boolean> => {
     if (!isAuthenticated) return false;
-    
+
     setIsLoading(true);
     setError(null);
 
     try {
       await accountsPayableClient.payments.deletePayment(id);
-      setPayments(prev => prev.filter(payment => payment.id !== id));
+      setPayments((prev) => prev.filter((payment) => payment.id !== id));
       return true;
     } catch (err) {
       console.error('Error deleting payment:', err);
@@ -116,16 +119,14 @@ export function useVendorPayments({
 
   const applyPayment = async (applicationData: ApplyPaymentDto): Promise<Payment | null> => {
     if (!isAuthenticated) return null;
-    
+
     setIsLoading(true);
     setError(null);
 
     try {
       const result = await accountsPayableClient.payments.applyPayment(applicationData);
       // Update the payment in the list
-      setPayments(prev => prev.map(payment => 
-        payment.id === result.id ? result : payment
-      ));
+      setPayments((prev) => prev.map((payment) => (payment.id === result.id ? result : payment)));
       return result;
     } catch (err) {
       console.error('Error applying payment:', err);
@@ -144,6 +145,6 @@ export function useVendorPayments({
     createPayment,
     updatePayment,
     deletePayment,
-    applyPayment
+    applyPayment,
   };
-} 
+}

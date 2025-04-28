@@ -14,7 +14,7 @@ export function useVendorBills({
   vendorId,
   status,
   search,
-  autoFetch = true
+  autoFetch = true,
 }: UseVendorBillsProps = {}) {
   const [bills, setBills] = useState<Bill[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ export function useVendorBills({
 
   const fetchBills = useCallback(async () => {
     if (!isAuthenticated) return;
-    
+
     setIsLoading(true);
     setError(null);
 
@@ -32,12 +32,12 @@ export function useVendorBills({
       if (vendorId) {
         result = await accountsPayableClient.bills.getBillsByVendor(vendorId, {
           status: status ? status.join(',') : undefined,
-          search
+          search,
         });
       } else {
         result = await accountsPayableClient.bills.getAllBills({
           status: status ? status.join(',') : undefined,
-          search
+          search,
         });
       }
       setBills(result);
@@ -59,6 +59,6 @@ export function useVendorBills({
     bills,
     isLoading,
     error,
-    refetch: fetchBills
+    refetch: fetchBills,
   };
-} 
+}

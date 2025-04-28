@@ -2,19 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, FileEdit, Printer, CheckCircle, XCircle, AlertCircle, CreditCard } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileEdit,
+  Printer,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  CreditCard,
+} from 'lucide-react';
 import Link from 'next/link';
 import { Bill, BillStatus } from '@/mocks/shared-types';
 import { billsClient } from '@/mocks/api-client';
 import { useAuth } from '@/hooks/useAuth';
 import { setupAuthForClient } from '@/utils/auth-helpers';
 import BillDetail from '@/components/bills/BillDetail';
-import { 
+import {
   Button,
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
   CardTitle,
   Skeleton,
   AlertDialog,
@@ -36,7 +44,7 @@ export default function BillDetailPage() {
   const [bill, setBill] = useState<Bill | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const id = params ? params.id as string : '';
+  const id = params ? (params.id as string) : '';
 
   useEffect(() => {
     if (isAuthenticated && id) {
@@ -101,10 +109,13 @@ export default function BillDetailPage() {
     }
   };
 
-  const canApprove = bill && [BillStatus.DRAFT, BillStatus.PENDING].includes(bill.status as BillStatus);
+  const canApprove =
+    bill && [BillStatus.DRAFT, BillStatus.PENDING].includes(bill.status as BillStatus);
   const canCancel = bill && bill.status !== BillStatus.CANCELLED;
-  const canEdit = bill && [BillStatus.DRAFT, BillStatus.PENDING].includes(bill.status as BillStatus);
-  const canPay = bill && [BillStatus.APPROVED, BillStatus.PARTIAL].includes(bill.status as BillStatus);
+  const canEdit =
+    bill && [BillStatus.DRAFT, BillStatus.PENDING].includes(bill.status as BillStatus);
+  const canPay =
+    bill && [BillStatus.APPROVED, BillStatus.PARTIAL].includes(bill.status as BillStatus);
 
   if (loading) {
     return (
@@ -199,7 +210,7 @@ export default function BillDetailPage() {
               </Button>
             </Link>
           )}
-          
+
           <Button variant="outline" onClick={() => window.print()}>
             <Printer className="mr-2 h-4 w-4" />
             Print
@@ -233,14 +244,13 @@ export default function BillDetailPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Cancel this bill?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will cancel the bill and it will no longer be valid.
+                    This action cannot be undone. This will cancel the bill and it will no longer be
+                    valid.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Nevermind</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleCancel}>
-                    Yes, cancel bill
-                  </AlertDialogAction>
+                  <AlertDialogAction onClick={handleCancel}>Yes, cancel bill</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -251,9 +261,7 @@ export default function BillDetailPage() {
       <Card>
         <CardHeader>
           <CardTitle>Bill Details</CardTitle>
-          <CardDescription>
-            View complete information about this bill
-          </CardDescription>
+          <CardDescription>View complete information about this bill</CardDescription>
         </CardHeader>
         <CardContent>
           <BillDetail bill={bill} />
@@ -261,4 +269,4 @@ export default function BillDetailPage() {
       </Card>
     </div>
   );
-} 
+}

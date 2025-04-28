@@ -10,7 +10,7 @@ export enum AccountType {
   LIABILITY = 'LIABILITY',
   EQUITY = 'EQUITY',
   REVENUE = 'REVENUE',
-  EXPENSE = 'EXPENSE'
+  EXPENSE = 'EXPENSE',
 }
 
 /**
@@ -101,7 +101,7 @@ export interface TransactionEntry {
 export enum TransactionStatus {
   DRAFT = 'DRAFT',
   POSTED = 'POSTED',
-  VOIDED = 'VOIDED'
+  VOIDED = 'VOIDED',
 }
 
 /**
@@ -157,4 +157,4 @@ export enum AccountSubType {
 export interface AccountWithHierarchy extends Account {
   parent?: Account;
   children?: Account[];
-} 
+}

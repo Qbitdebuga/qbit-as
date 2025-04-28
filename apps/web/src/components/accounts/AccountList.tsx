@@ -4,20 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Edit, Eye, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui';
-import { 
-  Table, 
-  TableHeader, 
-  TableRow, 
-  TableHead, 
-  TableBody, 
-  TableCell 
-} from '@/components/ui';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { Badge } from '@/components/ui';
 import { Account, AccountType } from '@qbit/api-client';
 
@@ -86,9 +74,9 @@ export function AccountList({ accounts, onDelete }: AccountListProps) {
                       </Button>
                     </Link>
                     {onDelete && (
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => onDelete(account.id)}
                         className="text-red-500 hover:text-red-700"
                       >
@@ -104,4 +92,4 @@ export function AccountList({ accounts, onDelete }: AccountListProps) {
       </CardContent>
     </Card>
   );
-} 
+}

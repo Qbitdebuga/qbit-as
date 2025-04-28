@@ -1,13 +1,8 @@
-"use client";
+'use client';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { 
-  authClient, 
-  customersClient, 
-  invoicesClient, 
-  paymentsClient
-} from '@/utils/api-clients';
+import { authClient, customersClient, invoicesClient, paymentsClient } from '@/utils/api-clients';
 import { isAuthenticated as checkAuth } from '@/utils/auth';
 
 export function useApiClient() {
@@ -28,13 +23,13 @@ export function useApiClient() {
     }
     setLoading(false);
   }, [isAuthenticated]);
-  
+
   const executeWithAuth = useCallback(
-    async <T,>(fn: () => Promise<T>): Promise<T> => {
+    async <T>(fn: () => Promise<T>): Promise<T> => {
       if (!isAuthenticated) {
         throw new Error('Authentication required');
       }
-      
+
       try {
         return await fn();
       } catch (error: any) {
@@ -42,9 +37,9 @@ export function useApiClient() {
         throw error;
       }
     },
-    [isAuthenticated]
+    [isAuthenticated],
   );
-  
+
   return {
     invoices: invoicesClient,
     customers: customersClient,
@@ -53,4 +48,4 @@ export function useApiClient() {
     loading,
     executeWithAuth,
   };
-} 
+}

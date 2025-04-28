@@ -3,14 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { 
-  Button,
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui';
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
 import BillForm from '@/components/bills/BillForm';
 
 export default function NewBillPage() {
@@ -31,12 +24,10 @@ export default function NewBillPage() {
       <Card>
         <CardHeader>
           <CardTitle>New Bill</CardTitle>
-          <CardDescription>
-            Enter the details for the new vendor bill.
-          </CardDescription>
+          <CardDescription>Enter the details for the new vendor bill.</CardDescription>
         </CardHeader>
         <CardContent>
-          <BillForm 
+          <BillForm
             onSave={(billData) => {
               router.push('/dashboard/bills');
             }}
@@ -45,4 +36,4 @@ export default function NewBillPage() {
       </Card>
     </div>
   );
-} 
+}

@@ -56,4 +56,4 @@ export class DashboardResponseDto {
 
   @ApiProperty({ type: FinancialSummary })
   financialSummary!: FinancialSummary;
-} 
+}

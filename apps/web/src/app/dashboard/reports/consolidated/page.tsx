@@ -15,15 +15,15 @@ export default function ConsolidatedReportPage() {
   useEffect(() => {
     async function loadReports() {
       setIsLoading(true);
-      
+
       try {
         // Get all financial statements in parallel
         const [balanceSheetData, incomeStatementData, cashFlowData] = await Promise.all([
           getFinancialStatements('balance-sheet', null, null, selectedDate),
           getFinancialStatements('income-statement', null, null, selectedDate),
-          getFinancialStatements('cash-flow', null, null, selectedDate)
+          getFinancialStatements('cash-flow', null, null, selectedDate),
         ]);
-        
+
         setBalanceSheet(balanceSheetData);
         setIncomeStatement(incomeStatementData);
         setCashFlow(cashFlowData);
@@ -33,10 +33,10 @@ export default function ConsolidatedReportPage() {
         setIsLoading(false);
       }
     }
-    
+
     loadReports();
   }, [getFinancialStatements, selectedDate]);
-  
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value);
   };
@@ -45,11 +45,9 @@ export default function ConsolidatedReportPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <h1 className="text-2xl font-bold">Consolidated Financial Reports</h1>
-        
+
         <div className="mt-4 md:mt-0">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Report Date
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Report Date</label>
           <input
             type="date"
             value={selectedDate}
@@ -58,7 +56,7 @@ export default function ConsolidatedReportPage() {
           />
         </div>
       </div>
-      
+
       {isLoading || loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
@@ -80,4 +78,4 @@ export default function ConsolidatedReportPage() {
       )}
     </div>
   );
-} 
+}

@@ -77,4 +77,4 @@ export class BankEntity {
 
   @ApiProperty({ description: 'Date when the bank was last updated' })
   updatedAt: Date;
-} 
+}

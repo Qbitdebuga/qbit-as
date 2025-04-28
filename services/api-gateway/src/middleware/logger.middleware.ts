@@ -10,9 +10,7 @@ export class LoggerMiddleware implements NestMiddleware {
     const userAgent = req.get('user-agent') || '';
 
     // Log request when it starts
-    this?.logger.log(
-      `${method} ${originalUrl} - ${ip} - ${userAgent}`,
-    );
+    this?.logger.log(`${method} ${originalUrl} - ${ip} - ${userAgent}`);
 
     // Log response when it finishes
     res.on('finish', () => {
@@ -26,4 +24,4 @@ export class LoggerMiddleware implements NestMiddleware {
 
     next();
   }
-} 
+}

@@ -4,8 +4,8 @@ import { AccountDetail } from '@/components/accounts/AccountDetail';
 import { notFound } from 'next/navigation';
 
 type Props = {
-  params: { id: string }
-}
+  params: { id: string };
+};
 
 export const metadata: Metadata = {
   title: 'Account Details | Qbit Accounting',
@@ -63,4 +63,4 @@ export default function AccountDetailPage({ params }: Props) {
       <AccountDetail account={account} />
     </div>
   );
-} 
+}

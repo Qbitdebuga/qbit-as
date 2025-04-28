@@ -13,14 +13,15 @@ export class PaymentsRepository {
       const lastPayment = await (this.prisma as any).payment.findFirst({
         orderBy: { id: 'desc' },
       });
-      
+
       // Generate a new payment number if none exist
-      const nextNumber = lastPayment && lastPayment.paymentNumber 
-        ? parseInt(lastPayment?.paymentNumber.split('-')[1]) + 1 
-        : 1;
+      const nextNumber =
+        lastPayment && lastPayment.paymentNumber
+          ? parseInt(lastPayment?.paymentNumber.split('-')[1]) + 1
+          : 1;
       data.paymentNumber = `PAY-${nextNumber.toString().padStart(5, '0')}`;
     }
-    
+
     // Create payment with nested applications
     return (this.prisma as any).payment.create({
       data: {
@@ -34,7 +35,7 @@ export class PaymentsRepository {
         status: data.status || PaymentStatus.PENDING,
         bankAccountId: data.bankAccountId,
         applications: {
-          create: data?.applications.map(app => ({
+          create: data?.applications.map((app) => ({
             billId: app.billId,
             amount: app?.amount.toString(),
           })),
@@ -55,7 +56,7 @@ export class PaymentsRepository {
     orderBy?: any;
   }) {
     const { skip, take, cursor, where, orderBy } = params;
-    
+
     const [data, total] = await Promise.all([
       (this.prisma as any).payment.findMany({
         skip,
@@ -74,7 +75,7 @@ export class PaymentsRepository {
       }),
       (this.prisma as any).payment.count({ where }),
     ]);
-    
+
     return {
       data,
       total,
@@ -124,15 +125,18 @@ export class PaymentsRepository {
       },
     });
   }
-  
-  async applyPayment(paymentId: number, applications: { billId: number | null; amount: number }[]): Promise<Payment> {
+
+  async applyPayment(
+    paymentId: number,
+    applications: { billId: number | null; amount: number }[],
+  ): Promise<Payment> {
     // Create transaction to ensure atomicity
     return (this.prisma as any).$transaction(async (prisma) => {
       // First, delete existing applications for this payment
       await (prisma as any).paymentApplication.deleteMany({
         where: { paymentId },
       });
-      
+
       // Then, create new applications
       for (const app of applications) {
         await (prisma as any).paymentApplication.create({
@@ -142,16 +146,16 @@ export class PaymentsRepository {
             amount: app?.amount.toString(),
           },
         });
-        
+
         // Update the bill's amountPaid and balanceDue
         const bill = await (prisma as any).bill.findUnique({
           where: { id: app.billId },
         });
-        
+
         if (bill) {
           const newAmountPaid = parseFloat(bill?.amountPaid.toString()) + app.amount;
           const newBalanceDue = parseFloat(bill?.totalAmount.toString()) - newAmountPaid;
-          
+
           await (prisma as any).bill.update({
             where: { id: app.billId },
             data: {
@@ -162,7 +166,7 @@ export class PaymentsRepository {
           });
         }
       }
-      
+
       // Return the updated payment with applications
       return (prisma as any).payment.findUnique({
         where: { id: paymentId },
@@ -177,7 +181,7 @@ export class PaymentsRepository {
       });
     });
   }
-  
+
   async findByVendor(vendorId: number): Promise<Payment[]> {
     return (this.prisma as any).payment.findMany({
       where: { vendorId },
@@ -191,4 +195,4 @@ export class PaymentsRepository {
       orderBy: { paymentDate: 'desc' },
     });
   }
-} 
+}

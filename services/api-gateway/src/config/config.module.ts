@@ -22,4 +22,4 @@ import { authConfigSchema } from './schemas/auth-config.schema';
   providers: [],
   exports: [],
 })
-export class ConfigModule {} 
+export class ConfigModule {}

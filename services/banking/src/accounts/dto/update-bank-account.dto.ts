@@ -114,4 +114,4 @@ export class UpdateBankAccountDto {
   @IsString()
   @IsOptional()
   notes?: string | null;
-} 
+}

@@ -1,11 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { AccountList } from '@/components/accounts/AccountList';
-import { 
-  PageHeader, 
-  PageHeaderDescription, 
-  PageHeaderHeading 
-} from '@/components/page-header';
+import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header';
 import { Button } from '@/components/ui';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -106,4 +102,4 @@ export default function AccountsPage() {
       <AccountList accounts={accounts} />
     </div>
   );
-} 
+}

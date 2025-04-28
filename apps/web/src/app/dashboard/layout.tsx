@@ -47,24 +47,24 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center justify-center p-4 border-b" suppressHydrationWarning>
             <h1 className="font-bold text-xl text-blue-600">Qbit Accounting</h1>
           </div>
-          
+
           <div className="flex-grow py-4" suppressHydrationWarning>
             <SidebarLink href="/dashboard" label="Dashboard" />
-            
+
             {/* General Ledger links */}
             <div className="border-t my-2 pt-2" suppressHydrationWarning>
               <h3 className="font-semibold mb-2 text-gray-600">General Ledger</h3>
               <SidebarLink href="/dashboard/accounts" label="Chart of Accounts" />
               <SidebarLink href="/dashboard/journal-entries" label="Journal Entries" />
             </div>
-            
+
             {/* Accounts Receivable links */}
             <div className="border-t my-2 pt-2" suppressHydrationWarning>
               <h3 className="font-semibold mb-2 text-gray-600">Accounts Receivable</h3>
               <SidebarLink href="/dashboard/customers" label="Customers" />
               <SidebarLink href="/dashboard/invoices" label="Invoices" />
             </div>
-            
+
             {/* Admin links - only show for admin users */}
             {user && user.roles && user.roles.includes('admin') && (
               <div className="border-t my-2 pt-2" suppressHydrationWarning>
@@ -74,12 +74,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </div>
             )}
           </div>
-          
+
           <div className="border-t p-4" suppressHydrationWarning>
             <div className="mb-2 text-sm text-gray-600">
               Signed in as: <span className="font-semibold">{user?.name}</span>
             </div>
-            <button 
+            <button
               onClick={handleLogout}
               className="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
             >
@@ -87,17 +87,20 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </button>
           </div>
         </div>
-        
+
         {/* Main content */}
         <div className="flex-grow bg-gray-50 overflow-auto" suppressHydrationWarning>
           {/* Header */}
-          <header className="bg-white shadow-sm p-4 flex justify-between items-center" suppressHydrationWarning>
+          <header
+            className="bg-white shadow-sm p-4 flex justify-between items-center"
+            suppressHydrationWarning
+          >
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <div className="text-gray-600">
               {currentDate} {/* Use client-side state instead of direct date call */}
             </div>
           </header>
-          
+
           {/* Content */}
           <div className="p-6" suppressHydrationWarning>
             {children}
@@ -106,4 +109,4 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </div>
     </ProtectedRoute>
   );
-} 
+}

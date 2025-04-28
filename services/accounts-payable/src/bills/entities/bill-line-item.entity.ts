@@ -36,4 +36,4 @@ export class BillLineItem {
 
   @ApiProperty({ description: 'The date when the line item was last updated' })
   updatedAt: Date;
-} 
+}

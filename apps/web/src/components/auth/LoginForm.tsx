@@ -32,11 +32,11 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
     setServerError('');
-    
+
     try {
       // Simulate API call
       console.log('Login form data:', data);
-      
+
       // Mock successful login
       setTimeout(() => {
         router.push('/dashboard');
@@ -94,11 +94,9 @@ export function LoginForm() {
               </FormItem>
             )}
           />
-          
-          {serverError && (
-            <div className="text-sm font-medium text-destructive">{serverError}</div>
-          )}
-          
+
+          {serverError && <div className="text-sm font-medium text-destructive">{serverError}</div>}
+
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign In'}
           </Button>
@@ -106,4 +104,4 @@ export function LoginForm() {
       </Form>
     </div>
   );
-} 
+}

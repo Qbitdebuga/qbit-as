@@ -35,10 +35,10 @@ import {
   DollarSign,
   Users,
   Archive,
-  Printer
-} from "lucide-react";
+  Printer,
+} from 'lucide-react';
 
-export { 
+export {
   Trash2 as TrashIcon,
   Plus as PlusIcon,
   Calendar as CalendarIcon,
@@ -73,10 +73,10 @@ export {
   DollarSign as DollarSignIcon,
   Users as UsersIcon,
   Archive as ArchiveIcon,
-  Printer as PrintIcon
+  Printer as PrintIcon,
 };
 
 // Add a spinning icon based on RefreshCw
 export const SpinnerIcon = (props: React.ComponentProps<typeof RefreshCw>) => (
   <RefreshCw {...props} className={`animate-spin ${props.className || ''}`} />
-); 
+);

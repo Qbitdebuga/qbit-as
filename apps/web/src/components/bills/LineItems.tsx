@@ -32,7 +32,7 @@ export default function LineItems({ lineItems, setLineItems }: LineItemsProps) {
   const addLineItem = () => {
     setLineItems([
       ...lineItems,
-      { id: '', description: '', quantity: 1, unitPrice: 0, accountId: '' }
+      { id: '', description: '', quantity: 1, unitPrice: 0, accountId: '' },
     ]);
   };
 
@@ -46,7 +46,7 @@ export default function LineItems({ lineItems, setLineItems }: LineItemsProps) {
     const updatedItems = [...lineItems];
     updatedItems[index] = {
       ...updatedItems[index],
-      [field]: value
+      [field]: value,
     } as SimpleBillLineItem;
     setLineItems(updatedItems);
   };
@@ -60,12 +60,7 @@ export default function LineItems({ lineItems, setLineItems }: LineItemsProps) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <Label className="text-lg font-medium">Line Items</Label>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={addLineItem}
-        >
+        <Button type="button" variant="outline" size="sm" onClick={addLineItem}>
           <Plus className="h-4 w-4 mr-2" />
           Add Item
         </Button>
@@ -150,4 +145,4 @@ export default function LineItems({ lineItems, setLineItems }: LineItemsProps) {
       </div>
     </div>
   );
-} 
+}

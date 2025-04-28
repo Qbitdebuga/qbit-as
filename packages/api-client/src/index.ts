@@ -84,10 +84,10 @@ export const createApiClient = (baseUrl: string, token?: string) => {
 
 // Export utility for creating service clients
 export const createServiceClient = (
-  baseUrl: string, 
-  serviceId: string, 
+  baseUrl: string,
+  serviceId: string,
   serviceName: string,
-  authUrl: string
+  authUrl: string,
 ) => {
   return new ServiceApiClient(baseUrl, serviceId, serviceName, authUrl, TokenStorage);
 };
@@ -96,5 +96,5 @@ export const createServiceClient = (
 export const accountsPayableClient = {
   vendors: vendorsClient,
   bills: billsClient,
-  payments: paymentsClient
+  payments: paymentsClient,
 };

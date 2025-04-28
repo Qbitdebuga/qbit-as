@@ -1,1 +1,1 @@
-export * from './vendors-client'; 
+export * from './vendors-client';

@@ -8,4 +8,4 @@ import { ClientsModule } from '../clients/clients.module';
   providers: [JwtAuthGuard, RolesGuard],
   exports: [JwtAuthGuard, RolesGuard],
 })
-export class GuardsModule {} 
+export class GuardsModule {}

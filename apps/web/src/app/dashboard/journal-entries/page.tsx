@@ -22,41 +22,41 @@ const journalEntries = [
         id: '101',
         journalEntryId: '1',
         accountId: '5000',
-        account: { 
-          id: '5000', 
+        account: {
+          id: '5000',
           code: '5000',
           name: 'Rent Expense',
           type: 'EXPENSE',
           subtype: 'OPERATING_EXPENSE',
-          isActive: true
+          isActive: true,
         },
         description: 'Office rent',
         debit: 2500,
         credit: undefined,
         createdAt: '2023-04-15T14:30:00Z',
-        updatedAt: '2023-04-15T14:30:00Z'
+        updatedAt: '2023-04-15T14:30:00Z',
       },
       {
         id: '102',
         journalEntryId: '1',
         accountId: '1000',
-        account: { 
-          id: '1000', 
+        account: {
+          id: '1000',
           code: '1000',
           name: 'Cash',
           type: 'ASSET',
           subtype: 'CASH',
-          isActive: true
+          isActive: true,
         },
         description: '',
         debit: undefined,
         credit: 2500,
         createdAt: '2023-04-15T14:30:00Z',
-        updatedAt: '2023-04-15T14:30:00Z'
-      }
+        updatedAt: '2023-04-15T14:30:00Z',
+      },
     ],
     createdAt: '2023-04-15T14:30:00Z',
-    updatedAt: '2023-04-15T14:30:00Z'
+    updatedAt: '2023-04-15T14:30:00Z',
   },
   {
     id: '2',
@@ -71,41 +71,41 @@ const journalEntries = [
         id: '201',
         journalEntryId: '2',
         accountId: '1000',
-        account: { 
-          id: '1000', 
+        account: {
+          id: '1000',
           code: '1000',
           name: 'Cash',
           type: 'ASSET',
           subtype: 'CASH',
-          isActive: true
+          isActive: true,
         },
         description: 'Payment received',
         debit: 5000,
         credit: undefined,
         createdAt: '2023-04-20T10:15:00Z',
-        updatedAt: '2023-04-20T10:15:00Z'
+        updatedAt: '2023-04-20T10:15:00Z',
       },
       {
         id: '202',
         journalEntryId: '2',
         accountId: '1200',
-        account: { 
-          id: '1200', 
+        account: {
+          id: '1200',
           code: '1200',
           name: 'Accounts Receivable',
           type: 'ASSET',
           subtype: 'ACCOUNTS_RECEIVABLE',
-          isActive: true
+          isActive: true,
         },
         description: '',
         debit: undefined,
         credit: 5000,
         createdAt: '2023-04-20T10:15:00Z',
-        updatedAt: '2023-04-20T10:15:00Z'
-      }
+        updatedAt: '2023-04-20T10:15:00Z',
+      },
     ],
     createdAt: '2023-04-20T10:15:00Z',
-    updatedAt: '2023-04-20T10:15:00Z'
+    updatedAt: '2023-04-20T10:15:00Z',
   },
   {
     id: '3',
@@ -120,42 +120,42 @@ const journalEntries = [
         id: '301',
         journalEntryId: '3',
         accountId: '5100',
-        account: { 
-          id: '5100', 
+        account: {
+          id: '5100',
           code: '5100',
           name: 'Utilities Expense',
           type: 'EXPENSE',
           subtype: 'OPERATING_EXPENSE',
-          isActive: true
+          isActive: true,
         },
         description: 'Electricity bill',
         debit: 350,
         credit: undefined,
         createdAt: '2023-04-25T16:45:00Z',
-        updatedAt: '2023-04-25T16:45:00Z'
+        updatedAt: '2023-04-25T16:45:00Z',
       },
       {
         id: '302',
         journalEntryId: '3',
         accountId: '2000',
-        account: { 
-          id: '2000', 
+        account: {
+          id: '2000',
           code: '2000',
           name: 'Accounts Payable',
           type: 'LIABILITY',
           subtype: 'ACCOUNTS_PAYABLE',
-          isActive: true
+          isActive: true,
         },
         description: '',
         debit: undefined,
         credit: 350,
         createdAt: '2023-04-25T16:45:00Z',
-        updatedAt: '2023-04-25T16:45:00Z'
-      }
+        updatedAt: '2023-04-25T16:45:00Z',
+      },
     ],
     createdAt: '2023-04-25T16:45:00Z',
-    updatedAt: '2023-04-25T16:45:00Z'
-  }
+    updatedAt: '2023-04-25T16:45:00Z',
+  },
 ];
 
 export default function JournalEntriesPage() {
@@ -175,9 +175,9 @@ export default function JournalEntriesPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex justify-between items-center">
-        <PageHeader 
-          title="Journal Entries" 
-          description="Record and manage your financial transactions" 
+        <PageHeader
+          title="Journal Entries"
+          description="Record and manage your financial transactions"
         />
         <Link href="/dashboard/journal-entries/new" passHref>
           <Button>
@@ -187,12 +187,12 @@ export default function JournalEntriesPage() {
         </Link>
       </div>
 
-      <JournalEntryList 
-        entries={journalEntries} 
+      <JournalEntryList
+        entries={journalEntries}
         onDelete={handleDelete}
         onPost={handlePost}
         onReverse={handleReverse}
       />
     </div>
   );
-} 
+}

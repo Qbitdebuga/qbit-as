@@ -20,14 +20,14 @@ async function bootstrap() {
     logger,
     bufferLogs: true,
   });
-  
+
   // Get the config service
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3004);
-  
+
   // Set global prefix
   app.setGlobalPrefix('api/v1');
-  
+
   // Set up global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
@@ -36,13 +36,13 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  
+
   // Add global exception filter
   app.useGlobalFilters(new GlobalExceptionFilter());
-  
+
   // Enable CORS
   app.enableCors();
-  
+
   // Set up Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Accounts Payable Service API')
@@ -52,14 +52,14 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
-  
+
   // Simple health check endpoint for Kubernetes probes
   app.use('/health', (req, res) => {
     res.status(200).send('OK');
   });
-  
+
   // Start the application
   await app.listen(port);
   logger.log(`Accounts Payable service running on port ${port}`);
 }
-bootstrap(); 
+bootstrap();

@@ -17,18 +17,18 @@ export default function NewProductPage() {
   const handleSubmit = async (data: Partial<IProduct>) => {
     try {
       setIsSubmitting(true);
-      
+
       // In a real implementation, this would call the API
       // const newProduct = await productsClient.createProduct(data);
-      
+
       // For demo, simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       toast({
         title: 'Product created',
         description: 'New product has been successfully created',
       });
-      
+
       // Navigate to products list or to the new product detail page
       router.push('/dashboard/products');
     } catch (error) {
@@ -42,7 +42,7 @@ export default function NewProductPage() {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleCancel = () => {
     router.push('/dashboard/products');
   };
@@ -51,28 +51,18 @@ export default function NewProductPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleCancel}
-            className="mr-4"
-          >
+          <Button variant="outline" size="sm" onClick={handleCancel} className="mr-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">New Product</h1>
-            <p className="text-muted-foreground">
-              Create a new product in your inventory.
-            </p>
+            <p className="text-muted-foreground">Create a new product in your inventory.</p>
           </div>
         </div>
       </div>
 
-      <ProductForm
-        onSubmit={handleSubmit}
-        isLoading={isSubmitting}
-      />
+      <ProductForm onSubmit={handleSubmit} isLoading={isSubmitting} />
     </div>
   );
-} 
+}

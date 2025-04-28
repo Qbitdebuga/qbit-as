@@ -21,11 +21,11 @@ export class ServiceApiClient extends BaseApiClient {
    * @param authUrl URL for the authentication service (used to get service tokens)
    */
   constructor(
-    baseUrl: string, 
-    serviceId: string, 
+    baseUrl: string,
+    serviceId: string,
     serviceName: string,
     authUrl: string,
-    tokenStorage: typeof TokenStorage = TokenStorage
+    tokenStorage: typeof TokenStorage = TokenStorage,
   ) {
     super(baseUrl, tokenStorage);
     this.serviceId = serviceId;
@@ -49,25 +49,27 @@ export class ServiceApiClient extends BaseApiClient {
     const tokenRequest: ServiceTokenRequestDto = {
       serviceId: this.serviceId,
       serviceName: this.serviceName,
-      scopes: scopes
+      scopes: scopes,
     };
 
     try {
       // Make the request with skipAuthHeader to avoid circular dependency
       const response = await super.post<ServiceTokenResponseDto>(
-        `${this.authUrl}/auth/service-token`, 
+        `${this.authUrl}/auth/service-token`,
         tokenRequest,
-        { skipAuthHeader: true }
+        { skipAuthHeader: true },
       );
-      
+
       // Store token and set expiry (subtract 30 seconds for safety margin)
       this.setServiceToken(response.accessToken);
-      this.tokenExpiry = Date.now() + (response.expiresIn * 1000) - 30000;
-      
+      this.tokenExpiry = Date.now() + response.expiresIn * 1000 - 30000;
+
       return response.accessToken;
     } catch (error) {
       console.error('Service token acquisition failed:', error);
-      throw new Error(`Service authentication failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Service authentication failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -86,12 +88,12 @@ export class ServiceApiClient extends BaseApiClient {
     url: string,
     data?: any,
     options: RequestOptions = {},
-    scopes: string[] = []
+    scopes: string[] = [],
   ): Promise<T> {
     try {
       // Get a token with the appropriate scopes
       await this.getServiceToken(scopes);
-      
+
       // Make the request using the appropriate method
       switch (method) {
         case 'GET':
@@ -107,15 +109,17 @@ export class ServiceApiClient extends BaseApiClient {
       }
     } catch (error) {
       // If token expired, try to refresh and retry once
-      if (error instanceof Error && 
-          (error?.message.includes('401') || error?.message.includes('unauthorized'))) {
+      if (
+        error instanceof Error &&
+        (error?.message.includes('401') || error?.message.includes('unauthorized'))
+      ) {
         // Clear token and expiry to force refresh
         this.clearServiceToken();
         this.tokenExpiry = null;
-        
+
         // Get a new token and retry
         await this.getServiceToken(scopes);
-        
+
         // Make the request again
         switch (method) {
           case 'GET':
@@ -130,9 +134,9 @@ export class ServiceApiClient extends BaseApiClient {
             return this.delete<T>(url, options);
         }
       }
-      
+
       // If not a token issue or retry failed, just rethrow
       throw error;
     }
   }
-} 
+}

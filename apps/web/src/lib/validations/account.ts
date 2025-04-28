@@ -21,28 +21,25 @@ export const accountSchema = z.object({
   }),
   subtype: z.string().optional(),
   isActive: z.boolean().default(true),
-  parentAccountId: z
-    .string()
-    .nullable()
-    .optional(),
+  parentAccountId: z.string().nullable().optional(),
   // Balance should be a valid number with up to 2 decimal places
   balance: z
     .string()
     .optional()
-    .refine(
-      (val) => !val || /^-?\d+(\.\d{1,2})?$/.test(val), 
-      { message: 'Balance must be a valid number with up to 2 decimal places' }
-    )
-    .transform(val => val ? parseFloat(val) : 0),
+    .refine((val) => !val || /^-?\d+(\.\d{1,2})?$/.test(val), {
+      message: 'Balance must be a valid number with up to 2 decimal places',
+    })
+    .transform((val) => (val ? parseFloat(val) : 0)),
   // Tax rate should be a valid percentage (0-100)
   taxRate: z
     .string()
     .optional()
     .refine(
-      (val) => !val || (/^\d+(\.\d{1,2})?$/.test(val) && parseFloat(val) >= 0 && parseFloat(val) <= 100),
-      { message: 'Tax rate must be a valid percentage between 0 and 100' }
+      (val) =>
+        !val || (/^\d+(\.\d{1,2})?$/.test(val) && parseFloat(val) >= 0 && parseFloat(val) <= 100),
+      { message: 'Tax rate must be a valid percentage between 0 and 100' },
     )
-    .transform(val => val ? parseFloat(val) : null),
+    .transform((val) => (val ? parseFloat(val) : null)),
 });
 
 export type AccountFormValues = z.infer<typeof accountSchema>;
@@ -58,4 +55,4 @@ export const accountFilterSchema = z.object({
   dateTo: z.string().optional(),
 });
 
-export type AccountFilterValues = z.infer<typeof accountFilterSchema>; 
+export type AccountFilterValues = z.infer<typeof accountFilterSchema>;

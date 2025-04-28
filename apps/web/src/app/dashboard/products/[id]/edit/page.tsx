@@ -27,17 +27,17 @@ export default function EditProductPage() {
       setIsLoading(false);
       return;
     }
-    
+
     fetchProduct();
   }, [productId]);
 
   const fetchProduct = async () => {
     try {
       setIsLoading(true);
-      
+
       // In a real implementation, this would call the API
       // const product = await productsClient.getProduct(productId);
-      
+
       // For demo, use mock data
       setTimeout(() => {
         // Mock product data
@@ -47,9 +47,13 @@ export default function EditProductPage() {
           name: `Product ${productId}`,
           description: `This is a detailed description for Product ${productId}. It can include various details about the product such as features, specifications, and usage instructions.`,
           categoryId: 1,
-          category: { id: 1, name: 'Office Supplies', description: 'Office supplies and equipment' },
+          category: {
+            id: 1,
+            name: 'Office Supplies',
+            description: 'Office supplies and equipment',
+          },
           price: 199.99,
-          cost: 120.50,
+          cost: 120.5,
           quantityOnHand: 25,
           reorderPoint: 5,
           isActive: true,
@@ -66,7 +70,7 @@ export default function EditProductPage() {
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        
+
         setProduct(mockProduct);
         setIsLoading(false);
       }, 800);
@@ -85,18 +89,18 @@ export default function EditProductPage() {
   const handleSubmit = async (data: Partial<IProduct>) => {
     try {
       setIsSubmitting(true);
-      
+
       // In a real implementation, this would call the API
       // const updatedProduct = await productsClient.updateProduct(productId, data);
-      
+
       // For demo, simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       toast({
         title: 'Product updated',
         description: 'Product has been successfully updated',
       });
-      
+
       // Navigate back to product detail page
       router.push(`/dashboard/products/${productId}`);
     } catch (error) {
@@ -110,7 +114,7 @@ export default function EditProductPage() {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleCancel = () => {
     router.push(`/dashboard/products/${productId}`);
   };
@@ -128,7 +132,7 @@ export default function EditProductPage() {
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-2xl font-bold text-destructive mb-2">Error</h1>
         <p className="text-muted-foreground">{error || 'Product not found'}</p>
-        <button 
+        <button
           className="mt-4 underline text-primary"
           onClick={() => router.push('/dashboard/products')}
         >
@@ -142,29 +146,18 @@ export default function EditProductPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleCancel}
-            className="mr-4"
-          >
+          <Button variant="outline" size="sm" onClick={handleCancel} className="mr-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Edit Product</h1>
-            <p className="text-muted-foreground">
-              Update product information for {product.name}
-            </p>
+            <p className="text-muted-foreground">Update product information for {product.name}</p>
           </div>
         </div>
       </div>
 
-      <ProductForm
-        initialData={product}
-        onSubmit={handleSubmit}
-        isLoading={isSubmitting}
-      />
+      <ProductForm initialData={product} onSubmit={handleSubmit} isLoading={isSubmitting} />
     </div>
   );
-} 
+}

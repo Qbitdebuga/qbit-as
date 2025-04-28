@@ -1,10 +1,10 @@
-import { 
-  Customer, 
-  CustomerContact, 
-  CreateCustomerDto, 
-  UpdateCustomerDto, 
-  CreateCustomerContactDto, 
-  CustomerListParams 
+import {
+  Customer,
+  CustomerContact,
+  CreateCustomerDto,
+  UpdateCustomerDto,
+  CreateCustomerContactDto,
+  CustomerListParams,
 } from '@qbit/shared-types';
 import { ApiClient } from '../api-client';
 import { ApiClientBase } from '../utils/api-client-base';
@@ -17,14 +17,14 @@ export class CustomersClient extends ApiClientBase {
     this.baseUrl = '/customers';
   }
 
-  async getCustomers(params?: CustomerListParams): Promise<{ 
-    data: Customer[]; 
-    total: number | null; 
-    page: number | null; 
-    limit: number 
+  async getCustomers(params?: CustomerListParams): Promise<{
+    data: Customer[];
+    total: number | null;
+    page: number | null;
+    limit: number;
   }> {
     const searchParams: Record<string, string> = {};
-    
+
     if (params) {
       if (params.page) searchParams['page'] = params?.page.toString();
       if (params.limit) searchParams['limit'] = params?.limit.toString();
@@ -36,7 +36,7 @@ export class CustomersClient extends ApiClientBase {
 
     return this.get<{ data: Customer[]; total: number | null; page: number | null; limit: number }>(
       this.baseUrl,
-      { params: searchParams }
+      { params: searchParams },
     );
   }
 
@@ -61,15 +61,21 @@ export class CustomersClient extends ApiClientBase {
   }
 
   // Contact methods
-  async createContact(customerId: string, contact: CreateCustomerContactDto): Promise<CustomerContact> {
+  async createContact(
+    customerId: string,
+    contact: CreateCustomerContactDto,
+  ): Promise<CustomerContact> {
     return this.post<CustomerContact>(`${this.baseUrl}/${customerId}/contacts`, contact);
   }
 
-  async updateContact(id: string, contact: Partial<CreateCustomerContactDto>): Promise<CustomerContact> {
+  async updateContact(
+    id: string,
+    contact: Partial<CreateCustomerContactDto>,
+  ): Promise<CustomerContact> {
     return this.put<CustomerContact>(`${this.baseUrl}/contacts/${id}`, contact);
   }
 
   async deleteContact(id: string): Promise<void> {
     return this.delete<void>(`${this.baseUrl}/contacts/${id}`);
   }
-} 
+}

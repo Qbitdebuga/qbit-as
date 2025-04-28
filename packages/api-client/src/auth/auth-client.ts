@@ -1,10 +1,10 @@
-import { 
-  AuthResponse, 
-  LoginRequest, 
-  RefreshTokenRequest, 
-  TokenResponse, 
+import {
+  AuthResponse,
+  LoginRequest,
+  RefreshTokenRequest,
+  TokenResponse,
   User,
-  UserRegistrationRequest
+  UserRegistrationRequest,
 } from './types';
 import { TokenStorage } from '../utils/token-storage';
 
@@ -34,16 +34,16 @@ export class AuthClient {
     }
 
     const data = await response.json();
-    
+
     // For cookie-based auth we only need to store the user data
     // The auth tokens are handled by HttpOnly cookies
     TokenStorage.setUser(data.user);
-    
+
     // Store CSRF token if provided
     if (data.csrfToken) {
       TokenStorage.setCsrfToken(data.csrfToken);
     }
-    
+
     return data;
   }
 
@@ -92,7 +92,7 @@ export class AuthClient {
     }
 
     const data = await response.json();
-    
+
     // No need to store tokens as they're handled by cookies
     return data;
   }
@@ -104,7 +104,7 @@ export class AuthClient {
     // Try to get from storage first
     const user = TokenStorage.getUser();
     if (user) return user;
-    
+
     // Otherwise fetch from API (using HttpOnly cookies for authentication)
     const response = await fetch(`${this.apiUrl}/api/v1/auth/profile`, {
       method: 'GET',
@@ -129,7 +129,7 @@ export class AuthClient {
     const userData = await response.json();
     // Store the user data
     TokenStorage.setUser(userData);
-    
+
     return userData;
   }
 
@@ -214,4 +214,4 @@ export class AuthClient {
 
     return response.json();
   }
-} 
+}

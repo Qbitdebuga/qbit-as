@@ -11,9 +11,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
           url: configService.get<string>('DATABASE_URL'),
         },
       },
-      log: configService.get<string>('NODE_ENV') === 'development' 
-        ? ['query', 'error', 'warn'] 
-        : ['error'],
+      log:
+        configService.get<string>('NODE_ENV') === 'development'
+          ? ['query', 'error', 'warn']
+          : ['error'],
     });
   }
 
@@ -29,7 +30,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     if (this?.configService.get<string>('NODE_ENV') === 'test') {
       // Only allow this in test environment
       const models = Reflect.ownKeys(this).filter((key) => {
-        return typeof key === 'string' && !key.startsWith('_') && !['$connect', '$disconnect', '$on', '$transaction', '$use'].includes(key as string);
+        return (
+          typeof key === 'string' &&
+          !key.startsWith('_') &&
+          !['$connect', '$disconnect', '$on', '$transaction', '$use'].includes(key as string)
+        );
       });
 
       return Promise.all(
@@ -39,4 +44,4 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       );
     }
   }
-} 
+}

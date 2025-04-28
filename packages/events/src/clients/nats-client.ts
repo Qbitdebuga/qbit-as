@@ -48,7 +48,7 @@ export class NatsClient {
       })().catch(error => console.error('Error monitoring NATS status:', error));
       
       // Setup error handling
-      this?._client.closed().then(err: any => {
+      this?._client.closed().then((err: any) => {
         if (err) {
           console.error('NATS connection closed with error:', err);
         } else {

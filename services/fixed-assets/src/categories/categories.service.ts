@@ -34,4 +34,4 @@ export class CategoriesService {
   async removeCategory(id: string): Promise<void> {
     return this?.assetsService.removeCategory(id);
   }
-} 
+}

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { 
+import {
   Button,
   Card,
   CardContent,
@@ -11,8 +11,8 @@ import {
   CardTitle,
   Tabs,
   TabsContent,
-  TabsList, 
-  TabsTrigger
+  TabsList,
+  TabsTrigger,
 } from '@/components/ui';
 import { BillStatus } from '@/mocks/shared-types';
 
@@ -30,7 +30,7 @@ export default function BillsPage() {
           </Button>
         </Link>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Manage Bills</CardTitle>
@@ -45,27 +45,27 @@ export default function BillsPage() {
               <TabsTrigger value="paid">Paid</TabsTrigger>
               <TabsTrigger value="overdue">Overdue</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="all" className="space-y-4">
               <p className="text-center py-10">Bill list placeholder</p>
             </TabsContent>
-            
+
             <TabsContent value="draft" className="space-y-4">
               <p className="text-center py-10">Draft bills placeholder</p>
             </TabsContent>
-            
+
             <TabsContent value="pending" className="space-y-4">
               <p className="text-center py-10">Pending bills placeholder</p>
             </TabsContent>
-            
+
             <TabsContent value="approved" className="space-y-4">
               <p className="text-center py-10">Approved bills placeholder</p>
             </TabsContent>
-            
+
             <TabsContent value="paid" className="space-y-4">
               <p className="text-center py-10">Paid bills placeholder</p>
             </TabsContent>
-            
+
             <TabsContent value="overdue" className="space-y-4">
               <p className="text-center py-10">Overdue bills placeholder</p>
             </TabsContent>
@@ -74,4 +74,4 @@ export default function BillsPage() {
       </Card>
     </div>
   );
-} 
+}

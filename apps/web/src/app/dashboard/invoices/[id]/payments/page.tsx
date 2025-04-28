@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PaymentStatus } from '@/mocks/shared-types';
 import { paymentsClient } from '@/utils/api-clients';
@@ -23,10 +17,16 @@ export default function InvoicePaymentsPage() {
   const [payments, setPayments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  
+
   // Get invoice ID from route params
-  const invoiceId = params?.id ? (typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '') : '';
-  
+  const invoiceId = params?.id
+    ? typeof params.id === 'string'
+      ? params.id
+      : Array.isArray(params.id)
+        ? params.id[0]
+        : ''
+    : '';
+
   useEffect(() => {
     // Check if we have an invoice ID
     if (!invoiceId) {
@@ -34,13 +34,13 @@ export default function InvoicePaymentsPage() {
       setIsLoading(false);
       return;
     }
-    
+
     async function fetchPayments() {
       try {
         // Set auth token if available
         const token = getAuthToken();
         // Token handling will be done internally by the client
-        
+
         // Fetch payments for this invoice
         if (invoiceId) {
           const data = await paymentsClient.getPaymentsByInvoiceId(invoiceId);
@@ -52,16 +52,16 @@ export default function InvoicePaymentsPage() {
         addToast({
           title: 'Error',
           description: 'Failed to load payments for this invoice',
-          variant: 'destructive'
+          variant: 'destructive',
         });
       } finally {
         setIsLoading(false);
       }
     }
-    
+
     fetchPayments();
   }, [invoiceId, addToast]);
-  
+
   // Helper function to get status badge class
   const getStatusBadge = (status: PaymentStatus) => {
     switch (status) {
@@ -90,13 +90,11 @@ export default function InvoicePaymentsPage() {
           <Button variant="outline">Back to Invoice</Button>
         </Link>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Payment History</CardTitle>
-          <CardDescription>
-            All payments for invoice #{invoiceId}
-          </CardDescription>
+          <CardDescription>All payments for invoice #{invoiceId}</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -135,13 +133,17 @@ export default function InvoicePaymentsPage() {
                       <td className="px-4 py-2">{payment.paymentMethod}</td>
                       <td className="px-4 py-2">{payment.referenceNumber || '-'}</td>
                       <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded text-xs ${getStatusBadge(payment.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded text-xs ${getStatusBadge(payment.status)}`}
+                        >
                           {payment.status}
                         </span>
                       </td>
                       <td className="px-4 py-2">
                         <Link href={`/dashboard/payments/${payment.id}`}>
-                          <Button variant="outline" size="sm">View</Button>
+                          <Button variant="outline" size="sm">
+                            View
+                          </Button>
                         </Link>
                       </td>
                     </tr>
@@ -154,4 +156,4 @@ export default function InvoicePaymentsPage() {
       </Card>
     </div>
   );
-} 
+}

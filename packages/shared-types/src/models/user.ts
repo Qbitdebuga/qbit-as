@@ -93,4 +93,4 @@ export interface AuthTokenResponse {
   expiresIn: number | null;
   user: UserDto;
   csrfToken?: string | null;
-} 
+}

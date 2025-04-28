@@ -1,9 +1,9 @@
 import { ApiClient } from '../api-client';
-import { 
-  JournalEntryBatch, 
-  JournalEntryBatchCreate, 
-  BatchStatus, 
-  BatchProcessResult 
+import {
+  JournalEntryBatch,
+  JournalEntryBatchCreate,
+  BatchStatus,
+  BatchProcessResult,
 } from '@qbit/shared-types';
 
 export class BatchClient {
@@ -25,10 +25,14 @@ export class BatchClient {
   /**
    * Get all batches with pagination
    */
-  async getBatches(skip = 0, take = 10): Promise<{ data: JournalEntryBatch[], meta: { total: number, skip: number, take: number } }> {
-    return this?.client.get<{ data: JournalEntryBatch[], meta: { total: number, skip: number, take: number } }>(
-      `${this.baseUrl}?skip=${skip}&take=${take}`
-    );
+  async getBatches(
+    skip = 0,
+    take = 10,
+  ): Promise<{ data: JournalEntryBatch[]; meta: { total: number; skip: number; take: number } }> {
+    return this?.client.get<{
+      data: JournalEntryBatch[];
+      meta: { total: number; skip: number; take: number };
+    }>(`${this.baseUrl}?skip=${skip}&take=${take}`);
   }
 
   /**
@@ -41,20 +45,20 @@ export class BatchClient {
   /**
    * Process a batch (start the processing)
    */
-  async processBatch(id: string): Promise<{ id: string, status: BatchStatus, message: string }> {
-    return this?.client.post<{ id: string, status: BatchStatus, message: string }>(
-      `${this.baseUrl}/${id}/process`, 
-      {}
+  async processBatch(id: string): Promise<{ id: string; status: BatchStatus; message: string }> {
+    return this?.client.post<{ id: string; status: BatchStatus; message: string }>(
+      `${this.baseUrl}/${id}/process`,
+      {},
     );
   }
 
   /**
    * Cancel a batch
    */
-  async cancelBatch(id: string): Promise<{ id: string, status: BatchStatus, message: string }> {
-    return this?.client.post<{ id: string, status: BatchStatus, message: string }>(
-      `${this.baseUrl}/${id}/cancel`, 
-      {}
+  async cancelBatch(id: string): Promise<{ id: string; status: BatchStatus; message: string }> {
+    return this?.client.post<{ id: string; status: BatchStatus; message: string }>(
+      `${this.baseUrl}/${id}/cancel`,
+      {},
     );
   }
-} 
+}

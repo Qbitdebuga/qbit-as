@@ -1,18 +1,18 @@
 import React from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
   CardTitle,
-  Tabs, 
-  TabsContent, 
-  TabsList, 
+  Tabs,
+  TabsContent,
+  TabsList,
   TabsTrigger,
   Button,
   Badge,
-  Separator
+  Separator,
 } from '@/components/ui';
 import { Account, AccountType } from '@qbit/api-client';
 import { formatDistanceToNow } from 'date-fns';
@@ -43,7 +43,10 @@ const getAccountTypeColor = (type: AccountType) => {
 export const AccountDetail: React.FC<AccountDetailProps> = ({ account }) => {
   // Format enum values for display
   const formatEnumValue = (value: string) => {
-    return value.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    return value
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   return (
@@ -65,13 +68,15 @@ export const AccountDetail: React.FC<AccountDetailProps> = ({ account }) => {
             <Badge variant="outline" className={getAccountTypeColor(account.type)}>
               {account.type}
             </Badge>
-            <Badge variant="outline">
-              {formatEnumValue(account.subtype)}
-            </Badge>
+            <Badge variant="outline">{formatEnumValue(account.subtype)}</Badge>
             {account.isActive ? (
-              <Badge variant="default" className="bg-green-500">Active</Badge>
+              <Badge variant="default" className="bg-green-500">
+                Active
+              </Badge>
             ) : (
-              <Badge variant="outline" className="text-gray-500">Inactive</Badge>
+              <Badge variant="outline" className="text-gray-500">
+                Inactive
+              </Badge>
             )}
           </div>
           <div className="mt-2 text-sm text-gray-500">
@@ -102,7 +107,7 @@ export const AccountDetail: React.FC<AccountDetailProps> = ({ account }) => {
               {account.parent && (
                 <div>
                   <h3 className="text-sm font-medium">Parent Account</h3>
-                  <Link 
+                  <Link
                     href={`/dashboard/accounts/${account.parent.id}`}
                     className="text-sm text-blue-600 hover:underline mt-1 block"
                   >
@@ -138,7 +143,7 @@ export const AccountDetail: React.FC<AccountDetailProps> = ({ account }) => {
                 <h3 className="text-sm font-medium mb-3">Sub-accounts</h3>
                 <div className="space-y-2">
                   {account.children.map((childAccount) => (
-                    <Link 
+                    <Link
                       key={childAccount.id}
                       href={`/dashboard/accounts/${childAccount.id}`}
                       className="block p-3 rounded-md border hover:bg-gray-50"
@@ -167,4 +172,4 @@ export const AccountDetail: React.FC<AccountDetailProps> = ({ account }) => {
       </CardFooter>
     </Card>
   );
-}; 
+};

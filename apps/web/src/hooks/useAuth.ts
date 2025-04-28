@@ -42,14 +42,14 @@ export function useAuth(): UseAuthResult {
       setIsLoading(true);
       // In a real app, this would be an API call to your auth endpoint
       // For demo purposes, we'll just mock a successful login
-      
+
       // Mock successful login
       const mockToken = 'mock_token_' + Math.random().toString(36).substring(2);
       localStorage.setItem('auth_token', mockToken);
-      
+
       setIsAuthenticated(true);
       setUser({ id: '1', email });
-      
+
       return true;
     } catch (error) {
       console.error('Login failed:', error);
@@ -72,4 +72,4 @@ export function useAuth(): UseAuthResult {
     login,
     logout,
   };
-} 
+}

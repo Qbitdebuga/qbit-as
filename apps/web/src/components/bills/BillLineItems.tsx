@@ -28,10 +28,10 @@ export default function BillLineItems({ lineItems }: BillLineItemsProps) {
             <TableHead className="w-[50%]">Description</TableHead>
             <TableHead className="text-right">Quantity</TableHead>
             <TableHead className="text-right">Unit Price</TableHead>
-            {lineItems.some(item => item.taxRate) && (
+            {lineItems.some((item) => item.taxRate) && (
               <TableHead className="text-right">Tax Rate</TableHead>
             )}
-            {lineItems.some(item => item.taxAmount) && (
+            {lineItems.some((item) => item.taxAmount) && (
               <TableHead className="text-right">Tax Amount</TableHead>
             )}
             <TableHead className="text-right">Amount</TableHead>
@@ -50,12 +50,12 @@ export default function BillLineItems({ lineItems }: BillLineItemsProps) {
               </TableCell>
               <TableCell className="text-right">{item.quantity}</TableCell>
               <TableCell className="text-right">{formatCurrency(item.unitPrice)}</TableCell>
-              {lineItems.some(item => item.taxRate) && (
+              {lineItems.some((item) => item.taxRate) && (
                 <TableCell className="text-right">
                   {item.taxRate ? `${item.taxRate}%` : '-'}
                 </TableCell>
               )}
-              {lineItems.some(item => item.taxAmount) && (
+              {lineItems.some((item) => item.taxAmount) && (
                 <TableCell className="text-right">
                   {item.taxAmount ? formatCurrency(item.taxAmount) : '-'}
                 </TableCell>
@@ -64,11 +64,13 @@ export default function BillLineItems({ lineItems }: BillLineItemsProps) {
             </TableRow>
           ))}
           <TableRow>
-            <TableCell colSpan={
-              2 +
-              (lineItems.some(item => item.taxRate) ? 1 : 0) +
-              (lineItems.some(item => item.taxAmount) ? 1 : 0)
-            }>
+            <TableCell
+              colSpan={
+                2 +
+                (lineItems.some((item) => item.taxRate) ? 1 : 0) +
+                (lineItems.some((item) => item.taxAmount) ? 1 : 0)
+              }
+            >
               <div className="font-medium">Total</div>
             </TableCell>
             <TableCell className="text-right">
@@ -79,4 +81,4 @@ export default function BillLineItems({ lineItems }: BillLineItemsProps) {
       </Table>
     </div>
   );
-} 
+}

@@ -1,16 +1,23 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Param, 
-  Query, 
-  UseGuards, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
   Headers,
   UnauthorizedException,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { FinancialReportingService } from './financial-reporting.service';
 import { ReportRequestDto, ReportType } from './dto/report-request.dto';
 import { ReportResponseDto } from './dto/report-response.dto';
@@ -35,11 +42,11 @@ export class FinancialReportingController {
     try {
       const token = authorization.replace('Bearer ', '');
       const validationResult = await this?.authClient.validateToken(token);
-      
+
       if (validationResult && validationResult.userId) {
         return validationResult.userId;
       }
-      
+
       return undefined;
     } catch (error) {
       return undefined;
@@ -48,7 +55,11 @@ export class FinancialReportingController {
 
   @Post('generate')
   @ApiOperation({ summary: 'Generate a financial report' })
-  @ApiResponse({ status: 201, description: 'Report generated successfully', type: ReportResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Report generated successfully',
+    type: ReportResponseDto,
+  })
   @ApiBearerAuth()
   async generateReport(
     @Body(ValidationPipe) reportRequest: ReportRequestDto,
@@ -56,12 +67,12 @@ export class FinancialReportingController {
   ): Promise<ReportResponseDto> {
     // Extract user ID from token (if provided)
     const userId = await this.getUserIdFromToken(authorization);
-    
+
     // Include the userId in the request (if authenticated)
     if (userId) {
       reportRequest.userId = userId;
     }
-    
+
     // Generate the report
     return this?.financialReportingService.generateReport(reportRequest);
   }
@@ -77,10 +88,10 @@ export class FinancialReportingController {
     @Query('limit') limit?: number,
     @Query('type') type?: string,
     @Headers('authorization') authorization?: string,
-  ): Promise<{ data: any[], meta: any }> {
+  ): Promise<{ data: any[]; meta: any }> {
     // Extract user ID from token (if provided)
     const userId = await this.getUserIdFromToken(authorization);
-    
+
     // Get reports
     return this?.financialReportingService.getReports(
       userId,
@@ -100,7 +111,7 @@ export class FinancialReportingController {
   ): Promise<any> {
     // Extract user ID from token (if provided)
     const userId = await this.getUserIdFromToken(authorization);
-    
+
     // Get the report
     return this?.financialReportingService.getReportById(id, true, userId);
   }
@@ -115,7 +126,7 @@ export class FinancialReportingController {
   ): Promise<any> {
     // Extract user ID from token (if provided)
     const userId = await this.getUserIdFromToken(authorization);
-    
+
     // Get the snapshot
     return this?.financialReportingService.getSnapshotById(id, userId);
   }
@@ -131,13 +142,13 @@ export class FinancialReportingController {
   ): Promise<any> {
     // Extract user ID from token (if provided)
     const userId = await this.getUserIdFromToken(authorization);
-    
+
     // Require authentication for this endpoint
     if (!userId) {
       throw new UnauthorizedException('Authentication required to create report snapshots');
     }
-    
+
     // Create the snapshot
     return this?.financialReportingService.createReportSnapshot(id, name, userId);
   }
-} 
+}

@@ -77,4 +77,4 @@ export interface FinancialStatementDto {
   previousTotal?: number | null;
   percentChange?: number | null;
   reportDate: string | null;
-} 
+}

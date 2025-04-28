@@ -11,21 +11,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from '@/components/ui/tabs';
-import { 
-  FileEdit, 
-  Package, 
-  ArrowLeft, 
-  Trash2,
-  ShoppingCart,
-  Tag,
-  Truck 
-} from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FileEdit, Package, ArrowLeft, Trash2, ShoppingCart, Tag, Truck } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { IProduct } from '@qbit/shared-types';
 import { formatCurrency } from '@/utils/format';
@@ -39,7 +26,12 @@ interface ProductDetailProps {
   isLoading?: boolean;
 }
 
-export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: ProductDetailProps) {
+export function ProductDetail({
+  product,
+  onEdit,
+  onDelete,
+  isLoading = false,
+}: ProductDetailProps) {
   const router = useRouter();
   const [dimensions, setDimensions] = useState<any>(null);
 
@@ -60,8 +52,10 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
 
   const stockStatus = () => {
     if (!product.isActive) return { label: 'Inactive', variant: 'outline' as const };
-    if (product.quantityOnHand <= 0) return { label: 'Out of Stock', variant: 'destructive' as const };
-    if (product.quantityOnHand <= (product.reorderPoint || 0)) return { label: 'Low Stock', variant: 'warning' as const };
+    if (product.quantityOnHand <= 0)
+      return { label: 'Out of Stock', variant: 'destructive' as const };
+    if (product.quantityOnHand <= (product.reorderPoint || 0))
+      return { label: 'Low Stock', variant: 'warning' as const };
     return { label: 'In Stock', variant: 'default' as const };
   };
 
@@ -70,32 +64,17 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={handleBack}
-          className="w-fit"
-        >
+        <Button variant="outline" size="sm" onClick={handleBack} className="w-fit">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Products
         </Button>
-        
+
         <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={onEdit}
-            disabled={isLoading}
-          >
+          <Button variant="outline" size="sm" onClick={onEdit} disabled={isLoading}>
             <FileEdit className="mr-2 h-4 w-4" />
             Edit Product
           </Button>
-          <Button 
-            variant="destructive" 
-            size="sm" 
-            onClick={onDelete}
-            disabled={isLoading}
-          >
+          <Button variant="destructive" size="sm" onClick={onDelete} disabled={isLoading}>
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </Button>
@@ -120,27 +99,27 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
                   <h3 className="text-sm font-medium text-muted-foreground">Price</h3>
                   <p className="text-xl font-bold">{formatCurrency(product.price)}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground">Cost</h3>
                   <p className="text-lg">{product.cost ? formatCurrency(product.cost) : '-'}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground">Quantity in Stock</h3>
                   <p className="text-lg">{product.quantityOnHand}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground">Reorder Point</h3>
                   <p className="text-lg">{product.reorderPoint || '-'}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground">Barcode</h3>
                   <p className="text-lg">{product.barcode || '-'}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground">Category</h3>
                   <p className="text-lg">{product.category?.name || '-'}</p>
@@ -178,9 +157,7 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
               <Card>
                 <CardHeader>
                   <CardTitle>Inventory Transactions</CardTitle>
-                  <CardDescription>
-                    History of stock movements for this product
-                  </CardDescription>
+                  <CardDescription>History of stock movements for this product</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-center py-8 text-muted-foreground">
@@ -206,16 +183,16 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-1">Product Options</h3>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant={product.isActive ? "default" : "outline"}>
+                  <Badge variant={product.isActive ? 'default' : 'outline'}>
                     {product.isActive ? 'Active' : 'Inactive'}
                   </Badge>
-                  <Badge variant={product.isSellable ? "default" : "outline"}>
+                  <Badge variant={product.isSellable ? 'default' : 'outline'}>
                     {product.isSellable ? 'Sellable' : 'Not Sellable'}
                   </Badge>
-                  <Badge variant={product.isPurchasable ? "default" : "outline"}>
+                  <Badge variant={product.isPurchasable ? 'default' : 'outline'}>
                     {product.isPurchasable ? 'Purchasable' : 'Not Purchasable'}
                   </Badge>
-                  <Badge variant={product.taxable ? "default" : "outline"}>
+                  <Badge variant={product.taxable ? 'default' : 'outline'}>
                     {product.taxable ? 'Taxable' : 'Not Taxable'}
                   </Badge>
                 </div>
@@ -226,29 +203,38 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
               {(product.weight || dimensions) && (
                 <>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-1">Shipping Information</h3>
-                    
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                      Shipping Information
+                    </h3>
+
                     {product.weight && (
                       <div className="flex items-center py-1">
                         <Truck className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>Weight: {product.weight} {product.weightUnit || 'kg'}</span>
+                        <span>
+                          Weight: {product.weight} {product.weightUnit || 'kg'}
+                        </span>
                       </div>
                     )}
-                    
+
                     {dimensions && (
                       <div className="flex items-center py-1">
                         <Package className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>Dimensions: {dimensions.length} × {dimensions.width} × {dimensions.height} {dimensions.unit || 'cm'}</span>
+                        <span>
+                          Dimensions: {dimensions.length} × {dimensions.width} × {dimensions.height}{' '}
+                          {dimensions.unit || 'cm'}
+                        </span>
                       </div>
                     )}
                   </div>
-                  
+
                   <Separator />
                 </>
               )}
 
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">System Information</h3>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                  System Information
+                </h3>
                 <div className="text-sm space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Created</span>
@@ -268,9 +254,9 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
             <CardFooter className="flex justify-center border-t pt-6 pb-2">
               {product.imageUrl && (
                 <div className="w-full">
-                  <img 
-                    src={product.imageUrl} 
-                    alt={product.name} 
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
                     className="max-w-full h-auto rounded-md border"
                   />
                   <p className="text-xs text-center text-muted-foreground mt-2">Product Image</p>
@@ -303,4 +289,4 @@ export function ProductDetail({ product, onEdit, onDelete, isLoading = false }: 
       </div>
     </div>
   );
-} 
+}

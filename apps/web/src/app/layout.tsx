@@ -10,11 +10,7 @@ export const metadata: Metadata = {
   description: 'Full-Stack Accounting System',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning className={inter.className}>
@@ -24,4 +20,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-} 
+}

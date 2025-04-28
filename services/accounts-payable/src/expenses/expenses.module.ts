@@ -11,11 +11,11 @@ import { ExpenseCategoriesRepository } from './expense-categories.repository';
   imports: [PrismaModule],
   controllers: [ExpensesController, ExpenseCategoriesController],
   providers: [
-    ExpensesService, 
+    ExpensesService,
     ExpensesRepository,
     ExpenseCategoriesService,
-    ExpenseCategoriesRepository
+    ExpenseCategoriesRepository,
   ],
-  exports: [ExpensesService, ExpenseCategoriesService]
+  exports: [ExpensesService, ExpenseCategoriesService],
 })
-export class ExpensesModule {} 
+export class ExpensesModule {}

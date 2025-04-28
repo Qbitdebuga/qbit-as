@@ -69,21 +69,25 @@ export function createSuccessResponse<T>(data: T, meta?: ApiResponseMeta): Succe
   return {
     success: true,
     data,
-    meta
+    meta,
   };
 }
 
 /**
  * Create an error response
  */
-export function createErrorResponse(code: string, message: string, details?: Record<string, any>): ErrorResponse {
+export function createErrorResponse(
+  code: string,
+  message: string,
+  details?: Record<string, any>,
+): ErrorResponse {
   return {
     success: false,
     error: {
       code,
       message,
-      details
-    }
+      details,
+    },
   };
 }
 
@@ -94,10 +98,10 @@ export function createPaginatedResponse<T>(
   data: T[],
   page: number,
   limit: number,
-  totalItems: number
+  totalItems: number,
 ): PaginatedResponse<T> {
   const totalPages = Math.ceil(totalItems / limit);
-  
+
   return {
     success: true,
     data,
@@ -105,7 +109,7 @@ export function createPaginatedResponse<T>(
       page,
       limit,
       totalItems,
-      totalPages
-    }
+      totalPages,
+    },
   };
-} 
+}

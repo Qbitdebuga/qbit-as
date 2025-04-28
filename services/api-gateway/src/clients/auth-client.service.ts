@@ -34,13 +34,13 @@ export class AuthClientService {
     try {
       const serviceId = getRequiredConfig<string>(this.configService, 'SERVICE_ID');
       const serviceName = getRequiredConfig<string>(this.configService, 'SERVICE_NAME');
-      
+
       const response = await this?.httpClient.post('/auth/service-token', {
         serviceId,
         serviceName,
         scopes,
       });
-      
+
       return response?.data.accessToken;
     } catch (error: unknown) {
       const { message, stack } = formatError(error);
@@ -70,8 +70,8 @@ export class AuthClientService {
     try {
       const response = await this?.httpClient.get(`/users/${userId}`, {
         headers: {
-          'Authorization': `Bearer ${serviceToken}`
-        }
+          Authorization: `Bearer ${serviceToken}`,
+        },
       });
       return response.data;
     } catch (error: unknown) {
@@ -84,15 +84,20 @@ export class AuthClientService {
   /**
    * Check if user has the required roles
    */
-  async checkUserRoles(userId: string, requiredRoles: string[], serviceToken: string): Promise<boolean> {
+  async checkUserRoles(
+    userId: string,
+    requiredRoles: string[],
+    serviceToken: string,
+  ): Promise<boolean> {
     try {
-      const response = await this?.httpClient.post('/auth/check-roles', 
+      const response = await this?.httpClient.post(
+        '/auth/check-roles',
         { userId, requiredRoles },
         {
           headers: {
-            'Authorization': `Bearer ${serviceToken}`
-          }
-        }
+            Authorization: `Bearer ${serviceToken}`,
+          },
+        },
       );
       return response?.data.hasAccess;
     } catch (error: unknown) {
@@ -101,4 +106,4 @@ export class AuthClientService {
       return false;
     }
   }
-} 
+}

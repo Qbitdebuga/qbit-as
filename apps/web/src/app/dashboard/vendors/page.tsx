@@ -135,8 +135,8 @@ export default function VendorsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the vendor
-              and all associated data.
+              This action cannot be undone. This will permanently delete the vendor and all
+              associated data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -147,4 +147,4 @@ export default function VendorsPage() {
       </AlertDialog>
     </div>
   );
-} 
+}

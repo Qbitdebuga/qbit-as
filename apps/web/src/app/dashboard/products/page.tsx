@@ -31,7 +31,7 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
-      
+
       // In a real implementation, this would call the API
       // const response = await productsClient.getProducts({
       //   page,
@@ -41,7 +41,7 @@ export default function ProductsPage() {
       //   sortOrder,
       //   isActive: activeTab === 'active' ? true : activeTab === 'inactive' ? false : undefined,
       // });
-      
+
       // For demo, use mock data
       setTimeout(() => {
         // Mock products data
@@ -69,7 +69,7 @@ export default function ProductsPage() {
           createdAt: new Date(),
           updatedAt: new Date(),
         }));
-        
+
         setProducts(mockProducts);
         setTotalProducts(47); // Mock total for pagination
         setIsLoading(false);
@@ -122,9 +122,9 @@ export default function ProductsPage() {
     try {
       // In a real implementation, this would call the API
       // await productsClient.deleteProduct(id);
-      
+
       // For demo, just remove from local state
-      setProducts(products.filter(product => product.id !== id));
+      setProducts(products.filter((product) => product.id !== id));
       toast({
         title: 'Product deleted',
         description: 'The product has been successfully deleted.',
@@ -144,9 +144,7 @@ export default function ProductsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Products</h1>
-          <p className="text-muted-foreground">
-            Manage your product catalog and inventory.
-          </p>
+          <p className="text-muted-foreground">Manage your product catalog and inventory.</p>
         </div>
         <Button onClick={handleAddProduct}>
           <Plus className="mr-2 h-4 w-4" />
@@ -164,9 +162,7 @@ export default function ProductsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl">Product List</CardTitle>
-              <CardDescription>
-                {totalProducts} total products in your catalog
-              </CardDescription>
+              <CardDescription>{totalProducts} total products in your catalog</CardDescription>
             </CardHeader>
             <CardContent>
               <ProductList
@@ -190,13 +186,11 @@ export default function ProductsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl">Active Products</CardTitle>
-              <CardDescription>
-                Products currently available in your catalog
-              </CardDescription>
+              <CardDescription>Products currently available in your catalog</CardDescription>
             </CardHeader>
             <CardContent>
               <ProductList
-                products={products.filter(p => p.isActive)}
+                products={products.filter((p) => p.isActive)}
                 total={totalProducts}
                 page={page}
                 limit={limit}
@@ -222,7 +216,7 @@ export default function ProductsPage() {
             </CardHeader>
             <CardContent>
               <ProductList
-                products={products.filter(p => !p.isActive)}
+                products={products.filter((p) => !p.isActive)}
                 total={totalProducts}
                 page={page}
                 limit={limit}
@@ -241,4 +235,4 @@ export default function ProductsPage() {
       </Tabs>
     </div>
   );
-} 
+}

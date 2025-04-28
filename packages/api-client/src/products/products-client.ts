@@ -1,12 +1,12 @@
 import { AxiosInstance } from 'axios';
-import { 
-  IProduct, 
-  IProductCategory, 
-  IProductVariant, 
-  IProductListResponse, 
+import {
+  IProduct,
+  IProductCategory,
+  IProductVariant,
+  IProductListResponse,
   IProductCategoryListResponse,
   IProductFilterParams,
-  IProductVariantFilterParams
+  IProductVariantFilterParams,
 } from '@qbit/shared-types';
 
 export class ProductsClient {
@@ -71,7 +71,10 @@ export class ProductsClient {
     return response.data;
   }
 
-  async getVariants(productId: number, params?: IProductVariantFilterParams): Promise<IProductVariant[]> {
+  async getVariants(
+    productId: number,
+    params?: IProductVariantFilterParams,
+  ): Promise<IProductVariant[]> {
     const response = await this?.http.get(`${this.basePath}/${productId}/variants`, { params });
     return response.data;
   }

@@ -1,8 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { 
-  IsNotEmpty, IsOptional, IsString, IsNumber, IsBoolean, 
-  IsEnum, IsDate, IsUrl, IsUUID, MaxLength, Min, ValidateNested, 
-  ArrayMinSize, IsArray 
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsBoolean,
+  IsEnum,
+  IsDate,
+  IsUrl,
+  IsUUID,
+  MaxLength,
+  Min,
+  ValidateNested,
+  ArrayMinSize,
+  IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ExpenseStatus, PaymentMethod } from '../entities/expense.entity';
@@ -165,4 +176,4 @@ export class CreateExpenseDto {
   @Type(() => CreateExpenseTagDto)
   @IsOptional()
   tags?: CreateExpenseTagDto[];
-} 
+}

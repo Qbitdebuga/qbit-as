@@ -10,11 +10,12 @@ export default function AggregatedDataPage() {
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Aggregated Data Example</h1>
         <p className="mb-6 text-gray-600">
-          This page demonstrates how to use the useAggregatedData hook to fetch and display data from multiple microservices.
+          This page demonstrates how to use the useAggregatedData hook to fetch and display data
+          from multiple microservices.
         </p>
-        
+
         <AggregatedDataExample />
       </div>
     </DashboardLayout>
   );
-} 
+}

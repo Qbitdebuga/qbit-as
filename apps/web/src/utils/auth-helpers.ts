@@ -1,6 +1,6 @@
 /**
  * Utility functions to help with authentication across components
- * 
+ *
  * Note: This file is deprecated in favor of auth-utils.ts.
  * Please use the newer utilities that support cookie-based authentication.
  */
@@ -43,4 +43,4 @@ export function setupAuthForClient(client: ApiClient): void {
   if (token) {
     client.setToken(token);
   }
-} 
+}

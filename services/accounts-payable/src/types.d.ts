@@ -1,3 +1,3 @@
 declare module '@nestjs/swagger';
 declare module 'express';
-declare module 'passport'; 
+declare module 'passport';

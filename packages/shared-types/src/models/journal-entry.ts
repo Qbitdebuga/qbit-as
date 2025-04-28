@@ -47,4 +47,4 @@ export interface JournalEntryUpdate {
   status?: 'DRAFT' | 'POSTED' | 'REVERSED';
   isAdjustment?: boolean | null;
   lines?: JournalEntryLineCreate[];
-} 
+}

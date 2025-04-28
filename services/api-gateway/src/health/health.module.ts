@@ -15,4 +15,4 @@ import { ConfigModule } from '@nestjs/config';
   ],
   controllers: [HealthController],
 })
-export class HealthModule {} 
+export class HealthModule {}

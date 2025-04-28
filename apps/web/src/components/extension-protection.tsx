@@ -10,6 +10,6 @@ export function ExtensionProtection({ children }: { children: React.ReactNode })
   useEffect(() => {
     protectFromExtensionErrors();
   }, []);
-  
+
   return <>{children}</>;
-} 
+}

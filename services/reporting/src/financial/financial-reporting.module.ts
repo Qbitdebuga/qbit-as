@@ -5,12 +5,9 @@ import { FinancialReportingService } from './financial-reporting.service';
 import { FinancialReportingController } from './financial-reporting.controller';
 
 @Module({
-  imports: [
-    PrismaModule,
-    ClientsModule,
-  ],
+  imports: [PrismaModule, ClientsModule],
   controllers: [FinancialReportingController],
   providers: [FinancialReportingService],
   exports: [FinancialReportingService],
 })
-export class FinancialReportingModule {} 
+export class FinancialReportingModule {}

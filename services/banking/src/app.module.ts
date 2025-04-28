@@ -18,4 +18,4 @@ import { EventsModule } from './events/events.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {} 
+export class AppModule {}

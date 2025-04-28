@@ -1,1 +1,1 @@
-export * from './journal-entries-client'; 
+export * from './journal-entries-client';

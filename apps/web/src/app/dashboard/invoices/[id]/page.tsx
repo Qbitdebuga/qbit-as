@@ -15,7 +15,8 @@ export default function InvoiceDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const { fetchById, refetch } = useInvoices({ autoFetch: false });
 
-  const invoiceId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+  const invoiceId =
+    typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
 
   useEffect(() => {
     const loadInvoice = async () => {
@@ -25,27 +26,27 @@ export default function InvoiceDetailPage() {
       }
 
       setIsLoading(true);
-      
+
       try {
         const data = await fetchById(invoiceId);
-        
+
         if (!data) {
           toast({
-            title: "Invoice not found",
-            description: "The requested invoice could not be found.",
-            variant: "destructive",
+            title: 'Invoice not found',
+            description: 'The requested invoice could not be found.',
+            variant: 'destructive',
           });
           router.push('/dashboard/invoices');
           return;
         }
-        
+
         setInvoice(data);
       } catch (error) {
         console.error('Error loading invoice:', error);
         toast({
-          title: "Error",
-          description: "There was an error loading the invoice. Please try again.",
-          variant: "destructive",
+          title: 'Error',
+          description: 'There was an error loading the invoice. Please try again.',
+          variant: 'destructive',
         });
       } finally {
         setIsLoading(false);
@@ -78,4 +79,4 @@ export default function InvoiceDetailPage() {
       <InvoiceDetail invoice={invoice} onStatusChange={handleStatusChange} />
     </div>
   );
-} 
+}

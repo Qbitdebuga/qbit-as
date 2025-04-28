@@ -12,12 +12,12 @@
 export const formatDate = (
   date: Date | string | number | null | undefined,
   format: 'short' | 'medium' | 'long' | 'full' | 'custom' = 'medium',
-  locale = 'en-US'
+  locale = 'en-US',
 ): string => {
   if (date === null || date === undefined) return 'N/A';
-  
+
   let dateObj: Date;
-  
+
   if (typeof date === 'string') {
     dateObj = new Date(date);
   } else if (typeof date === 'number') {
@@ -25,9 +25,9 @@ export const formatDate = (
   } else {
     dateObj = date;
   }
-  
+
   if (isNaN(dateObj.getTime())) return 'N/A';
-  
+
   if (format === 'custom') {
     return new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -35,9 +35,9 @@ export const formatDate = (
       day: 'numeric',
     }).format(dateObj);
   }
-  
+
   const options: Intl.DateTimeFormatOptions = { dateStyle: format };
-  
+
   return new Intl.DateTimeFormat(locale, options).format(dateObj);
 };
 
@@ -51,14 +51,14 @@ export const formatDate = (
 export const formatCurrency = (
   value: number | string | null | undefined,
   currency = 'USD',
-  locale = 'en-US'
+  locale = 'en-US',
 ): string => {
   if (value === null || value === undefined) return '';
-  
+
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
-  
+
   if (isNaN(numValue)) return '';
-  
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
@@ -77,14 +77,14 @@ export const formatCurrency = (
 export const formatNumber = (
   value: number | string | null | undefined,
   decimalPlaces = 2,
-  locale = 'en-US'
+  locale = 'en-US',
 ): string => {
   if (value === null || value === undefined) return '';
-  
+
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
-  
+
   if (isNaN(numValue)) return '';
-  
+
   return new Intl.NumberFormat(locale, {
     minimumFractionDigits: decimalPlaces,
     maximumFractionDigits: decimalPlaces,
@@ -101,14 +101,14 @@ export const formatNumber = (
 export const formatPercentage = (
   value: number | string | null | undefined,
   decimalPlaces = 2,
-  locale = 'en-US'
+  locale = 'en-US',
 ): string => {
   if (value === null || value === undefined) return '';
-  
+
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
-  
+
   if (isNaN(numValue)) return '';
-  
+
   return new Intl.NumberFormat(locale, {
     style: 'percent',
     minimumFractionDigits: decimalPlaces,
@@ -131,14 +131,11 @@ export const formatQuantity = (value: number | string | null | undefined): strin
  * @param locale The locale code (default: en-US)
  * @returns Formatted date and time string
  */
-export function formatDateTime(
-  date: string | Date | undefined | null,
-  locale = 'en-US'
-): string {
+export function formatDateTime(date: string | Date | undefined | null, locale = 'en-US'): string {
   if (!date) return 'N/A';
-  
+
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
+
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'short',
@@ -146,4 +143,4 @@ export function formatDateTime(
     hour: '2-digit',
     minute: '2-digit',
   }).format(dateObj);
-} 
+}

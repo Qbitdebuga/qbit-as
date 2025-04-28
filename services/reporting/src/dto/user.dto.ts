@@ -7,4 +7,4 @@ export interface UserDto {
   metadata?: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
-} 
+}

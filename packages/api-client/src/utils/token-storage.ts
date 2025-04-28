@@ -11,10 +11,10 @@ const setCookie = (name: string, value: string, days = 7) => {
 };
 
 // Helper to get cookie value
-const getCookie = (name: string): string | null: any => {
+const getCookie = (name: string): string | null => {
   if (typeof document === 'undefined') return null;
   const match = document?.cookie.match(new RegExp(`(^|;\\s*)(${name})=([^;]*)`));
-  return match ? (match[3] || null) : null;
+  return match ? match[3] || null : null;
 };
 
 // Helper to delete cookie
@@ -33,7 +33,7 @@ export const TokenStorage = {
       localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
       localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
       localStorage.setItem(USER_KEY, JSON.stringify(user));
-      
+
       // Also store as cookies for NextJS middleware
       setCookie(ACCESS_TOKEN_KEY, accessToken);
       setCookie(REFRESH_TOKEN_KEY, refreshToken);
@@ -68,7 +68,7 @@ export const TokenStorage = {
       localStorage.removeItem(REFRESH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
       localStorage.removeItem(CSRF_TOKEN_KEY);
-      
+
       // Clear cookies
       deleteCookie(ACCESS_TOKEN_KEY);
       deleteCookie(REFRESH_TOKEN_KEY);
@@ -83,7 +83,7 @@ export const TokenStorage = {
       // Try localStorage first
       const token = localStorage.getItem(ACCESS_TOKEN_KEY);
       if (token) return token;
-      
+
       // Fall back to cookies
       return getCookie(ACCESS_TOKEN_KEY);
     }
@@ -98,7 +98,7 @@ export const TokenStorage = {
       // Try localStorage first
       const token = localStorage.getItem(REFRESH_TOKEN_KEY);
       if (token) return token;
-      
+
       // Fall back to cookies
       return getCookie(REFRESH_TOKEN_KEY);
     }
@@ -141,5 +141,5 @@ export const TokenStorage = {
    */
   isAuthenticated(): boolean {
     return !!this.getAccessToken() || !!this.getUser();
-  }
-}; 
+  },
+};

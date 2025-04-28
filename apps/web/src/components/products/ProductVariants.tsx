@@ -26,15 +26,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-import { 
-  FileEdit, 
-  MoreHorizontal, 
-  Plus, 
-  Trash2, 
-  Loader2, 
-  SlidersHorizontal 
-} from 'lucide-react';
-import { 
+import { FileEdit, MoreHorizontal, Plus, Trash2, Loader2, SlidersHorizontal } from 'lucide-react';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -46,16 +39,16 @@ import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
-  Form, 
-  FormControl, 
-  FormDescription, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
-import { 
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -76,12 +69,12 @@ const MOCK_VARIANTS: IProductVariant[] = [
     name: 'Office Chair - Black, Small',
     attributes: { color: 'Black', size: 'Small' },
     price: 199.99,
-    cost: 120.00,
+    cost: 120.0,
     quantityOnHand: 5,
     reorderPoint: 2,
     isActive: true,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -90,12 +83,12 @@ const MOCK_VARIANTS: IProductVariant[] = [
     name: 'Office Chair - Black, Medium',
     attributes: { color: 'Black', size: 'Medium' },
     price: 219.99,
-    cost: 130.00,
+    cost: 130.0,
     quantityOnHand: 8,
     reorderPoint: 3,
     isActive: true,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
     id: 3,
@@ -104,13 +97,13 @@ const MOCK_VARIANTS: IProductVariant[] = [
     name: 'Office Chair - Black, Large',
     attributes: { color: 'Black', size: 'Large' },
     price: 239.99,
-    cost: 140.00,
+    cost: 140.0,
     quantityOnHand: 3,
     reorderPoint: 3,
     isActive: true,
     createdAt: new Date(),
-    updatedAt: new Date()
-  }
+    updatedAt: new Date(),
+  },
 ];
 
 // Form schema for variant creation/editing
@@ -138,7 +131,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
-  
+
   // Initialize form with react-hook-form
   const form = useForm<VariantFormValues>({
     resolver: zodResolver(variantFormSchema),
@@ -162,7 +155,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
         // In real implementation, replace with actual API call
         // const response = await productsClient.getVariants(productId);
         // setVariants(response);
-        
+
         // For demo, use mock data
         setTimeout(() => {
           setVariants(MOCK_VARIANTS);
@@ -219,14 +212,14 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
 
   const confirmDelete = async () => {
     if (!selectedVariant) return;
-    
+
     try {
       // In real implementation, call API to delete variant
       // await productsClient.deleteVariant(selectedVariant.id);
-      
+
       // For demo, just update local state
-      setVariants(variants.filter(v => v.id !== selectedVariant.id));
-      
+      setVariants(variants.filter((v) => v.id !== selectedVariant.id));
+
       toast({
         title: 'Variant deleted',
         description: `Variant "${selectedVariant.name}" has been deleted`,
@@ -251,9 +244,9 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
         try {
           attributes = JSON.parse(values.attributes);
         } catch (e) {
-          form.setError('attributes', { 
-            type: 'parse', 
-            message: 'Invalid JSON format' 
+          form.setError('attributes', {
+            type: 'parse',
+            message: 'Invalid JSON format',
           });
           return;
         }
@@ -264,17 +257,17 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
         productId,
         attributes,
       };
-      
+
       if (selectedVariant) {
         // Update existing variant
         // In real implementation, call API to update variant
         // await productsClient.updateVariant(selectedVariant.id, variantData);
-        
+
         // For demo, just update local state
-        setVariants(variants.map(v => 
-          v.id === selectedVariant.id ? { ...v, ...variantData } : v
-        ));
-        
+        setVariants(
+          variants.map((v) => (v.id === selectedVariant.id ? { ...v, ...variantData } : v)),
+        );
+
         toast({
           title: 'Variant updated',
           description: `Variant "${values.name}" has been updated`,
@@ -283,12 +276,14 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
         // Create new variant
         // In real implementation, call API to create variant
         // const response = await productsClient.createVariant(productId, variantData);
-        
+
         // For demo, just update local state
         const newVariant: IProductVariant = {
-          id: Math.max(0, ...variants.map(v => v.id)) + 1,
+          id: Math.max(0, ...variants.map((v) => v.id)) + 1,
           productId,
-          sku: values.sku || `PROD-${productId.toString().padStart(5, '0')}-VAR-${variants.length + 1}`,
+          sku:
+            values.sku ||
+            `PROD-${productId.toString().padStart(5, '0')}-VAR-${variants.length + 1}`,
           name: values.name,
           price: values.price || 0,
           cost: values.cost || null,
@@ -299,15 +294,15 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        
+
         setVariants([...variants, newVariant]);
-        
+
         toast({
           title: 'Variant created',
           description: `Variant "${values.name}" has been created`,
         });
       }
-      
+
       setIsDialogOpen(false);
       setIsEditSheetOpen(false);
     } catch (error) {
@@ -322,7 +317,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
 
   const renderAttributeBadges = (attributes: Record<string, any> | undefined) => {
     if (!attributes) return null;
-    
+
     return Object.entries(attributes).map(([key, value]) => (
       <Badge key={key} variant="outline" className="mr-1">
         {key}: {value}
@@ -344,7 +339,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
           Add Variant
         </Button>
       </div>
-      
+
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-8">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -381,18 +376,18 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                 <TableRow key={variant.id}>
                   <TableCell className="font-medium">{variant.name}</TableCell>
                   <TableCell>{variant.sku}</TableCell>
-                  <TableCell>
-                    {renderAttributeBadges(variant.attributes)}
-                  </TableCell>
+                  <TableCell>{renderAttributeBadges(variant.attributes)}</TableCell>
                   <TableCell>{formatCurrency(variant.price)}</TableCell>
                   <TableCell>
                     {variant.quantityOnHand}
                     {variant.quantityOnHand <= (variant.reorderPoint || 0) ? (
-                      <Badge variant="destructive" className="ml-2">Low</Badge>
+                      <Badge variant="destructive" className="ml-2">
+                        Low
+                      </Badge>
                     ) : null}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={variant.isActive ? "default" : "outline"}>
+                    <Badge variant={variant.isActive ? 'default' : 'outline'}>
                       {variant.isActive ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
@@ -409,7 +404,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                           <FileEdit className="h-4 w-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => handleDeleteVariant(variant)}
                           className="text-destructive focus:text-destructive"
                         >
@@ -425,7 +420,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
           </Table>
         </div>
       )}
-      
+
       {/* Add Variant Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
@@ -435,7 +430,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
               Create a new variation of this product with different attributes.
             </DialogDescription>
           </DialogHeader>
-          
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -447,14 +442,12 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     <FormControl>
                       <Input placeholder="Office Chair - Black, Large" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Name that identifies this variant
-                    </FormDescription>
+                    <FormDescription>Name that identifies this variant</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="sku"
@@ -462,16 +455,18 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                   <FormItem>
                     <FormLabel>SKU</FormLabel>
                     <FormControl>
-                      <Input placeholder="Leave blank to auto-generate" {...field} value={field.value || ''} />
+                      <Input
+                        placeholder="Leave blank to auto-generate"
+                        {...field}
+                        value={field.value || ''}
+                      />
                     </FormControl>
-                    <FormDescription>
-                      Stock Keeping Unit (unique identifier)
-                    </FormDescription>
+                    <FormDescription>Stock Keeping Unit (unique identifier)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -480,10 +475,10 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     <FormItem>
                       <FormLabel>Price</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="0.01" 
-                          placeholder="0.00" 
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
                           {...field}
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                           value={field.value || ''}
@@ -493,7 +488,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="cost"
@@ -501,12 +496,14 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     <FormItem>
                       <FormLabel>Cost</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="0.01" 
-                          placeholder="0.00" 
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                          onChange={(e) =>
+                            field.onChange(e.target.value ? parseFloat(e.target.value) : null)
+                          }
                           value={field.value === null ? '' : field.value}
                         />
                       </FormControl>
@@ -515,7 +512,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                   )}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -524,10 +521,10 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     <FormItem>
                       <FormLabel>Stock Quantity</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="1" 
-                          placeholder="0" 
+                        <Input
+                          type="number"
+                          step="1"
+                          placeholder="0"
                           {...field}
                           onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                           value={field.value || ''}
@@ -537,7 +534,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="reorderPoint"
@@ -545,12 +542,14 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     <FormItem>
                       <FormLabel>Reorder Point</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="1" 
-                          placeholder="5" 
+                        <Input
+                          type="number"
+                          step="1"
+                          placeholder="5"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
+                          onChange={(e) =>
+                            field.onChange(e.target.value ? parseInt(e.target.value) : null)
+                          }
                           value={field.value === null ? '' : field.value}
                         />
                       </FormControl>
@@ -559,7 +558,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                   )}
                 />
               </div>
-              
+
               <FormField
                 control={form.control}
                 name="attributes"
@@ -567,10 +566,10 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                   <FormItem>
                     <FormLabel>Attributes (JSON)</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder='{"color": "Black", "size": "Large"}' 
-                        {...field} 
-                        value={field.value || ''} 
+                      <Input
+                        placeholder='{"color": "Black", "size": "Large"}'
+                        {...field}
+                        value={field.value || ''}
                       />
                     </FormControl>
                     <FormDescription>
@@ -580,7 +579,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                   </FormItem>
                 )}
               />
-              
+
               <DialogFooter>
                 <Button type="submit">Save Variant</Button>
               </DialogFooter>
@@ -588,17 +587,15 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
           </Form>
         </DialogContent>
       </Dialog>
-      
+
       {/* Edit Variant Sheet */}
       <Sheet open={isEditSheetOpen} onOpenChange={setIsEditSheetOpen}>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Edit Variant</SheetTitle>
-            <SheetDescription>
-              Update the details for this product variant.
-            </SheetDescription>
+            <SheetDescription>Update the details for this product variant.</SheetDescription>
           </SheetHeader>
-          
+
           <div className="mt-6">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -615,7 +612,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="sku"
@@ -623,20 +620,14 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     <FormItem>
                       <FormLabel>SKU</FormLabel>
                       <FormControl>
-                        <Input 
-                          disabled={true} 
-                          {...field} 
-                          value={field.value || ''} 
-                        />
+                        <Input disabled={true} {...field} value={field.value || ''} />
                       </FormControl>
-                      <FormDescription>
-                        SKU cannot be changed after creation
-                      </FormDescription>
+                      <FormDescription>SKU cannot be changed after creation</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -645,10 +636,10 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                       <FormItem>
                         <FormLabel>Price</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01" 
-                            placeholder="0.00" 
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="0.00"
                             {...field}
                             onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             value={field.value || ''}
@@ -658,7 +649,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="cost"
@@ -666,12 +657,14 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                       <FormItem>
                         <FormLabel>Cost</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01" 
-                            placeholder="0.00" 
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="0.00"
                             {...field}
-                            onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                            onChange={(e) =>
+                              field.onChange(e.target.value ? parseFloat(e.target.value) : null)
+                            }
                             value={field.value === null ? '' : field.value}
                           />
                         </FormControl>
@@ -680,7 +673,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     )}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -689,10 +682,10 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                       <FormItem>
                         <FormLabel>Stock Quantity</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="1" 
-                            placeholder="0" 
+                          <Input
+                            type="number"
+                            step="1"
+                            placeholder="0"
                             {...field}
                             onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                             value={field.value || ''}
@@ -702,7 +695,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="reorderPoint"
@@ -710,12 +703,14 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                       <FormItem>
                         <FormLabel>Reorder Point</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="1" 
-                            placeholder="5" 
+                          <Input
+                            type="number"
+                            step="1"
+                            placeholder="5"
                             {...field}
-                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
+                            onChange={(e) =>
+                              field.onChange(e.target.value ? parseInt(e.target.value) : null)
+                            }
                             value={field.value === null ? '' : field.value}
                           />
                         </FormControl>
@@ -724,7 +719,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     )}
                   />
                 </div>
-                
+
                 <FormField
                   control={form.control}
                   name="attributes"
@@ -732,10 +727,10 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     <FormItem>
                       <FormLabel>Attributes (JSON)</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder='{"color": "Black", "size": "Large"}' 
-                          {...field} 
-                          value={field.value || ''} 
+                        <Input
+                          placeholder='{"color": "Black", "size": "Large"}'
+                          {...field}
+                          value={field.value || ''}
                         />
                       </FormControl>
                       <FormDescription>
@@ -745,7 +740,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="isActive"
@@ -768,7 +763,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="mt-6 space-x-2 flex justify-end">
                   <Button type="submit">Update Variant</Button>
                 </div>
@@ -777,7 +772,7 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
           </div>
         </SheetContent>
       </Sheet>
-      
+
       {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
@@ -787,25 +782,19 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
               Are you sure you want to delete this variant? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          
+
           {selectedVariant && (
             <div className="py-4">
               <p className="font-medium">{selectedVariant.name}</p>
               <p className="text-sm text-muted-foreground">SKU: {selectedVariant.sku}</p>
             </div>
           )}
-          
+
           <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setIsDeleteDialogOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
-              onClick={confirmDelete}
-            >
+            <Button variant="destructive" onClick={confirmDelete}>
               Delete
             </Button>
           </DialogFooter>
@@ -813,4 +802,4 @@ export function ProductVariants({ productId }: ProductVariantsProps) {
       </Dialog>
     </div>
   );
-} 
+}

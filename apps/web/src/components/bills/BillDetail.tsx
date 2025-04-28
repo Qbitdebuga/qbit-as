@@ -2,13 +2,7 @@
 
 import React from 'react';
 import { Bill, BillStatus } from '@/mocks/shared-types';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Badge
-} from '@/components/ui';
+import { Card, CardContent, CardHeader, CardTitle, Badge } from '@/components/ui';
 import { formatCurrency, formatDate } from '@/utils/formatters';
 
 interface BillDetailProps {
@@ -59,21 +53,15 @@ const BillDetail: React.FC<BillDetailProps> = ({ bill }) => {
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Date</p>
-              <p className="text-lg font-semibold">
-                {formatDate(bill.date)}
-              </p>
+              <p className="text-lg font-semibold">{formatDate(bill.date)}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Due Date</p>
-              <p className="text-lg font-semibold">
-                {formatDate(bill.dueDate)}
-              </p>
+              <p className="text-lg font-semibold">{formatDate(bill.dueDate)}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Total Amount</p>
-              <p className="text-lg font-semibold">
-                {formatCurrency(bill.totalAmount)}
-              </p>
+              <p className="text-lg font-semibold">{formatCurrency(bill.totalAmount)}</p>
             </div>
           </div>
         </CardContent>
@@ -107,15 +95,21 @@ const BillDetail: React.FC<BillDetailProps> = ({ bill }) => {
                   </tr>
                 ))}
                 <tr className="font-medium">
-                  <td colSpan={4} className="p-2 text-right">Subtotal:</td>
+                  <td colSpan={4} className="p-2 text-right">
+                    Subtotal:
+                  </td>
                   <td className="p-2 text-right">{formatCurrency(bill.subtotal || 0)}</td>
                 </tr>
                 <tr className="font-medium">
-                  <td colSpan={4} className="p-2 text-right">Tax:</td>
+                  <td colSpan={4} className="p-2 text-right">
+                    Tax:
+                  </td>
                   <td className="p-2 text-right">{formatCurrency(bill.taxAmount || 0)}</td>
                 </tr>
                 <tr className="font-bold">
-                  <td colSpan={4} className="p-2 text-right">Total:</td>
+                  <td colSpan={4} className="p-2 text-right">
+                    Total:
+                  </td>
                   <td className="p-2 text-right">{formatCurrency(bill.totalAmount)}</td>
                 </tr>
               </tbody>
@@ -127,4 +121,4 @@ const BillDetail: React.FC<BillDetailProps> = ({ bill }) => {
   );
 };
 
-export default BillDetail; 
+export default BillDetail;

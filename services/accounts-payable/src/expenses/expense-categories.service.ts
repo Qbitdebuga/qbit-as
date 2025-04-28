@@ -17,20 +17,15 @@ export class ExpenseCategoriesService {
     isActive?: boolean | null;
     search?: string | null;
   }) {
-    const { 
-      page = 1, 
-      limit = 10, 
-      isActive, 
-      search 
-    } = query;
+    const { page = 1, limit = 10, isActive, search } = query;
 
     // Build the where clause
     const where: any = {};
-    
+
     if (isActive !== undefined) {
       where.isActive = isActive;
     }
-    
+
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
@@ -48,11 +43,11 @@ export class ExpenseCategoriesService {
 
   async findOne(id: number) {
     const category = await this?.expenseCategoriesRepository.findOne(id);
-    
+
     if (!category) {
       throw new NotFoundException(`Expense category with ID ${id} not found`);
     }
-    
+
     return category;
   }
 
@@ -63,13 +58,15 @@ export class ExpenseCategoriesService {
 
   async remove(id: number) {
     await this.findOne(id); // Ensure category exists
-    
+
     try {
       return await this?.expenseCategoriesRepository.remove(id);
     } catch (error) {
       // If there's a foreign key constraint (expenses using this category)
       if (error.code === 'P2003') {
-        throw new ConflictException('This category has expenses associated with it and cannot be deleted.');
+        throw new ConflictException(
+          'This category has expenses associated with it and cannot be deleted.',
+        );
       }
       throw error;
     }
@@ -78,4 +75,4 @@ export class ExpenseCategoriesService {
   async findActive() {
     return this?.expenseCategoriesRepository.findActive();
   }
-} 
+}

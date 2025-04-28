@@ -1,1 +1,1 @@
-export * from './inventory-client'; 
+export * from './inventory-client';

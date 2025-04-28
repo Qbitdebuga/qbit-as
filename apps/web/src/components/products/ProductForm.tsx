@@ -5,33 +5,33 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
   FormMessage,
-  FormDescription 
+  FormDescription,
 } from '@/components/ui/form';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue, 
+  SelectValue,
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
-import { 
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -62,7 +62,7 @@ const productSchema = z.object({
   taxable: z.boolean().default(true),
   taxRateId: z.number().optional().nullable(),
   accountId: z.number().optional().nullable(),
-  imageUrl: z.string().url('Invalid URL').optional().nullable()
+  imageUrl: z.string().url('Invalid URL').optional().nullable(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -75,31 +75,33 @@ interface ProductFormProps {
 
 export function ProductForm({ initialData, onSubmit, isLoading = false }: ProductFormProps) {
   const { categories, isLoading: isCategoriesLoading } = useProductCategories();
-  
+
   // Initialize form with default values
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: initialData ? {
-      ...initialData,
-      // Convert string numbers to actual numbers
-      price: Number(initialData.price),
-      cost: initialData.cost ? Number(initialData.cost) : null,
-      quantityOnHand: Number(initialData.quantityOnHand),
-      reorderPoint: initialData.reorderPoint ? Number(initialData.reorderPoint) : null,
-      weight: initialData.weight ? Number(initialData.weight) : null,
-    } : {
-      name: '',
-      description: '',
-      price: 0,
-      cost: null,
-      quantityOnHand: 0,
-      reorderPoint: null,
-      isActive: true,
-      isSellable: true,
-      isPurchasable: true,
-      taxable: true,
-      weightUnit: 'kg',
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          // Convert string numbers to actual numbers
+          price: Number(initialData.price),
+          cost: initialData.cost ? Number(initialData.cost) : null,
+          quantityOnHand: Number(initialData.quantityOnHand),
+          reorderPoint: initialData.reorderPoint ? Number(initialData.reorderPoint) : null,
+          weight: initialData.weight ? Number(initialData.weight) : null,
+        }
+      : {
+          name: '',
+          description: '',
+          price: 0,
+          cost: null,
+          quantityOnHand: 0,
+          reorderPoint: null,
+          isActive: true,
+          isSellable: true,
+          isPurchasable: true,
+          taxable: true,
+          weightUnit: 'kg',
+        },
   });
 
   // Handle form submission
@@ -117,7 +119,7 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
         accountId: values.accountId || null,
         imageUrl: values.imageUrl || null,
       };
-      
+
       await onSubmit(formattedValues);
       if (!initialData) {
         form.reset(); // Reset form after successful creation
@@ -139,9 +141,7 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
           <Card>
             <CardHeader>
               <CardTitle>Product Information</CardTitle>
-              <CardDescription>
-                Enter the basic information about the product.
-              </CardDescription>
+              <CardDescription>Enter the basic information about the product.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -153,15 +153,17 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem>
                       <FormLabel>SKU</FormLabel>
                       <FormControl>
-                        <Input 
-                          {...field} 
-                          value={field.value || ''} 
-                          disabled={!!initialData} 
+                        <Input
+                          {...field}
+                          value={field.value || ''}
+                          disabled={!!initialData}
                           placeholder="Leave blank for auto-generation"
                         />
                       </FormControl>
                       <FormDescription>
-                        {initialData ? "SKU cannot be changed after creation" : "Leave blank to auto-generate"}
+                        {initialData
+                          ? 'SKU cannot be changed after creation'
+                          : 'Leave blank to auto-generate'}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -193,7 +195,7 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                       <Select
                         disabled={isCategoriesLoading}
                         onValueChange={(value) => field.onChange(value ? Number(value) : null)}
-                        value={field.value?.toString() || ""}
+                        value={field.value?.toString() || ''}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -222,11 +224,11 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem>
                       <FormLabel>Price*</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="0.01" 
-                          min="0" 
-                          placeholder="0.00" 
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
                           {...field}
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                           value={field.value || 0}
@@ -245,13 +247,15 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem>
                       <FormLabel>Cost</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="0.01" 
-                          min="0" 
-                          placeholder="0.00" 
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                          onChange={(e) =>
+                            field.onChange(e.target.value ? parseFloat(e.target.value) : null)
+                          }
                           value={field.value === null ? '' : field.value}
                         />
                       </FormControl>
@@ -268,11 +272,11 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem>
                       <FormLabel>Quantity in Stock</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="1" 
-                          min="0" 
-                          placeholder="0" 
+                        <Input
+                          type="number"
+                          step="1"
+                          min="0"
+                          placeholder="0"
                           {...field}
                           onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                           value={field.value || 0}
@@ -291,13 +295,15 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem>
                       <FormLabel>Reorder Point</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          step="1" 
-                          min="0" 
-                          placeholder="5" 
+                        <Input
+                          type="number"
+                          step="1"
+                          min="0"
+                          placeholder="5"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
+                          onChange={(e) =>
+                            field.onChange(e.target.value ? parseInt(e.target.value) : null)
+                          }
                           value={field.value === null ? '' : field.value}
                         />
                       </FormControl>
@@ -333,13 +339,15 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                       <FormItem>
                         <FormLabel>Weight</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01" 
-                            min="0" 
-                            placeholder="0.00" 
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
                             {...field}
-                            onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : null)}
+                            onChange={(e) =>
+                              field.onChange(e.target.value ? parseFloat(e.target.value) : null)
+                            }
                             value={field.value === null ? '' : field.value}
                           />
                         </FormControl>
@@ -354,10 +362,7 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Unit</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value || 'kg'}
-                        >
+                        <Select onValueChange={field.onChange} value={field.value || 'kg'}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select unit" />
@@ -384,10 +389,10 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem>
                       <FormLabel>Dimensions</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder='{"length": 60, "width": 60, "height": 120, "unit": "cm"}' 
-                          {...field} 
-                          value={field.value || ''} 
+                        <Input
+                          placeholder='{"length": 60, "width": 60, "height": 120, "unit": "cm"}'
+                          {...field}
+                          value={field.value || ''}
                         />
                       </FormControl>
                       <FormDescription>
@@ -406,7 +411,11 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem>
                       <FormLabel>Image URL</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://example.com/images/product.jpg" {...field} value={field.value || ''} />
+                        <Input
+                          placeholder="https://example.com/images/product.jpg"
+                          {...field}
+                          value={field.value || ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -422,11 +431,11 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Detailed description of the product" 
-                        className="min-h-32" 
-                        {...field} 
-                        value={field.value || ''} 
+                      <Textarea
+                        placeholder="Detailed description of the product"
+                        className="min-h-32"
+                        {...field}
+                        value={field.value || ''}
                       />
                     </FormControl>
                     <FormMessage />
@@ -450,10 +459,7 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -467,15 +473,10 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Sellable</FormLabel>
-                        <FormDescription>
-                          Can this product be sold to customers?
-                        </FormDescription>
+                        <FormDescription>Can this product be sold to customers?</FormDescription>
                       </div>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -494,10 +495,7 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -511,27 +509,19 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Taxable</FormLabel>
-                        <FormDescription>
-                          Is this product subject to sales tax?
-                        </FormDescription>
+                        <FormDescription>Is this product subject to sales tax?</FormDescription>
                       </div>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
             </CardContent>
-            
+
             <CardFooter className="flex justify-end space-x-2">
-              <Button 
-                type="submit" 
-                disabled={isLoading}
-              >
+              <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'Saving...' : initialData ? 'Update Product' : 'Create Product'}
               </Button>
             </CardFooter>
@@ -555,4 +545,4 @@ export function ProductForm({ initialData, onSubmit, isLoading = false }: Produc
       </form>
     </Form>
   );
-} 
+}

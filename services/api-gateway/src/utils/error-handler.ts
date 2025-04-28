@@ -3,17 +3,17 @@
  */
 export function formatError(error: unknown): { message: string | null; stack?: string } {
   if (error instanceof Error) {
-    return { 
+    return {
       message: error.message,
-      stack: error.stack
+      stack: error.stack,
     };
   }
-  
+
   // For string errors
   if (typeof error === 'string') {
     return { message: error };
   }
-  
+
   // For other types, stringify if possible
   try {
     const message = JSON.stringify(error);
@@ -21,4 +21,4 @@ export function formatError(error: unknown): { message: string | null; stack?: s
   } catch {
     return { message: 'Unknown error' };
   }
-} 
+}

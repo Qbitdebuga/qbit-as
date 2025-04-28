@@ -1,6 +1,6 @@
 /**
  * Data Validator Utilities
- * 
+ *
  * These utilities provide validation for common data types and patterns
  * across microservices.
  */
@@ -15,8 +15,7 @@ export class DataValidator {
    * Validate that a string is a valid UUID v4
    */
   static isUuid(value: string): boolean {
-    const uuidRegex = 
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(value);
   }
 
@@ -35,7 +34,7 @@ export class DataValidator {
   static isIsoDate(value: string): boolean {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(value)) return false;
-    
+
     // Check if it's a valid date
     const date = new Date(value);
     return !isNaN(date.getTime());
@@ -67,28 +66,28 @@ export class DataValidator {
    */
   static isCurrencyAmount(value: number): boolean {
     if (!this.isValidNumber(value)) return false;
-    
+
     // Check if it has at most 2 decimal places
     const decimalStr = value.toString().split('.')[1] || '';
     return decimalStr.length <= 2;
   }
 
   /**
-   * Validate entity ID references 
+   * Validate entity ID references
    * Checks if an array of IDs exists in a Map of valid entities
    */
   static validateEntityReferences<T>(
     entityName: string,
     entityIds: string[],
     entitiesMap: Map<string, T>,
-    fieldName: string = 'id'
+    fieldName: string = 'id',
   ): ValidationResult {
-    const invalidIds = entityIds.filter(id => !entitiesMap.has(id));
-    
+    const invalidIds = entityIds.filter((id) => !entitiesMap.has(id));
+
     if (invalidIds.length === 0) {
       return { valid: true, errors: [] };
     }
-    
+
     return {
       valid: false,
       errors: [
@@ -96,9 +95,9 @@ export class DataValidator {
           `Invalid ${entityName} references: ${invalidIds.join(', ')}`,
           'INVALID_REFERENCE',
           fieldName,
-          { invalidIds }
-        )
-      ]
+          { invalidIds },
+        ),
+      ],
     };
   }
 
@@ -107,17 +106,17 @@ export class DataValidator {
    */
   static validateRequiredFields(
     obj: Record<string, any>,
-    requiredFields: string[]
+    requiredFields: string[],
   ): ValidationResult {
     const missingFields = requiredFields.filter((field: any) => {
       const value = obj[field];
       return value === undefined || value === null || value === '';
     });
-    
+
     if (missingFields.length === 0) {
       return { valid: true, errors: [] };
     }
-    
+
     return {
       valid: false,
       errors: [
@@ -125,9 +124,9 @@ export class DataValidator {
           `Missing required fields: ${missingFields.join(', ')}`,
           'MISSING_REQUIRED_FIELDS',
           undefined,
-          { missingFields }
-        )
-      ]
+          { missingFields },
+        ),
+      ],
     };
   }
 
@@ -137,45 +136,44 @@ export class DataValidator {
   static validateMonetaryValue(
     value: number,
     fieldName: string,
-    options: { allowNegative?: boolean | null; allowZero?: boolean } = {}
+    options: { allowNegative?: boolean | null; allowZero?: boolean } = {},
   ): ValidationResult {
     const errors: ValidationError[] = [];
-    
+
     if (!this.isValidNumber(value)) {
-      errors.push(new ValidationError(
-        `${fieldName} must be a valid number`,
-        'INVALID_MONEY_FORMAT',
-        fieldName
-      ));
+      errors.push(
+        new ValidationError(
+          `${fieldName} must be a valid number`,
+          'INVALID_MONEY_FORMAT',
+          fieldName,
+        ),
+      );
       return { valid: false, errors };
     }
-    
+
     if (!this.isCurrencyAmount(value)) {
-      errors.push(new ValidationError(
-        `${fieldName} must have at most 2 decimal places`,
-        'INVALID_MONEY_PRECISION',
-        fieldName,
-        { value }
-      ));
+      errors.push(
+        new ValidationError(
+          `${fieldName} must have at most 2 decimal places`,
+          'INVALID_MONEY_PRECISION',
+          fieldName,
+          { value },
+        ),
+      );
     }
-    
+
     if (!options.allowNegative && value < 0) {
-      errors.push(new ValidationError(
-        `${fieldName} cannot be negative`,
-        'NEGATIVE_AMOUNT',
-        fieldName,
-        { value }
-      ));
+      errors.push(
+        new ValidationError(`${fieldName} cannot be negative`, 'NEGATIVE_AMOUNT', fieldName, {
+          value,
+        }),
+      );
     }
-    
+
     if (!options.allowZero && value === 0) {
-      errors.push(new ValidationError(
-        `${fieldName} cannot be zero`,
-        'ZERO_AMOUNT',
-        fieldName
-      ));
+      errors.push(new ValidationError(`${fieldName} cannot be zero`, 'ZERO_AMOUNT', fieldName));
     }
-    
+
     return errors.length ? { valid: false, errors } : { valid: true, errors: [] };
   }
-} 
+}

@@ -6,18 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui';
 import { Input } from '@/components/ui';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
-} from '@/components/ui';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui';
 
 // Simple validation schema
 const passwordResetSchema = z.object({
-  email: z.string().email('Please enter a valid email address')
+  email: z.string().email('Please enter a valid email address'),
 });
 
 type ForgotPasswordFormValues = z.infer<typeof passwordResetSchema>;
@@ -41,11 +34,11 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
   async function onSubmit(data: ForgotPasswordFormValues) {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Success
       setSuccess(true);
       if (onSuccess) onSuccess();
@@ -73,7 +66,7 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
                 <p className="text-red-700">{error}</p>
               </div>
             )}
-            
+
             <FormField
               control={form.control}
               name="email"
@@ -81,23 +74,19 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Enter your email address" 
-                      type="email" 
+                    <Input
+                      placeholder="Enter your email address"
+                      type="email"
                       autoComplete="email"
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Sending...' : 'Reset Password'}
             </Button>
           </form>
@@ -105,4 +94,4 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
       )}
     </div>
   );
-} 
+}

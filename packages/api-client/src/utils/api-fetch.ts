@@ -11,13 +11,13 @@ export interface ApiClientOptions {
 export async function apiFetch<T>(url: string, options: ApiClientOptions = {}): Promise<T> {
   const headers = {
     'Content-Type': 'application/json',
-    ...options.headers
+    ...options.headers,
   };
 
   const response = await fetch(url, {
     method: options.method || 'GET',
     headers,
-    body: options.body
+    body: options.body,
   });
 
   if (!response.ok) {
@@ -31,4 +31,4 @@ export async function apiFetch<T>(url: string, options: ApiClientOptions = {}): 
   }
 
   return await response.json();
-} 
+}

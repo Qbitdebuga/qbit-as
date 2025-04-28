@@ -5,5 +5,5 @@ export enum AccountType {
   MONEY_MARKET = 'MONEY_MARKET',
   INVESTMENT = 'INVESTMENT',
   LOAN = 'LOAN',
-  OTHER = 'OTHER'
-} 
+  OTHER = 'OTHER',
+}

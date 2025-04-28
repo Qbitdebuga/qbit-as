@@ -2,13 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Card, 
-  CardContent, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,14 +53,12 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
     dueDate: new Date(new Date().setDate(new Date().getDate() + 30)), // Default: 30 days from now
     status: InvoiceStatus.DRAFT,
     notes: '',
-    lineItems: [
-      { id: '', description: '', quantity: 1, unitPrice: 0, productId: '' }
-    ]
+    lineItems: [{ id: '', description: '', quantity: 1, unitPrice: 0, productId: '' }],
   };
 
   const [invoiceData, setInvoiceData] = useState<InvoiceFormData>({
     ...defaultInvoiceData,
-    ...initialData
+    ...initialData,
   });
 
   // Initialize auth for clients
@@ -74,7 +66,9 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
     setupAuthForClient(invoicesClient);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setInvoiceData({ ...invoiceData, [name]: value });
   };
@@ -83,7 +77,10 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
     setInvoiceData({ ...invoiceData, status: value as InvoiceStatus });
   };
 
-  const handleDateChange = (field: 'issueDate' | 'dueDate', event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChange = (
+    field: 'issueDate' | 'dueDate',
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const date = event.target.value ? new Date(event.target.value) : undefined;
     if (date) {
       setInvoiceData({ ...invoiceData, [field]: date });
@@ -93,7 +90,7 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       if (isEditing && invoiceData.id) {
         // Update existing invoice
@@ -104,7 +101,7 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
           dueDate: invoiceData.dueDate,
           status: invoiceData.status,
           notes: invoiceData.notes,
-          lineItems: invoiceData.lineItems
+          lineItems: invoiceData.lineItems,
         });
       } else {
         // Create new invoice
@@ -115,10 +112,10 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
           dueDate: invoiceData.dueDate,
           status: invoiceData.status,
           notes: invoiceData.notes,
-          lineItems: invoiceData.lineItems
+          lineItems: invoiceData.lineItems,
         });
       }
-      
+
       // Redirect to invoices list
       router.push('/dashboard/invoices');
     } catch (error) {
@@ -130,10 +127,7 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
 
   // Calculate the subtotal of all line items
   const calculateSubtotal = () => {
-    return invoiceData.lineItems.reduce(
-      (sum, item) => sum + item.quantity * item.unitPrice,
-      0
-    );
+    return invoiceData.lineItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
   };
 
   // Create a compatible line items setter function
@@ -193,10 +187,7 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
           {/* Status */}
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Select
-              value={invoiceData.status}
-              onValueChange={handleStatusChange}
-            >
+            <Select value={invoiceData.status} onValueChange={handleStatusChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
@@ -212,10 +203,7 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
           </div>
 
           {/* Line Items */}
-          <LineItems
-            lineItems={invoiceData.lineItems}
-            setLineItems={handleLineItemsChange}
-          />
+          <LineItems lineItems={invoiceData.lineItems} setLineItems={handleLineItemsChange} />
 
           {/* Notes */}
           <div className="space-y-2">
@@ -240,9 +228,9 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button 
-            type="button" 
-            variant="outline" 
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => router.push('/dashboard/invoices')}
           >
             Cancel
@@ -254,4 +242,4 @@ export default function InvoiceForm({ initialData, isEditing = false }: InvoiceF
       </Card>
     </form>
   );
-} 
+}

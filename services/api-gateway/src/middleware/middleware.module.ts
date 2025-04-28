@@ -5,4 +5,4 @@ import { LoggerMiddleware } from './logger.middleware';
   providers: [LoggerMiddleware],
   exports: [LoggerMiddleware],
 })
-export class MiddlewareModule {} 
+export class MiddlewareModule {}

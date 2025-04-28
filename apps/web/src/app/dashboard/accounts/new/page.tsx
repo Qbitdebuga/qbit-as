@@ -5,13 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { AccountForm } from '@/components/accounts/AccountForm';
 import { PageHeader } from '@/components/page-header';
-import { 
-  Button, 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 
 export default function NewAccountPage() {
   // In a real app, this would be a server action or API call
@@ -29,7 +23,10 @@ export default function NewAccountPage() {
             Back to Accounts
           </Button>
         </Link>
-        <PageHeader title="Create New Account" description="Add a new account to your chart of accounts" />
+        <PageHeader
+          title="Create New Account"
+          description="Add a new account to your chart of accounts"
+        />
       </div>
 
       <Card>
@@ -37,12 +34,9 @@ export default function NewAccountPage() {
           <CardTitle>Account Information</CardTitle>
         </CardHeader>
         <CardContent>
-          <AccountForm 
-            isSubmitting={false}
-            onSubmit={handleSubmit}
-          />
+          <AccountForm isSubmitting={false} onSubmit={handleSubmit} />
         </CardContent>
       </Card>
     </div>
   );
-} 
+}

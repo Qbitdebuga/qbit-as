@@ -12,7 +12,8 @@ export default function RegisterPage() {
           <div className="inline-block border-[1px] justify-center w-20 border-blue-600 border-solid"></div>
           <RegisterForm />
           <div className="text-gray-500 mt-4 mb-4">
-            <p>Already have an account?{' '}
+            <p>
+              Already have an account?{' '}
               <Link href="/login" className="text-blue-600 hover:underline">
                 Login
               </Link>
@@ -22,4 +23,4 @@ export default function RegisterPage() {
       </main>
     </div>
   );
-} 
+}

@@ -1,9 +1,9 @@
-import { 
-  Vendor, 
-  VendorContact, 
-  CreateVendorDto, 
-  UpdateVendorDto, 
-  CreateVendorContactDto
+import {
+  Vendor,
+  VendorContact,
+  CreateVendorDto,
+  UpdateVendorDto,
+  CreateVendorContactDto,
 } from '@qbit/shared-types';
 import { ApiClient } from '../api-client';
 import { ApiClientBase } from '../utils/api-client-base';
@@ -22,15 +22,15 @@ export class VendorsClient extends ApiClientBase {
     super(apiClient);
   }
 
-  async getVendors(params?: VendorListParams): Promise<{ 
-    data: Vendor[]; 
-    total: number | null; 
-    page: number | null; 
-    limit: number 
+  async getVendors(params?: VendorListParams): Promise<{
+    data: Vendor[];
+    total: number | null;
+    page: number | null;
+    limit: number;
   }> {
     return this.get<{ data: Vendor[]; total: number | null; page: number | null; limit: number }>(
       '/vendors',
-      { params }
+      { params },
     );
   }
 
@@ -59,11 +59,14 @@ export class VendorsClient extends ApiClientBase {
     return this.post<VendorContact>(`/vendors/${vendorId}/contacts`, contact);
   }
 
-  async updateContact(id: string, contact: Partial<CreateVendorContactDto>): Promise<VendorContact> {
+  async updateContact(
+    id: string,
+    contact: Partial<CreateVendorContactDto>,
+  ): Promise<VendorContact> {
     return this.put<VendorContact>(`/vendors/contacts/${id}`, contact);
   }
 
   async deleteContact(id: string): Promise<void> {
     return this.delete<void>(`/vendors/contacts/${id}`);
   }
-} 
+}

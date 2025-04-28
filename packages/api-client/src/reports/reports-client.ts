@@ -1,10 +1,10 @@
 import { ApiClient } from '../api-client';
-import { 
+import {
   BalanceSheetStatementDto,
   IncomeStatementDto,
   CashFlowStatementDto,
   StatementPeriod,
-  StatementRequestDto
+  StatementRequestDto,
 } from '@qbit/shared-types';
 
 export class ReportsClient {
@@ -24,17 +24,19 @@ export class ReportsClient {
     endDate: string,
     period: StatementPeriod,
     comparativePeriod: boolean = false,
-    includeZeroBalances: boolean = false
+    includeZeroBalances: boolean = false,
   ): Promise<BalanceSheetStatementDto> {
     const params = new URLSearchParams({
       startDate,
       endDate,
       period,
       comparativePeriod: comparativePeriod.toString(),
-      includeZeroBalances: includeZeroBalances.toString()
+      includeZeroBalances: includeZeroBalances.toString(),
     });
-    
-    return this?.client.get<BalanceSheetStatementDto>(`${this.baseUrl}/balance-sheet?${params.toString()}`);
+
+    return this?.client.get<BalanceSheetStatementDto>(
+      `${this.baseUrl}/balance-sheet?${params.toString()}`,
+    );
   }
 
   /**
@@ -52,17 +54,19 @@ export class ReportsClient {
     endDate: string,
     period: StatementPeriod,
     comparativePeriod: boolean = false,
-    includeZeroBalances: boolean = false
+    includeZeroBalances: boolean = false,
   ): Promise<IncomeStatementDto> {
     const params = new URLSearchParams({
       startDate,
       endDate,
       period,
       comparativePeriod: comparativePeriod.toString(),
-      includeZeroBalances: includeZeroBalances.toString()
+      includeZeroBalances: includeZeroBalances.toString(),
     });
-    
-    return this?.client.get<IncomeStatementDto>(`${this.baseUrl}/income-statement?${params.toString()}`);
+
+    return this?.client.get<IncomeStatementDto>(
+      `${this.baseUrl}/income-statement?${params.toString()}`,
+    );
   }
 
   /**
@@ -79,15 +83,15 @@ export class ReportsClient {
     startDate: string,
     endDate: string,
     period: StatementPeriod,
-    comparativePeriod: boolean = false
+    comparativePeriod: boolean = false,
   ): Promise<CashFlowStatementDto> {
     const params = new URLSearchParams({
       startDate,
       endDate,
       period,
-      comparativePeriod: comparativePeriod.toString()
+      comparativePeriod: comparativePeriod.toString(),
     });
-    
+
     return this?.client.get<CashFlowStatementDto>(`${this.baseUrl}/cash-flow?${params.toString()}`);
   }
 
@@ -97,4 +101,4 @@ export class ReportsClient {
   async generateCashFlowStatement(data: StatementRequestDto): Promise<CashFlowStatementDto> {
     return this?.client.post<CashFlowStatementDto>(`${this.baseUrl}/cash-flow`, data);
   }
-} 
+}

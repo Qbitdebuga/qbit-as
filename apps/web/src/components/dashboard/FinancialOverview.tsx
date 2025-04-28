@@ -4,17 +4,20 @@ import React, { useEffect, useState } from 'react';
 import { useAggregatedData } from '@/hooks/useAggregatedData';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUpCircle, ArrowDownCircle, DollarSign, BarChart2, Calendar, TrendingUp, TrendingDown } from 'lucide-react';
+import {
+  ArrowUpCircle,
+  ArrowDownCircle,
+  DollarSign,
+  BarChart2,
+  Calendar,
+  TrendingUp,
+  TrendingDown,
+} from 'lucide-react';
 import { formatCurrency } from '@/utils/format';
 
 const FinancialOverview: React.FC = () => {
-  const { 
-    getUserFinancialOverview,
-    getDashboardSummary,
-    loading,
-    error
-  } = useAggregatedData();
-  
+  const { getUserFinancialOverview, getDashboardSummary, loading, error } = useAggregatedData();
+
   const [financialData, setFinancialData] = useState<any>(null);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,14 +27,14 @@ const FinancialOverview: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       setErrorMessage(null);
-      
+
       try {
         // Load financial overview data
         const financialOverview = await getUserFinancialOverview();
         if (financialOverview) {
           setFinancialData(financialOverview);
         }
-        
+
         // Load dashboard summary data
         const dashboardSummary = await getDashboardSummary();
         if (dashboardSummary) {
@@ -43,7 +46,7 @@ const FinancialOverview: React.FC = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchData();
   }, [getUserFinancialOverview, getDashboardSummary]);
 
@@ -62,7 +65,9 @@ const FinancialOverview: React.FC = () => {
       <div className="w-full p-4">
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
           <p className="font-medium">Error loading financial data</p>
-          <p className="text-sm">{errorMessage || (error instanceof Error ? error.message : 'Unknown error')}</p>
+          <p className="text-sm">
+            {errorMessage || (error instanceof Error ? error.message : 'Unknown error')}
+          </p>
         </div>
       </div>
     );
@@ -71,7 +76,7 @@ const FinancialOverview: React.FC = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">Financial Dashboard</h2>
-      
+
       {/* User info and welcome message */}
       {financialData?.user && (
         <div className="flex flex-col space-y-2">
@@ -81,7 +86,7 @@ const FinancialOverview: React.FC = () => {
           </p>
         </div>
       )}
-      
+
       {/* Key financial metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -98,7 +103,7 @@ const FinancialOverview: React.FC = () => {
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Liabilities</CardTitle>
@@ -113,7 +118,7 @@ const FinancialOverview: React.FC = () => {
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Net Worth</CardTitle>
@@ -123,12 +128,10 @@ const FinancialOverview: React.FC = () => {
             <div className="text-2xl font-bold">
               {formatCurrency(financialData?.balanceSheet?.equity || 0)}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Assets minus Liabilities
-            </p>
+            <p className="text-xs text-muted-foreground">Assets minus Liabilities</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Monthly Income</CardTitle>
@@ -138,13 +141,11 @@ const FinancialOverview: React.FC = () => {
             <div className="text-2xl font-bold">
               {formatCurrency(financialData?.incomeStatement?.netIncome || 0)}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Net income for the current month
-            </p>
+            <p className="text-xs text-muted-foreground">Net income for the current month</p>
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Tabs for different views */}
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
@@ -152,7 +153,7 @@ const FinancialOverview: React.FC = () => {
           <TabsTrigger value="recent">Recent Activity</TabsTrigger>
           <TabsTrigger value="accounts">Accounts</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             {/* Revenue vs Expenses */}
@@ -193,7 +194,7 @@ const FinancialOverview: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Financial Trends */}
             <Card>
               <CardHeader>
@@ -213,7 +214,7 @@ const FinancialOverview: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <div className="flex items-center space-x-2">
                       <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -226,7 +227,7 @@ const FinancialOverview: React.FC = () => {
                       <TrendingUp className="ml-2 h-4 w-4 text-green-500" />
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <div className="flex items-center space-x-2">
                       <TrendingDown className="h-4 w-4 text-muted-foreground" />
@@ -243,7 +244,7 @@ const FinancialOverview: React.FC = () => {
             </Card>
           </div>
         </TabsContent>
-        
+
         <TabsContent value="recent" className="space-y-4">
           <Card>
             <CardHeader>
@@ -251,22 +252,26 @@ const FinancialOverview: React.FC = () => {
               <CardDescription>Your most recent financial activities</CardDescription>
             </CardHeader>
             <CardContent>
-              {financialData?.financialSummary?.recentTransactions && 
+              {financialData?.financialSummary?.recentTransactions &&
               financialData.financialSummary.recentTransactions.length > 0 ? (
                 <div className="space-y-4">
-                  {financialData.financialSummary.recentTransactions.map((transaction: any, i: number) => (
-                    <div key={i} className="flex items-center">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">{transaction.description}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(transaction.date).toLocaleDateString()}
-                        </p>
+                  {financialData.financialSummary.recentTransactions.map(
+                    (transaction: any, i: number) => (
+                      <div key={i} className="flex items-center">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {transaction.description}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(transaction.date).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="ml-auto font-medium">
+                          {formatCurrency(transaction.amount)}
+                        </div>
                       </div>
-                      <div className="ml-auto font-medium">
-                        {formatCurrency(transaction.amount)}
-                      </div>
-                    </div>
-                  ))}
+                    ),
+                  )}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">No recent transactions found</p>
@@ -274,7 +279,7 @@ const FinancialOverview: React.FC = () => {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="accounts" className="space-y-4">
           <Card>
             <CardHeader>
@@ -282,8 +287,7 @@ const FinancialOverview: React.FC = () => {
               <CardDescription>Overview of your account balances</CardDescription>
             </CardHeader>
             <CardContent>
-              {dashboardData?.accountSummaries && 
-              dashboardData.accountSummaries.length > 0 ? (
+              {dashboardData?.accountSummaries && dashboardData.accountSummaries.length > 0 ? (
                 <div className="space-y-4">
                   {dashboardData.accountSummaries.map((account: any, i: number) => (
                     <div key={i} className="flex items-center">
@@ -291,9 +295,7 @@ const FinancialOverview: React.FC = () => {
                         <p className="text-sm font-medium leading-none">{account.name}</p>
                         <p className="text-xs text-muted-foreground">{account.type}</p>
                       </div>
-                      <div className="ml-auto font-medium">
-                        {formatCurrency(account.balance)}
-                      </div>
+                      <div className="ml-auto font-medium">{formatCurrency(account.balance)}</div>
                     </div>
                   ))}
                 </div>
@@ -308,4 +310,4 @@ const FinancialOverview: React.FC = () => {
   );
 };
 
-export default FinancialOverview; 
+export default FinancialOverview;

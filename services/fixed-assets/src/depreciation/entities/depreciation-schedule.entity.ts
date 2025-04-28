@@ -10,16 +10,16 @@ export class DepreciationEntryEntity {
 
   @ApiProperty({ description: 'Date when this depreciation was recorded' })
   date: Date;
-  
+
   @ApiProperty({ description: 'Amount of depreciation for this period' })
   amount: Decimal;
-  
+
   @ApiProperty({ description: 'Remaining book value after this depreciation' })
   bookValue: Decimal;
-  
+
   @ApiProperty({ description: 'Date when the entry was created' })
   createdAt: Date;
-  
+
   @ApiProperty({ description: 'Date when the entry was last updated' })
   updatedAt: Date;
 }
@@ -55,4 +55,4 @@ export class DepreciationScheduleEntity {
     amount: Decimal;
     bookValue: Decimal;
   }[];
-} 
+}

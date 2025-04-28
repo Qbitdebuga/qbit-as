@@ -7,18 +7,18 @@ interface IconProps {
   color?: string;
 }
 
-export function PlusIcon({ className = "", size = 24, color = "currentColor" }: IconProps) {
+export function PlusIcon({ className = '', size = 24, color = 'currentColor' }: IconProps) {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -77,18 +77,18 @@ export const DeleteIcon: React.FC<IconProps> = ({
   );
 };
 
-export function PrintIcon({ className = "", size = 24, color = "currentColor" }: IconProps) {
+export function PrintIcon({ className = '', size = 24, color = 'currentColor' }: IconProps) {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -98,18 +98,18 @@ export function PrintIcon({ className = "", size = 24, color = "currentColor" }:
   );
 }
 
-export function CheckIcon({ className = "", size = 24, color = "currentColor" }: IconProps) {
+export function CheckIcon({ className = '', size = 24, color = 'currentColor' }: IconProps) {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <polyline points="20 6 9 17 4 12"></polyline>
@@ -117,18 +117,18 @@ export function CheckIcon({ className = "", size = 24, color = "currentColor" }:
   );
 }
 
-export function ArrowRightIcon({ className = "", size = 24, color = "currentColor" }: IconProps) {
+export function ArrowRightIcon({ className = '', size = 24, color = 'currentColor' }: IconProps) {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -137,18 +137,18 @@ export function ArrowRightIcon({ className = "", size = 24, color = "currentColo
   );
 }
 
-export function DownloadIcon({ className = "", size = 24, color = "currentColor" }: IconProps) {
+export function DownloadIcon({ className = '', size = 24, color = 'currentColor' }: IconProps) {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -158,21 +158,21 @@ export function DownloadIcon({ className = "", size = 24, color = "currentColor"
   );
 }
 
-export function SpinnerIcon({ className = "", size = 24, color = "currentColor" }: IconProps) {
+export function SpinnerIcon({ className = '', size = 24, color = 'currentColor' }: IconProps) {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={`animate-spin ${className}`}
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
     </svg>
   );
-} 
+}

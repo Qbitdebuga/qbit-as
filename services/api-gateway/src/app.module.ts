@@ -15,22 +15,22 @@ import { HealthModule } from './health/health.module';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
     }),
-    
+
     // Import application config module
     AppConfigModule,
-    
+
     // Import service clients module
     ClientsModule,
-    
+
     // Import guards module
     GuardsModule,
-    
+
     // Import middleware module
     MiddlewareModule,
-    
+
     // Import aggregation module for cross-service endpoints
     AggregationModule,
-    
+
     // Import health module for health checks
     HealthModule,
   ],
@@ -40,8 +40,6 @@ import { HealthModule } from './health/health.module';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     // Apply logger middleware to all routes
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+    consumer.apply(LoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
   }
-} 
+}
