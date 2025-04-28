@@ -3201,10 +3201,10 @@ __metadata:
     shadcn-ui: ^0.9.5
     shared-types: "*"
     tailwind-merge: ^3.2.0
-    tailwindcss: ^3.3.3
+    tailwindcss: ^3.4.3
     tailwindcss-animate: ^1.0.7
     typescript: ^5.1.6
-    zod: ^3.24.3
+    zod: ^3.22.4
   languageName: unknown
   linkType: soft
 
@@ -13993,7 +13993,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^3.3.3":
+"tailwindcss@npm:^3.4.3":
   version: 3.4.17
   resolution: "tailwindcss@npm:3.4.17"
   dependencies:
@@ -15465,7 +15465,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.20.2, zod@npm:^3.24.3":
+"zod@npm:^3.20.2, zod@npm:^3.22.4":
   version: 3.24.3
   resolution: "zod@npm:3.24.3"
   checksum: 9c3976e61cec25908f3405502abdf28ab1893afd5182c6739a30375c5c6bf4b9b6ea7e78735324e5ac63571c160ce607ebe320ff389b044223c357ccc2f8c94c
