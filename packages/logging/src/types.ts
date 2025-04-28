@@ -1,3 +1,6 @@
+// Import from shared-types once they are properly exported
+// import { LoggerConfigOptions, LogLevel } from '@qbit/shared-types';
+
 /**
  * Supported log levels
  */

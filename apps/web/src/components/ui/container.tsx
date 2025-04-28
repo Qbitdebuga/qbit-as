@@ -1,7 +1,9 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import { cn } from "./lib/utils";
 
-interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
+  // You can add specific props here if needed
+}
 
 export function Container({ className, children, ...props }: ContainerProps) {
   return (

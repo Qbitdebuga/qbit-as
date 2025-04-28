@@ -11,6 +11,9 @@ export * from './pino-logger.service';
 // Export logger module
 export * from './pino-logger.module';
 
+// Export events service
+export * from './pino-logger-events.service';
+
 // Export middleware
 export * from './pino-logger.middleware';
 

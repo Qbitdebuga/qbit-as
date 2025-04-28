@@ -3,16 +3,14 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["shared-types", "api-client"],
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
+    // Makes TypeScript checks produce warnings instead of blocking the build
+    ignoreBuildErrors: false,
+    tsconfigPath: "./tsconfig.json",
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    // Makes ESLint checks produce warnings instead of blocking the build
+    ignoreDuringBuilds: false,
+    dirs: ['src'],
   },
 };
 

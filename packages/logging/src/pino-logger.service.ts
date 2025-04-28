@@ -1,6 +1,8 @@
 import { Injectable, LoggerService as NestLoggerService, Scope } from '@nestjs/common';
 import pino from 'pino';
 import { join } from 'path';
+// Import from local types for now
+// import { LoggerConfigOptions, LogLevel } from '@qbit/shared-types';
 
 // Type definitions for pino-roll
 interface PinoRollOptions {

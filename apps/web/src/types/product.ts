@@ -1,11 +1,3 @@
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  category: string;
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-} 
+// This file is now deprecated - import from '../interfaces/product' instead
+import { Product } from '../interfaces/product';
+export type { Product }; 

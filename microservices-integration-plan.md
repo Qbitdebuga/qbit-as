@@ -370,7 +370,7 @@ This document outlines the implementation plan for connecting the various micros
   - **Step Dependencies**: Step 31
   - **User Instructions**: Run `cd services/general-ledger && yarn add @nestjs/terminus` to install the health check dependency
 
-- [ ] Step 34: Create System Status Dashboard
+- [x] Step 34: Create System Status Dashboard
   - **Task**: Implement a dashboard for monitoring the system status
   - **Files**:
     - `apps/web/src/components/admin/SystemStatus.tsx`: Create status dashboard component

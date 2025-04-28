@@ -1,56 +1,44 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { HTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
 
-interface PageHeaderProps {
-  title: string;
-  description?: string;
-  actions?: ReactNode;
-}
-
-interface PageHeaderHeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {}
-
-interface PageHeaderDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {}
-
-export function PageHeader({ title, description, actions }: PageHeaderProps) {
+function PageHeader({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="flex items-center justify-between mb-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-        {description && (
-          <p className="text-muted-foreground mt-1">{description}</p>
-        )}
-      </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
-    </div>
+    <section
+      className={cn("grid gap-1", className)}
+      {...props}
+    />
   );
 }
 
-export function PageHeaderHeading({
+function PageHeaderHeading({
   className,
-  children,
   ...props
-}: PageHeaderHeadingProps) {
+}: HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h1
-      className={cn("text-2xl font-bold tracking-tight", className)}
+      className={cn(
+        "text-2xl font-bold tracking-tight sm:text-3xl",
+        className
+      )}
       {...props}
-    >
-      {children}
-    </h1>
-  )
+    />
+  );
 }
 
-export function PageHeaderDescription({
+function PageHeaderDescription({
   className,
-  children,
   ...props
-}: PageHeaderDescriptionProps) {
+}: HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-muted-foreground mt-1", className)}
+      className={cn("text-muted-foreground", className)}
       {...props}
-    >
-      {children}
-    </p>
-  )
-} 
+    />
+  );
+}
+
+export { PageHeader, PageHeaderHeading, PageHeaderDescription }; 

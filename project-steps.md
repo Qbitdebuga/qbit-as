@@ -444,34 +444,14 @@
         - `packages/shared-types/src/models/payment.ts`: Shared payment types
     - **Step Dependencies**: Step 31
     - **User Instructions**: Run migration after schema update
-- [x]  Step 34: Create Vendor Payment management UI
-    - **Task**: Implement the interface for managing vendor payments
+- [x]  Step 34: Create System Status Dashboard
+    - **Task**: Implement the System Status Dashboard
     - **Files**:
-        - `apps/web/src/app/dashboard/payments/page.tsx`: Payments list page
-        - `apps/web/src/app/dashboard/payments/[id]/page.tsx`: Payment detail page
-        - `apps/web/src/app/dashboard/payments/new/page.tsx`: New payment page
-        - `apps/web/src/components/payments/PaymentForm.tsx`: Payment form component
-        - `apps/web/src/components/payments/PaymentList.tsx`: Payment list component
-        - `apps/web/src/components/payments/PaymentDetail.tsx`: Payment detail component
-        - `apps/web/src/components/payments/BillPaymentApplication.tsx`: Component for applying payments to bills
-        - `packages/api-client/src/payments/payments-client.ts`: Payments API client
-    - **Step Dependencies**: Step 33, Step 13
+        - `apps/web/src/app/dashboard/system-status/page.tsx`: System Status Dashboard page
+        - `apps/web/src/components/system-status/SystemStatus.tsx`: System Status component
+        - `packages/api-client/src/system-status/system-status-client.ts`: System Status API client
+    - **Step Dependencies**: Step 1
     - **User Instructions**: None
-- [x]  Step 35: Implement Expense data model and API
-    - **Task**: Create the Expense module with CRUD operations
-    - **Files**:
-        - `prisma/schema.prisma`: Update with expense models
-        - `services/accounts-payable/src/expenses/expenses.module.ts`: Expenses module
-        - `services/accounts-payable/src/expenses/entities/expense.entity.ts`: Expense entity
-        - `services/accounts-payable/src/expenses/entities/expense-category.entity.ts`: Expense category entity
-        - `services/accounts-payable/src/expenses/dto/create-expense.dto.ts`: Create expense DTO
-        - `services/accounts-payable/src/expenses/dto/update-expense.dto.ts`: Update expense DTO
-        - `services/accounts-payable/src/expenses/expenses.controller.ts`: Expenses controller
-        - `services/accounts-payable/src/expenses/expenses.service.ts`: Expenses service
-        - `services/accounts-payable/src/expenses/expenses.repository.ts`: Expenses repository
-        - `packages/shared-types/src/models/expense.ts`: Shared expense types
-    - **Step Dependencies**: Step 28
-    - **User Instructions**: Run migration after schema update
 
 ## Core Financial Module - Inventory Management
 
