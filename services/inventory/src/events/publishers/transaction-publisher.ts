@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { TransactionStatus, TransactionType } from '../../transactions/dto/create-transaction.dto';
+import { TransactionStatus, TransactionType } from '../../transactions/dto/create-transaction.dto.js';
 
 export interface TransactionEvent {
   serviceSource: string;

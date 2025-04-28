@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateVendorDto } from './dto/create-vendor.dto';
-import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { VendorDto } from './dto/vendor.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CreateVendorDto } from './dto/create-vendor.dto.js';
+import { UpdateVendorDto } from './dto/update-vendor.dto.js';
+import { VendorDto } from './dto/vendor.dto.js';
 
 @Injectable()
 export class VendorsRepository {

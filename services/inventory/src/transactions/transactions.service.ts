@@ -1,18 +1,18 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { TransactionPublisher } from '../events/publishers/transaction-publisher';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { TransactionPublisher } from '../events/publishers/transaction-publisher.js';
 import { 
   InventoryTransactionWhereInput, 
   InventoryTransactionOrderByWithRelationInput,
   InventoryTransactionUpdateInput,
   QueryMode,
   SortOrder 
-} from '../prisma/prisma.types';
-import { CreateTransactionDto, TransactionStatus, TransactionType } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { ProcessTransactionDto } from './dto/process-transaction.dto';
-import { ProcessTransactionLineDto } from './dto/process-transaction-line.dto';
-import { TransactionLineStatus } from './dto/create-transaction-line.dto';
+} from '../prisma/prisma.types.js';
+import { CreateTransactionDto, TransactionStatus, TransactionType } from './dto/create-transaction.dto.js';
+import { UpdateTransactionDto } from './dto/update-transaction.dto.js';
+import { ProcessTransactionDto } from './dto/process-transaction.dto.js';
+import { ProcessTransactionLineDto } from './dto/process-transaction-line.dto.js';
+import { TransactionLineStatus } from './dto/create-transaction-line.dto.js';
 
 interface FindAllOptions {
   skip?: number;

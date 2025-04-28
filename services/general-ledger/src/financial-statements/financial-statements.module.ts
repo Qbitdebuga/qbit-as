@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { FinancialStatementsController } from './financial-statements.controller';
-import { FinancialStatementsService } from './financial-statements.service';
-import { BalanceSheetGenerator } from './generators/balance-sheet.generator';
-import { IncomeStatementGenerator } from './generators/income-statement.generator';
-import { CashFlowGenerator } from './generators/cash-flow.generator';
-import { PrismaModule } from '../prisma/prisma.module';
+import { FinancialStatementsController } from './financial-statements.controller.js';
+import { FinancialStatementsService } from './financial-statements.service.js';
+import { BalanceSheetGenerator } from './generators/balance-sheet.generator.js';
+import { IncomeStatementGenerator } from './generators/income-statement.generator.js';
+import { CashFlowGenerator } from './generators/cash-flow.generator.js';
+import { PrismaModule } from '../prisma/prisma.module.js';
 
 @Module({
   imports: [PrismaModule],

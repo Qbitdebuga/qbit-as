@@ -1,5 +1,5 @@
-import { Account } from '../../accounts/entities/account.entity';
-import { JournalEntry } from './journal-entry.entity';
+import { Account } from '../../accounts/entities/account.entity.js';
+import { JournalEntry } from './journal-entry.entity.js';
 
 export class JournalEntryLine {
   id!: string;

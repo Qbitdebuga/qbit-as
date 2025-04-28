@@ -1,13 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "NodeNext",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
+    "target": "ES2022",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -19,12 +19,27 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "shared-types": ["../../packages/shared-types/src"],
-      "shared-types/*": ["../../packages/shared-types/src/*"],
-      "@qbit/shared-types": ["../../packages/shared-types/src"],
-      "@qbit/shared-types/*": ["../../packages/shared-types/src/*"]
-    }
+      "shared-types": [
+        "../../packages/shared-types/src"
+      ],
+      "shared-types/*": [
+        "../../packages/shared-types/src/*"
+      ],
+      "@qbit/shared-types": [
+        "../../packages/shared-types/src"
+      ],
+      "@qbit/shared-types/*": [
+        "../../packages/shared-types/src/*"
+      ]
+    },
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
-} 
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

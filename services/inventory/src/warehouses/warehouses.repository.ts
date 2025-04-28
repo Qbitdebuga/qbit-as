@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateWarehouseDto } from './dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
-import { CreateWarehouseLocationDto } from './dto/create-warehouse-location.dto';
-import { UpdateWarehouseLocationDto } from './dto/update-warehouse-location.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CreateWarehouseDto } from './dto/create-warehouse.dto.js';
+import { UpdateWarehouseDto } from './dto/update-warehouse.dto.js';
+import { CreateWarehouseLocationDto } from './dto/create-warehouse-location.dto.js';
+import { UpdateWarehouseLocationDto } from './dto/update-warehouse-location.dto.js';
 import {
   WarehouseWhereUniqueInput,
   WarehouseWhereInput,
@@ -11,7 +11,7 @@ import {
   WarehouseLocationWhereUniqueInput,
   WarehouseLocationWhereInput,
   WarehouseLocationOrderByWithRelationInput
-} from '../prisma/prisma.types';
+} from '../prisma/prisma.types.js';
 
 @Injectable()
 export class WarehousesRepository {

@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { User } from './user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from './user.repository';
-import { UserPublisher } from '../events/publishers/user-publisher';
+import { User } from './user.entity.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { UpdateUserDto } from './dto/update-user.dto.js';
+import { UserRepository } from './user.repository.js';
+import { UserPublisher } from '../events/publishers/user-publisher.js';
 
 @Injectable()
 export class UserService {

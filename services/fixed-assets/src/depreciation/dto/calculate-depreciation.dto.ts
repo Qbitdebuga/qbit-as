@@ -10,7 +10,7 @@ import {
   IsUUID, 
   IsBoolean 
 } from 'class-validator';
-import { DepreciationMethod } from '../enums/depreciation-method.enum';
+import { DepreciationMethod } from '../enums/depreciation-method.enum.js';
 
 export class CalculateDepreciationDto {
   @ApiProperty({ description: 'ID of the asset to calculate depreciation for' })

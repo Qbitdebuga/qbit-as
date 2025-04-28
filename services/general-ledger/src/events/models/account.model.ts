@@ -1,5 +1,5 @@
-import { Account as EntityAccount } from '../../accounts/entities/account.entity';
-import { AccountType, AccountSubType } from '../../accounts/enums/account.enums';
+import { Account as EntityAccount } from '../../accounts/entities/account.entity.js';
+import { AccountType, AccountSubType } from '../../accounts/enums/account.enums.js';
 
 /**
  * Interface representing an Account entity for event messages

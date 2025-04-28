@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { USER_EVENTS } from '../constants/event-patterns';
+import { USER_EVENTS } from '../constants/event-patterns.js';
 
 // Define a User interface to avoid the @prisma/client import issue
 interface User {

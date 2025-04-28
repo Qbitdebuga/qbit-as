@@ -1,2 +1,2 @@
-export * from './report-request.dto';
-export * from './report-response.dto'; 
+export * from './report-request.dto.js';
+export * from './report-response.dto.js'; 

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '../prisma/prisma.module';
-import { ExpensesController } from './expenses.controller';
-import { ExpensesService } from './expenses.service';
-import { ExpensesRepository } from './expenses.repository';
-import { ExpenseCategoriesController } from './expense-categories.controller';
-import { ExpenseCategoriesService } from './expense-categories.service';
-import { ExpenseCategoriesRepository } from './expense-categories.repository';
+import { PrismaModule } from '../prisma/prisma.module.js';
+import { ExpensesController } from './expenses.controller.js';
+import { ExpensesService } from './expenses.service.js';
+import { ExpensesRepository } from './expenses.repository.js';
+import { ExpenseCategoriesController } from './expense-categories.controller.js';
+import { ExpenseCategoriesService } from './expense-categories.service.js';
+import { ExpenseCategoriesRepository } from './expense-categories.repository.js';
 
 @Module({
   imports: [PrismaModule],

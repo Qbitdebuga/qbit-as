@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { VendorsRepository } from './vendors.repository';
-import { CreateVendorDto } from './dto/create-vendor.dto';
-import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { VendorDto } from './dto/vendor.dto';
+import { VendorsRepository } from './vendors.repository.js';
+import { CreateVendorDto } from './dto/create-vendor.dto.js';
+import { UpdateVendorDto } from './dto/update-vendor.dto.js';
+import { VendorDto } from './dto/vendor.dto.js';
 
 @Injectable()
 export class VendorsService {

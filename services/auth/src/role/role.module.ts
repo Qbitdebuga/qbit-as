@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '../prisma/prisma.module';
-import { RoleService } from './role.service';
-import { RoleController } from './role.controller';
-import { RoleRepository } from './role.repository';
-import { EventsModule } from '../events/events.module';
+import { PrismaModule } from '../prisma/prisma.module.js';
+import { RoleService } from './role.service.js';
+import { RoleController } from './role.controller.js';
+import { RoleRepository } from './role.repository.js';
+import { EventsModule } from '../events/events.module.js';
 
 @Module({
   imports: [PrismaModule, EventsModule],

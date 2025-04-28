@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateJournalEntryDto } from './dto/create-journal-entry.dto';
-import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto';
-import { generateEntryNumber } from '../utils/id-generator';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CreateJournalEntryDto } from './dto/create-journal-entry.dto.js';
+import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto.js';
+import { generateEntryNumber } from '../utils/id-generator.js';
 
 @Injectable()
 export class JournalEntriesRepository {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { AssetsService } from '../assets/assets.service';
-import { CreateCategoryDto } from '../assets/dto/create-category.dto';
-import { UpdateCategoryDto } from '../assets/dto/update-category.dto';
-import { AssetCategoryEntity } from '../assets/entities/asset-category.entity';
+import { AssetsService } from '../assets/assets.service.js';
+import { CreateCategoryDto } from '../assets/dto/create-category.dto.js';
+import { UpdateCategoryDto } from '../assets/dto/update-category.dto.js';
+import { AssetCategoryEntity } from '../assets/entities/asset-category.entity.js';
 
 @Injectable()
 export class CategoriesService {

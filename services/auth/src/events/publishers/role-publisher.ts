@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ROLE_EVENTS } from '../constants/event-patterns';
+import { ROLE_EVENTS } from '../constants/event-patterns.js';
 
 // Define a Role interface
 interface Role {

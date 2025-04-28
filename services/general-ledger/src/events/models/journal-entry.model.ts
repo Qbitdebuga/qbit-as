@@ -1,4 +1,4 @@
-import { JournalEntry as EntityJournalEntry } from '../../journal-entries/entities/journal-entry.entity';
+import { JournalEntry as EntityJournalEntry } from '../../journal-entries/entities/journal-entry.entity.js';
 
 export interface JournalEntryWithExtraFields extends EntityJournalEntry {
   totalAmount?: number;

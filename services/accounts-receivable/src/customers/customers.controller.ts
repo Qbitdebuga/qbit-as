@@ -12,12 +12,12 @@ import {
   Logger
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { CustomersService } from './customers.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { CreateCustomerContactDto } from './dto/create-customer-contact.dto';
-import { Customer } from './entities/customer.entity';
-import { CustomerContact } from './entities/customer-contact.entity';
+import { CustomersService } from './customers.service.js';
+import { CreateCustomerDto } from './dto/create-customer.dto.js';
+import { UpdateCustomerDto } from './dto/update-customer.dto.js';
+import { CreateCustomerContactDto } from './dto/create-customer-contact.dto.js';
+import { Customer } from './entities/customer.entity.js';
+import { CustomerContact } from './entities/customer-contact.entity.js';
 
 @ApiTags('customers')
 @Controller('customers')

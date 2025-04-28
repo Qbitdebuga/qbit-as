@@ -22,10 +22,10 @@ import {
   ApiConsumes,
   ApiBody 
 } from '@nestjs/swagger';
-import { ExpensesService } from './expenses.service';
-import { CreateExpenseDto } from './dto/create-expense.dto';
-import { UpdateExpenseDto } from './dto/update-expense.dto';
-import { Expense, ExpenseStatus } from './entities/expense.entity';
+import { ExpensesService } from './expenses.service.js';
+import { CreateExpenseDto } from './dto/create-expense.dto.js';
+import { UpdateExpenseDto } from './dto/update-expense.dto.js';
+import { Expense, ExpenseStatus } from './entities/expense.entity.js';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 

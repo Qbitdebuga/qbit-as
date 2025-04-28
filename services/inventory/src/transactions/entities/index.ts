@@ -1,2 +1,2 @@
-export * from './inventory-transaction.entity';
-export * from './transaction-line.entity'; 
+export * from './inventory-transaction.entity.js';
+export * from './transaction-line.entity.js'; 

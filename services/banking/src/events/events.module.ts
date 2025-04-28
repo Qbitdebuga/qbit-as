@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AccountConsumer } from './consumers/account-consumer';
-import { PrismaModule } from '../prisma/prisma.module';
+import { AccountConsumer } from './consumers/account-consumer.js';
+import { PrismaModule } from '../prisma/prisma.module.js';
 
 @Module({
   imports: [

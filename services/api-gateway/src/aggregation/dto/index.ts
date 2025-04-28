@@ -1,2 +1,2 @@
-export * from './dashboard-response.dto';
-export * from './account-details.dto'; 
+export * from './dashboard-response.dto.js';
+export * from './account-details.dto.js'; 

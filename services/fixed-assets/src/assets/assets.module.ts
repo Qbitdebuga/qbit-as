@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AssetsController } from './assets.controller';
-import { AssetsService } from './assets.service';
-import { PrismaModule } from '../prisma/prisma.module';
-import { AuthModule } from '../auth/auth.module';
+import { AssetsController } from './assets.controller.js';
+import { AssetsService } from './assets.service.js';
+import { PrismaModule } from '../prisma/prisma.module.js';
+import { AuthModule } from '../auth/auth.module.js';
 
 @Module({
   imports: [PrismaModule, AuthModule],

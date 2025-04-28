@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
-import { InvoiceStatus } from '../entities/invoice-status.enum';
+import { InvoiceStatus } from '../entities/invoice-status.enum.js';
 
 export class UpdateInvoiceDto {
   @ApiPropertyOptional({ description: 'Customer reference number', example: 'PO-12345' })

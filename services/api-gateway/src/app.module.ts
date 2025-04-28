@@ -1,12 +1,12 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ConfigModule as AppConfigModule } from './config/config.module';
-import { ClientsModule } from './clients/clients.module';
-import { AggregationModule } from './aggregation/aggregation.module';
-import { GuardsModule } from './guards/guards.module';
-import { MiddlewareModule } from './middleware/middleware.module';
-import { LoggerMiddleware } from './middleware/logger.middleware';
-import { HealthModule } from './health/health.module';
+import { ConfigModule as AppConfigModule } from './config/config.module.js';
+import { ClientsModule } from './clients/clients.module.js';
+import { AggregationModule } from './aggregation/aggregation.module.js';
+import { GuardsModule } from './guards/guards.module.js';
+import { MiddlewareModule } from './middleware/middleware.module.js';
+import { LoggerMiddleware } from './middleware/logger.middleware.js';
+import { HealthModule } from './health/health.module.js';
 
 @Module({
   imports: [

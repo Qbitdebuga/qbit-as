@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 // import { UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { BatchService } from './batch.service';
-import { CreateBatchDto } from './dto/create-batch.dto';
-import { JournalEntryBatchCreate } from '@qbit/shared-types';
-// import { ServiceAuthGuard } from '../auth/guards/service-auth.guard';
-// import { RequireServiceScope } from '../auth/decorators/service-scope.decorator';
+import { BatchService } from './batch.service.js';
+import { CreateBatchDto } from './dto/create-batch.dto.js';
+import type { JournalEntryBatchCreate } from '@qbit/shared-types';
+// import { ServiceAuthGuard } from '../auth/guards/service-auth.guard.js';
+// import { RequireServiceScope } from '../auth/decorators/service-scope.decorator.js';
 
 @Controller('batch')
 @ApiTags('batch')

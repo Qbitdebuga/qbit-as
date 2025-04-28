@@ -1,9 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { GeneralLedgerClientService } from '../clients/general-ledger-client';
-import { AuthClientService } from '../clients/auth-client';
-import { ReportRequestDto } from './dto/report-request.dto';
-import { ReportResponseDto } from './dto/report-response.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { GeneralLedgerClientService } from '../clients/general-ledger-client.js';
+import { AuthClientService } from '../clients/auth-client.js';
+import { ReportRequestDto } from './dto/report-request.dto.js';
+import { ReportResponseDto } from './dto/report-response.dto.js';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

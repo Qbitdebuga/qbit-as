@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
-import { AccountsRepository } from './accounts.repository';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
-import { Account, AccountWithHierarchy } from './entities/account.entity';
-import { PrismaService } from '../prisma/prisma.service';
-import { AuthService } from '../auth/auth.service';
+import { AccountsRepository } from './accounts.repository.js';
+import { CreateAccountDto } from './dto/create-account.dto.js';
+import { UpdateAccountDto } from './dto/update-account.dto.js';
+import { Account, AccountWithHierarchy } from './entities/account.entity.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { AuthService } from '../auth/auth.service.js';
 import { ConfigService } from '@nestjs/config';
-import { AccountPublisher } from '../events/publishers/account-publisher';
+import { AccountPublisher } from '../events/publishers/account-publisher.js';
 import axios from 'axios';
 
 @Injectable()

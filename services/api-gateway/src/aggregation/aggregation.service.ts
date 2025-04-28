@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { AuthClientService } from '../clients/auth-client.service';
-import { GeneralLedgerClientService } from '../clients/general-ledger-client.service';
-import { AccountDetailsResponseDto, DashboardResponseDto } from './dto';
+import { AuthClientService } from '../clients/auth-client.service.js';
+import { GeneralLedgerClientService } from '../clients/general-ledger-client.service.js';
+import { AccountDetailsResponseDto, DashboardResponseDto } from './dto/index.js';
 
 /**
  * Service for aggregating data from multiple microservices

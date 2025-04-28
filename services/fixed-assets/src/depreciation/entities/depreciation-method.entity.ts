@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DepreciationMethod } from '../enums/depreciation-method.enum';
+import { DepreciationMethod } from '../enums/depreciation-method.enum.js';
 
 export class DepreciationMethodEntity {
   @ApiProperty({

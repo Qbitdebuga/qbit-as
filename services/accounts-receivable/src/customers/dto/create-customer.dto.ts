@@ -12,7 +12,7 @@ import {
   MaxLength,
   IsNotEmpty
 } from 'class-validator';
-import { CreateCustomerContactDto } from './create-customer-contact.dto';
+import { CreateCustomerContactDto } from './create-customer-contact.dto.js';
 
 export class CreateCustomerDto {
   @ApiPropertyOptional({ description: 'Customer number (auto-generated if not provided)', example: 'CUST-00001' })

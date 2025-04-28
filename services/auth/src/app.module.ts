@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { RoleModule } from './role/role.module';
-import { EventsModule } from './events/events.module';
-import { ServiceTokenModule } from './service-token/service-token.module';
-import { createWinstonLoggerOptions } from './config/logging.config';
-import { HealthModule } from './health/health.module';
+import { UserModule } from './user/user.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { RoleModule } from './role/role.module.js';
+import { EventsModule } from './events/events.module.js';
+import { ServiceTokenModule } from './service-token/service-token.module.js';
+import { createWinstonLoggerOptions } from './config/logging.config.js';
+import { HealthModule } from './health/health.module.js';
 
 @Module({
   imports: [

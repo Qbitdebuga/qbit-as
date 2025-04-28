@@ -9,7 +9,7 @@ import {
   IsUUID,
   Min
 } from 'class-validator';
-import { InvoiceStatus } from '../entities/invoice-status.enum';
+import { InvoiceStatus } from '../entities/invoice-status.enum.js';
 
 export class InvoiceListParamsDto {
   @ApiPropertyOptional({ description: 'Customer ID filter', example: 'c7fb7b8a-b35d-4d5f-a766-78364b5ac1ff' })

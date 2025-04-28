@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-import { PrismaModule } from './prisma/prisma.module';
-import { ConfigModule as AppConfigModule } from './config/config.module';
-import { VendorsModule } from './vendors/vendors.module';
-import { ExpensesModule } from './expenses/expenses.module';
-import { BillsModule } from './bills/bills.module';
-import { PaymentsModule } from './payments/payments.module';
-import { EventsModule } from './events/events.module';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { ConfigModule as AppConfigModule } from './config/config.module.js';
+import { VendorsModule } from './vendors/vendors.module.js';
+import { ExpensesModule } from './expenses/expenses.module.js';
+import { BillsModule } from './bills/bills.module.js';
+import { PaymentsModule } from './payments/payments.module.js';
+import { EventsModule } from './events/events.module.js';
 
 @Module({
   imports: [

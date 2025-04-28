@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { PrismaModule } from './prisma/prisma.module';
-import { ConfigModule as AppConfigModule } from './config/config.module';
-import { ProductsModule } from './products/products.module';
-import { WarehousesModule } from './warehouses/warehouses.module';
-import { TransactionsModule } from './transactions/transactions.module';
-import { EventsModule } from './events/events.module';
-import { createWinstonLoggerOptions } from './config/logging.config';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { ConfigModule as AppConfigModule } from './config/config.module.js';
+import { ProductsModule } from './products/products.module.js';
+import { WarehousesModule } from './warehouses/warehouses.module.js';
+import { TransactionsModule } from './transactions/transactions.module.js';
+import { EventsModule } from './events/events.module.js';
+import { createWinstonLoggerOptions } from './config/logging.config.js';
 
 @Module({
   imports: [

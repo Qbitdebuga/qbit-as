@@ -1,13 +1,13 @@
 import { Injectable, Logger, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { Payment } from './entities/payment.entity';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
-import { ApplyPaymentDto } from './dto/apply-payment.dto';
-import { InvoiceStatus } from '../invoices/entities/invoice-status.enum';
-import { PaymentMethod } from '../invoices/entities/payment-method.enum';
-import { PaymentStatus } from '../invoices/entities/payment-status.enum';
-import { Invoice } from '../invoices/entities/invoice.entity';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { Payment } from './entities/payment.entity.js';
+import { CreatePaymentDto } from './dto/create-payment.dto.js';
+import { UpdatePaymentDto } from './dto/update-payment.dto.js';
+import { ApplyPaymentDto } from './dto/apply-payment.dto.js';
+import { InvoiceStatus } from '../invoices/entities/invoice-status.enum.js';
+import { PaymentMethod } from '../invoices/entities/payment-method.enum.js';
+import { PaymentStatus } from '../invoices/entities/payment-status.enum.js';
+import { Invoice } from '../invoices/entities/invoice.entity.js';
 import { Prisma } from '@prisma/client';
 
 interface PrismaPayment {

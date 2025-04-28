@@ -11,10 +11,10 @@ import {
   ParseBoolPipe
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { ExpenseCategoriesService } from './expense-categories.service';
-import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
-import { UpdateExpenseCategoryDto } from './dto/update-expense-category.dto';
-import { ExpenseCategory } from './entities/expense-category.entity';
+import { ExpenseCategoriesService } from './expense-categories.service.js';
+import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto.js';
+import { UpdateExpenseCategoryDto } from './dto/update-expense-category.dto.js';
+import { ExpenseCategory } from './entities/expense-category.entity.js';
 
 @ApiTags('expense-categories')
 @Controller('expense-categories')

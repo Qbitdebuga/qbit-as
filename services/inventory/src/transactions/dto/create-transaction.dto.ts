@@ -1,7 +1,7 @@
 import { IsArray, IsBoolean, IsDate, IsEnum, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { CreateTransactionLineDto } from './create-transaction-line.dto';
+import { CreateTransactionLineDto } from './create-transaction-line.dto.js';
 
 export enum TransactionType {
   RECEIPT = 'receipt',

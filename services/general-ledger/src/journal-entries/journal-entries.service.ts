@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException, Logger } from '@nestjs/common';
-import { JournalEntriesRepository } from './journal-entries.repository';
-import { CreateJournalEntryDto } from './dto/create-journal-entry.dto';
-import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto';
-import { JournalEntryPublisher } from '../events/publishers/journal-entry-publisher';
-import { JournalEntryLine } from '../events/models/journal-entry.model';
-import { JournalEntry } from './entities/journal-entry.entity';
+import { JournalEntriesRepository } from './journal-entries.repository.js';
+import { CreateJournalEntryDto } from './dto/create-journal-entry.dto.js';
+import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto.js';
+import { JournalEntryPublisher } from '../events/publishers/journal-entry-publisher.js';
+import { JournalEntryLine } from '../events/models/journal-entry.model.js';
+import { JournalEntry } from './entities/journal-entry.entity.js';
 
 @Injectable()
 export class JournalEntriesService {

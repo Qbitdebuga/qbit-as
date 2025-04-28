@@ -1,10 +1,10 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-import { AggregationService } from './aggregation.service';
+import { AggregationService } from './aggregation.service.js';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { AccountDetailsResponseDto, DashboardResponseDto } from './dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { RolesGuard } from '../guards/roles.guard';
-import { Roles } from '../decorators/roles.decorator';
+import { AccountDetailsResponseDto, DashboardResponseDto } from './dto/index.js';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard.js';
+import { RolesGuard } from '../guards/roles.guard.js';
+import { Roles } from '../decorators/roles.decorator.js';
 
 @ApiTags('Aggregation')
 @Controller('aggregation')

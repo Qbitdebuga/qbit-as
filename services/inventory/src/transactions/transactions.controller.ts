@@ -19,16 +19,16 @@ import {
   ApiQuery, 
   ApiBearerAuth
 } from '@nestjs/swagger';
-import { TransactionsService } from './transactions.service';
+import { TransactionsService } from './transactions.service.js';
 import { 
   CreateTransactionDto, 
   UpdateTransactionDto, 
   ProcessTransactionDto, 
   TransactionType, 
   TransactionStatus 
-} from './dto';
-import { InventoryTransactionEntity } from './entities';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+} from './dto/index.js';
+import { InventoryTransactionEntity } from './entities/index.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 
 @ApiTags('inventory-transactions')
 @ApiBearerAuth()

@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthClientService } from './auth-client';
-import { GeneralLedgerClientService } from './general-ledger-client';
+import { AuthClientService } from './auth-client.js';
+import { GeneralLedgerClientService } from './general-ledger-client.js';
 
 @Module({
   imports: [

@@ -12,7 +12,7 @@ import {
   Min, 
   ValidateNested 
 } from 'class-validator';
-import { InvoiceStatus } from '../entities/invoice-status.enum';
+import { InvoiceStatus } from '../entities/invoice-status.enum.js';
 
 export class CreateInvoiceItemDto {
   @ApiPropertyOptional({ description: 'Item code or SKU', example: 'SKU-12345' })

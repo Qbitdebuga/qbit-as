@@ -11,8 +11,8 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AccountType } from '../enums/account-type.enum';
-import { CurrencyCode } from '../enums/currency-code.enum';
+import { AccountType } from '../enums/account-type.enum.js';
+import { CurrencyCode } from '../enums/currency-code.enum.js';
 
 export class CreateBankAccountDto {
   @ApiProperty({ description: 'Bank account number', example: '1234567890' })

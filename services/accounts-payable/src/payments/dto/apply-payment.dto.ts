@@ -8,7 +8,7 @@ import {
   ValidateNested,
   ArrayMinSize
 } from 'class-validator';
-import { CreatePaymentApplicationDto } from './create-payment.dto';
+import { CreatePaymentApplicationDto } from './create-payment.dto.js';
 
 export class ApplyPaymentDto {
   @ApiProperty({

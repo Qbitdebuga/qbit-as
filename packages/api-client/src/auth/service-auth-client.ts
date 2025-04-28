@@ -37,9 +37,9 @@ export class ServiceAuthClient {
 
     // Otherwise, fetch a new token
     const tokenRequest: ServiceTokenRequestDto = {
-      serviceId: this.serviceId,
       serviceName: this.serviceName,
-      scopes
+      apiKey: this.serviceId, // Using serviceId as the apiKey
+      scope: scopes
     };
 
     try {

@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductsRepository } from './products.repository';
-import { ProductPublisher } from '../events/publishers/product-publisher';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { CreateProductCategoryDto } from './dto/create-product-category.dto';
-import { UpdateProductCategoryDto } from './dto/update-product-category.dto';
-import { CreateProductVariantDto } from './dto/create-product-variant.dto';
-import { UpdateProductVariantDto } from './dto/update-product-variant.dto';
+import { ProductsRepository } from './products.repository.js';
+import { ProductPublisher } from '../events/publishers/product-publisher.js';
+import { CreateProductDto } from './dto/create-product.dto.js';
+import { UpdateProductDto } from './dto/update-product.dto.js';
+import { CreateProductCategoryDto } from './dto/create-product-category.dto.js';
+import { UpdateProductCategoryDto } from './dto/update-product-category.dto.js';
+import { CreateProductVariantDto } from './dto/create-product-variant.dto.js';
+import { UpdateProductVariantDto } from './dto/update-product-variant.dto.js';
 
 @Injectable()
 export class ProductsService {

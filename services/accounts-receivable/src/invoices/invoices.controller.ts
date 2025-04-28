@@ -11,14 +11,14 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CreateInvoiceDto } from './dto/create-invoice.dto';
-import { CreateInvoicePaymentDto } from './dto/create-invoice-payment.dto';
-import { InvoiceListParamsDto } from './dto/invoice-list-params.dto';
-import { UpdateInvoiceDto } from './dto/update-invoice.dto';
-import { Invoice } from './entities/invoice.entity';
-import { InvoicePayment } from './entities/invoice-payment.entity';
-import { InvoicesService } from './invoices.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { CreateInvoiceDto } from './dto/create-invoice.dto.js';
+import { CreateInvoicePaymentDto } from './dto/create-invoice-payment.dto.js';
+import { InvoiceListParamsDto } from './dto/invoice-list-params.dto.js';
+import { UpdateInvoiceDto } from './dto/update-invoice.dto.js';
+import { Invoice } from './entities/invoice.entity.js';
+import { InvoicePayment } from './entities/invoice-payment.entity.js';
+import { InvoicesService } from './invoices.service.js';
 
 @ApiTags('invoices')
 @ApiBearerAuth()

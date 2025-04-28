@@ -1,0 +1,9 @@
+{
+  "name": "@qbit/scripts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "convert-to-esm": "node convert-to-esm.js"
+  }
+} 

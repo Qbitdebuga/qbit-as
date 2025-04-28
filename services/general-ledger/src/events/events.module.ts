@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AccountPublisher } from './publishers/account-publisher';
-import { JournalEntryPublisher } from './publishers/journal-entry-publisher';
-import { UserConsumer } from './consumers/user-consumer';
-import { RoleConsumer } from './consumers/role-consumer';
-import { PrismaModule } from '../prisma/prisma.module';
+import { AccountPublisher } from './publishers/account-publisher.js';
+import { JournalEntryPublisher } from './publishers/journal-entry-publisher.js';
+import { UserConsumer } from './consumers/user-consumer.js';
+import { RoleConsumer } from './consumers/role-consumer.js';
+import { PrismaModule } from '../prisma/prisma.module.js';
 
 @Module({
   imports: [

@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, ParseIntPipe, DefaultValuePipe, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
-import { RoleService } from './role.service';
-import { Role } from './role.entity';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { RoleService } from './role.service.js';
+import { Role } from './role.entity.js';
+import { CreateRoleDto } from './dto/create-role.dto.js';
+import { UpdateRoleDto } from './dto/update-role.dto.js';
 
 @ApiTags('roles')
 @Controller('roles')

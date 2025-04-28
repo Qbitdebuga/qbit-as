@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsEnum, IsBoolean, IsUUID } from 'class-validator';
-import { AccountType, AccountSubType } from '../enums/account.enums';
+import { AccountType, AccountSubType } from '../enums/account.enums.js';
 
 export class CreateAccountDto {
   @ApiProperty({ description: 'Account code, must be unique' })

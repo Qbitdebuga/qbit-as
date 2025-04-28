@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, Logger, ConflictException } from '@nestjs/common';
-import { CustomersRepository } from './customers.repository';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { CreateCustomerContactDto } from './dto/create-customer-contact.dto';
+import { CustomersRepository } from './customers.repository.js';
+import { CreateCustomerDto } from './dto/create-customer.dto.js';
+import { UpdateCustomerDto } from './dto/update-customer.dto.js';
+import { CreateCustomerContactDto } from './dto/create-customer-contact.dto.js';
 
 // Define interfaces for Customer and CustomerContact since they're not exported from @prisma/client
 interface Customer {
@@ -62,7 +62,7 @@ export class CustomersService {
     const skip = (page - 1) * limit;
     const take = limit;
     
-    let orderBy: any = {};
+    const orderBy: any = {};
     orderBy[sortBy] = sortDirection;
     
     try {

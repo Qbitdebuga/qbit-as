@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { Payment, PaymentStatus } from './entities/payment.entity';
-import { CreatePaymentDto, UpdatePaymentDto } from './dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { Payment, PaymentStatus } from './entities/payment.entity.js';
+import { CreatePaymentDto, UpdatePaymentDto } from './dto/index.js';
 
 @Injectable()
 export class PaymentsRepository {

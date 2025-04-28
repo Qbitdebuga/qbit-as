@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ProductPublisher, WarehousePublisher, TransactionPublisher } from './publishers';
-import { UserConsumer } from './consumers/user-consumer';
-import { AccountConsumer } from './consumers/account-consumer';
+import { ProductPublisher, WarehousePublisher, TransactionPublisher } from './publishers/index.js';
+import { UserConsumer } from './consumers/user-consumer.js';
+import { AccountConsumer } from './consumers/account-consumer.js';
 
 @Module({
   imports: [

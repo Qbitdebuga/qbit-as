@@ -10,13 +10,13 @@ import {
   Logger 
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
-import { DepreciationService } from './depreciation.service';
-import { CalculateDepreciationDto, CalculateDepreciationResponseDto } from './dto/calculate-depreciation.dto';
-import { CreateDepreciationEntryDto, DepreciationEntryResponseDto } from './dto/create-depreciation-entry.dto';
-import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity';
-import { DepreciationMethodEntity } from './entities/depreciation-method.entity';
-import { DepreciationMethod } from './enums/depreciation-method.enum';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { DepreciationService } from './depreciation.service.js';
+import { CalculateDepreciationDto, CalculateDepreciationResponseDto } from './dto/calculate-depreciation.dto.js';
+import { CreateDepreciationEntryDto, DepreciationEntryResponseDto } from './dto/create-depreciation-entry.dto.js';
+import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity.js';
+import { DepreciationMethodEntity } from './entities/depreciation-method.entity.js';
+import { DepreciationMethod } from './enums/depreciation-method.enum.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 
 @ApiTags('depreciation')
 @ApiBearerAuth()

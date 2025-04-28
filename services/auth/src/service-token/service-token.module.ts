@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ServiceTokenController } from './service-token.controller';
-import { ServiceTokenService } from './service-token.service';
-import { ServiceTokenClient } from './service-token.client';
+import { ServiceTokenController } from './service-token.controller.js';
+import { ServiceTokenService } from './service-token.service.js';
+import { ServiceTokenClient } from './service-token.client.js';
 
 @Module({
   imports: [

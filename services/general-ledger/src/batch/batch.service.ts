@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { BatchProcessingSaga } from '../sagas/batch-processing.saga';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { BatchProcessingSaga } from '../sagas/batch-processing.saga.js';
 import { BatchStatus, JournalEntryBatchCreate } from '@qbit/shared-types';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
-import { serviceConfigSchema } from './schemas/service-config.schema';
-import { authConfigSchema } from './schemas/auth-config.schema';
+import { serviceConfigSchema } from './schemas/service-config.schema.js';
+import { authConfigSchema } from './schemas/auth-config.schema.js';
 
 /**
  * Configuration module for the API Gateway application

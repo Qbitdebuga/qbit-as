@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Logger, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthClientService } from '../clients/auth-client.service';
+import { AuthClientService } from '../clients/auth-client.service.js';
 
 export const ROLES_KEY = 'roles';
 

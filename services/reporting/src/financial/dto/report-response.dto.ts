@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { FinancialStatementDto } from '../../dto/general-ledger.dto';
+import { FinancialStatementDto } from '../../dto/general-ledger.dto.js';
 
 /**
  * Report parameters interface

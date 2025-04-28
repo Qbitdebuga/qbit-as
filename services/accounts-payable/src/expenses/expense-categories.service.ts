@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { ExpenseCategoriesRepository } from './expense-categories.repository';
-import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
-import { UpdateExpenseCategoryDto } from './dto/update-expense-category.dto';
+import { ExpenseCategoriesRepository } from './expense-categories.repository.js';
+import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto.js';
+import { UpdateExpenseCategoryDto } from './dto/update-expense-category.dto.js';
 
 @Injectable()
 export class ExpenseCategoriesService {

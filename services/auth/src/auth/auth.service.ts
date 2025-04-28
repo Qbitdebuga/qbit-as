@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException, ForbiddenException, ConflictExceptio
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { UserService } from '../user/user.service';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { RegisterDto } from './dto/register.dto';
+import { UserService } from '../user/user.service.js';
+import { RefreshTokenDto } from './dto/refresh-token.dto.js';
+import { RegisterDto } from './dto/register.dto.js';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()

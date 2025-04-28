@@ -8,7 +8,7 @@ import {
   HttpHealthIndicator,
   HealthIndicatorResult
 } from '@nestjs/terminus';
-import { PrismaHealthIndicator } from './prisma.health';
+import { PrismaHealthIndicator } from './prisma.health.js';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('health')

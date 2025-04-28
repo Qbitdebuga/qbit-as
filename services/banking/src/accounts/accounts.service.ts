@@ -1,14 +1,14 @@
 import { Injectable, Logger, NotFoundException, ConflictException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateBankDto } from './dto/create-bank.dto';
-import { UpdateBankDto } from './dto/update-bank.dto';
-import { CreateBankAccountDto } from './dto/create-bank-account.dto';
-import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
-import { BankEntity } from './entities/bank.entity';
-import { BankAccountEntity } from './entities/bank-account.entity';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CreateBankDto } from './dto/create-bank.dto.js';
+import { UpdateBankDto } from './dto/update-bank.dto.js';
+import { CreateBankAccountDto } from './dto/create-bank-account.dto.js';
+import { UpdateBankAccountDto } from './dto/update-bank-account.dto.js';
+import { BankEntity } from './entities/bank.entity.js';
+import { BankAccountEntity } from './entities/bank-account.entity.js';
 import { Prisma } from '@prisma/client';
-import { AccountType } from './enums/account-type.enum';
-import { CurrencyCode } from './enums/currency-code.enum';
+import { AccountType } from './enums/account-type.enum.js';
+import { CurrencyCode } from './enums/currency-code.enum.js';
 
 // Define a type that represents what we expect from Prisma
 type PrismaWithModels = PrismaService & {

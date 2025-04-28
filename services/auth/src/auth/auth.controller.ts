@@ -1,15 +1,15 @@
 import { Controller, Post, Get, Body, HttpCode, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { JwtAuthGuard } from './guards/jwt.guard';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import { ServiceTokenRequestDto } from './dto/service-token-request.dto';
-import { ServiceTokenService } from './services/service-token.service';
+import { AuthService } from './auth.service.js';
+import { LocalAuthGuard } from './guards/local-auth.guard.js';
+import { JwtAuthGuard } from './guards/jwt.guard.js';
+import { LoginDto } from './dto/login.dto.js';
+import { RegisterDto } from './dto/register.dto.js';
+import { RefreshTokenDto } from './dto/refresh-token.dto.js';
+import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
+import { ResetPasswordDto } from './dto/reset-password.dto.js';
+import { ServiceTokenRequestDto } from './dto/service-token-request.dto.js';
+import { ServiceTokenService } from './services/service-token.service.js';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('auth')

@@ -11,11 +11,11 @@ import {
   HttpStatus
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { WarehousesService } from './warehouses.service';
-import { CreateWarehouseDto } from './dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
-import { WarehouseEntity } from './entities/warehouse.entity';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { WarehousesService } from './warehouses.service.js';
+import { CreateWarehouseDto } from './dto/create-warehouse.dto.js';
+import { UpdateWarehouseDto } from './dto/update-warehouse.dto.js';
+import { WarehouseEntity } from './entities/warehouse.entity.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 
 @ApiTags('warehouses')
 @ApiBearerAuth()

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { UserPublisher } from './publishers/user-publisher';
-import { RolePublisher } from './publishers/role-publisher';
+import { UserPublisher } from './publishers/user-publisher.js';
+import { RolePublisher } from './publishers/role-publisher.js';
 
 // Mock client for development
 const mockClient = {

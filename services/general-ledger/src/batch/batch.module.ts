@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '../prisma/prisma.module';
-import { SagasModule } from '../sagas/sagas.module';
-import { BatchService } from './batch.service';
-import { BatchController } from './batch.controller';
+import { PrismaModule } from '../prisma/prisma.module.js';
+import { SagasModule } from '../sagas/sagas.module.js';
+import { BatchService } from './batch.service.js';
+import { BatchController } from './batch.controller.js';
 
 @Module({
   imports: [

@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
-import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from '../assets/dto/create-category.dto';
-import { UpdateCategoryDto } from '../assets/dto/update-category.dto';
-import { AssetCategoryEntity } from '../assets/entities/asset-category.entity';
+import { CategoriesService } from './categories.service.js';
+import { CreateCategoryDto } from '../assets/dto/create-category.dto.js';
+import { UpdateCategoryDto } from '../assets/dto/update-category.dto.js';
+import { AssetCategoryEntity } from '../assets/entities/asset-category.entity.js';
 
 @ApiTags('asset-categories')
 @Controller('categories')

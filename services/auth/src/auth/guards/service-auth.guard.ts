@@ -2,7 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Forbi
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { SERVICE_SCOPE_KEY } from '../decorators/service-scope.decorator';
+import { SERVICE_SCOPE_KEY } from '../decorators/service-scope.decorator.js';
 import { Request } from 'express';
 
 interface ServiceJwtPayload {

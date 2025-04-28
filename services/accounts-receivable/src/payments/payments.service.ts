@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
-import { PaymentsRepository } from './payments.repository';
-import { Payment } from './entities/payment.entity';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { ApplyPaymentDto } from './dto/apply-payment.dto';
-import { InvoiceStatus } from '../invoices/entities/invoice-status.enum';
-import { PrismaService } from '../prisma/prisma.service';
-import { Invoice } from '../invoices/entities/invoice.entity';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
-import { PaymentStatus } from '../invoices/entities/payment-status.enum';
+import { PaymentsRepository } from './payments.repository.js';
+import { Payment } from './entities/payment.entity.js';
+import { CreatePaymentDto } from './dto/create-payment.dto.js';
+import { ApplyPaymentDto } from './dto/apply-payment.dto.js';
+import { InvoiceStatus } from '../invoices/entities/invoice-status.enum.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { Invoice } from '../invoices/entities/invoice.entity.js';
+import { UpdatePaymentDto } from './dto/update-payment.dto.js';
+import { PaymentStatus } from '../invoices/entities/payment-status.enum.js';
 
 @Injectable()
 export class PaymentsService {

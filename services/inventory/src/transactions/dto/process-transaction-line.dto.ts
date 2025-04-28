@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 import { Type } from 'class-transformer';
-import { TransactionLineStatus } from './create-transaction-line.dto';
+import { TransactionLineStatus } from './create-transaction-line.dto.js';
 
 export class ProcessTransactionLineDto {
   @ApiProperty({

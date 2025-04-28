@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { InvoiceItem } from './invoice-item.entity';
-import { InvoiceStatus } from './invoice-status.enum';
-import { InvoicePayment } from './invoice-payment.entity';
+import { InvoiceItem } from './invoice-item.entity.js';
+import { InvoiceStatus } from './invoice-status.enum.js';
+import { InvoicePayment } from './invoice-payment.entity.js';
 
 export class Invoice {
   @ApiProperty({ description: 'Unique identifier', example: 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6' })

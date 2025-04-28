@@ -1,2 +1,2 @@
-export * from './warehouse.entity';
-export * from './warehouse-location.entity'; 
+export * from './warehouse.entity.js';
+export * from './warehouse-location.entity.js'; 

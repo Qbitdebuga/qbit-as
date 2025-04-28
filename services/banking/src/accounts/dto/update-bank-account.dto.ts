@@ -10,8 +10,8 @@ import {
   IsDate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AccountType } from '../enums/account-type.enum';
-import { CurrencyCode } from '../enums/currency-code.enum';
+import { AccountType } from '../enums/account-type.enum.js';
+import { CurrencyCode } from '../enums/currency-code.enum.js';
 
 export class UpdateBankAccountDto {
   @ApiProperty({

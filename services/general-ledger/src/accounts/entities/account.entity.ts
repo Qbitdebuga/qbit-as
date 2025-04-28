@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountType, AccountSubType } from '../enums/account.enums';
+import { AccountType, AccountSubType } from '../enums/account.enums.js';
 
 export class Account {
   @ApiProperty({ description: 'Unique identifier' })
@@ -47,8 +47,7 @@ export class Account {
 }
 
 export class AccountWithHierarchy extends Account {
-  @ApiProperty({ description: 'Child accounts (expanded)', type: [Account] })
-  children: Account[];
+  declare children: Account[];
 
   constructor(partial: Partial<AccountWithHierarchy>) {
     super(partial);

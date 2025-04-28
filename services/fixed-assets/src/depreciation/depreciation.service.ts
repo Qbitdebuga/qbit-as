@@ -1,12 +1,12 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { DepreciationMethod } from './enums/depreciation-method.enum';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { DepreciationMethod } from './enums/depreciation-method.enum.js';
 import {
   CalculateDepreciationDto,
   CalculateDepreciationResponseDto,
-} from './dto/calculate-depreciation.dto';
-import { DepreciationEntryResponseDto } from './dto/create-depreciation-entry.dto';
-import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity';
+} from './dto/calculate-depreciation.dto.js';
+import { DepreciationEntryResponseDto } from './dto/create-depreciation-entry.dto.js';
+import { DepreciationScheduleEntity } from './entities/depreciation-schedule.entity.js';
 import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()

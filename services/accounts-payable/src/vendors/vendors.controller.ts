@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { VendorsService } from './vendors.service';
-import { CreateVendorDto } from './dto/create-vendor.dto';
-import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { VendorDto } from './dto/vendor.dto';
+import { VendorsService } from './vendors.service.js';
+import { CreateVendorDto } from './dto/create-vendor.dto.js';
+import { UpdateVendorDto } from './dto/update-vendor.dto.js';
+import { VendorDto } from './dto/vendor.dto.js';
 
 @ApiTags('vendors')
 @Controller('vendors')

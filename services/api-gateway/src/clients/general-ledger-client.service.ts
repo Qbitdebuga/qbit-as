@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
-import { AuthClientService } from './auth-client.service';
-import { formatError } from '../utils/error-handler';
-import { getRequiredConfig } from '../utils/config-utils';
+import { AuthClientService } from './auth-client.service.js';
+import { formatError } from '../utils/error-handler.js';
+import { getRequiredConfig } from '../utils/config-utils.js';
 
 @Injectable()
 export class GeneralLedgerClientService {

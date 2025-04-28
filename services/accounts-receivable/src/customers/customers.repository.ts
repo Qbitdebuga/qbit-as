@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { Prisma } from '@prisma/client';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { CreateCustomerContactDto } from './dto/create-customer-contact.dto';
+import { CreateCustomerDto } from './dto/create-customer.dto.js';
+import { UpdateCustomerDto } from './dto/update-customer.dto.js';
+import { CreateCustomerContactDto } from './dto/create-customer-contact.dto.js';
 
 // Define interfaces for Customer and CustomerContact since they're not exported from @prisma/client
 interface Customer {

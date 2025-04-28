@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Product } from './product.entity';
+import { Product } from './product.entity.js';
 
 export class ProductCategory {
   @ApiProperty({ example: 1, description: 'Unique identifier for the category' })

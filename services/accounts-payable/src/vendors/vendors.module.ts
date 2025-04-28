@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { VendorsController } from './vendors.controller';
-import { VendorsService } from './vendors.service';
-import { VendorsRepository } from './vendors.repository';
-import { PrismaModule } from '../prisma/prisma.module';
+import { VendorsController } from './vendors.controller.js';
+import { VendorsService } from './vendors.service.js';
+import { VendorsRepository } from './vendors.repository.js';
+import { PrismaModule } from '../prisma/prisma.module.js';
 
 @Module({
   imports: [PrismaModule],

@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { TransactionStatus } from './create-transaction.dto';
-import { ProcessTransactionLineDto } from './process-transaction-line.dto';
+import { TransactionStatus } from './create-transaction.dto.js';
+import { ProcessTransactionLineDto } from './process-transaction-line.dto.js';
 
 export class ProcessTransactionDto {
   @ApiProperty({

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TransactionLineEntity } from './transaction-line.entity';
+import { TransactionLineEntity } from './transaction-line.entity.js';
 
 export class InventoryTransactionEntity {
   @ApiProperty({ description: 'Unique identifier for the transaction' })

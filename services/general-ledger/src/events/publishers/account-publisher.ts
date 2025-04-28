@@ -1,7 +1,7 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Account } from '../../accounts/entities/account.entity';
-import { AccountCreatedPayload, AccountUpdatedPayload, AccountDeletedPayload } from '../models/account.model';
+import { Account } from '../../accounts/entities/account.entity.js';
+import { AccountCreatedPayload, AccountUpdatedPayload, AccountDeletedPayload } from '../models/account.model.js';
 
 /**
  * Publisher for account-related events

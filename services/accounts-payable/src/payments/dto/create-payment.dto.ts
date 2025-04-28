@@ -13,7 +13,7 @@ import {
   ValidateNested, 
   ArrayMinSize 
 } from 'class-validator';
-import { PaymentMethod, PaymentStatus } from '../entities/payment.entity';
+import { PaymentMethod, PaymentStatus } from '../entities/payment.entity.js';
 
 export class CreatePaymentApplicationDto {
   @ApiProperty({

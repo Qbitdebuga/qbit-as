@@ -1,4 +1,4 @@
-import { JournalEntryLine } from './journal-entry-line.entity';
+import { JournalEntryLine } from './journal-entry-line.entity.js';
 
 export class JournalEntry {
   id!: string;

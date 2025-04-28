@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BillLineItemDto } from './bill-line-item.dto';
-import { BillStatus } from './bill-status.enum';
+import { BillLineItemDto } from './bill-line-item.dto.js';
+import { BillStatus } from './bill-status.enum.js';
 
 export class BillDto {
   @ApiProperty({

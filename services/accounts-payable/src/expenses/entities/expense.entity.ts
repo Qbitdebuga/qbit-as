@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ExpenseCategory } from './expense-category.entity';
-import { Vendor } from '../../vendors/entities/vendor.entity';
+import { ExpenseCategory } from './expense-category.entity.js';
+import { Vendor } from '../../vendors/entities/vendor.entity.js';
 
 export enum ExpenseStatus {
   DRAFT = 'DRAFT',

@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { JournalEntry } from '../../journal-entries/entities/journal-entry.entity';
+import { JournalEntry } from '../../journal-entries/entities/journal-entry.entity.js';
 import { 
   JournalEntryWithExtraFields, 
   JournalEntryLine,
@@ -8,8 +8,8 @@ import {
   JournalEntryUpdatedPayload,
   JournalEntryDeletedPayload,
   JournalEntryPostedPayload
-} from '../models/journal-entry.model';
-import { InjectClient } from '../decorators/inject-client.decorator';
+} from '../models/journal-entry.model.js';
+import { InjectClient } from '../decorators/inject-client.decorator.js';
 import { BatchProcessResult } from '@qbit/shared-types';
 
 /**

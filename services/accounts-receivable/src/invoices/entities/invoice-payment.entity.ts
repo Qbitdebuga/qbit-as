@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PaymentMethod } from './payment-method.enum';
-import { PaymentStatus } from './payment-status.enum';
+import { PaymentMethod } from './payment-method.enum.js';
+import { PaymentStatus } from './payment-status.enum.js';
 
 export class InvoicePayment {
   @ApiProperty({ description: 'Unique identifier', example: 'b2c3d4e5-f6g7-h8i9-j0k1-l2m3n4o5p6q7' })

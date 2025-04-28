@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Query, ParseBoolPipe, DefaultValuePipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
-import { FinancialStatementsService } from './financial-statements.service';
-import { StatementRequestDto } from './dto/statement-request.dto';
+import { FinancialStatementsService } from './financial-statements.service.js';
+import { StatementRequestDto } from './dto/statement-request.dto.js';
 import { BalanceSheetStatementDto, IncomeStatementDto, CashFlowStatementDto, StatementPeriod } from '@qbit/shared-types';
 
 @ApiTags('Financial Statements')

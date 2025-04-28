@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateJournalEntryDto } from '../../journal-entries/dto/create-journal-entry.dto';
+import { CreateJournalEntryDto } from '../../journal-entries/dto/create-journal-entry.dto.js';
 
 export class CreateBatchDto {
   @IsOptional()

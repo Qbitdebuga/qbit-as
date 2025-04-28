@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { WarehousePublisher } from '../events/publishers/warehouse-publisher';
-import { CreateWarehouseDto } from './dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { WarehousePublisher } from '../events/publishers/warehouse-publisher.js';
+import { CreateWarehouseDto } from './dto/create-warehouse.dto.js';
+import { UpdateWarehouseDto } from './dto/update-warehouse.dto.js';
 import { 
   WarehouseWhereInput,
   WarehouseOrderByWithRelationInput,
   SortOrder,
   QueryMode
-} from '../prisma/prisma.types';
+} from '../prisma/prisma.types.js';
 
 interface FindAllOptions {
   skip?: number;

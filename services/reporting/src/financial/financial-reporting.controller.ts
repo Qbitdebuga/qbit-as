@@ -11,10 +11,10 @@ import {
   ValidationPipe
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
-import { FinancialReportingService } from './financial-reporting.service';
-import { ReportRequestDto, ReportType } from './dto/report-request.dto';
-import { ReportResponseDto } from './dto/report-response.dto';
-import { AuthClientService } from '../clients/auth-client';
+import { FinancialReportingService } from './financial-reporting.service.js';
+import { ReportRequestDto, ReportType } from './dto/report-request.dto.js';
+import { ReportResponseDto } from './dto/report-response.dto.js';
+import { AuthClientService } from '../clients/auth-client.js';
 
 @ApiTags('financial-reporting')
 @Controller('financial-reporting')

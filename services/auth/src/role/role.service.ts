@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { Role } from './role.entity';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
-import { RoleRepository } from './role.repository';
-import { RolePublisher } from '../events/publishers/role-publisher';
+import { Role } from './role.entity.js';
+import { CreateRoleDto } from './dto/create-role.dto.js';
+import { UpdateRoleDto } from './dto/update-role.dto.js';
+import { RoleRepository } from './role.repository.js';
+import { RolePublisher } from '../events/publishers/role-publisher.js';
 
 @Injectable()
 export class RoleService {

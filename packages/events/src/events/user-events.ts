@@ -1,5 +1,5 @@
 import { Event } from '../publishers/base-publisher';
-import { User } from '@qbit/shared-types';
+import type { User } from '@qbit/shared-types';
 
 // User created event
 export interface UserCreatedEvent extends Event {

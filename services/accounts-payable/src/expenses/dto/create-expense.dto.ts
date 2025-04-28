@@ -5,7 +5,7 @@ import {
   ArrayMinSize, IsArray 
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ExpenseStatus, PaymentMethod } from '../entities/expense.entity';
+import { ExpenseStatus, PaymentMethod } from '../entities/expense.entity.js';
 
 export class CreateExpenseTagDto {
   @ApiProperty({

@@ -1,5 +1,5 @@
-import { PaymentMethod } from '../../invoices/entities/payment-method.enum';
-import { PaymentStatus } from '../../invoices/entities/payment-status.enum';
+import { PaymentMethod } from '../../invoices/entities/payment-method.enum.js';
+import { PaymentStatus } from '../../invoices/entities/payment-status.enum.js';
 
 export class Payment {
   id!: string;

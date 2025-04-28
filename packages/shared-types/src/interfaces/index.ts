@@ -6,3 +6,4 @@
 export * from './auth-service.interface';
 export * from './general-ledger-service.interface';
 export * from './inventory';
+export * from './error.interface';

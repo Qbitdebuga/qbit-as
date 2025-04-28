@@ -12,8 +12,8 @@ import {
   IsPositive,
   ValidateIf
 } from 'class-validator';
-import { AssetStatus } from '../enums/asset-status.enum';
-import { DepreciationMethod } from '../../depreciation/enums/depreciation-method.enum';
+import { AssetStatus } from '../enums/asset-status.enum.js';
+import { DepreciationMethod } from '../../depreciation/enums/depreciation-method.enum.js';
 
 export class CreateAssetDto {
   @ApiProperty({ description: 'Name of the asset' })

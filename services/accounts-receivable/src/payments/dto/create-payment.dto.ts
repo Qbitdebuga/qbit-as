@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsDateString, IsEnum, IsString, IsOptional, Min } from 'class-validator';
-import { PaymentMethod } from '../../invoices/entities/payment-method.enum';
+import { PaymentMethod } from '../../invoices/entities/payment-method.enum.js';
 
 export class CreatePaymentDto {
   @IsNotEmpty()

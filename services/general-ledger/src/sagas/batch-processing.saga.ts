@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { JournalEntryPublisher } from '../events/publishers/journal-entry-publisher';
-import { JournalEntryCreationSaga } from './journal-entry-creation.saga';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { JournalEntryPublisher } from '../events/publishers/journal-entry-publisher.js';
+import { JournalEntryCreationSaga } from './journal-entry-creation.saga.js';
 import { Prisma } from '@prisma/client';
 import { BatchStatus } from '@qbit/shared-types';
-import { generateBatchNumber } from '../utils/id-generator';
+import { generateBatchNumber } from '../utils/id-generator.js';
 
 /**
  * Batch Processing Saga

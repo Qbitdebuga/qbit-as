@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Inject } from '@nestjs/common';
-import { CUSTOMER_EVENTS, EventPayload } from '../events.constants';
+import { CUSTOMER_EVENTS, EventPayload } from '../events.constants.js';
 
 // Customer entity interface (simplified - should match your actual Customer entity)
 export interface Customer {

@@ -8,14 +8,14 @@
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
-  error?: ApiError;
+  error?: ApiResponseError;
   meta?: ApiResponseMeta;
 }
 
 /**
  * API error details
  */
-export interface ApiError {
+export interface ApiResponseError {
   code: string;
   message: string;
   details?: Record<string, any>;
@@ -51,7 +51,7 @@ export type SuccessResponse<T> = ApiResponse<T> & { success: true; data: T };
 /**
  * Generic error response
  */
-export type ErrorResponse = ApiResponse & { success: false; error: ApiError };
+export type ApiErrorResponse = ApiResponse & { success: false; error: ApiResponseError };
 
 /**
  * Paginated response with items and metadata
@@ -76,7 +76,7 @@ export function createSuccessResponse<T>(data: T, meta?: ApiResponseMeta): Succe
 /**
  * Create an error response
  */
-export function createErrorResponse(code: string, message: string, details?: Record<string, any>): ErrorResponse {
+export function createApiErrorResponse(code: string, message: string, details?: Record<string, any>): ApiErrorResponse {
   return {
     success: false,
     error: {

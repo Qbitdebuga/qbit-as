@@ -1,6 +1,6 @@
 import { NatsClient } from '../clients/nats-client';
 import { Event } from '../publishers/base-publisher';
-import { ConsumerConfig, JsMsg } from 'nats';
+import type { ConsumerConfig, JsMsg, DeliverPolicy, AckPolicy, ReplayPolicy, RetentionPolicy, StorageType, DiscardPolicy } from 'nats';
 
 /**
  * Abstract base listener for all event listeners
@@ -22,9 +22,9 @@ export abstract class Listener<T extends Event> {
   protected subscriptionOptions(): Partial<ConsumerConfig> {
     return {
       durable_name: this.queueGroup, // Durable consumers remember their position
-      deliver_policy: 'all', // Deliver all available messages
-      ack_policy: 'explicit', // Manual acknowledgment
-      replay_policy: 'instant', // Replay messages as fast as possible
+      deliver_policy: 'all' as DeliverPolicy, // Deliver all available messages
+      ack_policy: 'explicit' as AckPolicy, // Manual acknowledgment
+      replay_policy: 'instant' as ReplayPolicy, // Replay messages as fast as possible
     };
   }
 
@@ -50,10 +50,10 @@ export abstract class Listener<T extends Event> {
         await this.natsClient.jsm.streams.add({
           name: streamName,
           subjects: [`${streamName}.*`],
-          retention: 'limits',
+          retention: 'limits' as RetentionPolicy,
           max_age: 24 * 60 * 60 * 1000 * 7, // 1 week in ms
-          storage: 'file',
-          discard: 'old',
+          storage: 'file' as StorageType,
+          discard: 'old' as DiscardPolicy,
           max_msgs: 1000000,
         });
       }
@@ -89,22 +89,24 @@ export abstract class Listener<T extends Event> {
         // Pull up to 10 messages at a time with a 1s timeout
         const messages = await subscription.fetch(10, { timeout: 1000 });
         
-        for (const msg of messages) {
-          try {
-            const decoder = this.natsClient.jsonCodec;
-            const decodedData = decoder.decode(msg.data) as { id: string; timestamp: string; data: T['data'] };
-            
-            // Process the message
-            await this.onMessage(decodedData.data, msg);
-            
-            // Acknowledge the message
-            msg.ack();
-            
-          } catch (error) {
-            console.error(`Error processing message on ${this.subject}:`, error);
-            
-            // Negative acknowledge to retry later
-            msg.nak();
+        if (messages && messages.length) {
+          for (const msg of messages) {
+            try {
+              const decoder = this.natsClient.jsonCodec;
+              const decodedData = decoder.decode(msg.data) as { id: string; timestamp: string; data: T['data'] };
+              
+              // Process the message
+              await this.onMessage(decodedData.data, msg);
+              
+              // Acknowledge the message
+              msg.ack();
+              
+            } catch (error) {
+              console.error(`Error processing message on ${this.subject}:`, error);
+              
+              // Negative acknowledge to retry later
+              msg.nak();
+            }
           }
         }
       } catch (error) {
@@ -132,6 +134,6 @@ export abstract class Listener<T extends Event> {
    */
   private getStreamName(): string {
     const parts = this.subject.split('.');
-    return parts[0].toUpperCase();
+    return parts.length > 0 ? parts[0].toUpperCase() : 'EVENTS';
   }
 } 

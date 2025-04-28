@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Vendor } from '../../vendors/entities/vendor.entity';
-import { Bill } from '../../bills/entities/bill.entity';
+import { Vendor } from '../../vendors/entities/vendor.entity.js';
+import { Bill } from '../../bills/entities/bill.entity.js';
 
 export enum PaymentMethod {
   CASH = 'CASH',

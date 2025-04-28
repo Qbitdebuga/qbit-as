@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { Account, AccountWithHierarchy } from './entities/account.entity';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { Account, AccountWithHierarchy } from './entities/account.entity.js';
+import { CreateAccountDto } from './dto/create-account.dto.js';
+import { UpdateAccountDto } from './dto/update-account.dto.js';
 
 @Injectable()
 export class AccountsRepository {

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ExpensesRepository } from './expenses.repository';
-import { CreateExpenseDto } from './dto/create-expense.dto';
-import { UpdateExpenseDto } from './dto/update-expense.dto';
-import { ExpenseStatus } from './entities/expense.entity';
+import { ExpensesRepository } from './expenses.repository.js';
+import { CreateExpenseDto } from './dto/create-expense.dto.js';
+import { UpdateExpenseDto } from './dto/update-expense.dto.js';
+import { ExpenseStatus } from './entities/expense.entity.js';
 
 @Injectable()
 export class ExpensesService {

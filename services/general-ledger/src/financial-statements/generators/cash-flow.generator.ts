@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service.js';
 import { AccountType, CashFlowSection, CashFlowItem } from '@qbit/shared-types';
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from '@prisma/client';

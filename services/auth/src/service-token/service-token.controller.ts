@@ -1,7 +1,8 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { ServiceTokenService, GenerateTokenOptions } from './service-token.service';
-import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
+import { ServiceTokenService } from './service-token.service.js';
+import type { GenerateTokenOptions } from './service-token.service.js';
+import { AdminAuthGuard } from '../auth/guards/admin-auth.guard.js';
 
 @ApiTags('service-tokens')
 @Controller('service-tokens')

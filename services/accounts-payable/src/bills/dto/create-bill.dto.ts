@@ -4,8 +4,8 @@ import {
   IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, 
   IsPositive, IsString, MaxLength, ValidateNested, IsUUID, IsDateString, ArrayMinSize, Min, MinLength 
 } from 'class-validator';
-import { BillStatus } from './bill-status.enum';
-import { CreateBillLineItemDto } from './create-bill-line-item.dto';
+import { BillStatus } from './bill-status.enum.js';
+import { CreateBillLineItemDto } from './create-bill-line-item.dto.js';
 
 export class CreateBillDto {
   @ApiProperty({

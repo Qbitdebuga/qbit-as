@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expense } from './expense.entity';
+import { Expense } from './expense.entity.js';
 
 export class ExpenseCategory {
   @ApiProperty({ example: 1, description: 'Unique identifier for the expense category' })

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { Prisma } from '@prisma/client';
-import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
-import { UpdateExpenseCategoryDto } from './dto/update-expense-category.dto';
+import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto.js';
+import { UpdateExpenseCategoryDto } from './dto/update-expense-category.dto.js';
 
 @Injectable()
 export class ExpenseCategoriesRepository {

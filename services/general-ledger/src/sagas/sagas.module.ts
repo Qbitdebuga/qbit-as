@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '../prisma/prisma.module';
-import { EventsModule } from '../events/events.module';
-import { AccountsModule } from '../accounts/accounts.module';
-import { JournalEntryCreationSaga } from './journal-entry-creation.saga';
-import { BatchProcessingSaga } from './batch-processing.saga';
+import { PrismaModule } from '../prisma/prisma.module.js';
+import { EventsModule } from '../events/events.module.js';
+import { AccountsModule } from '../accounts/accounts.module.js';
+import { JournalEntryCreationSaga } from './journal-entry-creation.saga.js';
+import { BatchProcessingSaga } from './batch-processing.saga.js';
 import { HttpModule } from '@nestjs/axios';
 
 /**

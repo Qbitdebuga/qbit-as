@@ -9,18 +9,18 @@ import {
   Query, 
   UseGuards 
 } from '@nestjs/common';
-import { AssetsService } from './assets.service';
-import { CreateAssetDto } from './dto/create-asset.dto';
-import { UpdateAssetDto } from './dto/update-asset.dto';
+import { AssetsService } from './assets.service.js';
+import { CreateAssetDto } from './dto/create-asset.dto.js';
+import { UpdateAssetDto } from './dto/update-asset.dto.js';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
-import { AssetEntity } from './entities/asset.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { AssetCategoryEntity } from './entities/asset-category.entity';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AssetStatus } from './enums/asset-status.enum';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { AssetEntity } from './entities/asset.entity.js';
+import { CreateCategoryDto } from './dto/create-category.dto.js';
+import { UpdateCategoryDto } from './dto/update-category.dto.js';
+import { AssetCategoryEntity } from './entities/asset-category.entity.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { AssetStatus } from './enums/asset-status.enum.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { RolesGuard } from '../auth/guards/roles.guard.js';
 
 @ApiTags('assets')
 @ApiBearerAuth()

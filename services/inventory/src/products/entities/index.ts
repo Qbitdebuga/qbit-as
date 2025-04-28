@@ -1,3 +1,3 @@
-export * from './product.entity';
-export * from './product-category.entity';
-export * from './product-variant.entity'; 
+export * from './product.entity.js';
+export * from './product-category.entity.js';
+export * from './product-variant.entity.js'; 

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { WarehouseEntity } from './warehouse.entity';
+import { WarehouseEntity } from './warehouse.entity.js';
 
 export class WarehouseLocation {
   @ApiProperty({ example: 1, description: 'Unique identifier for the warehouse location' })

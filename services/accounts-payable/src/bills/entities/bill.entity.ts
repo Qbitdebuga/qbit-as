@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Vendor } from '../../vendors/entities/vendor.entity';
-import { PaymentApplication } from '../../payments/entities/payment.entity';
-import { BillStatus } from './bill-status.enum';
+import { Vendor } from '../../vendors/entities/vendor.entity.js';
+import { PaymentApplication } from '../../payments/entities/payment.entity.js';
+import { BillStatus } from './bill-status.enum.js';
 
 export class BillLineItem {
   @ApiProperty({ example: 1, description: 'Unique identifier for the line item' })

@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateAssetDto } from './dto/create-asset.dto';
-import { UpdateAssetDto } from './dto/update-asset.dto';
-import { AssetEntity } from './entities/asset.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { AssetCategoryEntity } from './entities/asset-category.entity';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CreateAssetDto } from './dto/create-asset.dto.js';
+import { UpdateAssetDto } from './dto/update-asset.dto.js';
+import { AssetEntity } from './entities/asset.entity.js';
+import { CreateCategoryDto } from './dto/create-category.dto.js';
+import { UpdateCategoryDto } from './dto/update-category.dto.js';
+import { AssetCategoryEntity } from './entities/asset-category.entity.js';
 import { Prisma } from '@prisma/client';
-import { AssetStatus } from './enums/asset-status.enum';
-import { DepreciationMethod } from '../depreciation/enums/depreciation-method.enum';
+import { AssetStatus } from './enums/asset-status.enum.js';
+import { DepreciationMethod } from '../depreciation/enums/depreciation-method.enum.js';
 
 @Injectable()
 export class AssetsService {

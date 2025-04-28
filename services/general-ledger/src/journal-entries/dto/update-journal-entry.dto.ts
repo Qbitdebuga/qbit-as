@@ -1,11 +1,11 @@
 import { IsArray, IsBoolean, IsDateString, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateJournalEntryLineDto } from './create-journal-entry.dto';
+import { CreateJournalEntryLineDto } from './create-journal-entry.dto.js';
 
 export class UpdateJournalEntryLineDto extends CreateJournalEntryLineDto {
   @IsOptional()
   @IsString()
-  accountId!: string;
+  declare accountId: string;
 }
 
 export class UpdateJournalEntryDto {

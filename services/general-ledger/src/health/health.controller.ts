@@ -6,7 +6,7 @@ import {
   DiskHealthIndicator, 
   MemoryHealthIndicator 
 } from '@nestjs/terminus';
-import { PrismaHealthIndicator } from './prisma.health';
+import { PrismaHealthIndicator } from './prisma.health.js';
 
 @ApiTags('health')
 @Controller('health')

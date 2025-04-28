@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AccountsService } from './accounts.service';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
-import { Account, AccountWithHierarchy } from './entities/account.entity';
-import { AccountType } from './enums/account.enums';
+import { AccountsService } from './accounts.service.js';
+import { CreateAccountDto } from './dto/create-account.dto.js';
+import { UpdateAccountDto } from './dto/update-account.dto.js';
+import { Account, AccountWithHierarchy } from './entities/account.entity.js';
+import { AccountType } from './enums/account.enums.js';
 
 @ApiTags('accounts')
 @Controller('accounts')

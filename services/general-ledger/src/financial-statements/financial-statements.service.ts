@@ -5,10 +5,10 @@ import {
   CashFlowStatementDto,
   StatementPeriod 
 } from '@qbit/shared-types';
-import { BalanceSheetGenerator } from './generators/balance-sheet.generator';
-import { IncomeStatementGenerator } from './generators/income-statement.generator';
-import { CashFlowGenerator } from './generators/cash-flow.generator';
-import { StatementRequestDto } from './dto/statement-request.dto';
+import { BalanceSheetGenerator } from './generators/balance-sheet.generator.js';
+import { IncomeStatementGenerator } from './generators/income-statement.generator.js';
+import { CashFlowGenerator } from './generators/cash-flow.generator.js';
+import { StatementRequestDto } from './dto/statement-request.dto.js';
 import { format } from 'date-fns';
 
 @Injectable()

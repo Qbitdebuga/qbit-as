@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
-import { PaymentMethod } from '../entities/payment-method.enum';
-import { PaymentStatus } from '../entities/payment-status.enum';
+import { PaymentMethod } from '../entities/payment-method.enum.js';
+import { PaymentStatus } from '../entities/payment-status.enum.js';
 
 export class CreateInvoicePaymentDto {
   @ApiProperty({ description: 'Invoice ID', example: 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6' })

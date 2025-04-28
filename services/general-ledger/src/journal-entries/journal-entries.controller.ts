@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { JournalEntriesService } from './journal-entries.service';
-import { CreateJournalEntryDto } from './dto/create-journal-entry.dto';
-import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto';
+import { JournalEntriesService } from './journal-entries.service.js';
+import { CreateJournalEntryDto } from './dto/create-journal-entry.dto.js';
+import { UpdateJournalEntryDto } from './dto/update-journal-entry.dto.js';
 
 @Controller('journal-entries')
 export class JournalEntriesController {

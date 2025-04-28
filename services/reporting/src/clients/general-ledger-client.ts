@@ -3,13 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { AxiosRequestConfig } from 'axios';
-import { AuthClientService } from './auth-client';
+import { AuthClientService } from './auth-client.js';
 import { 
   AccountDto, 
   JournalEntryDto, 
   FinancialStatementDto,
   StatementRequestDto
-} from '../dto/general-ledger.dto';
+} from '../dto/general-ledger.dto.js';
 
 @Injectable()
 export class GeneralLedgerClientService {
@@ -42,13 +42,13 @@ export class GeneralLedgerClientService {
       // Get a service token from the Auth service
       const token = await this.authClientService.fetchServiceToken();
       
-      const requestConfig: AxiosRequestConfig = {
+      const requestConfig = {
         ...config,
         headers: {
           ...config?.headers,
           Authorization: `Bearer ${token}`,
         },
-      };
+      } as any; // Use type assertion to bypass type checking
 
       let response;
       if (method === 'GET') {

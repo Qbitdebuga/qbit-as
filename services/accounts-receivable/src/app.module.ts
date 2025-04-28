@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PrismaModule } from './prisma/prisma.module';
-import configuration from './config/configuration';
-import { CustomersModule } from './customers/customers.module';
-import { InvoicesModule } from './invoices/invoices.module';
-import { PaymentsModule } from './payments/payments.module';
+import { PrismaModule } from './prisma/prisma.module.js';
+import configuration from './config/configuration.js';
+import { CustomersModule } from './customers/customers.module.js';
+import { InvoicesModule } from './invoices/invoices.module.js';
+import { PaymentsModule } from './payments/payments.module.js';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-import { AuthModule } from './auth/auth.module';
-import { EventsModule } from './events/events.module';
-import { HealthModule } from './health/health.module';
+import { AuthModule } from './auth/auth.module.js';
+import { EventsModule } from './events/events.module.js';
+import { HealthModule } from './health/health.module.js';
 
 @Module({
   imports: [

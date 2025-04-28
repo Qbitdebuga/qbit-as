@@ -13,15 +13,15 @@ import {
   ParseUUIDPipe,
   Logger,
 } from '@nestjs/common';
-import { AccountsService } from './accounts.service';
-import { CreateBankDto } from './dto/create-bank.dto';
-import { UpdateBankDto } from './dto/update-bank.dto';
-import { CreateBankAccountDto } from './dto/create-bank-account.dto';
-import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
+import { AccountsService } from './accounts.service.js';
+import { CreateBankDto } from './dto/create-bank.dto.js';
+import { UpdateBankDto } from './dto/update-bank.dto.js';
+import { CreateBankAccountDto } from './dto/create-bank-account.dto.js';
+import { UpdateBankAccountDto } from './dto/update-bank-account.dto.js';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { BankEntity } from './entities/bank.entity';
-import { BankAccountEntity } from './entities/bank-account.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
+import { BankEntity } from './entities/bank.entity.js';
+import { BankAccountEntity } from './entities/bank-account.entity.js';
 
 @ApiTags('accounts')
 @ApiBearerAuth()
