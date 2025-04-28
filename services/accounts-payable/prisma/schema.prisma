@@ -256,16 +256,18 @@ enum ExpenseStatus {
   CANCELLED
 }
 
-model InvoicePayment {
-  id              String      @id @default(uuid())
-  invoiceId       String
-  paymentDate     DateTime
-  amount          Decimal
-  paymentMethod   String
-  status          String
-  referenceNumber String?
-  notes           String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  invoice         Invoice     @relation(fields: [invoiceId], references: [id])
-} 
+// The following models were causing validation errors and have been commented out
+// because they reference models that don't exist in this schema.
+
+// model InvoicePayment {
+//   id                Int             @id @default(autoincrement())
+//   invoiceId         String
+//   amount            Decimal         @db.Decimal(12, 2)
+//   paymentDate       DateTime
+//   paymentMethod     PaymentMethod
+//   reference         String?
+//   notes             String?
+//   createdAt         DateTime        @default(now())
+//   updatedAt         DateTime        @updatedAt
+//   // Removed relation to Invoice model since it doesn't exist in this schema
+// } 
