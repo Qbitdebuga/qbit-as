@@ -2646,7 +2646,7 @@ __metadata:
     "@types/supertest": ^2.0.12
     amqp-connection-manager: ^4.1.14
     amqplib: ^0.10.3
-    axios: ^1.6.7
+    axios: ^1.9.0
     class-transformer: ^0.5.1
     class-validator: ^0.14.0
     eslint: ^8.48.0
@@ -2702,7 +2702,7 @@ __metadata:
     "@types/jest": ^29.5.14
     "@types/node": ^20.4.5
     "@types/supertest": ^2.0.16
-    axios: ^1.4.0
+    axios: ^1.9.0
     class-transformer: ^0.5.1
     class-validator: ^0.14.0
     eslint: ^8.48.0
@@ -2773,7 +2773,7 @@ __metadata:
     "@types/supertest": ^2.0.12
     amqp-connection-manager: ^4.1.14
     amqplib: ^0.10.7
-    axios: ^1.6.7
+    axios: ^1.9.0
     bcrypt: ^5.1.0
     class-transformer: ^0.5.1
     class-validator: ^0.14.0
@@ -2823,7 +2823,7 @@ __metadata:
     "@types/supertest": ^2.0.12
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
-    axios: ^1.4.0
+    axios: ^1.9.0
     class-transformer: ^0.5.1
     class-validator: ^0.14.0
     eslint: ^8.42.0
@@ -11605,6 +11605,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"openssl-nodejs@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "openssl-nodejs@npm:1.0.5"
+  checksum: 68a66e0becd53d1ae50dff63abbe28ab1c4a2ab9e4b585306a048bf8e48975dad53261d8b40ca5b720d930548320ba4d74ed3a30dc7f24da2ba63d2c74fad282
+  languageName: node
+  linkType: hard
+
 "optionator@npm:^0.9.3":
   version: 0.9.4
   resolution: "optionator@npm:0.9.4"
@@ -12338,6 +12345,7 @@ __metadata:
     libsodium-wrappers: ^0.7.15
     next: ^15.3.1
     node-fetch: ^3.3.2
+    openssl-nodejs: ^1.0.5
     prettier: ^3.0.3
     react: ^19.1.0
     react-dom: ^19.1.0
@@ -12347,6 +12355,7 @@ __metadata:
     tsconfig: "*"
     turbo: latest
     typescript: ^5.8.3
+    undici: ^6.21.2
   languageName: unknown
   linkType: soft
 
@@ -14820,6 +14829,13 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
+  languageName: node
+  linkType: hard
+
+"undici@npm:^6.21.2":
+  version: 6.21.2
+  resolution: "undici@npm:6.21.2"
+  checksum: 4d7227910bfee0703ea5c5c9d4343bcb2a80d2ce2eb64698b6fb8cc48852e29f7c7c623126161a5073fd594c9040ae7e7ecc8e093fe6e84a9394dd2595754ec5
   languageName: node
   linkType: hard
 
