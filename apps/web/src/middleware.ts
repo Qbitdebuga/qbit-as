@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// Development mode: true to bypass authentication checks
+const DEV_MODE = true;
+
 // Paths that don't require authentication
-const publicPaths = [
+const PUBLIC_PATHS = [
   '/',
   '/login',
   '/register',
@@ -13,53 +16,52 @@ const publicPaths = [
   '/favicon.ico',
 ];
 
-// Check if current path is public
+// Simple path matching helper
 const isPublicPath = (path: string) => {
-  return publicPaths.some(publicPath => 
+  return PUBLIC_PATHS.some(publicPath => 
     path === publicPath || 
     path.startsWith(publicPath + '/') ||
     path.startsWith('/reset-password/')
   );
 };
 
+// Very simple middleware with no redirection logic in dev mode
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Skip authentication check for static assets and API routes
+  // Skip for static assets
   if (pathname.startsWith('/_next') || 
       pathname.startsWith('/api') || 
       pathname.startsWith('/favicon.ico')) {
     return NextResponse.next();
   }
   
-  // Get access token from cookies
-  const accessToken = request.cookies.get('qbit_access_token')?.value;
+  // Log only when useful for debugging
+  if (DEV_MODE && (pathname === '/dashboard' || pathname === '/login')) {
+    console.log(`[Middleware] DEV MODE - Skipping auth check for ${pathname}`);
+  }
   
-  // Check if authenticated
-  const isAuthenticated = !!accessToken;
+  // In dev mode, all middleware just passes through
+  if (DEV_MODE) {
+    return NextResponse.next();
+  }
   
-  // If trying to access protected route while not logged in
-  if (!isPublicPath(pathname) && !isAuthenticated) {
-    console.log(`[Middleware] Redirecting to login: Not authenticated for path ${pathname}`);
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    
-    // Store the intended destination for post-login redirect
-    if (pathname !== '/dashboard') {
-      url.searchParams.set('redirectTo', pathname);
-    }
-    
+  // Production mode logic - only executed when DEV_MODE is false
+  const isAuthenticated = !!request.cookies.get('qbit_access_token')?.value;
+  
+  // Case 1: Public path - always allow
+  if (isPublicPath(pathname)) {
+    return NextResponse.next();
+  }
+  
+  // Case 2: Protected path but not authenticated - redirect to login
+  if (!isAuthenticated) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('redirectTo', pathname);
     return NextResponse.redirect(url);
   }
   
-  // If trying to access login/register/etc. while logged in
-  if ((pathname === '/login' || pathname === '/register') && isAuthenticated) {
-    console.log(`[Middleware] Redirecting to dashboard: Already authenticated for path ${pathname}`);
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
-    return NextResponse.redirect(url);
-  }
-  
+  // Case 3: Everything else - the user is authenticated and trying to access a protected route
   return NextResponse.next();
 }
 

@@ -2,9 +2,11 @@
 
 import { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/hooks/useAuth';
+
+// Development mode flag - must match middleware
+const DEV_MODE = true;
 
 interface SidebarLinkProps {
   href: string;
@@ -24,21 +26,86 @@ const SidebarLink = ({ href, label, active }: SidebarLinkProps) => (
 );
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const router = useRouter();
   const { user, logout } = useAuth();
-  // Use client-side only state for the date to avoid hydration mismatch
   const [currentDate, setCurrentDate] = useState<string>('');
+  const [isMounted, setIsMounted] = useState(false);
 
   // Set the date only after component has mounted to avoid hydration issues
   useEffect(() => {
+    setIsMounted(true);
     setCurrentDate(new Date().toLocaleDateString());
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout();
-    router.push('/login');
+    
+    // In dev mode, manually navigate to prevent loops
+    if (DEV_MODE) {
+      window.location.href = '/login';
+    }
   };
 
+  // Simple layout for development mode
+  if (DEV_MODE) {
+    return (
+      <div className="flex h-screen">
+        {/* Sidebar */}
+        <div className="w-64 bg-white border-r p-4 flex flex-col">
+          <div className="flex items-center justify-center p-4 border-b">
+            <h1 className="font-bold text-xl text-blue-600">Qbit Accounting</h1>
+          </div>
+          
+          <div className="flex-grow py-4">
+            <SidebarLink href="/dashboard" label="Dashboard" />
+            
+            {/* General Ledger links */}
+            <div className="border-t my-2 pt-2">
+              <h3 className="font-semibold mb-2 text-gray-600">General Ledger</h3>
+              <SidebarLink href="/dashboard/accounts" label="Chart of Accounts" />
+              <SidebarLink href="/dashboard/journal-entries" label="Journal Entries" />
+            </div>
+            
+            {/* Accounts Receivable links */}
+            <div className="border-t my-2 pt-2">
+              <h3 className="font-semibold mb-2 text-gray-600">Accounts Receivable</h3>
+              <SidebarLink href="/dashboard/customers" label="Customers" />
+              <SidebarLink href="/dashboard/invoices" label="Invoices" />
+            </div>
+          </div>
+          
+          <div className="border-t p-4">
+            <div className="mb-2 text-sm text-gray-600">
+              DEV MODE (No auth check)
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+        
+        {/* Main content */}
+        <div className="flex-grow bg-gray-50 overflow-auto">
+          {/* Header */}
+          <header className="bg-white shadow-sm p-4 flex justify-between items-center">
+            <h1 className="text-2xl font-semibold">Dashboard</h1>
+            <div className="text-gray-600">
+              {isMounted ? currentDate : ''}
+            </div>
+          </header>
+          
+          {/* Content */}
+          <div className="p-6">
+            {children}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Production mode with auth protection
   return (
     <ProtectedRoute>
       <div className="flex h-screen" suppressHydrationWarning>
@@ -94,7 +161,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <header className="bg-white shadow-sm p-4 flex justify-between items-center" suppressHydrationWarning>
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <div className="text-gray-600">
-              {currentDate} {/* Use client-side state instead of direct date call */}
+              {isMounted ? currentDate : ''}
             </div>
           </header>
           

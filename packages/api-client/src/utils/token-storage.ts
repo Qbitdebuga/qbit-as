@@ -141,5 +141,33 @@ export const TokenStorage = {
    */
   isAuthenticated(): boolean {
     return !!this.getAccessToken() || !!this.getUser();
+  },
+
+  /**
+   * Debug function to check authentication state
+   */
+  debugAuthState(): { localStorage: any; cookies: any } {
+    if (typeof window === 'undefined') {
+      return { localStorage: null, cookies: null };
+    }
+    
+    // Check localStorage
+    const localStorageState = {
+      user: this.getUser(),
+      accessToken: !!localStorage.getItem(ACCESS_TOKEN_KEY),
+      refreshToken: !!localStorage.getItem(REFRESH_TOKEN_KEY),
+      csrfToken: !!localStorage.getItem(CSRF_TOKEN_KEY)
+    };
+    
+    // Check cookies 
+    const cookieState = {
+      accessToken: !!getCookie(ACCESS_TOKEN_KEY),
+      refreshToken: !!getCookie(REFRESH_TOKEN_KEY)
+    };
+    
+    return {
+      localStorage: localStorageState,
+      cookies: cookieState
+    };
   }
 }; 
