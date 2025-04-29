@@ -5,37 +5,7 @@
 
 import { BaseApiClient } from '../base-client';
 import { TokenStorage } from '../utils/token-storage';
-
-export interface Account {
-  id: string;
-  name: string;
-  number: string;
-  description?: string;
-  type: string;
-  subType?: string;
-  balance: number;
-  isActive: boolean;
-  parentAccountId?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateAccountDto {
-  name: string;
-  number: string;
-  description?: string;
-  type: string;
-  subType?: string;
-  isActive?: boolean;
-  parentAccountId?: string;
-}
-
-export interface UpdateAccountDto {
-  name?: string;
-  description?: string;
-  isActive?: boolean;
-  parentAccountId?: string;
-}
+import { Account, AccountCreate as CreateAccountDto, AccountUpdate as UpdateAccountDto } from './types';
 
 export interface AccountsFilter {
   type?: string;

@@ -1,6 +1,7 @@
 import { Injectable, LoggerService as NestLoggerService, Scope } from '@nestjs/common';
 import pino from 'pino';
 import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 // Import from local types for now
 // import { LoggerConfigOptions, LogLevel } from '@qbit/shared-types';
 
@@ -41,33 +42,9 @@ export interface PinoLoggerOptions {
 
   /**
    * Whether to output logs to files
-   * @default true
+   * @default false in ESM context
    */
   fileEnabled?: boolean;
-
-  /**
-   * Log rolling frequency
-   * @default 'daily'
-   */
-  frequency?: 'hourly' | 'daily' | number;
-
-  /**
-   * Maximum size of log files
-   * @default '20m'
-   */
-  size?: string;
-
-  /**
-   * Whether to create directory if it doesn't exist
-   * @default true
-   */
-  mkdir?: boolean;
-
-  /**
-   * Date format for log files
-   * @default 'yyyy-MM-dd'
-   */
-  dateFormat?: string;
 
   /**
    * Additional pino options
@@ -90,11 +67,7 @@ export class PinoLoggerService implements NestLoggerService {
       logDir = 'logs',
       fileName = 'app',
       consoleEnabled = true,
-      fileEnabled = true,
-      frequency = 'daily',
-      size = '20m',
-      mkdir = true,
-      dateFormat = 'yyyy-MM-dd',
+      fileEnabled = false, // Default to false in ESM context
       pinoOptions = {}
     } = options || {};
 
@@ -110,45 +83,25 @@ export class PinoLoggerService implements NestLoggerService {
         });
       }
 
-      // Add file transport if enabled
+      // Add file transport if enabled - but warn about ESM compatibility
       if (fileEnabled) {
+        console.warn('WARNING: File-based logging with rotation is not fully compatible with ESM. Consider using Docker or PM2 for log rotation instead.');
         try {
-          // Check if pino-roll is available
-          require.resolve('pino-roll');
+          // Simple approach - just write to a file without rotation
+          // Ensure the log directory exists
+          if (!existsSync(logDir)) {
+            mkdirSync(logDir, { recursive: true });
+          }
           
           targets.push({
-            target: 'pino-roll',
+            target: 'pino/file',
             options: {
-              file: join(logDir, fileName),
-              frequency,
-              size,
-              mkdir,
-              dateFormat,
-              extension: '.log'
-            } as PinoRollOptions
-          });
-        } catch (error) {
-          // Fallback to simple file transport if pino-roll is not available
-          console.warn('pino-roll transport not available, falling back to basic file transport. To enable advanced file rotation, install pino-roll: yarn add pino-roll');
-          
-          try {
-            // Ensure the log directory exists
-            const fs = require('fs');
-            if (!fs.existsSync(logDir) && mkdir) {
-              fs.mkdirSync(logDir, { recursive: true });
+              destination: join(logDir, `${fileName}.log`)
             }
-            
-            targets.push({
-              target: 'pino/file',
-              options: {
-                destination: join(logDir, `${fileName}.log`),
-                mkdir
-              }
-            });
-          } catch (fsError) {
-            console.error('Failed to setup file logging:', fsError);
-            // Continue with console only if file setup fails
-          }
+          });
+        } catch (fsError) {
+          console.error('Failed to setup file logging:', fsError);
+          // Continue with console only if file setup fails
         }
       }
 
@@ -207,7 +160,7 @@ export class PinoLoggerService implements NestLoggerService {
    * Log an error message
    */
   error(message: any, trace?: string, ...optionalParams: any[]): void {
-    const params = trace ? [...optionalParams, { trace }] : optionalParams;
+    const params = trace ? [trace, ...optionalParams] : optionalParams;
     this.logWithLevel('error', message, params);
   }
 
@@ -215,41 +168,49 @@ export class PinoLoggerService implements NestLoggerService {
    * Log a verbose message
    */
   verbose(message: any, ...optionalParams: any[]): void {
-    // Pino doesn't have a verbose level, map to debug
     this.logWithLevel('debug', message, optionalParams);
   }
 
   /**
-   * Internal method for logging with a specific level
+   * Internal method to log with a specific level
    */
   private logWithLevel(level: string, message: any, optionalParams: any[] = []): void {
-    try {
-      const meta = optionalParams.reduce((acc, item) => {
-        if (item && typeof item === 'object') {
-          return { ...acc, ...item };
-        }
-        return acc;
-      }, {});
-
-      const logObject = {
-        ...(this.context ? { context: this.context } : {}),
-        ...meta
-      };
-
-      if (typeof message === 'object') {
-        this.logger[level]({ ...logObject, ...message });
-      } else {
-        this.logger[level](logObject, message);
-      }
-    } catch (err) {
-      // Fallback to console if logging fails
-      console[level === 'debug' || level === 'verbose' ? 'debug' : 
-               level === 'info' || level === 'log' ? 'log' : 
-               level === 'warn' ? 'warn' : 'error'](
-        this.context ? `[${this.context}] ` : '',
-        message,
-        ...optionalParams
-      );
+    const logObject: any = {};
+    
+    // Add context if available
+    if (this.context) {
+      logObject.context = this.context;
     }
+    
+    // Handle different message types
+    if (typeof message === 'object' && message !== null) {
+      // If message is an error, format it specially
+      if (message instanceof Error) {
+        logObject.error = {
+          message: message.message,
+          name: message.name,
+          stack: message.stack,
+        };
+        // If trace is provided as the first optional param, add it
+        if (optionalParams.length > 0 && typeof optionalParams[0] === 'string') {
+          logObject.trace = optionalParams[0];
+          optionalParams = optionalParams.slice(1);
+        }
+      } else {
+        // For other objects, merge them into the log object
+        Object.assign(logObject, message);
+      }
+    } else {
+      // For string/primitive messages, use the msg field
+      logObject.msg = message;
+    }
+    
+    // Add optional params if present
+    if (optionalParams.length > 0) {
+      logObject.additional = optionalParams;
+    }
+    
+    // Log with the appropriate level
+    this.logger[level](logObject);
   }
 } 

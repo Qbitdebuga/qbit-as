@@ -8,11 +8,11 @@ import { GlobalExceptionFilter } from '@qbit/errors';
 import { PinoLoggerService } from '@qbit/logging';
 
 async function bootstrap() {
-  // Create custom logger
+  // Create custom logger - avoid file logging in ESM context
   const logger = new PinoLoggerService({
     level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-    logDir: 'logs',
-    fileName: 'api-gateway',
+    // Disable file logging to avoid ESM compatibility issues
+    fileEnabled: false, 
   });
   logger.setContext('API-Gateway');
 

@@ -1,9 +1,8 @@
 import React, { HTMLAttributes } from "react";
 import { cn } from "./lib/utils";
 
-interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
-  // You can add specific props here if needed
-}
+// Instead of an empty interface that extends HTMLAttributes, use type alias
+type ContainerProps = HTMLAttributes<HTMLDivElement>;
 
 export function Container({ className, children, ...props }: ContainerProps) {
   return (

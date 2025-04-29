@@ -15,6 +15,9 @@ declare module '@qbit/api-client' {
     subtype: string;
     description?: string;
     isActive: boolean;
+    parentId?: string;
+    parent?: Account;
+    children?: Account[];
     createdAt: string;
     updatedAt: string;
   }

@@ -2,15 +2,23 @@
 
 import React from 'react';
 import { AccountForm } from '@/components/accounts/AccountForm';
-import { PageHeader } from '@/components/page-header';
+import { 
+  PageHeader, 
+  PageHeaderHeading, 
+  PageHeaderDescription 
+} from '@/components/page-header';
 import { Button } from '@/components/ui';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { Account } from '@qbit/api-client';
+
+// Use the AccountCreate type from the form component since it's not exported from api-client
+import { AccountCreate } from '@/components/accounts/AccountForm';
 
 export default function NewAccountPage() {
   // In a real app, this would be a server action or API call
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: AccountCreate) => {
     console.log('Form submitted with data:', data);
     // In a real app, this would redirect to the accounts list or detail page
   };
@@ -24,7 +32,10 @@ export default function NewAccountPage() {
             Back to Accounts
           </Button>
         </Link>
-        <PageHeader title="Create New Account" description="Add a new account to your chart of accounts" />
+        <PageHeader>
+          <PageHeaderHeading>Create New Account</PageHeaderHeading>
+          <PageHeaderDescription>Add a new account to your chart of accounts</PageHeaderDescription>
+        </PageHeader>
       </div>
 
       <Card>

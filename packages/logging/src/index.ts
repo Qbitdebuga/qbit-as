@@ -6,7 +6,7 @@
  */
 
 // Export pino logger service
-export * from './pino-logger.service';
+export { PinoLoggerService } from './pino-logger.service';
 
 // Export logger module
 export * from './pino-logger.module';

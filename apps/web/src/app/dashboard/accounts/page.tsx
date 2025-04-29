@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
+import { AccountType } from '@qbit/api-client';
 
 // Mock data - in a real app, this would come from an API call
 const accounts = [
@@ -17,7 +18,7 @@ const accounts = [
     code: '1000',
     name: 'Cash',
     description: 'Cash on hand and in banks',
-    type: 'ASSET',
+    type: AccountType.ASSET,
     subtype: 'CASH',
     isActive: true,
     createdAt: new Date().toISOString(),
@@ -28,7 +29,7 @@ const accounts = [
     code: '1200',
     name: 'Accounts Receivable',
     description: 'Amounts due from customers',
-    type: 'ASSET',
+    type: AccountType.ASSET,
     subtype: 'ACCOUNTS_RECEIVABLE',
     isActive: true,
     createdAt: new Date().toISOString(),
@@ -39,7 +40,7 @@ const accounts = [
     code: '2000',
     name: 'Accounts Payable',
     description: 'Amounts due to vendors',
-    type: 'LIABILITY',
+    type: AccountType.LIABILITY,
     subtype: 'ACCOUNTS_PAYABLE',
     isActive: true,
     createdAt: new Date().toISOString(),
@@ -50,7 +51,7 @@ const accounts = [
     code: '3000',
     name: 'Retained Earnings',
     description: 'Accumulated earnings of the company',
-    type: 'EQUITY',
+    type: AccountType.EQUITY,
     subtype: 'RETAINED_EARNINGS',
     isActive: true,
     createdAt: new Date().toISOString(),
@@ -61,7 +62,7 @@ const accounts = [
     code: '4000',
     name: 'Sales Revenue',
     description: 'Income from sales',
-    type: 'REVENUE',
+    type: AccountType.REVENUE,
     subtype: 'SALES',
     isActive: true,
     createdAt: new Date().toISOString(),
@@ -72,7 +73,7 @@ const accounts = [
     code: '5000',
     name: 'Cost of Goods Sold',
     description: 'Cost of items sold',
-    type: 'EXPENSE',
+    type: AccountType.EXPENSE,
     subtype: 'COST_OF_GOODS_SOLD',
     isActive: true,
     createdAt: new Date().toISOString(),

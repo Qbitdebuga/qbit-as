@@ -82,4 +82,5 @@ export const PopoverContent = React.forwardRef<
     )}
     {...props}
   />
-)); 
+));
+PopoverContent.displayName = "PopoverContent"; 

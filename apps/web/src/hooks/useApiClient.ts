@@ -8,8 +8,8 @@ import {
   invoicesClient, 
   paymentsClient
 } from '@/utils/api-clients';
-import { isAuthenticated as checkAuth } from '@/utils/auth';
 
+// API client hook for making authenticated API requests
 export function useApiClient() {
   const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -35,12 +35,8 @@ export function useApiClient() {
         throw new Error('Authentication required');
       }
       
-      try {
-        return await fn();
-      } catch (error: any) {
-        // Handle specific API errors here if needed
-        throw error;
-      }
+      // Directly return the promise instead of using try/catch
+      return fn();
     },
     [isAuthenticated]
   );
