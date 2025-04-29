@@ -1,7 +1,7 @@
 'use client';
 
 import { UserDto as User } from '@qbit/shared-types';
-import { authClient } from './auth';
+import { useAuth } from '@/contexts/auth-context';
 
 /**
  * Helper functions for authentication in the frontend
@@ -67,19 +67,13 @@ export function getUserInitials(user: User | null): string {
  * Handle authentication error (typically 401)
  * Redirects to login page if needed and handles session expiration
  */
-export async function handleAuthError(error: any): Promise<void> {
-  console.error('Authentication error:', error);
+export async function handleAuthError(): Promise<void> {
+  console.error('Authentication error, redirecting to login');
   
   // If we're running in the browser
   if (typeof window !== 'undefined') {
-    try {
-      // Try to refresh the token first
-      await authClient.refreshToken();
-      // If successful, no further action needed
-    } catch (refreshError) {
-      // If refresh fails, redirect to login
-      window.location.href = '/login?error=session_expired';
-    }
+    // Redirect to login with error message
+    window.location.href = '/login?error=session_expired';
   }
 }
 

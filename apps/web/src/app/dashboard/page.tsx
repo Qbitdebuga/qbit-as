@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { LoadingIndicator } from '@/components/ui/LoadingIndicator';
+import { ErrorDisplay } from '@/components/ui/ErrorDisplay';
 
 // Component to display dashboard content
 function DashboardContent({ user, isAuthenticated, isLoading, logout }: {
@@ -58,8 +60,9 @@ function DashboardContent({ user, isAuthenticated, isLoading, logout }: {
 }
 
 export default function Dashboard() {
-  const { user, isAuthenticated, isLoading, logout, checkAuthManually } = useAuth();
+  const { user, isAuthenticated, isLoading, logout, checkAuthStatus } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Only perform client-side operations after mount
   useEffect(() => {
@@ -67,11 +70,33 @@ export default function Dashboard() {
     
     // Force auth check to ensure fresh data
     const initDashboard = async () => {
-      await checkAuthManually();
+      try {
+        await checkAuthStatus();
+      } catch (err) {
+        setError("Failed to load dashboard data");
+        console.error(err);
+      }
     };
     
     initDashboard();
-  }, [checkAuthManually]);
+  }, [checkAuthStatus]);
+
+  // Display error if any
+  if (error) {
+    return (
+      <div className="container py-10">
+        <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
+        <ErrorDisplay 
+          title="Dashboard Error" 
+          message={error}
+          retry={() => {
+            setError(null);
+            checkAuthStatus();
+          }}
+        />
+      </div>
+    );
+  }
 
   // Server-side or loading state
   if (!isMounted) {
@@ -79,9 +104,7 @@ export default function Dashboard() {
       <div className="container py-10">
         <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
         <div className="flex justify-center items-center min-h-[300px]">
-          <div className="animate-pulse text-center">
-            <p className="text-xl font-medium">Loading dashboard...</p>
-          </div>
+          <LoadingIndicator text="Loading dashboard..." size="md" />
         </div>
       </div>
     );

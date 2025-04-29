@@ -3,6 +3,7 @@ import {
   ServiceTokenResponseDto,
   ValidateTokenResponseDto
 } from '@qbit/shared-types';
+import { AUTH_API_BASE_URL } from '@qbit/auth-common';
 
 /**
  * Service Auth Client for service-to-service authentication
@@ -16,7 +17,7 @@ export class ServiceAuthClient {
   private tokenExpiry: number | null = null;
 
   constructor(
-    apiUrl: string, 
+    apiUrl: string = AUTH_API_BASE_URL, 
     serviceId: string, 
     serviceName: string
   ) {

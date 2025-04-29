@@ -1,31 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { DEV_MODE, PUBLIC_PATHS, isPublicPath, TOKEN_CONFIG } from '@qbit/auth-common';
 
-// Development mode: true to bypass authentication checks
-const DEV_MODE = true;
-
-// Paths that don't require authentication
-const PUBLIC_PATHS = [
-  '/',
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/reset-password',
-  '/api',
-  '/_next',
-  '/favicon.ico',
-];
-
-// Simple path matching helper
-const isPublicPath = (path: string) => {
-  return PUBLIC_PATHS.some(publicPath => 
-    path === publicPath || 
-    path.startsWith(publicPath + '/') ||
-    path.startsWith('/reset-password/')
-  );
-};
-
-// Very simple middleware with no redirection logic in dev mode
+// Simple middleware with centralized auth configuration
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
@@ -47,7 +24,7 @@ export function middleware(request: NextRequest) {
   }
   
   // Production mode logic - only executed when DEV_MODE is false
-  const isAuthenticated = !!request.cookies.get('qbit_access_token')?.value;
+  const isAuthenticated = !!request.cookies.get(TOKEN_CONFIG.accessTokenKey)?.value;
   
   // Case 1: Public path - always allow
   if (isPublicPath(pathname)) {

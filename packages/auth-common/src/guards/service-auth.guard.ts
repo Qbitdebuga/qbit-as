@@ -70,7 +70,7 @@ export class ServiceAuthGuard implements CanActivate {
    * @param context The execution context
    * @returns The request object
    */
-  private getRequest(context: ExecutionContext): any {
+  private getRequest(context: ExecutionContext): Record<string, any> {
     // Handle HTTP context
     if (context.getType() === 'http') {
       return context.switchToHttp().getRequest();
@@ -102,7 +102,7 @@ export class ServiceAuthGuard implements CanActivate {
    * @returns The service info from the token
    * @throws Error if token is invalid
    */
-  private async validateRequest(request: any): Promise<ServiceInfo> {
+  private async validateRequest(request: { headers?: { authorization?: string } }): Promise<ServiceInfo> {
     // Extract the token from the Authorization header
     const authHeader = request.headers?.authorization;
     if (!authHeader) {

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { AUTH_API_BASE_URL } from '@qbit/auth-common';
 
 interface ServiceStatus {
   name: string;
@@ -18,7 +19,7 @@ export default function DebugPage() {
     },
     { 
       name: 'Auth Service', 
-      url: process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3002',
+      url: AUTH_API_BASE_URL,
       status: 'checking'
     },
     { 
@@ -34,7 +35,7 @@ export default function DebugPage() {
     // Collect environment variables
     setEnvVariables({
       NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-      NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
+      AUTH_API_BASE_URL: AUTH_API_BASE_URL,
       NEXT_PUBLIC_GENERAL_LEDGER_URL: process.env.NEXT_PUBLIC_GENERAL_LEDGER_URL
     });
     
@@ -44,6 +45,8 @@ export default function DebugPage() {
       
       for (let i = 0; i < updatedServices.length; i++) {
         const service = updatedServices[i];
+        if (!service) continue; // Skip if service is undefined
+        
         try {
           const startTime = Date.now();
           
@@ -66,9 +69,9 @@ export default function DebugPage() {
             service.status = 'down';
             service.message = `HTTP ${response.status}: ${response.statusText}`;
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           service.status = 'down';
-          service.message = error.message || 'Unknown error';
+          service.message = error instanceof Error ? error.message : 'Unknown error';
         }
         
         // Update state after each service check

@@ -410,7 +410,7 @@ This document outlines the implementation plan for connecting the various micros
    - Integration tests for service boundaries
    - End-to-end tests for critical flows
 
-- [ ] Step 39: Add Inventory Service Client to API Gateway
+- [x] Step 39: Add Inventory Service Client to API Gateway
   - **Task**: Create client service to communicate with the Inventory Service
   - **Files**:
     - `services/api-gateway/src/clients/inventory-client.service.ts`: Create Inventory service client

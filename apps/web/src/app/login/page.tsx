@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
+import { navigateTo } from '@/utils/navigation';
 
 export default function LoginPage() {
   // Move all logic to the main component, not a nested component
@@ -33,8 +34,8 @@ export default function LoginPage() {
     if (isAuthenticated && isLoginPage) {
       console.log(`[Login] User already authenticated, redirecting to ${redirectTo}`);
       
-      // Use router.replace() to avoid adding to history, preventing back button issues
-      router.replace(redirectTo);
+      // Use navigation utility instead of router.replace()
+      navigateTo(redirectTo, { replace: true });
     }
   }, [isAuthenticated, redirectTo, router]);
 
@@ -50,11 +51,8 @@ export default function LoginPage() {
       if (response) {
         console.log(`[Login] Login successful, redirecting to: ${redirectTo}`);
         
-        // Force a hard navigation to ensure state is reset properly
-        window.location.href = redirectTo;
-        
-        // Don't use router for this case as it causes state issues
-        // router.replace(redirectTo);
+        // Use navigation utility instead of window.location.href
+        navigateTo(redirectTo, { replace: true });
       } else {
         setError('Invalid email or password');
       }

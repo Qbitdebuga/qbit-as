@@ -10,7 +10,7 @@ export interface TokenPayload {
   iat?: number;       // Issued at
   exp?: number;       // Expiration time
   iss?: string;       // Issuer
-  [key: string]: any; // For any additional custom claims
+  [key: string]: string | string[] | number | undefined; // For any additional custom claims with specific types
 }
 
 /**
@@ -18,7 +18,15 @@ export interface TokenPayload {
  */
 export interface JwtPayload {
   sub: string;
-  [key: string]: any;
+  email?: string;
+  username?: string;
+  roles?: string[];
+  permissions?: string[];
+  iat?: number;
+  exp?: number;
+  iss?: string;
+  type?: string;
+  [key: string]: string | string[] | number | undefined;
 }
 
 /**

@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, RegisterFormValues } from '@/lib/validations/auth';
-import { authClient } from '@/utils/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { navigateTo, ROUTES } from '@/utils/navigation';
 
 export function RegisterForm() {
   const router = useRouter();
+  const { register: registerUser } = useAuth();
   const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,22 +34,15 @@ export function RegisterForm() {
     setIsLoading(true);
 
     try {
-      console.log("Attempting registration with auth client URL:", process.env.NEXT_PUBLIC_AUTH_URL);
-      // Use the shared authClient instance
-      await authClient.register({ 
-        email: data.email, 
-        name: data.name, 
-        password: data.password 
-      });
+      // Use the auth context to register the user
+      const response = await registerUser(data.name, data.email, data.password);
       
-      // Auto-login after registration
-      await authClient.login({ 
-        email: data.email, 
-        password: data.password 
-      });
-      
-      // Redirect to dashboard
-      router.push('/dashboard');
+      if (response) {
+        // Use navigation utility instead of router.push
+        navigateTo(ROUTES.DASHBOARD);
+      } else {
+        setServerError('Registration failed. Please try again.');
+      }
     } catch (err: any) {
       console.error('Registration error:', err);
       // Display more detailed error message

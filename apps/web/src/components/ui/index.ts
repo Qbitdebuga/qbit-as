@@ -30,3 +30,15 @@ export {
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 export { Badge, badgeVariants } from "@/components/ui/badge"; 
+
+// Loading and error states
+export { LoadingSpinner } from "@/components/ui/loading-spinner";
+export { 
+  LoadingIndicator,
+  type LoadingIndicatorProps 
+} from "@/components/ui/LoadingIndicator";
+export { 
+  ErrorDisplay, 
+  type ErrorDisplayProps,
+  type ErrorSeverity 
+} from "@/components/ui/ErrorDisplay"; 

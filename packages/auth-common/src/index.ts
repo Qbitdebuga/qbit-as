@@ -2,6 +2,9 @@
  * Main exports for auth-common package
  */
 
+// Export config
+export * from './config';
+
 // Export decorators
 export * from './decorators';
 

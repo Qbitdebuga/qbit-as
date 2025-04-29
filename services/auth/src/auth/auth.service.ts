@@ -7,6 +7,14 @@ import { RefreshTokenDto } from './dto/refresh-token.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
+// Define a user interface to be used instead of any
+interface UserWithoutPassword {
+  id: string;
+  email: string;
+  name?: string;
+  roles: string[];
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -15,7 +23,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<UserWithoutPassword | null> {
     const user = await this.userService.findByEmail(email);
     
     if (user && await bcrypt.compare(password, user.password)) {
@@ -133,7 +141,7 @@ export class AuthService {
     }
   }
 
-  async login(user: any) {
+  async login(user: UserWithoutPassword) {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }

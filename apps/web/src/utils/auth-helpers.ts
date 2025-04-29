@@ -6,16 +6,14 @@
  */
 
 import { authClient } from './auth';
+import { TokenStorage } from '@qbit/api-client/src/utils/token-storage';
 
 /**
  * Gets the current authentication token, used for API requests
  * @deprecated Use cookie-based authentication instead
  */
 export const getAuthToken = (): string | null => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('qbit_access_token');
-  }
-  return null;
+  return TokenStorage.getAccessToken();
 };
 
 /**

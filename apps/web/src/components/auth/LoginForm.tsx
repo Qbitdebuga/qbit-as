@@ -15,9 +15,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { loginSchema, LoginFormValues } from '@/lib/validations/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { navigateTo, ROUTES } from '@/utils/navigation';
 
 export function LoginForm() {
   const router = useRouter();
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string>('');
 
@@ -34,15 +37,15 @@ export function LoginForm() {
     setServerError('');
     
     try {
-      // Simulate API call
-      console.log('Login form data:', data);
+      const response = await login(data.email, data.password);
       
-      // Mock successful login
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 1000);
+      if (response) {
+        navigateTo(ROUTES.DASHBOARD);
+      } else {
+        setServerError('Login failed. Please check your credentials and try again.');
+      }
     } catch (error) {
-      setServerError('Invalid email or password. Please try again.');
+      setServerError('An error occurred during login. Please try again.');
       console.error('Login error:', error);
     } finally {
       setIsLoading(false);

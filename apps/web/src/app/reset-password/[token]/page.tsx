@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { navigateTo, ROUTES } from '@/utils/navigation';
 
 export default function ResetPasswordPage({ params }: { params: { token: string } }) {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,34 +22,64 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords don't match");
       return;
     }
 
     // Validate password length
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // In a real implementation, this would connect to the auth service
-      // For now, we'll just simulate a successful request
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Reset the password
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          password
+        }),
+      });
       
-      setMessage('Your password has been successfully reset.');
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
-    } catch (err) {
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to reset password');
+      }
+      
+      setMessage('Your password has been reset successfully! Redirecting to login...');
+      
+      // Start countdown for redirect
+      setRedirectCountdown(3);
+    } catch (err: any) {
       console.error('Password reset error:', err);
-      setError('Failed to reset password. Please try again.');
+      setError(err.message || 'An error occurred during password reset');
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Handle countdown and redirect
+  useEffect(() => {
+    if (redirectCountdown === null) return;
+    
+    if (redirectCountdown <= 0) {
+      // Use navigation utility instead of router.push
+      navigateTo(ROUTES.LOGIN, { replace: true });
+      return;
+    }
+    
+    const timer = setTimeout(() => {
+      setRedirectCountdown(redirectCountdown - 1);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [redirectCountdown, router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">

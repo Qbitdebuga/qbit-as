@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forgotPasswordSchema, ForgotPasswordFormValues } from '@/lib/validations/auth';
-import { authClient } from '@/utils/auth';
+import { navigateTo, ROUTES } from '@/utils/navigation';
+import { AUTH_ENDPOINTS } from '@qbit/auth-common';
 
 export function ForgotPasswordForm() {
   const [serverError, setServerError] = useState('');
@@ -29,8 +30,27 @@ export function ForgotPasswordForm() {
     setIsLoading(true);
 
     try {
-      await authClient.requestPasswordReset(data.email);
+      // Make a direct API call to the forgot password endpoint
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: data.email }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to request password reset');
+      }
+      
       setSuccess(true);
+      
+      // Optional: redirect after success message is shown for a few seconds
+      setTimeout(() => {
+        // Use navigation utility for any potential future navigation
+        navigateTo(ROUTES.LOGIN);
+      }, 3000);
     } catch (err: any) {
       console.error('Password reset request error:', err);
       setServerError(err.message || 'Failed to request password reset. Please try again.');

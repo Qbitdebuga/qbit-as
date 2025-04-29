@@ -8,6 +8,7 @@ import {
   invoicesClient, 
   paymentsClient
 } from '@/utils/api-clients';
+import { TokenStorage } from '@qbit/api-client/src/utils/token-storage';
 
 // API client hook for making authenticated API requests
 export function useApiClient() {
@@ -20,11 +21,8 @@ export function useApiClient() {
       // Nothing to do here - the TokenStorage in the API client
       // package will handle this automatically
     } else {
-      // Clear localStorage as a fallback
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('qbit_access_token');
-        localStorage.removeItem('qbit_refresh_token');
-      }
+      // Clear tokens using the centralized TokenStorage utility
+      TokenStorage.clearTokens();
     }
     setLoading(false);
   }, [isAuthenticated]);

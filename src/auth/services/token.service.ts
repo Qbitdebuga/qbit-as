@@ -11,7 +11,7 @@ export interface JwtPayload {
   email?: string;    // Email
   roles?: string[];  // User roles
   type?: string;     // Token type (access or refresh)
-  [key: string]: any; // Other custom properties
+  [key: string]: string | string[] | number | boolean | undefined; // Other custom properties with specific types
 }
 
 /**
